@@ -5,8 +5,11 @@ container terminals.
 
 ## Documentation
 
-A documentation on the background of this project, its API, and a step-by-step guide is available HERE.
-Please check here first whether conflowgen is the right tool for your purpose.
+A documentation on the background of this project, its API, and a step-by-step guide is available
+[at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
+Please check 
+[in the background section](https://conflowgen.readthedocs.io/en/latest/background.html)
+first whether conflowgen is the right tool for your purpose.
 
 ## User installation
 
@@ -28,6 +31,8 @@ database_chooser.create_new_sqlite_database("new_example.sqlite")
 ...
 ```
 
+The next steps from here are described
+[in the docs](https://conflowgen.readthedocs.io/en/latest/demo.html).
 If you wish to execute the Jupyter notebooks that come along the source code, there is an `environment.yml` defined in 
 the project root directory. This can be imported by
 [default conda commands](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
@@ -61,8 +66,8 @@ pip install --user -e .[dev,ui]
 
 ### Run all tests
 
-Setup your IDE to use `pytest` in the `tests` subdirectory (relative to the project root folder).
-If you use an editor without test support, you can run `python -m pytest ./test` in the project root directory as well.
+Setup your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
+If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
 Parallel test execution has not been tested and might not work.
 
 ### Generate the documentation
