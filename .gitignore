@@ -1,0 +1,35 @@
+# Python
+**/.ipynb_checkpoints/
+**/.virtual_documents/
+**/__pycache__/
+**/.pytest_cache/
+
+# Editors
+**/.vscode/
+**/.idea/
+
+# SQLite
+*.sqlite-shm
+*.sqlite-wal
+
+# Visualizations
+*.emf
+*.svg
+*.png
+*.jpg
+*.bmp
+*.tif
+
+# Microsoft Office Products
+**/~$*
+
+# Batch script helper files
+*.tmp
+
+# Conflowgen data directory
+conflowgen/data/logs/*.log
+conflowgen/data/databases/*.sqlite
+conflowgen/data/exports/
+
+# Conflowgen documentation
+docs/_build/

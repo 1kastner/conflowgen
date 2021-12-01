@@ -1,0 +1,16 @@
+name: conflowgen
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - jupyterlab=3
+  - jupyterlab-spellchecker
+  - nb_conda_kernels
+  - jupyterlab-lsp
+  - pylint
+  - pip
+  - git
+  - pip:
+      - git+https://github.com/krassowski/python-language-server.git@main#egg=python-language-server[all]
+      # conflowgen including UI dependencies (not the dev dependencies though)
+      - -e .[ui]

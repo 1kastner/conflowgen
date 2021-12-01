@@ -1,0 +1,12 @@
+{
+    // Code Diagnostics
+    // @krassowski/jupyterlab-lsp:diagnostics
+    // LSP Diagnostics (linter results) settings.
+    // ******************************************
+
+    // Diagnostic messages to ignore
+    // Regular expressions matching messages of diagnostics which should not be shown in the panel nor highlighted in the editor.
+    "ignoreMessagesPatterns": [
+        "undefined name 'display'"
+    ]
+}
