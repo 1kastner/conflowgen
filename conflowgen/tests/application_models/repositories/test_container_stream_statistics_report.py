@@ -117,7 +117,7 @@ class TestContainerFlowStatisticsReport(unittest.TestCase):
         self._create_container_delivered_by_truck(truck)
         self.report.generate()
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 300.00
 Maximum: 300.00
@@ -142,7 +142,7 @@ Stddev:  0.00
         self._create_container_delivered_by_truck(truck)
         self.report.generate()
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 20.00
 Maximum: 20.00
@@ -166,7 +166,7 @@ Stddev:  0.00
         self._create_container_delivered_by_large_scheduled_vehicle(feeder)
         self.report.generate()
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 19.00
 Maximum: 19.00
@@ -195,7 +195,7 @@ Stddev:  0.00
 
         self.report.generate()
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 20.00
 Maximum: 20.00
@@ -225,7 +225,7 @@ Stddev:  0.00
 
         self.report.generate()
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 20.00
 Maximum: 20.00
@@ -257,7 +257,7 @@ Stddev:  0.00
         self.report.generate()
 
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 19.00
 Maximum: 20.00
@@ -293,7 +293,7 @@ Stddev:  0.00
         self.report.generate()
 
         text = self.report.get_text_representation()
-        self.assertEquals("""
+        self.assertEqual("""
 Free Inbound Capacity Statistics
 Minimum: 20.00
 Maximum: 20.00
