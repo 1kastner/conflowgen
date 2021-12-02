@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/en/latest/?badge=latest)
+
 # ConFlowGen
 
 The **Con**tainer **Flow** **Gen**erator - a Python application to generate container flows typical for seaport 
