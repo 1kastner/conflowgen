@@ -3,11 +3,6 @@ import enum
 import enum_tools.documentation
 
 
-def keep_storage_requirement_as_type_hint(x) -> StorageRequirement:
-    return x
-
-
-@keep_storage_requirement_as_type_hint
 @enum_tools.documentation.document_enum
 class StorageRequirement(enum.Enum):
     """

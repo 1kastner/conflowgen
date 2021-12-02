@@ -4,11 +4,6 @@ from typing import List
 import enum_tools.documentation
 
 
-def keep_mode_of_transport_as_type_hint(x) -> ModeOfTransport:
-    return x
-
-
-@keep_mode_of_transport_as_type_hint
 @enum_tools.documentation.document_enum
 class ModeOfTransport(enum.Enum):
     """

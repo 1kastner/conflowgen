@@ -3,11 +3,6 @@ import enum
 import enum_tools.documentation
 
 
-def keep_container_length_as_type_hint(x) -> ContainerLength:
-    return x
-
-
-@keep_container_length_as_type_hint
 @enum_tools.documentation.document_enum
 class ContainerLength(enum.Enum):
     """
