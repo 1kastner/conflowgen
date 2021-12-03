@@ -32,6 +32,7 @@ setup(
             # testing
             'pytest',
             'pytest-cov',  # create coverage report
+            'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
             'sphinx',
