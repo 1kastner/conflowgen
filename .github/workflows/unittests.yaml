@@ -21,4 +21,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        pytest --exitfirst --verbose --failed-first --cov-report html
+        pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html
