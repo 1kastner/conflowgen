@@ -1,0 +1,6 @@
+[run]
+omit =
+    test_*.py
+    demo_*.py
+    conf.py
+    setup.py
