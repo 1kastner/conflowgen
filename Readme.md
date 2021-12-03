@@ -72,6 +72,10 @@ pip install --user -e .[dev,ui]
 Setup your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
 If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
 Parallel test execution has not been tested and might not work.
+If you prefer to also check the test coverage, you can run
+`pytest --cov="./conflowgen" --cov-report html`
+from the project root directory.
+After the execution, the report is located in `<project-root>/htmlcov/index.html`.
 
 ### Generate the documentation
 

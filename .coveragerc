@@ -1,6 +1,6 @@
 [run]
 omit =
-    test_*.py
-    demo_*.py
-    conf.py
+    */tests/*
+    conflowgen/demo/
+    docs/conf.py
     setup.py
