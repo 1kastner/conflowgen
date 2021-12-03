@@ -29,7 +29,11 @@ setup(
     extras_require={
         # Only needed to run the unittests and generate the documentation
         'dev': [
+            # testing
             'pytest',
+            'pytest-cov',  # create coverage report
+
+            # build documentation
             'sphinx',
             'sphinx-rtd-theme',
             'sphinx-toolbox',
