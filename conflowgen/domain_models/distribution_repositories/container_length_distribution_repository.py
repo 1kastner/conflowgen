@@ -39,7 +39,8 @@ class ContainerLengthDistributionRepository:
     def get_distribution(cls) -> Dict[ContainerLength, float]:
         container_length_distribution_entry: ContainerLengthDistribution
         return {
-            container_length_distribution_entry.container_length: container_length_distribution_entry.fraction
+            container_length_distribution_entry.container_length:  # pylint: disable=undefined-variable
+            container_length_distribution_entry.fraction  # pylint: disable=undefined-variable
             for container_length_distribution_entry in ContainerLengthDistribution.select()
         }
 

@@ -63,7 +63,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         vehicles = self.large_scheduled_vehicle_repository.load_all_vehicles()
 
         for vehicle_type, frequency in list(truck_to_other_vehicle_distribution.items()):
-            if vehicle_type not in vehicles.keys():  # this class is only concerned about large scheduled vehicles
+            if vehicle_type not in vehicles:  # this class is only concerned about large scheduled vehicles
                 del truck_to_other_vehicle_distribution[vehicle_type]
                 continue
             if frequency == 0:  # if the frequency is 0, we can ignore it right from the beginning and free resources

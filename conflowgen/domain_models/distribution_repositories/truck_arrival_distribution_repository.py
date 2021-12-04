@@ -33,7 +33,8 @@ class TruckArrivalDistributionRepository:
     def get_distribution(cls) -> Dict[int, float]:
         truck_arrival_entry: TruckArrivalDistribution
         return {
-            truck_arrival_entry.hour_in_the_week: truck_arrival_entry.fraction
+            truck_arrival_entry.hour_in_the_week:  # pylint: disable=undefined-variable
+            truck_arrival_entry.fraction  # pylint: disable=undefined-variable
             for truck_arrival_entry in TruckArrivalDistribution.select()
         }
 
