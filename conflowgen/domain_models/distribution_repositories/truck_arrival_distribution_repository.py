@@ -40,7 +40,7 @@ class TruckArrivalDistributionRepository:
     @classmethod
     def set_distribution(cls, truck_arrivals: Dict[int, float]):
         cls._verify_truck_arrival_distribution(truck_arrivals)
-        TruckArrivalDistribution.delete().execute()
+        TruckArrivalDistribution.delete().execute()  # pylint: disable=no-value-for-parameter
         for hour_in_the_week, fraction in truck_arrivals.items():
             TruckArrivalDistribution.create(
                 fraction=fraction,

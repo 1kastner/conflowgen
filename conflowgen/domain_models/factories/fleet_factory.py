@@ -44,8 +44,7 @@ def create_arrivals_within_time_range(
         )
         if range_starts_at <= vehicle_arrives_at <= range_ends_at:
             return [vehicle_arrival_time]
-        else:
-            return []
+        return []
 
 
 class FleetFactory:

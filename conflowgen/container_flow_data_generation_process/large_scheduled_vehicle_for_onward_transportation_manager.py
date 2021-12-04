@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 import logging
 import random
-from typing import Collection, Tuple, List, Dict
+from typing import Collection, Tuple, List
 
 from peewee import fn
 
@@ -241,10 +241,10 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                     vehicle_type=vehicle_type,
                     required_capacity=container.length
                 )
-                if len(available_vehicles):  # There is a vehicle of a new type available so it is picked
+                if len(available_vehicles) > 0:  # There is a vehicle of a new type available so it is picked
                     self._pick_vehicle_for_container(available_vehicles, container)
                     return
-                else:
-                    # obviously no vehicles of this type are left either, so it should also be excluded from the random
-                    # selection procedure in the beginning
-                    del vehicle_types_and_frequencies[vehicle_type]
+
+                # obviously no vehicles of this type are left either, so it should also be excluded from the random
+                # selection procedure in the beginning
+                del vehicle_types_and_frequencies[vehicle_type]

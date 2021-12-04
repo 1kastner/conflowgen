@@ -70,7 +70,7 @@ class ModalSplitPreviewReport(AbstractPreviewReport):
         report += f"({(1 - transshipment_as_fraction) * 100:.2f}%)\n"
         report += "\n"
 
-        report += f"Inbound modal split\n"
+        report += "Inbound modal split\n"
         report += f"truck proportion (in TEU): {modal_split_for_hinterland_inbound.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_inbound.truck_capacity / inbound_total * 100:.2f}%)\n"
         report += f"barge proportion (in TEU): {modal_split_for_hinterland_inbound.barge_capacity:>10.1f} "
@@ -78,7 +78,7 @@ class ModalSplitPreviewReport(AbstractPreviewReport):
         report += f"train proportion (in TEU): {modal_split_for_hinterland_inbound.train_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_inbound.train_capacity / inbound_total * 100:.2f}%)\n\n"
 
-        report += f"Outbound modal split\n"
+        report += "Outbound modal split\n"
         report += f"truck proportion (in TEU): {modal_split_for_hinterland_outbound.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_outbound.truck_capacity / outbound_total * 100:.2f}%)\n"
         report += f"barge proportion (in TEU): {modal_split_for_hinterland_outbound.barge_capacity:>10.1f} "
@@ -86,7 +86,7 @@ class ModalSplitPreviewReport(AbstractPreviewReport):
         report += f"train proportion (in TEU): {modal_split_for_hinterland_outbound.train_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_outbound.train_capacity / outbound_total * 100:.2f}%)\n\n"
 
-        report += f"Absolute modal split (both inbound and outbound)\n"
+        report += "Absolute modal split (both inbound and outbound)\n"
         report += f"truck proportion (in TEU): {modal_split_for_hinterland_both.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_both.truck_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
         report += f"barge proportion (in TEU): {modal_split_for_hinterland_both.barge_capacity:>10.1f} "
@@ -119,9 +119,10 @@ class ModalSplitPreviewReport(AbstractPreviewReport):
         .. todo:: All pie charts should be plotted in a single plot using subplots.
         """
         preview = self._get_updated_preview()
-        import pandas as pd
-        import matplotlib.pyplot as plt
-        import seaborn as sns
+        import pandas as pd  # pylint: disable=import-outside-toplevel
+        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
+        import seaborn as sns  # pylint: disable=import-outside-toplevel
+
         sns.set_palette(sns.color_palette())
 
         # gather data

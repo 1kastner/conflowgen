@@ -26,7 +26,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractPosthocA
 
         if total_capacity > 0:
             report = "\n"
-            report += f"                             Capacity in TEU\n"
+            report += "                             Capacity in TEU\n"
             report += f"vehicle type unchanged:      {adjusted_to.unchanged:<10.1f} " \
                       f"({adjusted_to.unchanged * 100 / total_capacity:.2f}%)\n"
             report += f"changed to deep sea vessel:  {adjusted_to.deep_sea_vessel:<10.1f} " \

@@ -39,7 +39,7 @@ class LargeScheduledVehicleRepository:
             vehicle: AbstractLargeScheduledVehicle,
             container: Container
     ) -> bool:
-        assert vehicle in self.free_capacity_for_inbound_journey_buffer.keys(), \
+        assert vehicle in self.free_capacity_for_inbound_journey_buffer, \
             "First .get_free_capacity_for_inbound_journey(vehicle) must be invoked"
 
         # calculate new free capacity
@@ -60,7 +60,7 @@ class LargeScheduledVehicleRepository:
             vehicle: AbstractLargeScheduledVehicle,
             container: Container
     ) -> bool:
-        assert vehicle in self.free_capacity_for_outbound_journey_buffer.keys(), \
+        assert vehicle in self.free_capacity_for_outbound_journey_buffer, \
             "First .get_free_capacity_for_outbound_journey(vehicle) must be invoked"
 
         # calculate new free capacity
@@ -78,7 +78,7 @@ class LargeScheduledVehicleRepository:
     def get_free_capacity_for_inbound_journey(self, vehicle: AbstractLargeScheduledVehicle) -> float:
         """Get the free capacity for the inbound journey on a vehicle that moves according to a schedule in TEU.
         """
-        if vehicle in self.free_capacity_for_inbound_journey_buffer.keys():
+        if vehicle in self.free_capacity_for_inbound_journey_buffer:
             return self.free_capacity_for_inbound_journey_buffer[vehicle]
 
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
@@ -97,7 +97,7 @@ class LargeScheduledVehicleRepository:
         assert self.transportation_buffer is not None, "First set the value!"
         assert -1 < self.transportation_buffer, "Must be larger than -1"
 
-        if vehicle in self.free_capacity_for_outbound_journey_buffer.keys():
+        if vehicle in self.free_capacity_for_outbound_journey_buffer:
             return self.free_capacity_for_outbound_journey_buffer[vehicle]
 
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
@@ -105,8 +105,10 @@ class LargeScheduledVehicleRepository:
         total_moved_capacity_for_onward_transportation_in_teu = \
             large_scheduled_vehicle.moved_capacity * (1 + self.transportation_buffer)
         maximum_capacity_of_vehicle = large_scheduled_vehicle.capacity_in_teu
-        if total_moved_capacity_for_onward_transportation_in_teu > maximum_capacity_of_vehicle:
-            total_moved_capacity_for_onward_transportation_in_teu = maximum_capacity_of_vehicle
+        total_moved_capacity_for_onward_transportation_in_teu = min(
+            total_moved_capacity_for_onward_transportation_in_teu,
+            maximum_capacity_of_vehicle
+        )
 
         free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,

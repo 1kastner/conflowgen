@@ -1,6 +1,6 @@
 from __future__ import annotations
 import datetime
-from typing import Dict, Tuple, Union, NamedTuple
+from typing import Dict, NamedTuple
 
 from conflowgen.preview.abstract_preview import AbstractPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport

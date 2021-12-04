@@ -37,7 +37,7 @@ class LargeScheduledVehicleCreationService:
     def create(self) -> None:
         assert self.container_flow_start_date is not None
         assert self.container_flow_end_date is not None
-        schedules: List[Schedule] = Schedule.select().execute()
+        schedules: List[Schedule] = Schedule.select().execute()  # pylint: disable=no-value-for-parameter
         for i, schedule in enumerate(schedules):
             self.logger.debug(f"Create vehicles and containers for service '{schedule.service_name}' of type "
                               f"'{schedule.vehicle_type}', "

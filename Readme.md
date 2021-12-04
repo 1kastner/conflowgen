@@ -85,3 +85,8 @@ is used - mostly the default settings are maintained.
 The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
 To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
+
+### Checking the code quality
+
+For checking the code quality, pylint is used.
+It is run by executing `pylint conflowgen` on the project root level.

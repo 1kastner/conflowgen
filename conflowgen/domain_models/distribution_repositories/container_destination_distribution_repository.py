@@ -57,7 +57,7 @@ class ContainerDestinationDistributionRepository:
         distributions = {
             schedule: {
                 destination: cls._get_fraction(schedule, destination.destination_name)
-                for destination in Destination.select().where(
+                for destination in Destination.select().where(  # pylint: disable=not-an-iterable
                     Destination.belongs_to_schedule == schedule
                 )
             }

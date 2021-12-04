@@ -28,7 +28,7 @@ class ContainerFlowStatisticsReport:
         buffer_factor = 1 + self.large_scheduled_vehicle_repository.transportation_buffer
         free_capacities_inbound = {}
         free_capacities_outbound = {}
-        vehicle_types: ModeOfTransport
+        vehicle_type: ModeOfTransport
         vehicles: List[AbstractLargeScheduledVehicle]
         for vehicle_type, vehicles in vehicles_of_types.items():
             for vehicle in vehicles:

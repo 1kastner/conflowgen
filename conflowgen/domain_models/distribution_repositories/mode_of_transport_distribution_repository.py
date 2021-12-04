@@ -52,7 +52,7 @@ class ModeOfTransportDistributionRepository:
             distributions: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ) -> None:
         self.validator.validate(distributions)
-        ModeOfTransportDistribution.delete().execute()
+        ModeOfTransportDistribution.delete().execute()  # pylint: disable=no-value-for-parameter
         for delivered_by, picked_up_by_distribution in distributions.items():
             for picked_up_by, fraction in picked_up_by_distribution.items():
                 ModeOfTransportDistribution.create(

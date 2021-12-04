@@ -65,7 +65,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractPosthocAnalysis
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
-        import plotly.graph_objects as go
+        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
@@ -91,7 +91,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractPosthocAnalysis
         ]
         to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
         for vehicle_type_initial, capacity in initial_to_adjusted_outbound_flow_in_teu.items():
-            for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].keys()):
+            for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
                 to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
         adjusted_labels = [
             str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(

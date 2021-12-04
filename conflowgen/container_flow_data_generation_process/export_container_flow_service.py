@@ -113,9 +113,9 @@ class ExportContainerFlowService:
 
     def __init__(self):
         self.save_as_file_format_mapping = {
-            ExportFileFormat.CSV: self._save_as_csv,
-            ExportFileFormat.XLS: self._save_as_xls,
-            ExportFileFormat.XLSX: self._save_as_xlsx
+            ExportFileFormat.csv: self._save_as_csv,
+            ExportFileFormat.xls: self._save_as_xls,
+            ExportFileFormat.xlsx: self._save_as_xlsx
         }
 
     @classmethod
@@ -131,7 +131,7 @@ class ExportContainerFlowService:
         # extract data from sql database
         data = list(model.select().dicts())
 
-        if type(model) == ModelSelect:
+        if type(model) == ModelSelect:  # pylint: disable=unidiomatic-typecheck  # TODO: check if isinstance works
             model = model.model
 
         foreign_keys_to_resolve = {}
@@ -171,7 +171,7 @@ class ExportContainerFlowService:
         df_table = pd.DataFrame(data)
 
         # remove any columns that have been (accidentally) inserted, e.g. by resolving foreign keys.
-        if model in cls.columns_to_drop.keys():
+        if model in cls.columns_to_drop:
             columns_to_drop = cls.columns_to_drop[model]
             if not set(columns_to_drop).issubset(set(df_table.columns)):
                 missing_columns = set(columns_to_drop) - set(df_table.columns)
@@ -179,11 +179,11 @@ class ExportContainerFlowService:
                 columns_to_drop = set(df_table.columns).intersection(set(columns_to_drop))
             try:
                 df_table.drop(columns=columns_to_drop, inplace=True)
-            except KeyError as e:
+            except KeyError as error:
                 raise RuntimeError(f"Encountered an exception while dropping columns {columns_to_drop} from model "
-                                   f"{model} and the current table columns {df_table.columns}.") from e
+                                   f"{model} and the current table columns {df_table.columns}.") from error
 
-        if model in cls.columns_to_rename.keys():
+        if model in cls.columns_to_rename:
             columns_to_rename = cls.columns_to_rename[model]
             df_table.rename(columns=columns_to_rename, inplace=True)
 
@@ -196,10 +196,10 @@ class ExportContainerFlowService:
             if df_table[column].dtype == np.float64:
                 try:
                     df_table[column] = df_table[column].astype("Int64")
-                except TypeError as e:
+                except TypeError as error:
                     raise CastingException(
                         f"Column '{column}' for model '{model.model}' could not be casted from float64 to Int64"
-                    ) from e
+                    ) from error
 
         return df_table
 

@@ -181,7 +181,7 @@ logger.info("Start data export...")
 export_container_flow_manager = ExportContainerFlowManager()
 export_container_flow_manager.export(
     folder_name="demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0],
-    file_format=ExportFileFormat.CSV
+    file_format=ExportFileFormat.csv
 )
 
 # Gracefully close everything

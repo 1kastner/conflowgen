@@ -14,12 +14,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractPosthocAnalysis):
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowAdjustmentByVehicleTypeAnalysisReport`.
     """
-    def __init__(self):
-        super(ContainerFlowAdjustmentByVehicleTypeAnalysis, self).__init__()
 
-    def get_initial_to_adjusted_outbound_flow(
-            self
-    ) -> ContainersAndTEUContainerFlowPair:
+    @staticmethod
+    def get_initial_to_adjusted_outbound_flow() -> ContainersAndTEUContainerFlowPair:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
         onward transportation might change. The initial outbound vehicle type is the vehicle type that is drawn

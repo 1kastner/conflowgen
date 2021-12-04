@@ -55,7 +55,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractPosthocAnalysisReport):
             in a Jupyter Notebook.
         """
 
-        import plotly.graph_objects as go
+        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
 

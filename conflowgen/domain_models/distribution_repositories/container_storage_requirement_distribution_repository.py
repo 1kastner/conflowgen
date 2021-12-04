@@ -65,7 +65,7 @@ class ContainerStorageRequirementDistributionRepository:
             distributions: Dict[ContainerLength, Dict[StorageRequirement, float]]
     ) -> None:
         self._validate(distributions)
-        StorageRequirementDistribution.delete().execute()
+        StorageRequirementDistribution.delete().execute()  # pylint: disable=no-value-for-parameter
         for container_length, storage_requirement_distribution in distributions.items():
             for storage_requirement, fraction in storage_requirement_distribution.items():
                 StorageRequirementDistribution.create(

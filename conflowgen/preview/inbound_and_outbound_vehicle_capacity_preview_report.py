@@ -55,8 +55,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractPreviewReport):
 
         Returns: The matplotlib axis of the bar chart.
         """
-        import pandas as pd
-        import seaborn as sns
+        import pandas as pd  # pylint: disable=import-outside-toplevel
+        import seaborn as sns  # pylint: disable=import-outside-toplevel
         sns.set_palette(sns.color_palette())
 
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()

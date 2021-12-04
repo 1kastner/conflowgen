@@ -28,5 +28,5 @@ class ExportContainerFlowManager:
             file_format: Desired tabular format
         """
         if file_format is None:
-            file_format = ExportFileFormat.CSV
+            file_format = ExportFileFormat.csv
         self.service.export(folder_name, file_format)

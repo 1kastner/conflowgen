@@ -81,7 +81,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractPreviewReport):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
-        import plotly.graph_objects as go
+        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 
         inbound_to_outbound_flow = self._get_inbound_to_outbound_flow()
 

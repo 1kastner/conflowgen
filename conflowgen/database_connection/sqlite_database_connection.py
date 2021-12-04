@@ -98,7 +98,7 @@ class SqliteDatabaseConnection:
         if not sqlite_database_existed_before:
             self.logger.debug(f"Creating new database: '{path_to_sqlite_database}'")
             create_tables(self.sqlite_db_connection)
-            self.logger.debug(f"Seed with default values...")
+            self.logger.debug("Seed with default values...")
             seed_all_distributions()
         else:
             self.logger.debug(f"Open existing database: '{path_to_sqlite_database}'")

@@ -39,5 +39,4 @@ class ContainerLength(enum.Enum):
         """
         if self.value > 0:
             return f"{self.value} feet"
-        else:
-            return f"other"
+        return "other"

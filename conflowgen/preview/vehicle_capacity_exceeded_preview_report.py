@@ -72,8 +72,8 @@ class VehicleCapacityExceededPreviewReport(AbstractPreviewReport):
         Returns: The matplotlib axis of the bar chart.
         """
         comparison = self._get_comparison()
-        import pandas as pd
-        import seaborn as sns
+        import pandas as pd  # pylint: disable=import-outside-toplevel
+        import seaborn as sns  # pylint: disable=import-outside-toplevel
         sns.set_palette(sns.color_palette())
         df = pd.DataFrame.from_dict(comparison).T
         df.columns = ["currently planned", "maximum", "exceeded"]

@@ -33,7 +33,10 @@ class AssignDestinationToContainerService:
     def assign(self):
         destination_with_distinct_schedules: Collection[Destination] = Destination.select(
             Destination.belongs_to_schedule).distinct()
-        schedules = [destination.belongs_to_schedule for destination in destination_with_distinct_schedules]
+        schedules = [
+            destination.belongs_to_schedule
+            for destination in destination_with_distinct_schedules  # pylint: disable=not-an-iterable
+        ]
         schedule: Schedule
         number_iterations = len(schedules)
         for i, schedule in enumerate(schedules):

@@ -17,9 +17,8 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPosthocAnalysis):
     def __init__(self):
         super().__init__(transportation_buffer=None)
 
-    def get_inbound_to_outbound_flow(
-            self
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]]:
+    @staticmethod
+    def get_inbound_to_outbound_flow() -> Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]]:
         """This is the overview of the generated inbound to outbound container flow."""
         inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]] = {
             vehicle_type_inbound:

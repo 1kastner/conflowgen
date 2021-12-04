@@ -11,11 +11,11 @@ class StorageRequirement(enum.Enum):
 
     empty = "empty"  # doc: An empty container is typically stored in an empty container yard
 
-    standard = "standard"  # doc: A standard container is typically stored in the full container yard and makes up most of the containers passing through a terminal
+    standard = "standard"  # doc: A standard container is typically stored in the full container yard and makes up most of the containers passing through a terminal # pylint: disable=line-too-long
 
-    reefer = "reefer"  # doc: A reefer container requires electricity (i.e., a reefer plug) to keep the inner temperature on a low level
+    reefer = "reefer"  # doc: A reefer container requires electricity (i.e., a reefer plug) to keep the inner temperature on a low level  # pylint: disable=line-too-long
 
-    dangerous_goods = "dangerous_goods"  # doc: A dangerous goods container needs a specially prepared storage area so they do not constitute a major hazard to health and environment.
+    dangerous_goods = "dangerous_goods"  # doc: A dangerous goods container needs a specially prepared storage area so they do not constitute a major hazard to health and environment.  # pylint: disable=line-too-long
 
     def __str__(self):
         """

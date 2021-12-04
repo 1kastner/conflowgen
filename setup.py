@@ -39,7 +39,10 @@ setup(
             'sphinx-rtd-theme',
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
-            'sphinx-math-dollar'
+            'sphinx-math-dollar',
+
+            # checking code quality
+            'pylint',
         ],
         # Only needed when you run the unittests in debug mode or you run the Jupyter Notebooks that create additional
         # visualizations. This is not compulsory though.

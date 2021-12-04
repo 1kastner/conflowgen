@@ -36,7 +36,7 @@ class ContainerFlowGenerationPropertiesRepository:
 
     @staticmethod
     def get_container_flow_generation_properties() -> ContainerFlowGenerationProperties:
-        all_properties = ContainerFlowGenerationProperties.select().execute()
+        all_properties = ContainerFlowGenerationProperties.select().execute()  # pylint: disable=E1120
         number_found_rows = len(all_properties)
         if not (0 <= number_found_rows <= 1):
             raise DuplicatedContainerFlowGenerationPropertiesEntryException(
@@ -44,14 +44,14 @@ class ContainerFlowGenerationPropertiesRepository:
             )
         if len(all_properties) == 1:
             return all_properties[0]
-        else:
-            return ContainerFlowGenerationProperties.create()
+
+        return ContainerFlowGenerationProperties.create()
 
     @classmethod
     def set_container_flow_generation_properties(cls, properties: ContainerFlowGenerationProperties) -> None:
         cls._verify(properties)
         properties.save()
-        number_properties_entries = ContainerFlowGenerationProperties.select().count()
+        number_properties_entries = ContainerFlowGenerationProperties().select().count()  # pylint: disable=E1120
         if number_properties_entries > 1:
             raise DuplicatedContainerFlowGenerationPropertiesEntryException(
                 f"Number of updated rows were {number_properties_entries} but expected only one entry"
