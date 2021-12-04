@@ -14,7 +14,7 @@ A documentation on the background of this project, its API, and a step-by-step g
 [at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
 Please check 
 [in the background section](https://conflowgen.readthedocs.io/en/latest/background.html)
-first whether conflowgen is the right tool for your purpose.
+first whether ConFlowGen is the right tool for your purpose.
 
 ## User installation
 
@@ -38,6 +38,9 @@ database_chooser.create_new_sqlite_database("new_example.sqlite")
 
 The next steps from here are described
 [in the docs](https://conflowgen.readthedocs.io/en/latest/demo.html).
+Further examples exist
+[in the demo subdirectory](https://github.com/1kastner/conflowgen/tree/main/demo).
+
 If you wish to execute the Jupyter notebooks that come along the source code, there is an `environment.yml` defined in 
 the project root directory. This can be imported by
 [default conda commands](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
