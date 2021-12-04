@@ -10,20 +10,38 @@ import random
 import sys
 import pandas as pd
 
+try:
+    import conflowgen
+except ImportError:
+    print("Please first install conflowgen as a library")
+    sys.exit()
+
+from conflowgen import ContainerFlowGenerationManager
+from conflowgen import ModeOfTransport
+from conflowgen import PortCallManager
+from conflowgen import ExportFileFormat
+from conflowgen import ExportContainerFlowManager
+from conflowgen import DatabaseChooser
+from conflowgen import setup_logger
+from conflowgen import InboundAndOutboundVehicleCapacityPreviewReport
+from conflowgen import ContainerFlowByVehicleTypePreviewReport
+from conflowgen import VehicleCapacityExceededPreviewReport
+from conflowgen import ModalSplitPreviewReport
+from conflowgen import InboundAndOutboundVehicleCapacityAnalysisReport
+from conflowgen import ContainerFlowByVehicleTypeAnalysisReport
+from conflowgen import ModalSplitAnalysisReport
+from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
+from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from conflowgen import ContainerLengthDistributionManager
+from conflowgen import ContainerLength
+
 # The seed of x=1 guarantees that the same traffic data is generated as input data in this script. However, it does not
 # affect the container generation or the assignment of containers to vehicles.
 seeded_random = random.Random(x=1)
 
-import_root_dir = os.path.abspath(
-    os.path.join(
-        os.path.dirname(sys.modules[__name__].__file__),
-        os.pardir,
-        "data",
-        "imports"
-    )
-)
 import_deham_dir = os.path.join(
-    import_root_dir,
+    os.path.dirname(sys.modules[__name__].__file__),
+    "data",
     "DEHAM",
     "CT Altenwerder"
 )
@@ -56,35 +74,6 @@ df_trains = pd.read_csv(
     index_col=[0]
 )
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(
-            os.path.dirname(sys.modules[__name__].__file__),
-            os.pardir,
-            os.pardir
-        )
-    )
-)
-
-from conflowgen import ContainerFlowGenerationManager
-from conflowgen import ModeOfTransport
-from conflowgen import PortCallManager
-from conflowgen import ExportFileFormat
-from conflowgen import ExportContainerFlowManager
-from conflowgen import DatabaseChooser
-from conflowgen import setup_logger
-from conflowgen import InboundAndOutboundVehicleCapacityPreviewReport
-from conflowgen import ContainerFlowByVehicleTypePreviewReport
-from conflowgen import VehicleCapacityExceededPreviewReport
-from conflowgen import ModalSplitPreviewReport
-from conflowgen import InboundAndOutboundVehicleCapacityAnalysisReport
-from conflowgen import ContainerFlowByVehicleTypeAnalysisReport
-from conflowgen import ModalSplitAnalysisReport
-from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
-from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
-from conflowgen import ContainerLengthDistributionManager
-from conflowgen import ContainerLength
-
 # Start logging
 logger = setup_logger()
 
@@ -110,7 +99,6 @@ if demo_file_name in database_chooser.list_all_sqlite_databases():
     database_chooser.load_existing_sqlite_database(demo_file_name)
 else:
     database_chooser.create_new_sqlite_database(demo_file_name)
-
 
 # Set settings
 container_flow_generation_manager = ContainerFlowGenerationManager()

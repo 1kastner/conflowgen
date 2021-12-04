@@ -5,18 +5,13 @@ The intention of this demo is further explained in the logs it generated.
 """
 
 import datetime
-import os.path
 import sys
 
-sys.path.append(
-    os.path.abspath(
-        os.path.join(
-            os.path.dirname(sys.modules[__name__].__file__),
-            os.pardir,
-            os.pardir
-        )
-    )
-)
+try:
+    import conflowgen
+except ImportError:
+    print("Please first install conflowgen as a library")
+    sys.exit()
 
 from conflowgen import ContainerFlowGenerationManager
 from conflowgen import ModeOfTransport
