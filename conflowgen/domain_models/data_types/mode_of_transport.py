@@ -10,13 +10,15 @@ class ModeOfTransport(enum.Enum):
     The mode of transport describes the vehicle type of the vehicle which either drops off or picks up a container.
     """
 
+    # pylint: disable=line-too-long
+
     truck = "truck"  # doc: An external truck is sent by a freight forwarder
 
     train = "train"  # doc: A freight train is sent by a train operating company
 
     feeder = "feeder"  # doc: A feeder vessel is a rather small vessel sent by a ship operator and moves in the region
 
-    deep_sea_vessel = "deep_sea_vessel"  # doc: A deep sea vessel is a rather large vessel sent by a ship operator and moves between distant regions, e.g. continents. # pylint: disable=line-too-long
+    deep_sea_vessel = "deep_sea_vessel"  # doc: A deep sea vessel is a rather large vessel sent by a ship operator and moves between distant regions, e.g. continents.
 
     barge = "barge"  # doc: A barge is sent by an inland shipping operator
 
