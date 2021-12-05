@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from os import path
 
 # Load long description
@@ -12,13 +12,7 @@ setup(
     version='0.1',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=['conflowgen', 'conflowgen.api', 'conflowgen.tools', 'conflowgen.logging',
-              'conflowgen.container_flow_data_generation_process',
-              'conflowgen.domain_models', 'conflowgen.domain_models.factories', 'conflowgen.domain_models.field_types',
-              'conflowgen.domain_models.repositories', 'conflowgen.domain_models.distribution_models',
-              'conflowgen.domain_models.distribution_seeders', 'conflowgen.domain_models.distribution_repositories',
-              'conflowgen.application_models', 'conflowgen.application_models.repositories',
-              'conflowgen.database_connection'],
+    packages=find_packages(),
     url='https://github.com/1kastner/conflowgen',
     install_requires=[
         'numpy',
