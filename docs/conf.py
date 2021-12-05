@@ -77,7 +77,7 @@ autoclass_content = 'both'
 
 mathjax3_config = {
     'tex2jax': {
-        'inlineMath': [ ["\\(","\\)"] ],
-        'displayMath': [["\\[","\\]"] ],
+        'inlineMath': [["\\(", "\\)"]],
+        'displayMath': [["\\[", "\\]"]],
     },
 }
