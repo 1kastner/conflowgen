@@ -27,8 +27,8 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-copyright = '2021, Marvin Kastner, Ole Grasse'
-author = 'Marvin Kastner, Ole Grasse'
+copyright = '2021, Marvin Kastner and Ole Grasse'
+author = 'Marvin Kastner and Ole Grasse'
 
 
 # -- General configuration ---------------------------------------------------
