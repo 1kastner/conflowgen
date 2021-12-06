@@ -1,0 +1,24 @@
+name: Docs
+on: [push]
+
+jobs:
+  build:
+    name: Build documentation and check for warnings
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Python dependencies including sphinx
+      run: |
+        pip3 install --user -e .[dev,ui]
+
+    - name: Build documentation and check for warnings
+      run: |
+        cd ./docs/ && make html SPHINXOPTS="-W --keep-going -n"
