@@ -64,7 +64,7 @@ class PortCallManager:
             service_name: The name of the service which moves to a schedule that is sought for.
             vehicle_type: The mode of transport to restrict the search to.
 
-        Returns: If present, the requested schedule, else none.
+        Returns: Whether the requested schedule already exist in the database
         """
         assert vehicle_type in ModeOfTransport.get_scheduled_vehicles(), f"Vehicle of type {vehicle_type} not " \
                                                                          f"suitable for this method."
