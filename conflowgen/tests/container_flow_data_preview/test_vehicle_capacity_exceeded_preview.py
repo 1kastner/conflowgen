@@ -6,7 +6,6 @@ from conflowgen.domain_models.distribution_repositories.mode_of_transport_distri
 from conflowgen.preview.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
-from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
@@ -111,10 +110,12 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
                 vehicle_type_capacity_is_exceeded
             ) = with_excess_comparison[mode_of_transport_from]
 
-            self.assertGreater(container_capacity_to_pick_up, 0, msg=f"mode_of_transport_from: {mode_of_transport_from}")
+            self.assertGreater(
+                container_capacity_to_pick_up, 0, msg=f"mode_of_transport_from: {mode_of_transport_from}")
             self.assertGreaterEqual(maximum_capacity, 0, msg=f"mode_of_transport_from: {mode_of_transport_from}")
             if mode_of_transport_from != ModeOfTransport.feeder:
-                self.assertTrue(vehicle_type_capacity_is_exceeded, msg=f"mode_of_transport_from: {mode_of_transport_from}")
+                self.assertTrue(vehicle_type_capacity_is_exceeded,
+                                msg=f"mode_of_transport_from: {mode_of_transport_from}")
             else:
                 self.assertFalse(vehicle_type_capacity_is_exceeded, "feeder has sufficient space for taking all "
                                                                     "containers with them again")
@@ -126,6 +127,6 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
             vehicle_type_capacity_is_exceeded
         ) = with_excess_comparison[mode_of_transport_from]
 
-        self.assertAlmostEqual(container_capacity_to_pick_up, 60, msg=f"20% of 300 is 60")
+        self.assertAlmostEqual(container_capacity_to_pick_up, 60, msg="20% of 300 is 60")
         self.assertEqual(maximum_capacity, -1, msg=f"mode_of_transport_from: {mode_of_transport_from}")
         self.assertFalse(vehicle_type_capacity_is_exceeded, msg=f"mode_of_transport_from: {mode_of_transport_from}")

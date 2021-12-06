@@ -9,6 +9,7 @@ import sys
 
 try:
     import conflowgen
+    print(f"Importing ConFlowGen version {conflowgen.__version__}")
 except ImportError:
     print("Please first install conflowgen as a library")
     sys.exit()

@@ -3,6 +3,8 @@ This is the intended interface for users who want to generate synthetic data. On
 stable interface for a longer time period. Anything else is up to change as the package evolves.
 """
 
+__version__ = "0.0.1"
+
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager

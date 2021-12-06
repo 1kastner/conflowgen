@@ -12,6 +12,7 @@ import pandas as pd
 
 try:
     import conflowgen
+    print(f"Importing ConFlowGen version {conflowgen.__version__}")
 except ImportError:
     print("Please first install conflowgen as a library")
     sys.exit()
@@ -82,7 +83,7 @@ logger.info("""####
 ####
 This is a demo based on some publicly available figures, some educated guesses, and some random assumptions due to the
 lack of information regarding the Container Terminal Altenwerder (CTA) in the port of Hamburg. While this demo only
-poorly reflects processes in place, in addition this is only a (poor) snapshot of what has been happening in summer 
+poorly reflects processes in place, in addition this is only a (poor) snapshot of what has been happening in summer
 2021.
 
 No affiliations with the container terminal operators exist. Then why this example was chosen? This is an extension of

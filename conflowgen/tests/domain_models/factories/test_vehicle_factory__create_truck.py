@@ -7,8 +7,8 @@ import unittest
 
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup
-from conflowgen.domain_models.factories.vehicle_factory import MissingInformationException, UnnecessaryVehicleException, \
-    VehicleFactory
+from conflowgen.domain_models.factories.vehicle_factory import MissingInformationException, \
+    UnnecessaryVehicleException, VehicleFactory
 from conflowgen.domain_models.vehicle import Truck
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

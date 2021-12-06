@@ -50,5 +50,6 @@ setup(
     license='MIT',
     author='Marvin Kastner',
     author_email='marvin.kastner@tuhh.de',
-    description='A generator for synthetic container flows at maritime container terminals with a focus is on yard operations'
+    description='A generator for synthetic container flows at maritime container terminals with a focus is on yard '
+                'operations'
 )

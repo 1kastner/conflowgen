@@ -1,0 +1,13 @@
+[flake8]
+exclude = .git,__pycache__,docs,ConFlowGen.egg-info,.pytest_cache,.virtual_documents
+max-line-length = 120
+
+per-file-ignores =
+    # imported but unused
+    conflowgen/__init__.py: F401
+    # long lines
+    conflowgen/domain_models/data_types/mode_of_transport.py: E501
+    conflowgen/domain_models/data_types/storage_requirement.py: E501
+    conflowgen/domain_models/data_types/mode_of_transport.py: E501
+    # equals symbols
+    conflowgen/container_flow_data_generation_process/container_flow_generation_service.py: E251

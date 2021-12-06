@@ -8,7 +8,6 @@ from conflowgen.preview.container_flow_by_vehicle_type_preview_report import \
     ContainerFlowByVehicleTypePreviewReport
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
-from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

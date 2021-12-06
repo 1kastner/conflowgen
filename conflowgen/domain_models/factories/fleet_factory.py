@@ -26,7 +26,10 @@ def create_arrivals_within_time_range(
         first_arrival_as_day = range_starts_at + first_arrival_at_kth_day
 
         kth_arrival = 0
-        kth_arrival_date = lambda xth_arrival: first_arrival_as_day + xth_arrival * scheduled_interval
+
+        def kth_arrival_date(xth_arrival):
+            return first_arrival_as_day + xth_arrival * scheduled_interval
+
         while kth_arrival_date(kth_arrival) <= range_ends_at:
             kth_arrival_as_datetime = datetime.datetime.combine(
                 kth_arrival_date(kth_arrival),
