@@ -18,6 +18,11 @@ jobs:
     - name: Install Python dependencies including pylint
       run: |
         pip3 install --user -e .[dev,ui]
+
     - name: Check code quality with pylint
       run: |
         pylint conflowgen
+
+    - name: Check code quality with flake8
+      run: |
+        flake8
