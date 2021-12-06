@@ -37,6 +37,7 @@ setup(
 
             # checking code quality
             'pylint',
+            'flake8',
         ],
         # Only needed when you run the unittests in debug mode or you run the Jupyter Notebooks that create additional
         # visualizations. This is not compulsory though.
