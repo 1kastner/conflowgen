@@ -75,7 +75,7 @@ pip install --user -e .[dev,ui]
 
 ### Run all tests
 
-Setup your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
+Set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
 If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
 Parallel test execution has not been tested and might not work.
 If you prefer to also check the test coverage, you can run
@@ -94,5 +94,6 @@ Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
 
 ### Checking the code quality
 
-For checking the code quality, pylint is used.
-It is run by executing `pylint conflowgen` on the project root level.
+For checking the code quality, pylint and flake8 is used.
+Pylint is run by executing `pylint conflowgen` on the project root level.
+For flake8, simply invoke `flake8` at the same level.
