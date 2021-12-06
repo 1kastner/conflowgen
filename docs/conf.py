@@ -81,3 +81,13 @@ mathjax3_config = {
         'displayMath': [["\\[", "\\]"]],
     },
 }
+
+nitpicky = True
+nitpick_ignore = []
+
+for line in open('.nitpick-exceptions'):
+    if line.strip() == "" or line.startswith("#"):
+        continue
+    sphinx_label, sphinx_object_name = line.split(None, 1)
+    sphinx_object_name = sphinx_object_name.strip()
+    nitpick_ignore.append((sphinx_label, sphinx_object_name))

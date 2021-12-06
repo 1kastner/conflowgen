@@ -1,0 +1,13 @@
+# Python standard library issues
+py:data typing.Optional
+py:data typing.Union
+py:data typing.Tuple
+py:class datetime.date
+py:class enum.Enum
+
+# TODO: Figure out why these labels do not work
+py:class conflowgen.preview.inbound_and_outbound_vehicle_capacity_preview.OutboundUsedAndMaximumCapacity
+py:class ContainerFlowGenerationManager
+py:meth ContainerFlowGenerationManager.generate
+py:class conflowgen.domain_models.large_vehicle_schedule.Schedule
+py:meth ContainerFlowGenerationManager.set_properties

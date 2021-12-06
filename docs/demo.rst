@@ -177,7 +177,7 @@ Generate the data
 =================
 
 After we have set some exemplary schedules, we can now come to the actual generation.
-The :meth:`.container_flow_generation_manager.generate()` method starts the generation process of the synthetic
+The :meth:`ContainerFlowGenerationManager.generate` method starts the generation process of the synthetic
 container flow data, based on the information you set earlier.
 
 .. code-block:: python
