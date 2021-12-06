@@ -4,7 +4,6 @@ from typing import List, Tuple, Union
 
 from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.large_vehicle_schedule import Schedule
 
 
 class PortCallManager:
@@ -54,11 +53,11 @@ class PortCallManager:
             vehicle_arrives_every_k_days=vehicle_arrives_every_k_days
         )
 
-    def get_schedule(
+    def has_schedule(
             self,
             service_name: str,
             vehicle_type: ModeOfTransport
-    ) -> Union[Schedule, None]:
+    ) -> bool:
         """
 
         Args:
@@ -69,4 +68,4 @@ class PortCallManager:
         """
         assert vehicle_type in ModeOfTransport.get_scheduled_vehicles(), f"Vehicle of type {vehicle_type} not " \
                                                                          f"suitable for this method."
-        return self.schedule_factory.get_schedule(service_name, vehicle_type)
+        return self.schedule_factory.get_schedule(service_name, vehicle_type) is not None

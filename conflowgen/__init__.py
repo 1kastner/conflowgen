@@ -2,7 +2,6 @@
 This is the intended interface for users who want to generate synthetic data. Only these classes and types will have a
 stable interface for a longer time period. Anything else is up to change as the package evolves.
 """
-
 __version__ = "0.0.1"
 
 # List of classes
@@ -59,6 +58,7 @@ from conflowgen.logging.logging import setup_logger
 
 # List of named tuples
 from conflowgen.preview.vehicle_capacity_exceeded_preview import RequiredAndMaximumCapacityComparison
+from conflowgen.preview.inbound_and_outbound_vehicle_capacity_preview import OutboundUsedAndMaximumCapacity
 from conflowgen.posthoc_analysis.abstract_posthoc_analysis import ContainersAndTEUContainerFlowPair
 from conflowgen.posthoc_analysis.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustedToVehicleType

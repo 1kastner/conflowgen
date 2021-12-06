@@ -64,7 +64,7 @@ container_flow_generation_manager.set_properties(
 
 port_call_manager = PortCallManager()
 feeder_service_name = "LX050"
-if not port_call_manager.get_schedule(feeder_service_name, vehicle_type=ModeOfTransport.feeder):
+if not port_call_manager.has_schedule(feeder_service_name, vehicle_type=ModeOfTransport.feeder):
     logger.info(f"Add feeder service '{feeder_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
         vehicle_type=ModeOfTransport.feeder,
@@ -82,7 +82,7 @@ else:
     logger.info(f"Feeder service '{feeder_service_name}' already exists")
 
 train_service_name = "JR03A"
-if not port_call_manager.get_schedule(train_service_name, vehicle_type=ModeOfTransport.train):
+if not port_call_manager.has_schedule(train_service_name, vehicle_type=ModeOfTransport.train):
     logger.info(f"Add train service '{train_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
         vehicle_type=ModeOfTransport.train,
@@ -97,7 +97,7 @@ else:
     logger.info(f"Train service '{train_service_name}' already exists")
 
 deep_sea_service_name = "LX050"
-if not port_call_manager.get_schedule(deep_sea_service_name, vehicle_type=ModeOfTransport.deep_sea_vessel):
+if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=ModeOfTransport.deep_sea_vessel):
     logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
         vehicle_type=ModeOfTransport.deep_sea_vessel,

@@ -52,7 +52,7 @@ class TestPortCallManager(unittest.TestCase):
                 self.port_call_manager.schedule_factory,
                 'get_schedule',
                 return_value=None) as mock_method:
-            self.port_call_manager.get_schedule(service_name, vehicle_type)
+            self.port_call_manager.has_schedule(service_name, vehicle_type)
         mock_method.assert_called_once_with(
             service_name,
             vehicle_type

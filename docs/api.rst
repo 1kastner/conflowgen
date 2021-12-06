@@ -54,6 +54,8 @@ API documentation
     :members:
 .. autoclass:: conflowgen.ModeOfTransportDistributionManager
     :members:
+.. autonamedtuple:: conflowgen.OutboundUsedAndMaximumCapacity
+    :members:
 .. autoclass:: conflowgen.PortCallManager
     :members:
 .. autoenum:: conflowgen.StorageRequirement

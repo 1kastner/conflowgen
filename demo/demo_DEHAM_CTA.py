@@ -142,7 +142,7 @@ for i, row in df_feeders.iterrows():
         logger.info(f"Skipping feeder '{feeder_vehicle_name}' because it arrives after the end")
         continue
 
-    if port_call_manager.get_schedule(feeder_vehicle_name, vehicle_type=ModeOfTransport.feeder):
+    if port_call_manager.has_schedule(feeder_vehicle_name, vehicle_type=ModeOfTransport.feeder):
         logger.info(f"Skipping feeder '{feeder_vehicle_name}' because it already exists")
         continue
 
@@ -177,7 +177,7 @@ for i, row in df_deep_sea_vessels.iterrows():
         logger.info(f"Skipping deep sea vessel '{deep_sea_vessel_vehicle_name}' because it arrives after the end")
         continue
 
-    if port_call_manager.get_schedule(deep_sea_vessel_vehicle_name, vehicle_type=ModeOfTransport.deep_sea_vessel):
+    if port_call_manager.has_schedule(deep_sea_vessel_vehicle_name, vehicle_type=ModeOfTransport.deep_sea_vessel):
         logger.info(f"Skipping deep sea service '{deep_sea_vessel_vehicle_name}' because it already exists")
         continue
 
@@ -212,7 +212,7 @@ for i, row in df_barges.iterrows():
         logger.info(f"Skipping barge '{barge_vehicle_name}' because it arrives after the end")
         continue
 
-    if port_call_manager.get_schedule(barge_vehicle_name, vehicle_type=ModeOfTransport.barge):
+    if port_call_manager.has_schedule(barge_vehicle_name, vehicle_type=ModeOfTransport.barge):
         logger.info(f"Skipping barge '{barge_vehicle_name}' because it already exists")
         continue
 
@@ -236,7 +236,7 @@ for i, row in df_trains.iterrows():
     vessel_arrives_at_as_pandas_type = row["arrival_day"]
     vessel_arrives_at_as_datetime_type = pd.to_datetime(vessel_arrives_at_as_pandas_type)
 
-    if port_call_manager.get_schedule(train_vehicle_name, vehicle_type=ModeOfTransport.train):
+    if port_call_manager.has_schedule(train_vehicle_name, vehicle_type=ModeOfTransport.train):
         logger.info(f"Train service '{train_vehicle_name}' already exists")
         continue
 
