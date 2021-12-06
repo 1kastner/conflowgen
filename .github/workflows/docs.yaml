@@ -21,4 +21,4 @@ jobs:
 
     - name: Build documentation and check for warnings
       run: |
-        cd ./docs/ && make html"
+        cd ./docs/ && make html
