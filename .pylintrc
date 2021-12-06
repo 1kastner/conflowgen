@@ -4,7 +4,7 @@
 fail-under=8.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=CVS
+ignore=.git
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
