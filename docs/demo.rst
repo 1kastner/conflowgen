@@ -48,13 +48,13 @@ Otherwise, it is created.
 General settings
 ================
 
-We use the :meth:`ContainerFlowGenerationManager.set_properties` method of the
-:class:`ContainerFlowGenerationManager` class to set a ``name``, the ``start_date`` and the ``end_date`` for the
+We use the :meth:`.ContainerFlowGenerationManager.set_properties` method of the
+:class:`.ContainerFlowGenerationManager` class to set a ``name``, the ``start_date`` and the ``end_date`` for the
 generation process.
 The ``start_date`` and ``end_date`` parameters must be provided as a datetime.date.
 In our example, the ``end_time`` is set as a 21 day interval on top of the ``start_date`` which is set to the time of
 execution.
-Other general settings can be set here, see the :class:`ContainerFlowGenerationManager` class for more information.
+Other general settings can be set here, see the :class:`.ContainerFlowGenerationManager` class for more information.
 
 .. code-block:: python
 
@@ -83,7 +83,7 @@ At first we define a name for our new feeder liner service.
 
     feeder_service_name = "LX050"
 
-By using the :meth:`.add_large_scheduled_vehicle` method, we can define the attributes for our feeder service.
+By using the :meth:`.PortCallManager.add_large_scheduled_vehicle` method, we can define the attributes for our feeder service.
 
 * ``vehicle_type`` defines, that we deal with a feeder as the mode of transport. Other valid modes of transport are deep_sea_vessel, barge, or train.
 * ``service_name`` defines a fictional name for that service.
@@ -177,7 +177,7 @@ Generate the data
 =================
 
 After we have set some exemplary schedules, we can now come to the actual generation.
-The :meth:`ContainerFlowGenerationManager.generate` method starts the generation process of the synthetic
+The :meth:`.ContainerFlowGenerationManager.generate` method starts the generation process of the synthetic
 container flow data, based on the information you set earlier.
 
 .. code-block:: python
