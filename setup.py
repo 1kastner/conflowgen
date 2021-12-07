@@ -17,6 +17,7 @@ setup(
     install_requires=[
         'numpy',
         'pandas',
+        'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
         'peewee',
         'enum_tools'  # just used for documentation but is imported in the enum definitions
     ],
