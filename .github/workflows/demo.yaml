@@ -27,4 +27,3 @@ jobs:
     - name: Run demos
       run: |
         python ./demo/demo_poc.py
-        python ./demo/demo_DEHAM_CTA.py
