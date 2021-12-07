@@ -35,3 +35,4 @@ conflowgen/data/exports/
 # Conflowgen documentation
 docs/_build/
 .coverage
+example usage/
