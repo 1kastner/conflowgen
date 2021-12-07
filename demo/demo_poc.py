@@ -180,9 +180,14 @@ logger.info("Start data export...")
 
 # Export important entries from SQL to CSV so that it can be further processed, e.g. by a simulation software
 export_container_flow_manager = ExportContainerFlowManager()
+export_folder_name = "demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
 export_container_flow_manager.export(
-    folder_name="demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0],
+    folder_name=export_folder_name + "-csv",
     file_format=ExportFileFormat.csv
+)
+export_container_flow_manager.export(
+    folder_name=export_folder_name + "-xlsx",
+    file_format=ExportFileFormat.xlsx
 )
 
 # Gracefully close everything
