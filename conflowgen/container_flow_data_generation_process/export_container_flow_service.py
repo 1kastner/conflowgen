@@ -30,7 +30,7 @@ exports_root_dir = os.path.join(
 )
 
 
-class ExportOnlyAllowedToExistingFolderException(Exception):
+class ExportOnlyAllowedToNotExistingFolderException(Exception):
     pass
 
 
@@ -238,7 +238,7 @@ class ExportContainerFlowService:
             folder_name
         )
         if os.path.isdir(path_to_folder):
-            raise ExportOnlyAllowedToExistingFolderException(path_to_folder)
+            raise ExportOnlyAllowedToNotExistingFolderException(path_to_folder)
         self.logger.info(f"Creating folder {path_to_folder}...")
         os.mkdir(path_to_folder)
         self.logger.info(f"Converting SQL database into file format '.{file_format.value}'")
