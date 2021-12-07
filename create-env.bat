@@ -59,7 +59,7 @@ REM
     REM Reset errorlevel to 0
     VERIFY > nul
 
-    CALL conda --info REM >nul 2>nul
+    CALL conda info 1>nul 2>nul
     IF NOT ERRORLEVEL 1 (
         where conda > .conda_path
         SET /p CONDA_PATH= < .conda_path
@@ -104,7 +104,7 @@ REM
     ECHO The scripts folder at !CONDASCRIPTS! has been detected as a valid conda installation.
     ECHO The conda commands from this directory are used in the following.
 
-    CALL !CONDASCRIPTS!activate base && (
+    CALL !CONDASCRIPTS! activate base && (
         ECHO The base environment has been activated successfully.
     ) || (
         ECHO The base environment could not be activated. Please check the output for hints.
