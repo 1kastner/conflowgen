@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    name: Check code quality with pylint
+    name: Check code quality with pylint and flake8
     runs-on: ubuntu-latest
 
     steps:

@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    name: Run Python Tests
+    name: Run unittests
     runs-on: ubuntu-latest
 
     steps:
