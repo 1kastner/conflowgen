@@ -23,7 +23,7 @@ REM
     REM Reset errorlevel to 0
     VERIFY > nul
 
-    CALL conda --info REM >nul 2>nul
+    CALL conda --info 1>nul 2>nul
     IF NOT ERRORLEVEL 1 (
         where conda > .conda_path
         SET /p CONDA_PATH= < .conda_path
@@ -57,22 +57,22 @@ REM
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPTS=C:\Anaconda3
+    SET CONDASCRIPTS=C:\Anaconda3\Scripts\
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPTS=C:\Miniconda3
+    SET CONDASCRIPTS=C:\Miniconda3\Scripts\
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPTS=C:\Anaconda
+    SET CONDASCRIPTS=C:\Anaconda\Scripts\
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPTS=C:\Miniconda
+    SET CONDASCRIPTS=C:\Miniconda\Scripts\
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
