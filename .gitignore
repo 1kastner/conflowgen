@@ -26,6 +26,7 @@ ConFlowGen.egg-info
 
 # Batch script helper files
 *.tmp
+.conda_path
 
 # Conflowgen data directory
 conflowgen/data/logs/*.log
@@ -34,5 +35,9 @@ conflowgen/data/exports/
 
 # Conflowgen documentation
 docs/_build/
+
+# Testing
 .coverage
+
+# Examples that are not yet ready to share
 example usage/
