@@ -63,6 +63,9 @@ REM
     IF NOT ERRORLEVEL 1 (
         where conda > .conda_path
         SET /p CONDA_PATH= < .conda_path
+		SET CONDA_PATH=!CONDA_PATH:Library\bin=Scripts!
+		SET CONDA_PATH=!CONDA_PATH:conda.bat=!
+		SET CONDA_PATH=!CONDA_PATH:conda.exe=!
         ECHO A conda installation located in !CONDA_PATH! is available in your PATH variable and is thus used.
         SET CONDASCRIPTS=!CONDA_PATH!
         GOTO CONDA_FOUND
@@ -104,7 +107,7 @@ REM
     ECHO The scripts folder at !CONDASCRIPTS! has been detected as a valid conda installation.
     ECHO The conda commands from this directory are used in the following.
 
-    CALL !CONDASCRIPTS! activate base && (
+    CALL !CONDASCRIPTS!activate base && (
         ECHO The base environment has been activated successfully.
     ) || (
         ECHO The base environment could not be activated. Please check the output for hints.
