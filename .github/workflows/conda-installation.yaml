@@ -22,9 +22,10 @@ jobs:
 
     - name: Create and update environment
       run: |
-        create-env.bat
-        update-env.bat
+        dir
+        .\create-env.bat
+        .\update-env.bat
 
     - name: Start JupyterLab
       run: |
-        start-jupyterlab.bat
+        .\start-jupyterlab.bat
