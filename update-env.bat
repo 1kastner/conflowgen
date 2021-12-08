@@ -57,6 +57,26 @@ REM
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
+    SET CONDASCRIPT=C:\Anaconda3
+    ECHO Checking for conda installation at !CONDASCRIPTS!
+    IF EXIST %CONDASCRIPTS% (
+        GOTO CONDA_FOUND
+    )
+    SET CONDASCRIPT=C:\Miniconda3
+    ECHO Checking for conda installation at !CONDASCRIPTS!
+    IF EXIST %CONDASCRIPTS% (
+        GOTO CONDA_FOUND
+    )
+    SET CONDASCRIPT=C:\Anaconda
+    ECHO Checking for conda installation at !CONDASCRIPTS!
+    IF EXIST %CONDASCRIPTS% (
+        GOTO CONDA_FOUND
+    )
+    SET CONDASCRIPT=C:\Miniconda
+    ECHO Checking for conda installation at !CONDASCRIPTS!
+    IF EXIST %CONDASCRIPTS% (
+        GOTO CONDA_FOUND
+    )
 
     REM We have checked all default paths, nothing else to do than to fail.
     ECHO No conda installation was found. Please install either Anaconda or Miniconda first before invoking this script.
