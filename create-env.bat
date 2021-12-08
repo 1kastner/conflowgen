@@ -93,22 +93,22 @@ REM
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPT=C:\Anaconda3
+    SET CONDASCRIPTS=C:\Anaconda3
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPT=C:\Miniconda3
+    SET CONDASCRIPTS=C:\Miniconda3
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPT=C:\Anaconda
+    SET CONDASCRIPTS=C:\Anaconda
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
     )
-    SET CONDASCRIPT=C:\Miniconda
+    SET CONDASCRIPTS=C:\Miniconda
     ECHO Checking for conda installation at !CONDASCRIPTS!
     IF EXIST %CONDASCRIPTS% (
         GOTO CONDA_FOUND
