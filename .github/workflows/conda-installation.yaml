@@ -1,4 +1,4 @@
-name: Windows conda installation
+name: Windows conda installation (conda in PATH)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Windows conda installation
+    name: Windows conda installation (conda in PATH)
     runs-on: windows-2019
 
     steps:
