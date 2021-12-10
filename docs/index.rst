@@ -2,8 +2,8 @@ ConFlowGen
 ==========
 
 ConFlowGen is a synthetic data generator.
-
-ConFlowGen's source code hosted on GitHub (link to project).
+Its source code hosted
+`on GitHub <https://github.com/1kastner/conflowgen>`_.
 
 .. toctree::
    :maxdepth: 2
