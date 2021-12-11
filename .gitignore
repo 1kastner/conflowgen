@@ -39,5 +39,5 @@ docs/_build/
 # Testing
 .coverage
 
-# Examples that are not yet ready to share
-example usage/
+# Automatic backup file of Plant Simulation 
+*.spp.bak
