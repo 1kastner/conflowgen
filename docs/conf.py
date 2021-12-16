@@ -42,6 +42,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.coverage',
+
     'sphinx_math_dollar',
     'enum_tools.autoenum',
     'sphinx_autodoc_typehints',
@@ -70,6 +71,8 @@ html_theme = "sphinx_rtd_theme"
 html_static_path = ['_static']
 
 html_logo = "../logos/conflowgen_logo_small.png"
+
+html_favicon = "../logos/conflowgen_logo_favicon.png"
 
 add_module_names = False
 
