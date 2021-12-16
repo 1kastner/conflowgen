@@ -7,16 +7,20 @@
 [![Windows conda installation (conda in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml)
 [![Windows conda installation (conda not in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml)
 
-<div>
 
-<img align="left" src="./logos/conflowgen_logo_small.png">
-
-# ConFlowGen
-
-The **Con**tainer **Flow** **Gen**erator - a Python application to generate container flows typical for seaport 
+<table style="border: none">
+  <tr style="border: none">
+    <td style="border: none">
+<img src="./logos/conflowgen_logo_small.png">
+    </td>
+    <td style="border: none">
+      <h1>ConFlowGen</h1>
+      The <b>Con</b>tainer <b>Flow</b> <b>Gen</b>erator - a Python application to generate container flows typical for seaport 
 container terminals.
-
-</div>
+    </td>
+  </tr>
+</table>
+  
 
 ## Documentation
 
