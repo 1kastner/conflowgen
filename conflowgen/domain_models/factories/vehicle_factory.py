@@ -168,7 +168,7 @@ class VehicleFactory:
             schedule: Schedule,
             vehicle_name: Union[str, None] = None
     ) -> Barge:
-        """Checks all parameters for logical consistency and only then creates the new train."""
+        """Checks all parameters for logical consistency and only then creates the new barge."""
 
         lsv = cls._create_large_vehicle(
             vehicle_name=vehicle_name,
