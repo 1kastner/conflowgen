@@ -150,7 +150,20 @@ for i, row in df_feeders.iterrows():
     # The estimate is based on the reported lifts per call in "Tendency toward Mega Containerships and the Constraints
     # of Container Terminals" of Park and Suh (2019) J. Mar. Sci. Eng, URL: https://www.mdpi.com/2077-1312/7/5/131/htm
     # lifts per call refer to both the inbound and outbound journey of the vessel
-    moved_capacity = int(round(capacity * seeded_random.uniform(0.3, 0.8) / 2))  # this is only the inbound journey
+    moved_capacity = int(round(capacity * seeded_random.triangular(0.3, 0.8) / 2))  # this is only the inbound journey
+
+    # The actual name of the port is not important as it is only used to group containers that are destined for the same
+    # vessel in the yard for faster loading (less reshuffling). The assumption that the same amount of containers is
+    # destined for each of the following ports is a simplification.
+    number_ports = int(round(seeded_random.triangular(low=2, high=4)))
+    next_ports = [
+        (port_name, 1/number_ports)
+        for port_name in [
+            f"port {i + 1} of {feeder_vehicle_name}"
+            for i in range(number_ports)
+        ]
+    ]
+
     port_call_manager.add_large_scheduled_vehicle(
         vehicle_type=ModeOfTransport.feeder,
         service_name=feeder_vehicle_name,
@@ -158,7 +171,8 @@ for i, row in df_feeders.iterrows():
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
         average_vehicle_capacity=capacity,
         average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1  # single arrival, no frequent schedule
+        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        next_destinations=next_ports
     )
 logger.info("Feeder vessels are imported")
 
@@ -185,7 +199,20 @@ for i, row in df_deep_sea_vessels.iterrows():
     # The estimate is based on the reported lifts per call in "Tendency toward Mega Containerships and the Constraints
     # of Container Terminals" of Park and Suh (2019) J. Mar. Sci. Eng, URL: https://www.mdpi.com/2077-1312/7/5/131/htm
     # lifts per call refer to both the inbound and outbound journey of the vessel
-    moved_capacity = int(round(capacity * seeded_random.uniform(0.25, 0.5) / 2))  # this is only the inbound journey
+    moved_capacity = int(round(capacity * seeded_random.triangular(0.3, 0.6) / 2))  # this is only the inbound journey
+
+    # The actual name of the port is not important as it is only used to group containers that are destined for the same
+    # vessel in the yard for faster loading (less reshuffling). The assumption that the same amount of containers is
+    # destined for each of the following ports is a simplification
+    number_ports = int(round(seeded_random.triangular(low=3, high=15, mode=7)))
+    next_ports = [
+        (port_name, 1/number_ports)
+        for port_name in [
+            f"port {i + 1} of {deep_sea_vessel_vehicle_name}"
+            for i in range(number_ports)
+        ]
+    ]
+
     port_call_manager.add_large_scheduled_vehicle(
         vehicle_type=ModeOfTransport.deep_sea_vessel,
         service_name=deep_sea_vessel_vehicle_name,
