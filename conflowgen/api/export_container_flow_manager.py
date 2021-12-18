@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from conflowgen.flow_generator.export_container_flow_service import \
+from conflowgen.application.services.export_container_flow_service import \
     ExportContainerFlowService
-from conflowgen.application_models.data_types.export_file_format import ExportFileFormat
+from conflowgen.application.data_types.export_file_format import ExportFileFormat
 
 
 class ExportContainerFlowManager:

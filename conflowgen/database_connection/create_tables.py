@@ -2,7 +2,7 @@ import logging
 
 import peewee
 
-from conflowgen.application_models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container

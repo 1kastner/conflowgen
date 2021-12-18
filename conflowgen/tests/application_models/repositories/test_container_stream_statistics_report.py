@@ -4,7 +4,7 @@ Check if container weights can be properly seeded.
 import datetime
 import unittest
 
-from conflowgen.application_models.container_flow_statistics_report import ContainerFlowStatisticsReport
+from conflowgen.application.reports.container_flow_statistics_report import ContainerFlowStatisticsReport
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container

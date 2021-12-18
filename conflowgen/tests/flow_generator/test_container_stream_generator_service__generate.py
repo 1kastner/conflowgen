@@ -2,8 +2,8 @@ import datetime
 import unittest
 
 from conflowgen import PortCallManager
-from conflowgen.application_models.container_flow_generation_properties import ContainerFlowGenerationProperties
-from conflowgen.application_models.repositories.container_flow_generation_properties_repository import \
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution

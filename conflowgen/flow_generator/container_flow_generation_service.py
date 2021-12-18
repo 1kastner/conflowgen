@@ -1,8 +1,8 @@
 import datetime
 import logging
 
-from conflowgen.application_models.container_flow_statistics_report import ContainerFlowStatisticsReport
-from conflowgen.application_models.repositories.container_flow_generation_properties_repository import \
+from conflowgen.application.reports.container_flow_statistics_report import ContainerFlowStatisticsReport
+from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.flow_generator.assign_destination_to_container_service import \
     AssignDestinationToContainerService

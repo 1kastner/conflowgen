@@ -4,8 +4,8 @@ Check if container weights can be properly seeded.
 import datetime
 import unittest
 
-from conflowgen.application_models.container_flow_generation_properties import ContainerFlowGenerationProperties
-from conflowgen.application_models.repositories.container_flow_generation_properties_repository import \
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository, InvalidTimeRangeException, \
     DuplicatedContainerFlowGenerationPropertiesEntryException, MinimumNotStrictlySmallerThanMaximumException
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
