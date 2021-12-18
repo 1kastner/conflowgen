@@ -7,7 +7,7 @@ import seaborn as sns
 
 from conflowgen.domain_models.distribution_models.truck_arrival_distribution import TruckArrivalDistribution
 from conflowgen.domain_models.distribution_seeders import truck_arrival_distribution_seeder
-from conflowgen.container_flow_data_generation_process.truck_for_export_containers_manager import \
+from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

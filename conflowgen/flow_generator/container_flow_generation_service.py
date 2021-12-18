@@ -4,19 +4,19 @@ import logging
 from conflowgen.application_models.container_flow_statistics_report import ContainerFlowStatisticsReport
 from conflowgen.application_models.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
-from conflowgen.container_flow_data_generation_process.assign_destination_to_container_service import \
+from conflowgen.flow_generator.assign_destination_to_container_service import \
     AssignDestinationToContainerService
-from conflowgen.container_flow_data_generation_process.large_scheduled_vehicle_creation_service import \
+from conflowgen.flow_generator.large_scheduled_vehicle_creation_service import \
     LargeScheduledVehicleCreationService
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
-from conflowgen.container_flow_data_generation_process.allocate_space_for_containers_delivered_by_truck_service import \
+from conflowgen.flow_generator.allocate_space_for_containers_delivered_by_truck_service import \
     AllocateSpaceForContainersDeliveredByTruckService
-from conflowgen.container_flow_data_generation_process.large_scheduled_vehicle_for_onward_transportation_manager \
+from conflowgen.flow_generator.large_scheduled_vehicle_for_onward_transportation_manager \
     import LargeScheduledVehicleForOnwardTransportationManager
-from conflowgen.container_flow_data_generation_process.truck_for_export_containers_manager import \
+from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
-from conflowgen.container_flow_data_generation_process.truck_for_import_containers_manager import \
+from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
 
 

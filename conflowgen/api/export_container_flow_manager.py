@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from conflowgen.container_flow_data_generation_process.export_container_flow_service import \
+from conflowgen.flow_generator.export_container_flow_service import \
     ExportContainerFlowService
 from conflowgen.application_models.data_types.export_file_format import ExportFileFormat
 

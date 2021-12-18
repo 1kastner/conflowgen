@@ -11,7 +11,7 @@ from conflowgen.domain_models.distribution_models.storage_requirement_distributi
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.distribution_seeders.seed_database import seed_all_distributions
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.container_flow_data_generation_process.container_flow_generation_service import \
+from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db

@@ -7,7 +7,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.large_vehicle_schedule import Destination, Schedule
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
-from conflowgen.container_flow_data_generation_process.export_container_flow_service import \
+from conflowgen.flow_generator.export_container_flow_service import \
     ExportContainerFlowService
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

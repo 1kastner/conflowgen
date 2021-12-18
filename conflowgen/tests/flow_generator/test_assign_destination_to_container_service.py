@@ -1,7 +1,7 @@
 import datetime
 import unittest
 
-from conflowgen.container_flow_data_generation_process.assign_destination_to_container_service import \
+from conflowgen.flow_generator.assign_destination_to_container_service import \
     AssignDestinationToContainerService
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup

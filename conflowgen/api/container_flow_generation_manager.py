@@ -3,7 +3,7 @@ from typing import Union, Dict
 
 from conflowgen.application_models.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
-from conflowgen.container_flow_data_generation_process.container_flow_generation_service import \
+from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService
 
 

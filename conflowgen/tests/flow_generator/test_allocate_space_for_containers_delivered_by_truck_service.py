@@ -17,7 +17,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Train, Barge, Feeder, DeepSeaVessel, Truck, \
     AbstractLargeScheduledVehicle
-from conflowgen.container_flow_data_generation_process.allocate_space_for_containers_delivered_by_truck_service import \
+from conflowgen.flow_generator.allocate_space_for_containers_delivered_by_truck_service import \
     AllocateSpaceForContainersDeliveredByTruckService
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

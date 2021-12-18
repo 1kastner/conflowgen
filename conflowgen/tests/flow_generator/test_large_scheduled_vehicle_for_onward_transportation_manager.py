@@ -12,7 +12,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Train, Barge, Feeder, DeepSeaVessel, Truck, \
     AbstractLargeScheduledVehicle
-from conflowgen.container_flow_data_generation_process.large_scheduled_vehicle_for_onward_transportation_manager \
+from conflowgen.flow_generator.large_scheduled_vehicle_for_onward_transportation_manager \
     import LargeScheduledVehicleForOnwardTransportationManager
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
