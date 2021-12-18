@@ -81,7 +81,7 @@ class SqliteDatabaseConnection:
                 # compare with recommended settings from
                 # https://docs.peewee-orm.com/en/latest/peewee/database.html
                 'journal_mode': 'wal',
-                'cache_size': -300,
+                'cache_size': -32 * 1024,  # counted in KiB, thus this means 32MB cache
                 'foreign_keys': 1,
                 'ignore_check_constraints': 0,
                 'synchronous': 0
