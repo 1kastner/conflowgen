@@ -139,7 +139,7 @@ class ExportContainerFlowService:
         if model in cls.foreign_keys_to_resolve.keys():
             foreign_keys_to_resolve = cls.foreign_keys_to_resolve[model]
 
-        # resolve some of the foreign keys
+        # resolve some foreign keys
         for i, row in enumerate(data):
             for column, value in list(row.items()):
                 if column not in foreign_keys_to_resolve.keys():  # This is not a foreign key to resolve

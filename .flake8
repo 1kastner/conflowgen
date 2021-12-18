@@ -10,4 +10,4 @@ per-file-ignores =
     conflowgen/domain_models/data_types/storage_requirement.py: E501
     conflowgen/domain_models/data_types/mode_of_transport.py: E501
     # equals symbols
-    conflowgen/container_flow_data_generation_process/container_flow_generation_service.py: E251
+    conflowgen/flow_generator/container_flow_generation_service.py: E251
