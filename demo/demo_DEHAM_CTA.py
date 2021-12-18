@@ -220,7 +220,8 @@ for i, row in df_deep_sea_vessels.iterrows():
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
         average_vehicle_capacity=capacity,
         average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1  # single arrival, no frequent schedule
+        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        next_destinations=next_ports
     )
 logger.info("Deep sea vessels are imported")
 
