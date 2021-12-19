@@ -18,6 +18,7 @@ except ImportError:
     sys.exit()
 
 from conflowgen import ContainerFlowGenerationManager
+from conflowgen import QuaySideThroughputAnalysisReport
 from conflowgen import ModeOfTransport
 from conflowgen import PortCallManager
 from conflowgen import ExportFileFormat
@@ -354,6 +355,11 @@ logger.info(report)
 logger.info("Analyse the used capacity in the yard")
 yard_capacity_analysis_report = YardCapacityAnalysisReport()
 report = yard_capacity_analysis_report.get_report_as_text()
+logger.info(report)
+
+logger.info("Analyse the throughput at the quay side")
+quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
+report = quay_side_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("All posthoc analyses have been run.")

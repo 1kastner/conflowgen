@@ -26,6 +26,8 @@ API documentation
     :members:
 .. autoclass:: conflowgen.ContainerFlowGenerationManager
     :members:
+.. autoclass:: conflowgen.ContainerStorageRequirementDistributionManager
+    :members:
 .. autoclass:: conflowgen.DatabaseChooser
     :members:
 .. autoclass:: conflowgen.ExportContainerFlowManager
@@ -57,6 +59,10 @@ API documentation
 .. autonamedtuple:: conflowgen.OutboundUsedAndMaximumCapacity
     :members:
 .. autoclass:: conflowgen.PortCallManager
+    :members:
+.. autoclass:: conflowgen.QuaySideThroughputAnalysis
+    :members:
+.. autoclass:: conflowgen.QuaySideThroughputAnalysisReport
     :members:
 .. autoenum:: conflowgen.StorageRequirement
     :members:

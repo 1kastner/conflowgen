@@ -31,6 +31,7 @@ from conflowgen import ModalSplitAnalysisReport
 from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
 from conflowgen import YardCapacityAnalysisReport
+from conflowgen import QuaySideThroughputAnalysisReport
 
 # Start logging
 logger = setup_logger()
@@ -167,14 +168,19 @@ container_flow_adjustment_by_vehicle_type_analysis_report = ContainerFlowAdjustm
 report = container_flow_adjustment_by_vehicle_type_analysis_report.get_report_as_text()
 logger.info(report)
 
+logger.info("Summarize the previous figures of how containers have been redirected to other vehicle types")
+container_flow_adjustment_by_vehicle_type_analysis_summary = ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport()
+report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
+logger.info(report)
+
 logger.info("Analyse the used capacity in the yard")
 yard_capacity_analysis_report = YardCapacityAnalysisReport()
 report = yard_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
-logger.info("Summarize the previous figures of how containers have been redirected to other vehicle types")
-container_flow_adjustment_by_vehicle_type_analysis_summary = ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport()
-report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
+logger.info("Analyse the throughput at the quay side")
+quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
+report = quay_side_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("All posthoc analyses have been run.")

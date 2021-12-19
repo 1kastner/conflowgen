@@ -9,18 +9,8 @@ from conflowgen.domain_models.arrival_information import TruckArrivalInformation
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis
-
-
-def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
-    return point_in_time.replace(minute=0, second=0, microsecond=0)
-
-
-def get_hour_based_range(start: datetime.datetime, end: datetime.datetime) -> List[datetime.datetime]:
-    return [
-        start + datetime.timedelta(hours=hours)
-        for hours in range(0, int((end - start).total_seconds() // 3600))
-    ] + [end]
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis, get_hour_based_time_window, \
+    get_hour_based_range
 
 
 class YardCapacityAnalysis(AbstractPosthocAnalysis):

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import abc
-from typing import NamedTuple, Union, Dict
+import datetime
+from typing import NamedTuple, Union, Dict, List
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
@@ -15,6 +16,33 @@ class ContainersAndTEUContainerFlowPair(NamedTuple):
     """
     containers: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
     TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
+
+
+def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
+    return point_in_time.replace(minute=0, second=0, microsecond=0)
+
+
+def get_week_based_time_window(point_in_time: datetime.datetime) -> datetime.date:
+    point_in_time = get_hour_based_time_window(point_in_time)
+    monday_of_its_week = (point_in_time - datetime.timedelta(days=point_in_time.weekday())).date()
+    return monday_of_its_week
+
+
+def get_hour_based_range(start: datetime.datetime, end: datetime.datetime) -> List[datetime.datetime]:
+    return [
+        start + datetime.timedelta(hours=hours)
+        for hours in range(0, int((end - start).total_seconds() // 3600))
+    ] + [end]
+
+
+SECONDS_IN_WEEK = 604800
+
+
+def get_week_based_range(start: datetime.date, end: datetime.date) -> List[datetime.date]:
+    return [
+        start + datetime.timedelta(weeks=weeks)
+        for weeks in range(0, int((end - start).total_seconds() // SECONDS_IN_WEEK))
+    ] + [end]
 
 
 class AbstractPosthocAnalysis(abc.ABC):
