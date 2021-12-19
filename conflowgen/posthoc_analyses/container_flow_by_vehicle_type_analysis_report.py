@@ -37,7 +37,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractPosthocAnalysisReport):
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The container flow is represented by a Sankey diagram.
 

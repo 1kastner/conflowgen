@@ -37,7 +37,7 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractPosthocAnalysisRep
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a bar chart using pandas.
 

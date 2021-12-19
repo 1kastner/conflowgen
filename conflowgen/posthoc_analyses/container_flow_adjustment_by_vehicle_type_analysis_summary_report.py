@@ -53,7 +53,7 @@ changed to truck:            0.0        (-%)
 """
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a pie chart.
 

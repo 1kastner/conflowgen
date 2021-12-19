@@ -12,8 +12,8 @@ from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis
 
 
-def get_hour_based_time_window(t: datetime.datetime) -> datetime.datetime:
-    return t.replace(minute=0, second=0, microsecond=0)
+def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
+    return point_in_time.replace(minute=0, second=0, microsecond=0)
 
 
 def get_hour_based_range(start: datetime.datetime, end: datetime.datetime) -> List[datetime.datetime]:

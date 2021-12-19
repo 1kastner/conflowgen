@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import statistics
-from collections import Iterable
+from collections.abc import Iterable
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.posthoc_analyses.abstract_posthoc_analysis_report import AbstractPosthocAnalysisReport
