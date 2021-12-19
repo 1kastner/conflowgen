@@ -18,26 +18,26 @@ class QuaySideThroughputAnalysisReport(AbstractPosthocAnalysisReport):
 
     def get_report_as_text(self) -> str:
 
-        used_quay_side_capacity_over_time = self.analysis.get_used_quay_side_capacity_over_time()
-        if used_quay_side_capacity_over_time:
-            used_quay_side_capacity_sequence = list(used_quay_side_capacity_over_time.values())
-            maximum_used_quay_side_capacity = max(used_quay_side_capacity_sequence)
-            average_used_quay_side_capacity = statistics.mean(used_quay_side_capacity_sequence)
-            stddev_used_quay_side_capacity = statistics.stdev(used_quay_side_capacity_sequence)
+        quay_side_throughput = self.analysis.get_throughput_over_time()
+        if quay_side_throughput:
+            quay_side_throughput_sequence = list(quay_side_throughput.values())
+            maximum_quay_side_throughput = max(quay_side_throughput_sequence)
+            average_quay_side_throughput = statistics.mean(quay_side_throughput_sequence)
+            stddev_quay_side_throughput = statistics.stdev(quay_side_throughput_sequence)
         else:
-            maximum_used_quay_side_capacity = average_used_quay_side_capacity = 0
-            stddev_used_quay_side_capacity = -1
+            maximum_quay_side_throughput = average_quay_side_throughput = 0
+            stddev_quay_side_throughput = -1
 
         # create string representation
         report = "\n"
         report += "                                     (reported in boxes)\n"
-        report += f"maximum weekly quay side throughput:          {maximum_used_quay_side_capacity:>10}\n"
-        report += f"average weekly quay side throughput:          {average_used_quay_side_capacity:>10.1f}\n"
-        report += f"standard deviation:                           {stddev_used_quay_side_capacity:>10.1f}\n"
-        report += f"maximum daily quay side throughput:           {(maximum_used_quay_side_capacity / 7):>10.1f}\n"
-        report += f"average daily quay side throughput:           {(average_used_quay_side_capacity / 7):>10.1f}\n"
-        report += f"maximum hourly quay side throughput:          {(maximum_used_quay_side_capacity / 168):>10.1f}\n"
-        report += f"average hourly quay side throughput:          {(average_used_quay_side_capacity / 168):>10.1f}\n"
+        report += f"maximum weekly quay side throughput:          {maximum_quay_side_throughput:>10}\n"
+        report += f"average weekly quay side throughput:          {average_quay_side_throughput:>10.1f}\n"
+        report += f"standard deviation:                           {stddev_quay_side_throughput:>10.1f}\n"
+        report += f"maximum daily quay side throughput:           {(maximum_quay_side_throughput / 7):>10.1f}\n"
+        report += f"average daily quay side throughput:           {(average_quay_side_throughput / 7):>10.1f}\n"
+        report += f"maximum hourly quay side throughput:          {(maximum_quay_side_throughput / 168):>10.1f}\n"
+        report += f"average hourly quay side throughput:          {(average_quay_side_throughput / 168):>10.1f}\n"
         report += "(daily and hourly values are simply scaled weekly values, rounding errors might exist)\n"
 
         return report
@@ -54,12 +54,12 @@ class QuaySideThroughputAnalysisReport(AbstractPosthocAnalysisReport):
         import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
         sns.set_palette(sns.color_palette())
 
-        used_quay_side_capacity_over_time = self.analysis.get_used_quay_side_capacity_over_time()
+        quay_side_throughput = self.analysis.get_throughput_over_time()
 
-        series = pd.Series(used_quay_side_capacity_over_time)
+        series = pd.Series(quay_side_throughput)
         ax = series.plot()
         plt.xticks(rotation=45)
         ax.set_xlabel("Date")
         ax.set_ylabel("Number of boxes (weekly count)")
-        ax.set_title("Analysis of required quay side throughput")
+        ax.set_title("Analysis of quay side throughput")
         return ax

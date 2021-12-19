@@ -24,7 +24,7 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
     }
 
     @classmethod
-    def get_used_quay_side_capacity_over_time(cls) -> Dict[datetime.date, float]:
+    def get_throughput_over_time(cls, inbound=True, outbound=True) -> Dict[datetime.date, float]:
         """
         For each week, the containers crossing the quay are checked. Based on this, the required quay capacity in boxes
         can be deduced - it is simply the maximum of these values. This rather coarse time window is due to the fact
@@ -32,20 +32,25 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
         arriving with a vessel are discharged at once and all containers departing with a vessel are loaded at once.
         This is smoothed by the larger time window.
         """
+
+        assert (inbound or outbound), "At least one of the two must be checked for"
+
         containers_that_pass_quay_side: List[datetime.datetime] = []
 
         for container in Container.select():
-            mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by
-            if mode_of_transport_at_container_arrival in cls.QUAY_SIDE_VEHICLES:
-                vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
-                time_of_container_crossing_quay_side = vehicle.scheduled_arrival
-                containers_that_pass_quay_side.append(time_of_container_crossing_quay_side)
+            if inbound:
+                mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by
+                if mode_of_transport_at_container_arrival in cls.QUAY_SIDE_VEHICLES:
+                    vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
+                    time_of_container_crossing_quay_side = vehicle.scheduled_arrival
+                    containers_that_pass_quay_side.append(time_of_container_crossing_quay_side)
 
-            mode_of_transport_at_container_departure: ModeOfTransport = container.picked_up_by
-            if mode_of_transport_at_container_departure in cls.QUAY_SIDE_VEHICLES:
-                vehicle: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
-                time_of_container_crossing_quay_side = vehicle.scheduled_arrival
-                containers_that_pass_quay_side.append(time_of_container_crossing_quay_side)
+            if outbound:
+                mode_of_transport_at_container_departure: ModeOfTransport = container.picked_up_by
+                if mode_of_transport_at_container_departure in cls.QUAY_SIDE_VEHICLES:
+                    vehicle: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
+                    time_of_container_crossing_quay_side = vehicle.scheduled_arrival
+                    containers_that_pass_quay_side.append(time_of_container_crossing_quay_side)
 
         if len(containers_that_pass_quay_side) == 0:
             return {}
@@ -56,13 +61,13 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
         first_time_window = get_week_based_time_window(first_arrival) - datetime.timedelta(weeks=1)
         last_time_window = get_week_based_time_window(last_pickup) + datetime.timedelta(weeks=1)
 
-        used_quay_side_capacity: Dict[datetime.date, float] = {
+        quay_side_throughput: Dict[datetime.date, float] = {
             time_window: 0
             for time_window in get_week_based_range(first_time_window, last_time_window)
         }
 
         for time_of_container_crossing_quay_side in containers_that_pass_quay_side:
             time_window_of_container = get_week_based_time_window(time_of_container_crossing_quay_side)
-            used_quay_side_capacity[time_window_of_container] += 1
+            quay_side_throughput[time_window_of_container] += 1  # counted in boxes
 
-        return used_quay_side_capacity
+        return quay_side_throughput

@@ -37,7 +37,7 @@ class TestQuaySideThroughputAnalysis(unittest.TestCase):
 
     def test_with_no_data(self):
         """If no schedules are provided, no capacity is needed"""
-        no_action_at_quay_side = self.analysis.get_used_quay_side_capacity_over_time()
+        no_action_at_quay_side = self.analysis.get_throughput_over_time()
         self.assertEqual(no_action_at_quay_side, {})
 
     def test_with_single_container(self):
@@ -79,7 +79,7 @@ class TestQuaySideThroughputAnalysis(unittest.TestCase):
             picked_up_by_truck=truck
         )
 
-        used_quay_side_capacity_over_time = self.analysis.get_used_quay_side_capacity_over_time()
+        used_quay_side_capacity_over_time = self.analysis.get_throughput_over_time()
         self.assertEqual(len(used_quay_side_capacity_over_time), 3)
         self.assertSetEqual(set(used_quay_side_capacity_over_time.values()), {0, 1})
 
@@ -141,6 +141,6 @@ class TestQuaySideThroughputAnalysis(unittest.TestCase):
             picked_up_by_truck=truck_2
         )
 
-        used_quay_side_capacity_over_time = self.analysis.get_used_quay_side_capacity_over_time()
+        used_quay_side_capacity_over_time = self.analysis.get_throughput_over_time()
         self.assertEqual(len(used_quay_side_capacity_over_time), 3)
         self.assertSetEqual(set(used_quay_side_capacity_over_time.values()), {0, 2})
