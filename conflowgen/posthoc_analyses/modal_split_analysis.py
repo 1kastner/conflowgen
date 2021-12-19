@@ -27,9 +27,7 @@ class ModalSplitAnalysis(AbstractPosthocAnalysis):
     }
 
     def __init__(self):
-        super().__init__(
-            transportation_buffer=None
-        )
+        super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
     def get_transshipment_and_hinterland_fraction(self) -> TransshipmentAndHinterlandComparison:

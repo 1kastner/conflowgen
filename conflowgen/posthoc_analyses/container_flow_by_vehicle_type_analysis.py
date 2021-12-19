@@ -13,10 +13,6 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPosthocAnalysis):
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowByVehicleTypeAnalysisReport`.
     """
-
-    def __init__(self):
-        super().__init__(transportation_buffer=None)
-
     @staticmethod
     def get_inbound_to_outbound_flow() -> Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]]:
         """This is the overview of the generated inbound to outbound container flow."""

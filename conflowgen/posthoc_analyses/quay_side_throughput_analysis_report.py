@@ -14,9 +14,7 @@ class QuaySideThroughputAnalysisReport(AbstractPosthocAnalysisReport):
 
     def __init__(self):
         super().__init__()
-        self.analysis = QuaySideThroughputAnalysis(
-            transportation_buffer=self.transportation_buffer
-        )
+        self.analysis = QuaySideThroughputAnalysis()
 
     def get_report_as_text(self) -> str:
 

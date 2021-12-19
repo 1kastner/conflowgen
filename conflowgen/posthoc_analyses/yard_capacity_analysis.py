@@ -20,11 +20,6 @@ class YardCapacityAnalysis(AbstractPosthocAnalysis):
     as it is the case with :class:`.YardCapacityAnalysisReport`.
     """
 
-    def __init__(self, transportation_buffer: float):
-        super().__init__(
-            transportation_buffer=transportation_buffer
-        )
-
     @staticmethod
     def get_used_yard_capacity_over_time(storage_requirement="all") -> Dict[datetime.datetime, float]:
         """

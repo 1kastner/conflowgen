@@ -14,7 +14,7 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
-    as it is the case with :class:`.QuaySideThroughputAnalysis`.
+    as it is the case with :class:`.QuaySideThroughputAnalysisReport`.
     """
 
     QUAY_SIDE_VEHICLES = {
@@ -22,11 +22,6 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
         ModeOfTransport.feeder,
         # barges are counted as hinterland here
     }
-
-    def __init__(self, transportation_buffer: float):
-        super().__init__(
-            transportation_buffer=transportation_buffer
-        )
 
     @classmethod
     def get_used_quay_side_capacity_over_time(cls) -> Dict[datetime.date, float]:

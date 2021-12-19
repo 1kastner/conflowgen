@@ -25,8 +25,6 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPosthocAnalysis):
     def get_inbound_capacity_of_vehicles() -> Dict[ModeOfTransport, int]:
         """
         This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
-
-        .. todo:: Add capacity in containers for reporting the efficiency of the quay side (moves per hour)
         """
         inbound_capacity: Dict[ModeOfTransport, int | float] = {
             vehicle_type: 0
@@ -47,9 +45,9 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPosthocAnalysis):
         in TEU. If for a vehicle type, the used capacity is very close to the maximum capacity, you might want to
         reconsider the mode of transport distribution. See :class:`.ModeOfTransportDistributionManager` for further
         details.
-
-        .. todo:: Add capacity in containers for reporting the efficiency of the quay side (moves per hour)
         """
+        assert self.transportation_buffer is not None
+
         outbound_actual_capacity: Dict[ModeOfTransport, int | float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport

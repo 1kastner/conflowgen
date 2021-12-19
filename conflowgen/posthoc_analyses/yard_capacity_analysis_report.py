@@ -16,9 +16,7 @@ class YardCapacityAnalysisReport(AbstractPosthocAnalysisReport):
 
     def __init__(self):
         super().__init__()
-        self.analysis = YardCapacityAnalysis(
-            transportation_buffer=self.transportation_buffer
-        )
+        self.analysis = YardCapacityAnalysis()
 
     def get_report_as_text(self) -> str:
 
