@@ -1,15 +1,21 @@
 from setuptools import setup, find_packages
-from os import path
+import os.path
+
+this_directory = os.path.abspath(os.path.dirname(__file__))
+
+# Load metadata that is also available for the code
+metadata = {}
+with open(os.path.join(this_directory, "conflowgen", "metadata.py")) as fp:
+    exec(fp.read(), metadata)
 
 # Load long description
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'Readme.md'), encoding='utf-8') as f:
+with open(os.path.join(this_directory, 'Readme.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 # Define actual setup
 setup(
     name='ConFlowGen',
-    version='0.1',
+    version=metadata['__version__'],
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(),
@@ -50,8 +56,8 @@ setup(
         ]
     },
     license='MIT',
-    author='Marvin Kastner',
-    author_email='marvin.kastner@tuhh.de',
+    author=metadata['__author__'],
+    author_email=metadata['__email__'],
     description='A generator for synthetic container flows at maritime container terminals with a focus is on yard '
                 'operations'
 )

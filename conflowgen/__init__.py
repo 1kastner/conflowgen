@@ -2,7 +2,9 @@
 This is the intended interface for users who want to generate synthetic data. Only these classes and types will have a
 stable interface for a longer time period. Anything else is up to change as the package evolves.
 """
-__version__ = "0.0.1"
+from .metadata import __version__
+from .metadata import __author__
+from .metadata import __email__
 
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
