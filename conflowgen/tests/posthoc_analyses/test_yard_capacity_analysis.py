@@ -80,8 +80,8 @@ class TestYardCapacityAnalysis(unittest.TestCase):
         )
 
         used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
-        self.assertEqual(len(used_yard_over_time), 26)
-        self.assertSetEqual(set(used_yard_over_time.values()), {1})
+        self.assertEqual(len(used_yard_over_time), 28)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
 
     def test_with_two_containers(self):
         now = datetime.datetime.now()
@@ -142,5 +142,5 @@ class TestYardCapacityAnalysis(unittest.TestCase):
         )
 
         used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
-        self.assertEqual(len(used_yard_over_time), 26)
-        self.assertSetEqual(set(used_yard_over_time.values()), {1, 3})
+        self.assertEqual(len(used_yard_over_time), 28)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})

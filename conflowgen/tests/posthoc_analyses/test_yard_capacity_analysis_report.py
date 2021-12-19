@@ -112,11 +112,11 @@ standard deviation (laden):                       -1.0
         expected_report = """
                                      (reported in TEU)
 maximum used yard capacity:                        3.0
-average used yard capacity:                        2.0
-standard deviation:                                1.0
+average used yard capacity:                        1.9
+standard deviation:                                1.1
 maximum used yard capacity (laden):                3.0
-average used yard capacity (laden):                2.0
-standard deviation (laden):                        1.0
+average used yard capacity (laden):                1.9
+standard deviation (laden):                        1.1
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
