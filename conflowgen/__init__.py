@@ -2,10 +2,6 @@
 This is the intended interface for users who want to generate synthetic data. Only these classes and types will have a
 stable interface for a longer time period. Anything else is up to change as the package evolves.
 """
-from .metadata import __version__
-from .metadata import __author__
-from .metadata import __email__
-
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
@@ -72,3 +68,8 @@ from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analy
     ContainerFlowAdjustedToVehicleType
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
+
+# Add metadata constants
+from .metadata import __version__
+from .metadata import __author__
+from .metadata import __email__

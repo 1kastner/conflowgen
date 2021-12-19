@@ -7,8 +7,8 @@ from conflowgen.domain_models.arrival_information import TruckArrivalInformation
     TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.vehicle import Truck
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis, get_week_based_time_window, \
-    get_hour_based_time_window, get_hour_based_range
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis, get_hour_based_time_window,\
+    get_hour_based_range
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
 

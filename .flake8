@@ -1,5 +1,16 @@
 [flake8]
-exclude = .git,__pycache__,docs,ConFlowGen.egg-info,.pytest_cache,.virtual_documents
+exclude =
+    .git,
+    venv,
+    __pycache__,
+    docs,
+    ConFlowGen.egg-info,
+    .pytest_cache,
+    .virtual_documents,
+    "example usage",
+    data,
+    .github
+
 max-line-length = 120
 
 per-file-ignores =
