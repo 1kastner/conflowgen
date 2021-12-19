@@ -8,7 +8,7 @@ SET CONDA_ENV=conflowgen
 
 CALL :activate_conda_base
 
-CALL conda env update --file %~dp0environment.yml || (
+CALL conda env update --file "%~dp0environment.yml" || (
     ECHO The update process encountered an error, please check
     PAUSE
     GOTO :EOF
