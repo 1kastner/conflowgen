@@ -3,4 +3,5 @@ py:data typing.Optional
 py:data typing.Union
 py:data typing.Tuple
 py:class datetime.date
+py:class datetime.datetime
 py:class enum.Enum

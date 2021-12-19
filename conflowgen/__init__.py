@@ -46,6 +46,8 @@ from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analy
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummary
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from conflowgen.posthoc_analyses.yard_capacity_analysis import YardCapacityAnalysis
+from conflowgen.posthoc_analyses.yard_capacity_analysis_report import YardCapacityAnalysisReport
 
 # List of enums
 from conflowgen.application.data_types.export_file_format import ExportFileFormat

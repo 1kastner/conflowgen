@@ -30,6 +30,7 @@ from conflowgen import ContainerFlowByVehicleTypeAnalysisReport
 from conflowgen import ModalSplitAnalysisReport
 from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from conflowgen import YardCapacityAnalysisReport
 
 # Start logging
 logger = setup_logger()
@@ -164,6 +165,11 @@ logger.info("Analyze the amount of containers which require an adjustment in mod
             "for reference.")
 container_flow_adjustment_by_vehicle_type_analysis_report = ContainerFlowAdjustmentByVehicleTypeAnalysisReport()
 report = container_flow_adjustment_by_vehicle_type_analysis_report.get_report_as_text()
+logger.info(report)
+
+logger.info("Analyse the used capacity in the yard")
+yard_capacity_analysis_report = YardCapacityAnalysisReport()
+report = yard_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Summarize the previous figures of how containers have been redirected to other vehicle types")

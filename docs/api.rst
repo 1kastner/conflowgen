@@ -67,3 +67,7 @@ API documentation
     :members:
 .. autoclass:: conflowgen.VehicleCapacityExceededPreviewReport
     :members:
+.. autoclass:: conflowgen.YardCapacityAnalysis
+    :members:
+.. autoclass:: conflowgen.YardCapacityAnalysisReport
+    :members:

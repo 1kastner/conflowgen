@@ -67,7 +67,7 @@ class TruckForExportContainersManager:
         assert 0 <= random_time_component < self.time_window_length_in_hours, \
             "The random time component be less than the time slot"
 
-        # go back to earliest possible day
+        # go back to the earliest possible day
         truck_arrival_time = (
             earliest_slot
             + datetime.timedelta(hours=delivery_time_window_start)

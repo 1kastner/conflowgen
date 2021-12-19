@@ -34,5 +34,5 @@ class AbstractPosthocAnalysisReport(abc.ABC):
         """
         return ""
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         raise NotImplementedError("No graph representation of this report has yet been defined.")
