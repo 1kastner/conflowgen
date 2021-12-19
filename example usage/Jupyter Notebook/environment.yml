@@ -10,7 +10,8 @@ dependencies:
   - pylint
   - pip
   - git
+  - ipywidgets
   - pip:
       - git+https://github.com/krassowski/python-language-server.git@main#egg=python-language-server[all]
       # conflowgen including UI dependencies (not the dev dependencies though)
-      - -e .[ui]
+      - -e ../../.[ui]
