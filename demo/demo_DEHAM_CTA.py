@@ -37,6 +37,7 @@ from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
 from conflowgen import ContainerLengthDistributionManager
 from conflowgen import ContainerLength
 from conflowgen import YardCapacityAnalysisReport
+from conflowgen import TruckGateThroughputAnalysisReport
 
 # The seed of x=1 guarantees that the same traffic data is generated as input data in this script. However, it does not
 # affect the container generation or the assignment of containers to vehicles.
@@ -352,14 +353,19 @@ container_flow_adjustment_by_vehicle_type_analysis_summary = ContainerFlowAdjust
 report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
 logger.info(report)
 
+logger.info("Analyse the throughput at the quay side")
+quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
+report = quay_side_throughput_analysis_report.get_report_as_text()
+logger.info(report)
+
 logger.info("Analyse the used capacity in the yard")
 yard_capacity_analysis_report = YardCapacityAnalysisReport()
 report = yard_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
-logger.info("Analyse the throughput at the quay side")
-quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
-report = quay_side_throughput_analysis_report.get_report_as_text()
+logger.info("Analyse the throughput at the truck gate")
+truck_gate_throughput_analysis_report = TruckGateThroughputAnalysisReport()
+report = truck_gate_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("All posthoc analyses have been run.")

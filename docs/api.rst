@@ -69,6 +69,10 @@ API documentation
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
 .. autoclass:: conflowgen.TruckArrivalDistributionManager
     :members:
+.. autoclass:: conflowgen.TruckGateThroughputAnalysis
+    :members:
+.. autoclass:: conflowgen.TruckGateThroughputAnalysisReport
+    :members:
 .. autoclass:: conflowgen.VehicleCapacityExceededPreview
     :members:
 .. autoclass:: conflowgen.VehicleCapacityExceededPreviewReport

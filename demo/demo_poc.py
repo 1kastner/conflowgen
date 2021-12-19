@@ -32,6 +32,7 @@ from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
 from conflowgen import YardCapacityAnalysisReport
 from conflowgen import QuaySideThroughputAnalysisReport
+from conflowgen import TruckGateThroughputAnalysisReport
 
 # Start logging
 logger = setup_logger()
@@ -173,14 +174,19 @@ container_flow_adjustment_by_vehicle_type_analysis_summary = ContainerFlowAdjust
 report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
 logger.info(report)
 
+logger.info("Analyse the throughput at the quay side")
+quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
+report = quay_side_throughput_analysis_report.get_report_as_text()
+logger.info(report)
+
 logger.info("Analyse the used capacity in the yard")
 yard_capacity_analysis_report = YardCapacityAnalysisReport()
 report = yard_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
-logger.info("Analyse the throughput at the quay side")
-quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
-report = quay_side_throughput_analysis_report.get_report_as_text()
+logger.info("Analyse the throughput at the truck gate")
+truck_gate_throughput_analysis_report = TruckGateThroughputAnalysisReport()
+report = truck_gate_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("All posthoc analyses have been run.")

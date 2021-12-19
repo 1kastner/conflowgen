@@ -27,10 +27,16 @@ class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
     def get_throughput_over_time(cls, inbound=True, outbound=True) -> Dict[datetime.date, float]:
         """
         For each week, the containers crossing the quay are checked. Based on this, the required quay capacity in boxes
-        can be deduced - it is simply the maximum of these values. This rather coarse time window is due to the fact
-        that the discharging and loading process are not modelled. At this stage, as a simplification all containers
-        arriving with a vessel are discharged at once and all containers departing with a vessel are loaded at once.
-        This is smoothed by the larger time window.
+        can be deduced - it is the maximum of these values (based on all the assumptions, in reality an additional
+        buffer might be reasonable to add).
+
+        The rather coarse time window is due to the fact that the discharging and loading process are not modelled. At
+        this stage, as a simplification all containers arriving with a vessel are discharged at once and all containers
+        departing with a vessel are loaded at once. This is smoothed by the larger time window.
+
+        Args:
+            inbound: Whether to check for vessels which deliver a container on their inbound journey
+            outbound: Whether to check for vessels which pick up a container on their outbound journey
         """
 
         assert (inbound or outbound), "At least one of the two must be checked for"
