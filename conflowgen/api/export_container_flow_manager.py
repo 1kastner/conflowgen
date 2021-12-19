@@ -8,8 +8,8 @@ from conflowgen.application.data_types.export_file_format import ExportFileForma
 class ExportContainerFlowManager:
     """
     In the SQLite databases all data is stored. This might not be the right format for further usage though. This
-    manager allows to export the container flow, excluding the input distributions etc., so that they can be read in
-    for the next step easily, e.g. a routine in a simulation model or mathematical optimization script.
+    manager provides the interface to export the container flow, excluding the input distributions etc., so that they
+    can be read in easily for the next step, e.g. a routine in a simulation model or mathematical optimization script.
     """
 
     def __init__(self):

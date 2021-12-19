@@ -7,7 +7,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 
 class ContainerLengthDistributionManager:
     """
-    This manager allows to set and get the container length distribution.
+    This manager provides the interface to set and get the container length distribution.
     """
 
     def __init__(self):

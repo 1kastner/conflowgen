@@ -9,8 +9,8 @@ from conflowgen.flow_generator.container_flow_generation_service import \
 
 class ContainerFlowGenerationManager:
     """
-    This manager allows to set the properties (i.e., not the distributions that are handled elsewhere) and trigger the
-    synthetic container flow generation.
+    This manager provides the interface to set the properties (i.e., not the distributions that are handled elsewhere)
+    and trigger the synthetic container flow generation.
     """
 
     def __init__(self):
@@ -113,7 +113,7 @@ class ContainerFlowGenerationManager:
     def generate(self) -> None:
         """
         Generate the synthetic container flow according to all the information stored in the database so far.
-        This triggers a multi-step procedure of generating vehicles and the containers which are delivered or picked up
+        This triggers a multistep procedure of generating vehicles and the containers which are delivered or picked up
         by the vehicles.
         """
         self.container_flow_generation_service.generate()

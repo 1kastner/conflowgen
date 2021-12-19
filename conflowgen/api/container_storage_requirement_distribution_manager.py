@@ -8,7 +8,7 @@ from conflowgen.domain_models.distribution_repositories.container_storage_requir
 
 class ContainerStorageRequirementDistributionManager:
     """
-    This manager allows to set and get the storage requirement distribution.
+    This manager provides the interface to set and get the storage requirement distribution.
     """
 
     def __init__(self):

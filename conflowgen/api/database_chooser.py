@@ -36,6 +36,15 @@ class DatabaseChooser:
         """
         Args:
             file_name: The file name of an SQLite database that will reside in ``<project root>/data/databases/``
+
+        All required tables are created and all input distributions are seeded with default values. These can be simply
+        overwritten by the use-case specific distributions with the help of the API, e.g. the
+        :class:`.ContainerLengthDistributionManager`,
+        :class:`.ContainerStorageRequirementDistributionManager`,
+        :class:`.ModeOfTransportDistributionManager`,
+        :class:`.TruckArrivalDistributionManager`,
+        or similar.
+        By default, no schedules and no vehicles exist.
         """
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=True, reset=False)
 

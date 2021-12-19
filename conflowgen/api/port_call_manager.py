@@ -8,8 +8,10 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 class PortCallManager:
     """
-    This manager creates schedules for services that periodically call the container terminal, e.g. ships of any size
-    and trains. This explicitly does not cover the trucks which arrive according to a probability distribution.
+    This manager provides the interface to creates schedules for services that periodically call the container terminal,
+    e.g. ships of any size and trains. This explicitly does not cover the trucks which arrive according to a
+    probability distribution set at
+    :class:`.TruckArrivalDistributionManager`.
     """
 
     def __init__(self):

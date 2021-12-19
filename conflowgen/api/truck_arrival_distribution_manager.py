@@ -6,9 +6,11 @@ from conflowgen.domain_models.distribution_repositories.truck_arrival_distributi
 
 class TruckArrivalDistributionManager:
     """
-    This manager allows to set and get the weekly arrival rates of trucks. When the truck arrival time is drawn from
-    this distribution, first a slice for the minimum and maximum dwell time is created and the arrival time of the truck
-    is drawn from that period.
+    This manager provides the interface to set and get the weekly arrival rates of trucks. When the truck arrival time
+    is drawn from this distribution, first a slice for the minimum and maximum dwell time is created and the arrival
+    time of the truck is drawn from that period.
+    All other vehicles are created based on the schedule they adhere to with the help of the
+    :class:`.PortCallManager`
     """
 
     def __init__(self):

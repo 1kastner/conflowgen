@@ -7,8 +7,8 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 class ModeOfTransportDistributionManager:
     """
-    This manager allows to set and get the distribution that controls from which vehicle containers are transshipped to
-    which other type of vehicle.
+    This manager provides the interface to set and get the distribution that controls from which vehicle containers are
+    transshipped to which other type of vehicle.
     """
 
     def __init__(self):
