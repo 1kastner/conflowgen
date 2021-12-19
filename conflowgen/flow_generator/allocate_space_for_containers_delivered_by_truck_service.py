@@ -115,6 +115,10 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
                     for vehicle in vehicles_of_type
                 }
+                all_free_capacities = list(vehicle_distribution.values())
+                if sum(all_free_capacities) == 0:  # if there is no free vehicles left of a certain type...
+                    del truck_to_other_vehicle_distribution[vehicle_type]   # drop this type and...
+                    continue  # try again
                 vehicle: AbstractLargeScheduledVehicle = random.choices(
                     population=list(vehicle_distribution.keys()),
                     weights=list(vehicle_distribution.values())

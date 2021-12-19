@@ -1,7 +1,9 @@
 # Python standard library issues
 py:data typing.Optional
 py:data typing.Union
+py:class types.UnionType
 py:data typing.Tuple
 py:class datetime.date
+py:class datetime.time
 py:class datetime.datetime
 py:class enum.Enum

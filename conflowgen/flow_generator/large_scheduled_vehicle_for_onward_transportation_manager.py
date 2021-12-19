@@ -225,9 +225,14 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                 # this default value has been pre-selected anyways, nothing else to do
                 return
 
+            all_frequencies = list(vehicle_types_and_frequencies.values())
+            if sum(all_frequencies) == 0:
+                # this default value has been pre-selected anyways, nothing else to do
+                return
+
             vehicle_type = random.choices(
                 population=list(vehicle_types_and_frequencies.keys()),
-                weights=list(vehicle_types_and_frequencies.values())
+                weights=all_frequencies
             )[0]
 
             if vehicle_type == ModeOfTransport.truck:
