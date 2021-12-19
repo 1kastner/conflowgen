@@ -90,6 +90,10 @@ is used - mostly the default settings are maintained.
 The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
 To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
+Linux users run `make html` instead.
+It is adviced to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going` (see the correspoding
+[GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
+for reference.
 
 ### Checking the code quality
 
