@@ -47,17 +47,13 @@ class SqliteDatabaseConnection:
                             if _file.endswith("sqlite")]
         return sqlite_databases
 
-    def choose_database(self, database_name: str, create: bool = False, reset: bool = False) -> SqliteDatabase:
-        """
-        Choose the database which will be used from now on for all library calls.
-
-        Args:
-            database_name: The file name of the SQLite database
-            create: Whether to create a new file if none is found
-            reset: Whether to re-create the file if one is found
-
-        Returns: The SQLite database connection
-        """
+    def choose_database(
+            self,
+            database_name: str,
+            create: bool = False,
+            reset: bool = False,
+            **seeder_options
+    ) -> SqliteDatabase:
         path_to_sqlite_database = os.path.join(
             self.sqlite_databases_directory,
             database_name
@@ -99,7 +95,7 @@ class SqliteDatabaseConnection:
             self.logger.debug(f"Creating new database: '{path_to_sqlite_database}'")
             create_tables(self.sqlite_db_connection)
             self.logger.debug("Seed with default values...")
-            seed_all_distributions()
+            seed_all_distributions(**seeder_options)
         else:
             self.logger.debug(f"Open existing database: '{path_to_sqlite_database}'")
 
