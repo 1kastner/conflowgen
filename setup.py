@@ -25,7 +25,7 @@ setup(
         'pandas',
         'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
         'peewee',
-        'enum_tools'  # just used for documentation but is imported in the enum definitions
+        'enum_tools @ git+https://github.com/domdfcoding/enum_tools@parser-rewrite'  # used for documenting enums
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
