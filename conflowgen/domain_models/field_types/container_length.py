@@ -8,7 +8,7 @@ from conflowgen.domain_models.field_types.enum_database_field import cast_to_db_
 
 class ContainerLengthField(IntegerField):
     """
-    This class enable a Enum like field for peewee
+    This class enable an enum-like field for peewee
     """
 
     def db_value(self, value):
