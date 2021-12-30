@@ -32,10 +32,16 @@ class DatabaseChooser:
         """
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
 
-    def create_new_sqlite_database(self, file_name) -> None:
+    def create_new_sqlite_database(self, file_name: str, **seeder_options) -> None:
         """
         Args:
             file_name: The file name of an SQLite database that will reside in ``<project root>/data/databases/``
+            **seeder_options: In case the database is seeded with default values, some variations exist that the user
+                can choose from. The following options exist:
+
+        For the seeder options, the following keywords are available:
+            * ``assume_tas (bool)``: Whether to assume a truck appointment system for the truck arrival distribution.
+              Based on this selection, one of the two truck arrival distributions is chosen.
 
         All required tables are created and all input distributions are seeded with default values. These can be simply
         overwritten by the use-case specific distributions with the help of the API, e.g. the
@@ -46,7 +52,8 @@ class DatabaseChooser:
         or similar.
         By default, no schedules and no vehicles exist.
         """
-        self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=True, reset=False)
+        self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(
+            file_name, create=True, reset=False, **seeder_options)
 
     def close_current_connection(self) -> None:
         """
