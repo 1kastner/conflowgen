@@ -19,7 +19,7 @@ class ModeOfTransport(enum.Enum):
     feeder = "feeder"  # doc: A feeder vessel is a rather small vessel sent by a ship operator and moves in the region
 
     deep_sea_vessel = "deep_sea_vessel"
-    """A deep sea vessel is a rather large vessel sent by a ship operator and moves between distant regions, e.g. 
+    """A deep sea vessel is a rather large vessel sent by a ship operator and moves between distant regions, e.g.
     continents."""
 
     barge = "barge"  # doc: A barge is sent by an inland shipping operator

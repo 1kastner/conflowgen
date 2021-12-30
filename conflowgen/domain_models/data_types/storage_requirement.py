@@ -14,7 +14,7 @@ class StorageRequirement(enum.Enum):
     empty = "empty"  # doc: An empty container is typically stored in an empty container yard
 
     standard = "standard"
-    """A standard container is typically stored in the full container yard and makes up most of the containers passing 
+    """A standard container is typically stored in the full container yard and makes up most of the containers passing
     through a terminal"""
 
     reefer = "reefer"
@@ -22,7 +22,7 @@ class StorageRequirement(enum.Enum):
     """
 
     dangerous_goods = "dangerous_goods"
-    """A dangerous goods container needs a specially prepared storage area so they do not constitute a major hazard to 
+    """A dangerous goods container needs a specially prepared storage area so they do not constitute a major hazard to
     health and environment."""
 
     def __str__(self):
