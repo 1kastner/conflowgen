@@ -10,8 +10,6 @@ class ModeOfTransport(enum.Enum):
     The mode of transport describes the vehicle type of the vehicle which either drops off or picks up a container.
     """
 
-    # pylint: disable=line-too-long
-
     truck = "truck"  # doc: An external truck is sent by a freight forwarder
 
     train = "train"  # doc: A freight train is sent by a train operating company

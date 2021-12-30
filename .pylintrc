@@ -47,7 +47,7 @@ disable=
     C0115, # missing-class-docstring -- only modules which are part of the API are always documented
     C0116, # missing-function-docstring -- only modules which are part of the API are always documented
     C0325, # superfluous-parens -- the programmers should decide themselves what is more readable
-    W1203, # logging-fstring-interpolation -- this should be eventually changed but it is not top priority
+    W1203, # logging-fstring-interpolation -- fixme -- this should be eventually changed but it is not top priority
     W0201, # attribute-defined-outside-init -- this is up to the author of the code
     R0801, # code duplication should be avoided by the programmers if reasonable but pylint should not take care
     W0612, # pylint cannot detect that some variables are type-hinted before a for-loop
