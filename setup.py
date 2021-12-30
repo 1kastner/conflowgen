@@ -55,7 +55,7 @@ setup(
             'kaleido',  # plotly depends on this package for SVG export
         ]
     },
-    license='MIT',
+    license=metadata['__licence__'],
     author=metadata['__author__'],
     author_email=metadata['__email__'],
     description='A generator for synthetic container flows at maritime container terminals with a focus is on yard '
