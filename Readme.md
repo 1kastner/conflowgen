@@ -108,6 +108,6 @@ for reference.
 
 ### Checking the code quality
 
-For checking the code quality, pylint and flake8 is used.
+For checking the code quality, pylint and flake8 are used.
 Pylint is run by executing `pylint conflowgen` on the project root level.
 For flake8, simply invoke `flake8` at the same level.
