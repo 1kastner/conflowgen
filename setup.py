@@ -1,11 +1,12 @@
-from setuptools import setup, find_packages
 import os.path
+from setuptools import setup, find_packages
+
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
 
 # Load metadata that is also available for the code
 metadata = {}
-with open(os.path.join(this_directory, "conflowgen", "metadata.py")) as fp:
+with open(os.path.join(this_directory, "conflowgen", "metadata.py"), encoding="utf-8") as fp:
     exec(fp.read(), metadata)
 
 # Load long description

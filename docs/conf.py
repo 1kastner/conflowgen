@@ -27,7 +27,7 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-copyright = '2021, Marvin Kastner and Ole Grasse'
+project_copyright = '2021, Marvin Kastner and Ole Grasse'
 author = 'Marvin Kastner and Ole Grasse'
 
 
@@ -90,9 +90,10 @@ mathjax3_config = {
 nitpicky = True
 nitpick_ignore = []
 
-for line in open('.nitpick-exceptions'):
-    if line.strip() == "" or line.startswith("#"):
-        continue
-    sphinx_label, sphinx_object_name = line.split(None, 1)
-    sphinx_object_name = sphinx_object_name.strip()
-    nitpick_ignore.append((sphinx_label, sphinx_object_name))
+with open('.nitpick-exceptions', encoding="utf-8") as f:
+    for line in f:
+        if line.strip() == "" or line.startswith("#"):
+            continue
+        sphinx_label, sphinx_object_name = line.split(None, 1)
+        sphinx_object_name = sphinx_object_name.strip()
+        nitpick_ignore.append((sphinx_label, sphinx_object_name))

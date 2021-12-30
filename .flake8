@@ -2,6 +2,7 @@
 exclude =
     .git,
     venv,
+    conflowgen-venv,
     __pycache__,
     docs,
     ConFlowGen.egg-info,
