@@ -74,6 +74,13 @@ cd conflowgen
 pip install --user -e .[dev,ui]
 ```
 
+After introducing the changed, you can run `run_ci_light.bat` on Windows.
+It executes most of the continuous integration (CI) checks. 
+On GitHub, these are implemented as GitHub workflows.
+Once all jobs finish successfully, you can create a pull request if you would like to share your changes with the
+ConFlowGen community.
+You can also run the checks individually which is explained in the following.
+
 ### Run all tests
 
 Set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
@@ -82,7 +89,8 @@ Parallel test execution has not been tested and might not work.
 If you prefer to also check the test coverage, you can run
 `pytest --cov="./conflowgen" --cov-report html`
 from the project root directory.
-After the execution, the report is located in `<project-root>/htmlcov/index.html`.
+After the execution, the test coverage report is located in `<project-root>/htmlcov/index.html`.
+Each new feature should be covered by tests unless there are very good reasons why this is not fruitful.
 
 ### Generate the documentation
 
@@ -93,7 +101,8 @@ The documentation generation process is based on the sphinx boilerplate and the 
 To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
 Linux users run `make html` instead.
-It is adviced to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going` (see the correspoding
+It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
+(see the corresponding
 [GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
 for reference.
 
