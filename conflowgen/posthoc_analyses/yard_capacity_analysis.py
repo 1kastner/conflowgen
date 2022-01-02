@@ -9,11 +9,11 @@ from conflowgen.domain_models.arrival_information import TruckArrivalInformation
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis, get_hour_based_time_window, \
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis, get_hour_based_time_window, \
     get_hour_based_range
 
 
-class YardCapacityAnalysis(AbstractPosthocAnalysis):
+class YardCapacityAnalysis(AbstractPostHocAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)

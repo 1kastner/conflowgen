@@ -322,7 +322,7 @@ logger.info("All reports on the input data have been generated")
 # Generate all fleets with all vehicles. This is the core of the whole code.
 container_flow_generation_manager.generate()
 
-logger.info("The container flow data have been generated, run posthoc analyses on them")
+logger.info("The container flow data have been generated, run post-hoc analyses on them")
 
 logger.info("Analyze the amount of containers being delivered at the terminal and being picked by by mode of transport")
 inbound_and_outbound_vehicle_capacity_analysis_report = InboundAndOutboundVehicleCapacityAnalysisReport()
@@ -368,10 +368,10 @@ truck_gate_throughput_analysis_report = TruckGateThroughputAnalysisReport()
 report = truck_gate_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
-logger.info("All posthoc analyses have been run.")
+logger.info("All post-hoc analyses have been run.")
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
-            "posthoc analysis results")
+            "post-hoc analysis results")
 
 logger.info("Start data export...")
 

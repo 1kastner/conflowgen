@@ -15,7 +15,7 @@ class ContainerWeightDistributionRepository:
             container_length: ContainerLength,
             container_weight_category: int
     ) -> float:
-        """Load fraction for container type. Currently containers are only distinguished according to their lengths.
+        """Load fraction for container type. Currently, containers are only distinguished according to their lengths.
         All fractions do not necessarily sum up to 1."""
 
         entry = ContainerWeightDistribution.get_or_none(

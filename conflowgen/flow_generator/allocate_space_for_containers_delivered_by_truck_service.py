@@ -30,7 +30,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
             transportation_buffer=transportation_buffer
         )
         self.logger.info(f"Use transport buffer of {transportation_buffer} for allocating containers delivered by "
-                         f"trucks")
+                         "trucks")
 
     @staticmethod
     def _get_number_containers_to_allocate() -> int:
@@ -38,8 +38,8 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         For most container terminals, these numbers are close to each other.
 
         As long as the container length distribution for inbound and outbound containers are the same, using the number
-        of containers should lead to the same amount of containers as if we would have taken the TEU capacity which is
-        more complex to calculate.
+        of containers should lead to the same amount of containers as if we had taken the TEU capacity which is more
+        complex to calculate.
         """
         number_containers = Container.select().where(
             Container.picked_up_by == ModeOfTransport.truck

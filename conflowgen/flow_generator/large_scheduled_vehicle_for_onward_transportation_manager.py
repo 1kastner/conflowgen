@@ -120,7 +120,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             )
 
             if len(available_vehicles) > 0:
-                # this is the case when there is a vehicle available and we can assign the container to that vehicle
+                # this is the case when there is a vehicle available, and we can assign the container to that vehicle
                 # which is the happy path
                 self.number_assigned_containers += 1
                 self._pick_vehicle_for_container(available_vehicles, container)
@@ -205,7 +205,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             minimum_dwell_time_in_hours: int | float,
             maximum_dwell_time_in_hours: int | float,
     ):
-        # It should be clear anyways that this container had to change its vehicle
+        # It should be clear anyway that this container had to change its vehicle
         container.emergency_pickup = True
 
         # These are the default values if no suitable vehicle could be found in the next lines
@@ -222,12 +222,12 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         # try to pick a better vehicle for 5 times, otherwise the previously set default values are automatically used
         for _ in range(5):
             if len(vehicle_types_and_frequencies.keys()) == 0:
-                # this default value has been pre-selected anyways, nothing else to do
+                # this default value has been pre-selected anyway, nothing else to do
                 return
 
             all_frequencies = list(vehicle_types_and_frequencies.values())
             if sum(all_frequencies) == 0:
-                # this default value has been pre-selected anyways, nothing else to do
+                # this default value has been pre-selected anyway, nothing else to do
                 return
 
             vehicle_type = random.choices(
@@ -236,7 +236,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             )[0]
 
             if vehicle_type == ModeOfTransport.truck:
-                # this default value has been pre-selected anyways, nothing else to do
+                # this default value has been pre-selected anyway, nothing else to do
                 return
 
             if vehicle_type in ModeOfTransport.get_scheduled_vehicles():
@@ -246,7 +246,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                     vehicle_type=vehicle_type,
                     required_capacity=container.length
                 )
-                if len(available_vehicles) > 0:  # There is a vehicle of a new type available so it is picked
+                if len(available_vehicles) > 0:  # There is a vehicle of a new type available, so it is picked
                     self._pick_vehicle_for_container(available_vehicles, container)
                     return
 

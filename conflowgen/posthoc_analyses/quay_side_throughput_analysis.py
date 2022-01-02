@@ -5,12 +5,12 @@ from typing import Dict, List
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis, get_week_based_time_window, \
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis, get_week_based_time_window, \
     get_week_based_range
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
-class QuaySideThroughputAnalysis(AbstractPosthocAnalysis):
+class QuaySideThroughputAnalysis(AbstractPostHocAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)

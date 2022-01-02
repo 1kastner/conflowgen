@@ -16,7 +16,8 @@ class DistributionApproximator:
 
     def __init__(self, number_instances_per_category: Dict[any, int]) -> None:
         """
-        :param number_instances_per_category: For each key (category) the number of instances to draw is given
+        Args:
+            number_instances_per_category: For each key (category) the number of instances to draw is given
         """
         self.target_distribution = np.array(
             list(number_instances_per_category.values()),
