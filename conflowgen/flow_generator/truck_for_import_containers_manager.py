@@ -64,8 +64,8 @@ class TruckForImportContainersManager:
                 delivered_by.delayed_arrival or delivered_by.scheduled_arrival
             truck_arrival_time = self._get_container_pickup_time(container_arrival_time)
             truck_arrival_information_for_pickup = TruckArrivalInformationForPickup.create(
-                planned_container_pickup_time_prior_berthing=None,  # TODO: set value if required, create ui
-                planned_container_pickup_time_after_initial_storage=None,  # TODO: set value if required, create ui
+                planned_container_pickup_time_prior_berthing=None,  # TODO: set value if required
+                planned_container_pickup_time_after_initial_storage=None,  # TODO: set value if required
                 realized_container_pickup_time=truck_arrival_time
             )
             truck_arrival_information_for_pickup.save()
