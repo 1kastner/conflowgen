@@ -41,7 +41,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         of containers should lead to the same amount of containers as if we had taken the TEU capacity which is more
         complex to calculate.
         """
-        number_containers = Container.select().where(
+        number_containers: int = Container.select().where(
             Container.picked_up_by == ModeOfTransport.truck
         ).count()
         return number_containers
