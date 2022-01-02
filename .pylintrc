@@ -56,7 +56,7 @@ disable=
     W0107, # unnecessary-pass -- leave it up to the programmers to decide this
     R1710, # inconsistent-return-statements -- leave it up to the programmers to decide this
     W0511, # fixme - allow todos in the code - this should be eventually changed but it is not top priority
-
+    W0122, # exec-used -- as this module only works locally (no networking), executing arbitrary code bears no threats
 
 [MESSAGES CONTROL]
 
