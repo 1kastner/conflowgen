@@ -14,28 +14,8 @@ except ImportError:
     print("Please first install conflowgen as a library")
     sys.exit()
 
-from conflowgen import ContainerFlowGenerationManager
-from conflowgen import ModeOfTransport
-from conflowgen import PortCallManager
-from conflowgen import ExportFileFormat
-from conflowgen import ExportContainerFlowManager
-from conflowgen import DatabaseChooser
-from conflowgen import setup_logger
-from conflowgen import InboundAndOutboundVehicleCapacityPreviewReport
-from conflowgen import ContainerFlowByVehicleTypePreviewReport
-from conflowgen import VehicleCapacityExceededPreviewReport
-from conflowgen import ModalSplitPreviewReport
-from conflowgen import InboundAndOutboundVehicleCapacityAnalysisReport
-from conflowgen import ContainerFlowByVehicleTypeAnalysisReport
-from conflowgen import ModalSplitAnalysisReport
-from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisReport
-from conflowgen import ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
-from conflowgen import YardCapacityAnalysisReport
-from conflowgen import QuaySideThroughputAnalysisReport
-from conflowgen import TruckGateThroughputAnalysisReport
-
 # Start logging
-logger = setup_logger()
+logger = conflowgen.setup_logger()
 
 logger.info("""####
 ## Demo Proof of Concept
@@ -46,7 +26,7 @@ this small example.
 """)
 
 # Pick database
-database_chooser = DatabaseChooser()
+database_chooser = conflowgen.DatabaseChooser()
 demo_file_name = "demo_poc.sqlite"
 if demo_file_name in database_chooser.list_all_sqlite_databases():
     database_chooser.load_existing_sqlite_database(demo_file_name)
@@ -55,7 +35,7 @@ else:
 
 
 # Set settings
-container_flow_generation_manager = ContainerFlowGenerationManager()
+container_flow_generation_manager = conflowgen.ContainerFlowGenerationManager()
 container_flow_generation_manager.set_properties(
     name="Demo file",
     start_date=datetime.datetime.now().date(),
@@ -65,12 +45,12 @@ container_flow_generation_manager.set_properties(
 
 # Add vehicles that frequently visit the terminal.
 
-port_call_manager = PortCallManager()
+port_call_manager = conflowgen.PortCallManager()
 feeder_service_name = "LX050"
-if not port_call_manager.has_schedule(feeder_service_name, vehicle_type=ModeOfTransport.feeder):
+if not port_call_manager.has_schedule(feeder_service_name, vehicle_type=conflowgen.ModeOfTransport.feeder):
     logger.info(f"Add feeder service '{feeder_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=ModeOfTransport.feeder,
+        vehicle_type=conflowgen.ModeOfTransport.feeder,
         service_name=feeder_service_name,
         vehicle_arrives_at=datetime.date(2021, 7, 9),
         vehicle_arrives_at_time=datetime.time(11),
@@ -85,10 +65,10 @@ else:
     logger.info(f"Feeder service '{feeder_service_name}' already exists")
 
 train_service_name = "JR03A"
-if not port_call_manager.has_schedule(train_service_name, vehicle_type=ModeOfTransport.train):
+if not port_call_manager.has_schedule(train_service_name, vehicle_type=conflowgen.ModeOfTransport.train):
     logger.info(f"Add train service '{train_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=ModeOfTransport.train,
+        vehicle_type=conflowgen.ModeOfTransport.train,
         service_name=train_service_name,
         vehicle_arrives_at=datetime.date(2021, 7, 12),
         vehicle_arrives_at_time=datetime.time(17),
@@ -100,10 +80,10 @@ else:
     logger.info(f"Train service '{train_service_name}' already exists")
 
 deep_sea_service_name = "LX050"
-if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=ModeOfTransport.deep_sea_vessel):
+if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel):
     logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
     port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=ModeOfTransport.deep_sea_vessel,
+        vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
         service_name=deep_sea_service_name,
         vehicle_arrives_at=datetime.date(2021, 7, 10),
         vehicle_arrives_at_time=datetime.time(19),
@@ -118,22 +98,22 @@ else:
     logger.info(f"Deep sea service '{deep_sea_service_name}' already exists")
 
 logger.info("Generating reports on the input data (preview of container flow to generate)")
-inbound_and_outbound_vehicle_capacity_preview_report = InboundAndOutboundVehicleCapacityPreviewReport()
+inbound_and_outbound_vehicle_capacity_preview_report = conflowgen.InboundAndOutboundVehicleCapacityPreviewReport()
 report = inbound_and_outbound_vehicle_capacity_preview_report.get_report_as_text()
 logger.info("Inbound and outbound traffic: ")
 logger.info(report)
 
-container_flow_by_vehicle_type_preview_report = ContainerFlowByVehicleTypePreviewReport()
+container_flow_by_vehicle_type_preview_report = conflowgen.ContainerFlowByVehicleTypePreviewReport()
 report = container_flow_by_vehicle_type_preview_report.get_report_as_text()
 logger.info("Container flow between vehicle types as defined by schedules and distributions: ")
 logger.info(report)
 
-modal_split_preview_report = ModalSplitPreviewReport()
+modal_split_preview_report = conflowgen.ModalSplitPreviewReport()
 report = modal_split_preview_report.get_report_as_text()
 logger.info("The same container flow expressed in terms of transshipment and modal split for the hinterland: ")
 logger.info(report)
 
-vehicle_capacity_exceeded_preview_report = VehicleCapacityExceededPreviewReport()
+vehicle_capacity_exceeded_preview_report = conflowgen.VehicleCapacityExceededPreviewReport()
 report = vehicle_capacity_exceeded_preview_report.get_report_as_text()
 logger.info("Consequences of container flow for outgoing vehicles: ")
 logger.info(report)
@@ -146,18 +126,18 @@ container_flow_generation_manager.generate()
 logger.info("The container flow data have been generated, run post-hoc analyses on them")
 
 logger.info("Analyze the amount of containers being delivered at the terminal and being picked by by mode of transport")
-inbound_and_outbound_vehicle_capacity_analysis_report = InboundAndOutboundVehicleCapacityAnalysisReport()
+inbound_and_outbound_vehicle_capacity_analysis_report = conflowgen.InboundAndOutboundVehicleCapacityAnalysisReport()
 report = inbound_and_outbound_vehicle_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Analyze the amount of containers being delivered by one vehicle and being picked up by another vehicle "
             "(by vehicle type)")
-container_flow_by_vehicle_type_analysis_report = ContainerFlowByVehicleTypeAnalysisReport()
+container_flow_by_vehicle_type_analysis_report = conflowgen.ContainerFlowByVehicleTypeAnalysisReport()
 report = container_flow_by_vehicle_type_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Reformat same data to show the transshipment share and modal split in the hinterland")
-modal_split_analysis_report = ModalSplitAnalysisReport()
+modal_split_analysis_report = conflowgen.ModalSplitAnalysisReport()
 report = modal_split_analysis_report.get_report_as_text()
 logger.info(report)
 
@@ -165,27 +145,29 @@ logger.info("Analyze the amount of containers which require an adjustment in mod
             "leave the container terminal within the maximum container dwell time otherwise. If the initial type "
             "and the adjusted type are identical, no adjustment has taken place. These numbers are just reported "
             "for reference.")
-container_flow_adjustment_by_vehicle_type_analysis_report = ContainerFlowAdjustmentByVehicleTypeAnalysisReport()
+container_flow_adjustment_by_vehicle_type_analysis_report = \
+    conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisReport()
 report = container_flow_adjustment_by_vehicle_type_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Summarize the previous figures of how containers have been redirected to other vehicle types")
-container_flow_adjustment_by_vehicle_type_analysis_summary = ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport()
+container_flow_adjustment_by_vehicle_type_analysis_summary = \
+    conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport()
 report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
 logger.info(report)
 
 logger.info("Analyse the throughput at the quay side")
-quay_side_throughput_analysis_report = QuaySideThroughputAnalysisReport()
+quay_side_throughput_analysis_report = conflowgen.QuaySideThroughputAnalysisReport()
 report = quay_side_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Analyse the used capacity in the yard")
-yard_capacity_analysis_report = YardCapacityAnalysisReport()
+yard_capacity_analysis_report = conflowgen.YardCapacityAnalysisReport()
 report = yard_capacity_analysis_report.get_report_as_text()
 logger.info(report)
 
 logger.info("Analyse the throughput at the truck gate")
-truck_gate_throughput_analysis_report = TruckGateThroughputAnalysisReport()
+truck_gate_throughput_analysis_report = conflowgen.TruckGateThroughputAnalysisReport()
 report = truck_gate_throughput_analysis_report.get_report_as_text()
 logger.info(report)
 
@@ -197,15 +179,15 @@ logger.info("For a better understanding of the data, it is advised to study the 
 logger.info("Start data export...")
 
 # Export important entries from SQL to CSV so that it can be further processed, e.g. by a simulation software
-export_container_flow_manager = ExportContainerFlowManager()
+export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_folder_name = "demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
 export_container_flow_manager.export(
     folder_name=export_folder_name + "-csv",
-    file_format=ExportFileFormat.csv
+    file_format=conflowgen.ExportFileFormat.csv
 )
 export_container_flow_manager.export(
     folder_name=export_folder_name + "-xlsx",
-    file_format=ExportFileFormat.xlsx
+    file_format=conflowgen.ExportFileFormat.xlsx
 )
 
 # Gracefully close everything
