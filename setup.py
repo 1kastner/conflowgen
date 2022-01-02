@@ -6,7 +6,7 @@ this_directory = os.path.abspath(os.path.dirname(__file__))
 # Load metadata that is also available for the code
 metadata = {}
 with open(os.path.join(this_directory, "conflowgen", "metadata.py"), encoding="utf-8") as fp:
-    exec(fp.read(), metadata)
+    exec(fp.read(), metadata)  # pylint: disable=exec-used
 
 # Load long description
 with open(os.path.join(this_directory, 'Readme.md'), encoding='utf-8') as f:
