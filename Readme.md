@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/1kastner/conflowgen/branch/main/graph/badge.svg?token=GICVMYHJ42)](https://codecov.io/gh/1kastner/conflowgen)
 [![Linting](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/1kastner/conflowgen/badge)](https://www.codefactor.io/repository/github/1kastner/conflowgen)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/context:python)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/alerts/)
 
 [![Windows conda installation (conda in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml)
 [![Windows conda installation (conda not in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml)
@@ -100,11 +102,11 @@ is used - mostly the default settings are maintained.
 The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
 To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
-Linux users run `make html` instead.
+Linux users invoke `make html` instead.
 It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
 (see the corresponding
 [GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
-for reference.
+for reference).
 
 ### Checking the code quality
 

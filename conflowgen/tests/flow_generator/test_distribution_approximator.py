@@ -25,7 +25,7 @@ class TestDistributionApproximator(unittest.TestCase):
         self.assertEqual(all_samples[1], "type_2")
 
     def test_exception(self) -> None:
-        """Check if sampler stops if target destination is reached."""
+        """Check if sampler stops once the target destination is reached."""
         da = DistributionApproximator({
             "type_1": 1
         })

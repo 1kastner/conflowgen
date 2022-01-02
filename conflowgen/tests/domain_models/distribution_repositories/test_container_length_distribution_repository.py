@@ -101,7 +101,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
             ContainerLengthDistributionRepository.set_distribution(
                 {
                     ContainerLength.twenty_feet: 0.9,  # this and...
-                    ContainerLength.forty_feet: 0.9,   # ...this are already more than 1
+                    ContainerLength.forty_feet: 0.9,   # ...this together is already more than 1
                     ContainerLength.forty_five_feet: 0,
                     ContainerLength.other: 0
                 }

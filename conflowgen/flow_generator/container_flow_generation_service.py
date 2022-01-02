@@ -100,12 +100,12 @@ class ContainerFlowGenerationService:
 
     @staticmethod
     def clear_previous_container_flow():
-        Container.delete().execute()  # pylint: disable=no-value-for-parameter
+        Container.delete().execute()
 
         # Due to cascading foreign keys, Train, Feeder etc. are also deleted
-        LargeScheduledVehicle.delete().execute()  # pylint: disable=no-value-for-parameter
+        LargeScheduledVehicle.delete().execute()
 
-        Truck.delete().execute()  # pylint: disable=no-value-for-parameter
+        Truck.delete().execute()
 
     def generate(self):
         self.logger.info("Remove previous data...")

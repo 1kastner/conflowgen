@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import Dict
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis
 from conflowgen.posthoc_analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 
 
-class ModalSplitAnalysis(AbstractPosthocAnalysis):
+class ModalSplitAnalysis(AbstractPostHocAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)

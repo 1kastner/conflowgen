@@ -45,7 +45,7 @@ def get_week_based_range(start: datetime.date, end: datetime.date) -> List[datet
     ] + [end]
 
 
-class AbstractPosthocAnalysis(abc.ABC):
+class AbstractPostHocAnalysis(abc.ABC):
 
     def __init__(
             self,

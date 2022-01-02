@@ -6,10 +6,10 @@ from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
-from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPosthocAnalysis
+from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis
 
 
-class InboundAndOutboundVehicleCapacityAnalysis(AbstractPosthocAnalysis):
+class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import random
-from typing import Iterable, Collection, Dict
+from typing import Iterable, Dict
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.container_destination_distribution_repository import \
@@ -31,7 +31,7 @@ class AssignDestinationToContainerService:
                                   f"of the containers and is number {destination.sequence_id}")
 
     def assign(self):
-        destination_with_distinct_schedules: Collection[Destination] = Destination.select(
+        destination_with_distinct_schedules: Iterable[Destination] = Destination.select(
             Destination.belongs_to_schedule).distinct()
         schedules = [
             destination.belongs_to_schedule
