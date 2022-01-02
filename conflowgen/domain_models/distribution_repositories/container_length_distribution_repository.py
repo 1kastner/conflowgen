@@ -47,7 +47,7 @@ class ContainerLengthDistributionRepository:
     @classmethod
     def set_distribution(cls, container_lengths: Dict[ContainerLength, float]):
         cls._verify_container_lengths(container_lengths)
-        ContainerLengthDistribution.delete().execute()  # pylint: disable=no-value-for-parameter
+        ContainerLengthDistribution.delete().execute()
         for container_length, fraction in container_lengths.items():
             ContainerLengthDistribution.create(
                 container_length=container_length,

@@ -47,7 +47,7 @@ disable=
     C0115, # missing-class-docstring -- only modules which are part of the API are always documented
     C0116, # missing-function-docstring -- only modules which are part of the API are always documented
     C0325, # superfluous-parens -- the programmers should decide themselves what is more readable
-    W1203, # logging-fstring-interpolation -- this should be eventually changed but it is not top priority
+    W1203, # logging-fstring-interpolation -- fixme - this should be eventually changed but it is not top priority
     W0201, # attribute-defined-outside-init -- this is up to the author of the code
     R0801, # code duplication should be avoided by the programmers if reasonable but pylint should not take care
     W0612, # pylint cannot detect that some variables are type-hinted before a for-loop
@@ -55,7 +55,7 @@ disable=
     R0913, # too-many-arguments -- leave it up to the programmers to decide this
     W0107, # unnecessary-pass -- leave it up to the programmers to decide this
     R1710, # inconsistent-return-statements -- leave it up to the programmers to decide this
-    W0511, # fixme -- allow todos in the code
+    W0511, # fixme - allow todos in the code - this should be eventually changed but it is not top priority
 
 
 [MESSAGES CONTROL]
@@ -287,7 +287,6 @@ logging-modules=logging
 
 # List of note tags to take in consideration, separated by a comma.
 notes=FIXME,
-      XXX,
       TODO
 
 # Regular expression of note tags to take in consideration.
@@ -399,7 +398,7 @@ missing-member-hint-distance=1
 missing-member-max-choices=1
 
 # List of decorators that change the signature of a decorated function.
-signature-mutators=
+signature-mutators=peewee.database_required
 
 
 [VARIABLES]
