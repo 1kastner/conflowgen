@@ -48,9 +48,6 @@ class ContainerFactory:
     ) -> Sequence[Container]:
         """
         Creates all containers a large vehicle delivers to a terminal.
-
-        :param large_scheduled_vehicle_as_subtype: Either Feeder, DeepSeaVessel, or Train instance
-        :return: The containers that the vehicle delivers
         """
 
         self.large_scheduled_vehicle_repository.reset_cache()

@@ -42,3 +42,9 @@ docs/_build/
 
 # Automatic backup file of Plant Simulation 
 *.spp.bak
+
+# Merging
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*

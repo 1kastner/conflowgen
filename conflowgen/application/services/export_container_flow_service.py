@@ -87,8 +87,8 @@ class ExportContainerFlowService:
         }
     }
 
-    # For each row, these column names are dropped, e.g. because the information is irrelevant for further processing or
-    # it is a foreign key which is of no further relevance.
+    # For each row, these column names are dropped, e.g. because the information is irrelevant for further processing,
+    # e.g. because it is a foreign key that is already resolved.
     columns_to_drop = {
         Truck: [
             "truck_arrival_information_for_delivery",

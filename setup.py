@@ -1,7 +1,6 @@
 import os.path
 from setuptools import setup, find_packages
 
-
 this_directory = os.path.abspath(os.path.dirname(__file__))
 
 # Load metadata that is also available for the code
@@ -14,6 +13,7 @@ with open(os.path.join(this_directory, 'Readme.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 # Define actual setup
+# noinspection SpellCheckingInspection
 setup(
     name='ConFlowGen',
     version=metadata['__version__'],
@@ -47,7 +47,7 @@ setup(
             'pylint',
             'flake8',
         ],
-        # Only needed when you run the unittests in debug mode or you run the Jupyter Notebooks that create additional
+        # Only needed when you run the unittests in debug mode, or you run the Jupyter Notebooks that create additional
         # visualizations. This is not compulsory though.
         'ui': [
             'plotly',

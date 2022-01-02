@@ -8,7 +8,7 @@ from conflowgen.domain_models.field_types.enum_database_field import cast_to_db_
 
 class ModeOfTransportField(TextField):
     """
-    This class enable a Enum like field for Peewee
+    This class enable an enum-like field for Peewee
     """
 
     def db_value(self, value):

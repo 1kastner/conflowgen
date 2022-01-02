@@ -118,6 +118,7 @@ class TestWeeklyDistribution(unittest.TestCase):
                     f"is: {distribution_slice[key]}"
             )
 
+    # noinspection PyUnusedLocal
     def test_sunday_is_missing_for_delivery(self):
         distribution_monday_to_saturday = [
             1 / (24 * 6)

@@ -13,6 +13,7 @@ logs_root_dir = os.path.join(
 
 def setup_logger() -> logging.Logger:
     time_prefix = str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".", maxsplit=1)[0]
+    # noinspection SpellCheckingInspection
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         datefmt="%d.%m.%Y %H:%M:%S %z"

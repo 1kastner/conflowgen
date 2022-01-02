@@ -8,7 +8,7 @@ def _add_weight_distribution_category(
         fraction: float
 ) -> None:
     """Adds entry to the table. As there is no user interface, there is no repository interface.
-    Thus the entries are created directly."""
+    Thus, the entries are created directly."""
 
     ContainerWeightDistribution.create(
         container_length=container_length,
