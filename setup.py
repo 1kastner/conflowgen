@@ -26,7 +26,7 @@ setup(
         'pandas',
         'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
         'peewee',
-        'enum_tools @ git+https://github.com/domdfcoding/enum_tools@parser-rewrite'  # used for documenting enums
+        'enum_tools'  # used for documenting enums via decorators
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -37,7 +37,7 @@ setup(
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
-            'sphinx<=4.2',  # changes on the main branch are not merged back to parser-rewrite yet
+            'sphinx',
             'sphinx-rtd-theme',
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
