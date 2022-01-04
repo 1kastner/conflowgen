@@ -15,4 +15,3 @@ python:
       path: .
       extra_requirements:
         - dev
-        - ui
