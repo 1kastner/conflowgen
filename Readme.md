@@ -66,6 +66,9 @@ Additional use cases are presented
 
 For the development installation, instead of simply invoking `pip install` in the CLI in the project root folder, we 
 additionally add the optional dependencies `dev` and `ui`.
+Furthermore, an additional dependency on
+[pandoc](https://pandoc.org/installing.html)
+exists.
 The dependencies listed in `dev` allow us to run the unit tests and create the documentation.
 The dependencies listed in `ui` allow us to create the visuals that are e.g. used when debugging probability-based 
 unit tests or when creating visuals in Jupyter notebooks. 

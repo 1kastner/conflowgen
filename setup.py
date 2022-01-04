@@ -42,6 +42,9 @@ setup(
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
+            'nbsphinx',
+            'jupyterlab',
+            'matplotlib',
 
             # checking code quality
             'pylint',
@@ -51,7 +54,6 @@ setup(
         # visualizations. This is not compulsory though.
         'ui': [
             'plotly',
-            'matplotlib',
             'seaborn',
             'kaleido',  # plotly depends on this package for SVG export
         ]

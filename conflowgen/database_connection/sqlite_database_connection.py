@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List
+from typing import List, Tuple
 
 from peewee import SqliteDatabase
 
@@ -25,6 +25,17 @@ class SqliteDatabaseConnection:
     """
     The SQLite database stores all content from the API calls to enable reproducible results.
     """
+
+    SQLITE_DEFAULT_SETTINGS = {
+        # compare with recommended settings from
+        # https://docs.peewee-orm.com/en/latest/peewee/database.html
+        'journal_mode': 'wal',
+        'cache_size': -32 * 1024,  # counted in KiB, thus this means 32 MB cache
+        'foreign_keys': 1,
+        'ignore_check_constraints': 0,
+        'synchronous': 0
+    }
+
     def __init__(self, sqlite_databases_directory=None):
         self.logger = logging.getLogger("conflowgen")
         if sqlite_databases_directory is None:
@@ -54,34 +65,17 @@ class SqliteDatabaseConnection:
             reset: bool = False,
             **seeder_options
     ) -> SqliteDatabase:
-        path_to_sqlite_database = os.path.join(
-            self.sqlite_databases_directory,
-            database_name
-        )
-        sqlite_database_existed_before = os.path.isfile(path_to_sqlite_database)
-        if sqlite_database_existed_before:
-            if create and not reset:
-                raise SqliteDatabaseAlreadyExistsException(path_to_sqlite_database)
-            if reset:
-                self.logger.debug(f"Deleting old database: '{path_to_sqlite_database}'")
-                os.remove(path_to_sqlite_database)
+        if database_name == ":memory:":
+            path_to_sqlite_database = ":memory:"
+            sqlite_database_existed_before = False
         else:
-            if not create:
-                raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
-            if create:
-                self.logger.debug(f"No previous database detected, creating new: '{path_to_sqlite_database}'")
+            path_to_sqlite_database, sqlite_database_existed_before = self._handle_sqlite_file_on_harddrive(
+                database_name=database_name, create=create, reset=reset
+            )
 
         self.sqlite_db_connection = SqliteDatabase(
             path_to_sqlite_database,
-            pragmas={
-                # compare with recommended settings from
-                # https://docs.peewee-orm.com/en/latest/peewee/database.html
-                'journal_mode': 'wal',
-                'cache_size': -32 * 1024,  # counted in KiB, thus this means 32 MB cache
-                'foreign_keys': 1,
-                'ignore_check_constraints': 0,
-                'synchronous': 0
-            }
+            pragmas=self.SQLITE_DEFAULT_SETTINGS
         )
         database_proxy.initialize(self.sqlite_db_connection)
         self.sqlite_db_connection.connect()
@@ -100,6 +94,25 @@ class SqliteDatabaseConnection:
             self.logger.debug(f"Open existing database: '{path_to_sqlite_database}'")
 
         return self.sqlite_db_connection
+
+    def _handle_sqlite_file_on_harddrive(self, database_name: str, create: bool, reset: bool) -> Tuple[str, bool]:
+        path_to_sqlite_database = os.path.join(
+            self.sqlite_databases_directory,
+            database_name
+        )
+        sqlite_database_existed_before = os.path.isfile(path_to_sqlite_database)
+        if sqlite_database_existed_before:
+            if create and not reset:
+                raise SqliteDatabaseAlreadyExistsException(path_to_sqlite_database)
+            if reset:
+                self.logger.debug(f"Deleting old database: '{path_to_sqlite_database}'")
+                os.remove(path_to_sqlite_database)
+        else:
+            if not create:
+                raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
+            if create:
+                self.logger.debug(f"No previous database detected, creating new: '{path_to_sqlite_database}'")
+        return path_to_sqlite_database, sqlite_database_existed_before
 
     def delete_database(self, database_name: str) -> None:
         """

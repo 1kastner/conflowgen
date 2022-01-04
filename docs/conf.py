@@ -37,16 +37,17 @@ author = 'Marvin Kastner and Ole Grasse'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.coverage',
+    # sphinx-internal extensions
+    'sphinx.ext.autodoc',  # automatically document classes
+    'sphinx.ext.todo',  # create to-do boxes
+    'sphinx.ext.napoleon',  # use google-style document strings
+    'sphinx.ext.mathjax',  # support LaTeX-style formula
 
-    'sphinx_math_dollar',
-    'enum_tools.autoenum',
-    'sphinx_autodoc_typehints',
-    'sphinx_toolbox.more_autodoc.autonamedtuple'
+    'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
+    'enum_tools.autoenum',  # automatically document enums
+    'sphinx_autodoc_typehints',  # add typehints to signatures
+    'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
+    'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -97,3 +98,10 @@ with open('.nitpick-exceptions', encoding="utf-8") as f:
         sphinx_label, sphinx_object_name = line.split(None, 1)
         sphinx_object_name = sphinx_object_name.strip()
         nitpick_ignore.append((sphinx_label, sphinx_object_name))
+
+nbsphinx_execute = "always"
+
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc=figure.dpi=96",
+]
