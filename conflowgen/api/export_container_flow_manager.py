@@ -27,7 +27,7 @@ class ExportContainerFlowManager:
 
         Args:
             folder_name: Name of folder in ``<project root>/data/exports/``
-            file_format: Desired tabular format
+            file_format: Desired tabular format, defaults to :class:`ExportFileFormat.csv`.
         """
         if file_format is None:
             file_format = ExportFileFormat.csv
