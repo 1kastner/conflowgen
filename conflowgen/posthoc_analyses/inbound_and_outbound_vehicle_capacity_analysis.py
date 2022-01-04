@@ -39,7 +39,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
 
         return inbound_capacity
 
-    def get_outbound_capacity_of_vehicles(self) -> Tuple[Dict[ModeOfTransport, int], Dict[ModeOfTransport, int]]:
+    def get_outbound_capacity_of_vehicles(self) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
         in TEU. If for a vehicle type, the used capacity is very close to the maximum capacity, you might want to
@@ -48,11 +48,11 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
         """
         assert self.transportation_buffer is not None
 
-        outbound_actual_capacity: Dict[ModeOfTransport, int | float] = {
+        outbound_actual_capacity: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
-        outbound_maximum_capacity: Dict[ModeOfTransport, int | float] = {
+        outbound_maximum_capacity: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }

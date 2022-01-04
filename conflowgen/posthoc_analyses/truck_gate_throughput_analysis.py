@@ -20,7 +20,7 @@ class TruckGateThroughputAnalysis(AbstractPostHocAnalysis):
     """
 
     @classmethod
-    def get_throughput_over_time(cls, inbound=True, outbound=True) -> Dict[datetime.datetime, float]:
+    def get_throughput_over_time(cls, inbound: bool = True, outbound: bool = True) -> Dict[datetime.datetime, float]:
         """
         For each hour, the trucks entering through the truck gate are checked. Based on this, the required truck gate
         capacity in boxes can be deduced - it is the maximum of these values (based on all the assumptions, in reality
@@ -63,7 +63,7 @@ class TruckGateThroughputAnalysis(AbstractPostHocAnalysis):
         first_time_window = get_hour_based_time_window(first_arrival) - datetime.timedelta(hours=1)
         last_time_window = get_hour_based_time_window(last_pickup) + datetime.timedelta(hours=1)
 
-        truck_gate_throughput: Dict[datetime.date, float] = {
+        truck_gate_throughput: Dict[datetime.datetime, float] = {
             time_window: 0
             for time_window in get_hour_based_range(first_time_window, last_time_window)
         }

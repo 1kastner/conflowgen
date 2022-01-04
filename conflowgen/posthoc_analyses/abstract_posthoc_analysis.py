@@ -49,7 +49,7 @@ class AbstractPostHocAnalysis(abc.ABC):
 
     def __init__(
             self,
-            transportation_buffer: float | None = None
+            transportation_buffer: Optional[float] = None
     ):
         """
 

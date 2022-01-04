@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from conflowgen.application.services.export_container_flow_service import \
     ExportContainerFlowService
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
@@ -18,7 +20,7 @@ class ExportContainerFlowManager:
     def export(
             self,
             folder_name: str,
-            file_format: ExportFileFormat | None = None
+            file_format: Optional[ExportFileFormat] = None
     ) -> None:
         """
         This extracts the container movement data from the SQL database to a folder of choice in a tabular data format.
