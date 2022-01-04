@@ -43,6 +43,7 @@ setup(
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
             'nbsphinx',
+            'jupyterlab',
 
             # checking code quality
             'pylint',
