@@ -1,6 +1,6 @@
 from __future__ import annotations
 import datetime
-from typing import Dict, NamedTuple, Union
+from typing import Dict, NamedTuple
 
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -17,8 +17,8 @@ class OutboundUsedAndMaximumCapacity(NamedTuple):
     This tuple keeps track of how much each vehicle type transports on the outbound journey and what the maximum
     capacity is.
     """
-    used: Dict[ModeOfTransport, Union[int, float]]
-    maximum: Dict[ModeOfTransport, Union[int, float]]
+    used: Dict[ModeOfTransport, float]
+    maximum: Dict[ModeOfTransport, float]
 
 
 class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
