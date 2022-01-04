@@ -1,7 +1,7 @@
 ConFlowGen
 ==========
 
-ConFlowGen is a synthetic data generator.
+A generator for synthetic container flows at maritime container terminals with a focus is on yard operations.
 Its source code hosted
 `on GitHub <https://github.com/1kastner/conflowgen>`_.
 
