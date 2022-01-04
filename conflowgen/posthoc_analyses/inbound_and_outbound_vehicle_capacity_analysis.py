@@ -26,7 +26,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
         """
         This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
         """
-        inbound_capacity: Dict[ModeOfTransport, int | float] = {
+        inbound_capacity: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }

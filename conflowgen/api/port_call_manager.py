@@ -23,8 +23,8 @@ class PortCallManager:
             service_name: str,
             vehicle_arrives_at: datetime.date,
             vehicle_arrives_at_time: datetime.time,
-            average_vehicle_capacity: int | float,
-            average_moved_capacity: int | float,
+            average_vehicle_capacity: float,
+            average_moved_capacity: float,
             next_destinations: Union[List[Tuple[str, float]], None] = None,
             vehicle_arrives_every_k_days: int | None = None
     ) -> None:

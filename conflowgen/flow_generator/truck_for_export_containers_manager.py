@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 import logging
 import random
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 from conflowgen.tools.weekly_distribution import WeeklyDistribution
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
@@ -24,14 +24,14 @@ class TruckForExportContainersManager:
         self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
         self.distribution: WeeklyDistribution | None = None
         self.vehicle_factory = VehicleFactory()
-        self.minimum_dwell_time_in_hours: int | float | None = None
-        self.maximum_dwell_time_in_hours: int | float | None = None
-        self.time_window_length_in_hours: int | float | None = None
+        self.minimum_dwell_time_in_hours: Optional[float] = None
+        self.maximum_dwell_time_in_hours: Optional[float] = None
+        self.time_window_length_in_hours: Optional[float] = None
 
     def reload_distribution(
             self,
-            minimum_dwell_time_in_hours: int | float,
-            maximum_dwell_time_in_hours: int | float
+            minimum_dwell_time_in_hours: float,
+            maximum_dwell_time_in_hours: float
     ):
         # noinspection PyTypeChecker
         hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]] = \

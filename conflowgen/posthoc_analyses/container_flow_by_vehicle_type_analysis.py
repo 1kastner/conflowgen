@@ -14,9 +14,9 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPostHocAnalysis):
     as it is the case with :class:`.ContainerFlowByVehicleTypeAnalysisReport`.
     """
     @staticmethod
-    def get_inbound_to_outbound_flow() -> Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]]:
+    def get_inbound_to_outbound_flow() -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """This is the overview of the generated inbound to outbound container flow."""
-        inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]] = {
+        inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
                 {
                     vehicle_type_outbound: 0

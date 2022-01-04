@@ -60,8 +60,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
 
     def _get_truck_capacity_for_export_containers(
             self,
-            inbound_capacity_of_vehicles: Dict[ModeOfTransport, int | float]
-    ) -> int | float:
+            inbound_capacity_of_vehicles: Dict[ModeOfTransport, float]
+    ) -> float:
         """
         Get the capacity in TEU which is transported by truck. Currently, during the generation process each
         import container is picked up by one truck and for each import container, in the next step one export container

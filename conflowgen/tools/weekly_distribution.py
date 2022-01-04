@@ -14,8 +14,8 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: int | float,
-            minimum_dwell_time_in_hours: int | float
+            considered_time_window_in_hours: float,
+            minimum_dwell_time_in_hours: float
     ):
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours

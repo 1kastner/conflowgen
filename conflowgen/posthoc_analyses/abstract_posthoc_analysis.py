@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import NamedTuple, Union, Dict, List, Optional
+from typing import NamedTuple, Dict, List, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
@@ -14,8 +14,8 @@ class ContainersAndTEUContainerFlowPair(NamedTuple):
     e.g. moves per hour for the ship-to-shore gantry cranes.
     Second, it is reported in TEU which is important for the yard capacity.
     """
-    containers: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
-    TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
+    containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
+    TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
 
 
 def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
