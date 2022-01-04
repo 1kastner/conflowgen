@@ -33,14 +33,30 @@ class PortCallManager:
         when :meth:`.ContainerFlowGenerationManager.generate` is invoked.
 
         Args:
-            vehicle_type: deep_sea_vessel, feeder, barge, or train
+            vehicle_type: One of
+                :class:`ModeOfTransport.deep_sea_vessel`,
+                :class:`ModeOfTransport.feeder`,
+                :class:`ModeOfTransport.barge`, or
+                :class:`ModeOfTransport.train`
             service_name:
-            vehicle_arrives_at: A date. For k > 0, it will be shifted to match the container flow start and end dates.
-            vehicle_arrives_at_time: A time at the day (00:00 to 23:59).
-            average_vehicle_capacity: Number of TEU that can be transported with the vehicle at most.
-            average_moved_capacity: Number of TEU which is imported.
-            next_destinations: Pairs of destination and frequency of the destination being chosen.
-            vehicle_arrives_every_k_days: Special case: `-1` means only once and None means default, i.e. every week.
+                The name of the service, i.e. the shipping line or rail freight line
+            vehicle_arrives_at:
+                A date the service would arrive at the terminal. This can e.g. point at the week day for weekly
+                services. In any case, this is combined with the parameter ``vehicle_arrives_every_k_days`` and only
+                arrivals within the time scope between ``start_date`` and ``end_date`` are considered.
+            vehicle_arrives_at_time:
+                A time at the day (between 00:00 and 23:59).
+            average_vehicle_capacity:
+                Number of TEU that can be transported with the vehicle at most.
+            average_moved_capacity:
+                Number of TEU which is imported.
+            next_destinations:
+                Pairs of destination and frequency of the destination being chosen.
+            vehicle_arrives_every_k_days:
+                Defaults to weekly services (arrival every 7 days). Other frequencies are possible as well.
+                In the special case of ``-1``, only a single arrival at the day ``vehicle_arrives_at`` is scheduled.
+                This arrival is only part of the generated container flow if that arrival lies between ``start_date``
+                and ``end_date``.
         """
         assert vehicle_type in ModeOfTransport.get_scheduled_vehicles(), f"Vehicle of type {vehicle_type} is not " \
                                                                          f"suitable as is does not periodically arrive."
@@ -61,7 +77,6 @@ class PortCallManager:
             vehicle_type: ModeOfTransport
     ) -> bool:
         """
-
         Args:
             service_name: The name of the service which moves to a schedule that is sought for.
             vehicle_type: The mode of transport to restrict the search to.

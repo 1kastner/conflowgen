@@ -24,7 +24,7 @@ class QuaySideThroughputAnalysis(AbstractPostHocAnalysis):
     }
 
     @classmethod
-    def get_throughput_over_time(cls, inbound=True, outbound=True) -> Dict[datetime.date, float]:
+    def get_throughput_over_time(cls, inbound: bool = True, outbound: bool = True) -> Dict[datetime.date, float]:
         """
         For each week, the containers crossing the quay are checked. Based on this, the required quay capacity in boxes
         can be deduced - it is the maximum of these values (based on all the assumptions, in reality an additional
