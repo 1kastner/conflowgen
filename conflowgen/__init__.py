@@ -1,7 +1,7 @@
 """
-This is the intended interface for users who want to generate synthetic data. Only these classes and types will have a
-stable interface for a longer time period. Anything else is up to change as the package evolves.
+This is the intended interface for users who want to generate synthetic container flow data by means of a script.
 """
+
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
