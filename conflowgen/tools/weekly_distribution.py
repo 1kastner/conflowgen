@@ -14,8 +14,8 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: int | float,
-            minimum_dwell_time_in_hours: int | float
+            considered_time_window_in_hours: float,
+            minimum_dwell_time_in_hours: float
     ):
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
@@ -50,7 +50,7 @@ class WeeklyDistribution:
             f"Time since Monday in completed hours: {completed_hours_since_monday}"
         return completed_hours_since_monday
 
-    def get_distribution_slice(self, _datetime: datetime.datetime) -> Dict[int, Union[int, float]]:
+    def get_distribution_slice(self, _datetime: datetime.datetime) -> Dict[int, float]:
         start_hour = self._get_hour_of_the_week_from_datetime(_datetime)
         end_hour = start_hour + self.considered_time_window_in_hours
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"

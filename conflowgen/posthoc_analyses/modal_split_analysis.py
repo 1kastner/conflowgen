@@ -67,7 +67,7 @@ class ModalSplitAnalysis(AbstractPostHocAnalysis):
         """
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
 
-        transported_capacity: Dict[ModeOfTransport, int | float] = {
+        transported_capacity: Dict[ModeOfTransport, float] = {
             ModeOfTransport.truck: 0,
             ModeOfTransport.train: 0,
             ModeOfTransport.barge: 0

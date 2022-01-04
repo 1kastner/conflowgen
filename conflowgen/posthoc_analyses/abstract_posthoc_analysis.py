@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import NamedTuple, Union, Dict, List
+from typing import NamedTuple, Dict, List, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
@@ -14,8 +14,8 @@ class ContainersAndTEUContainerFlowPair(NamedTuple):
     e.g. moves per hour for the ship-to-shore gantry cranes.
     Second, it is reported in TEU which is important for the yard capacity.
     """
-    containers: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
-    TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, Union[int, float]]]
+    containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
+    TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
 
 
 def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
@@ -49,7 +49,7 @@ class AbstractPostHocAnalysis(abc.ABC):
 
     def __init__(
             self,
-            transportation_buffer: float | None = None
+            transportation_buffer: Optional[float] = None
     ):
         """
 
@@ -58,14 +58,14 @@ class AbstractPostHocAnalysis(abc.ABC):
                 compared to the amount of containers it had on its inbound journey - as long as the total vehicle
                 capacity would not be exceeded.
         """
-        self.transportation_buffer: float | None = None
+        self.transportation_buffer: Optional[float] = None
         self.update(
             transportation_buffer=transportation_buffer
         )
 
     def update(
             self,
-            transportation_buffer: float | None
+            transportation_buffer: Optional[float]
     ):
         """
         As the transportation buffer is not stored in the database, for some analyses it needs to be provided.

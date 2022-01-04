@@ -27,7 +27,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractPostHocAnalysis):
         """
 
         # Initialize empty data structures
-        initial_to_adjusted_outbound_flow_in_containers: Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]] = {
+        initial_to_adjusted_outbound_flow_in_containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_initial:
                 {
                     vehicle_type_adjusted: 0
@@ -35,7 +35,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractPostHocAnalysis):
                 }
             for vehicle_type_initial in ModeOfTransport
         }
-        initial_to_adjusted_outbound_flow_in_teu: Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]] = {
+        initial_to_adjusted_outbound_flow_in_teu: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_initial:
                 {
                     vehicle_type_adjusted: 0

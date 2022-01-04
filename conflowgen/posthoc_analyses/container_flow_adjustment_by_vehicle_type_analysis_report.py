@@ -52,8 +52,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractPosthocAnalysis
         """
         The container flow is represented by a Sankey diagram.
 
-        Returns: The plotly figure of the Sankey diagram.
-
         .. note::
             At the time of writing, plotly comes with some shortcomings.
 
@@ -64,6 +62,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractPosthocAnalysis
 
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
+
+        Returns:
+            The plotly figure of the Sankey diagram.
         """
         import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 

@@ -61,14 +61,14 @@ class ContainerFlowByVehicleTypePreview(AbstractPreview):
 
     def get_inbound_to_outbound_flow(
             self
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]]:
+    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
         The estimated flow of containers from vehicles on their inbound journey to vehicles on their outbound journey
         based on the mode of transport distribution.
 
         Returns: A flow from vehicle type A to vehicle type B estimated in TEU.
         """
-        inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, int | float]] = {
+        inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
                 {
                     vehicle_type_outbound: 0

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import NamedTuple, Union
+from typing import NamedTuple
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis import \
@@ -11,12 +11,12 @@ class ContainerFlowAdjustedToVehicleType(NamedTuple):
     This is a mapping of all existing vehicle types and the additional entry 'unchanged' to the capacity that has
     been redirected to the respective type.
     """
-    unchanged: Union[int, float]
-    train: Union[int, float]
-    barge: Union[int, float]
-    truck: Union[int, float]
-    deep_sea_vessel: Union[int, float]
-    feeder: Union[int, float]
+    unchanged: float
+    train: float
+    barge: float
+    truck: float
+    deep_sea_vessel: float
+    feeder: float
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmentByVehicleTypeAnalysis):

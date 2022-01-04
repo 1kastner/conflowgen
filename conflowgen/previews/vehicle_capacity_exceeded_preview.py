@@ -1,6 +1,6 @@
 from __future__ import annotations
 import datetime
-from typing import Dict, NamedTuple, Union
+from typing import Dict, NamedTuple
 
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
@@ -18,8 +18,8 @@ class RequiredAndMaximumCapacityComparison(NamedTuple):
     is recorded. Second, the maximum capacity is noted. If more capacity is requested than available, the exceeded flag
     is true, otherwise false.
     """
-    currently_planned: Union[int, float]
-    maximum: Union[int, float]
+    currently_planned: float
+    maximum: float
     exceeded: bool
 
 

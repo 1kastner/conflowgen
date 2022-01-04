@@ -202,8 +202,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             self,
             container: Container,
             container_arrival: datetime.datetime,
-            minimum_dwell_time_in_hours: int | float,
-            maximum_dwell_time_in_hours: int | float,
+            minimum_dwell_time_in_hours: float,
+            maximum_dwell_time_in_hours: float,
     ):
         # It should be clear anyway that this container had to change its vehicle
         container.emergency_pickup = True
