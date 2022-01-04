@@ -1,7 +1,7 @@
 from __future__ import annotations
 import datetime
 import logging
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.large_vehicle_schedule import Destination, Schedule
@@ -20,8 +20,8 @@ class ScheduleFactory:
             vehicle_arrives_at_time: datetime.time,
             average_vehicle_capacity: int,
             average_moved_capacity: int,
-            next_destinations: Union[List[Tuple[str, float]], None],
-            vehicle_arrives_every_k_days: int | None = None
+            next_destinations: Optional[List[Tuple[str, float]]],
+            vehicle_arrives_every_k_days: Optional[int] = None
     ) -> None:
         """
 
