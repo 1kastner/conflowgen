@@ -18,6 +18,10 @@ jobs:
 
     steps:
 
+    - name: Update Ubuntu and install pandoc
+      run: |
+        apt update && apt upgrade && apt install pandoc
+
     - uses: actions/checkout@v2
 
     - name: Set up Python ${{ matrix.python-version }}
