@@ -45,7 +45,6 @@ extensions = [
 
     'sphinx_math_dollar',
     'enum_tools.autoenum',
-    'sphinx_autodoc_typehints',
     'sphinx_toolbox.more_autodoc.autonamedtuple'
 ]
 
@@ -73,6 +72,9 @@ html_static_path = ['_static']
 html_logo = "../logos/conflowgen_logo_small.png"
 
 html_favicon = "../logos/conflowgen_logo_favicon.png"
+
+autodoc_typehints = 'both'
+autodoc_typehints_format = 'short'
 
 add_module_names = False
 
