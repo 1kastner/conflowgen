@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import NamedTuple, Union, Dict, List
+from typing import NamedTuple, Union, Dict, List, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
@@ -58,14 +58,14 @@ class AbstractPostHocAnalysis(abc.ABC):
                 compared to the amount of containers it had on its inbound journey - as long as the total vehicle
                 capacity would not be exceeded.
         """
-        self.transportation_buffer: float | None = None
+        self.transportation_buffer: Optional[float] = None
         self.update(
             transportation_buffer=transportation_buffer
         )
 
     def update(
             self,
-            transportation_buffer: float | None
+            transportation_buffer: Optional[float]
     ):
         """
         As the transportation buffer is not stored in the database, for some analyses it needs to be provided.

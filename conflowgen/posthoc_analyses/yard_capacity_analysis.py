@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Collection, Union
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
@@ -21,10 +21,14 @@ class YardCapacityAnalysis(AbstractPostHocAnalysis):
     """
 
     @staticmethod
-    def get_used_yard_capacity_over_time(storage_requirement="all") -> Dict[datetime.datetime, float]:
+    def get_used_yard_capacity_over_time(
+            storage_requirement: Union[str, Collection, StorageRequirement] = "all"
+    ) -> Dict[datetime.datetime, float]:
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
-        capacity in TEU can be deduced - it is simply the maximum of these values.
+        capacity in TEU can be deduced - it is simply the maximum of these values. In addition, with the parameter
+        ``storage_requirement`` the yard capacity can be filtered, e.g. to only include standard containers, empty
+        containers, or any other kind of subset.
 
         Please be aware that this method slightly overestimates the required capacity. If one container leaves the yard
         at the beginning of the respective time window and another container enters the yard at the end of the same time
@@ -32,6 +36,15 @@ class YardCapacityAnalysis(AbstractPostHocAnalysis):
         entering container could use the same slot as the container which entered later. This minor inaccuracy might be
         of little importance because no yard should be planned that tight. The benefit is that it further allows a
         faster computation.
+
+        Args:
+            storage_requirement: One of
+                ``"all"``,
+                a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
+                a single :class:`StorageRequirement` enum value.
+
+        Returns:
+            A series of the used yard capacity in TEU over the time.
         """
         container_stays: List[Tuple[datetime.datetime, datetime.datetime, float]] = []
 
