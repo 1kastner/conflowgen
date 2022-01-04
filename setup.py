@@ -26,7 +26,7 @@ setup(
         'pandas',
         'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
         'peewee',
-        'enum_tools'  # just used for documentation but is imported in the enum definitions
+        'enum_tools'  # used for documenting enums via decorators
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -56,7 +56,7 @@ setup(
             'kaleido',  # plotly depends on this package for SVG export
         ]
     },
-    license='MIT',
+    license=metadata['__license__'],
     author=metadata['__author__'],
     author_email=metadata['__email__'],
     description='A generator for synthetic container flows at maritime container terminals with a focus is on yard '
