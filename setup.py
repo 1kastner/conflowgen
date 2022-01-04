@@ -42,6 +42,7 @@ setup(
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
+            'nbsphinx',
 
             # checking code quality
             'pylint',

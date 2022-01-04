@@ -10,6 +10,6 @@ Its source code hosted
    :caption: Contents:
 
    background
+   notebooks/input_distributions.ipynb
    api
    demo
-
