@@ -20,7 +20,7 @@ jobs:
 
     - name: Update Ubuntu and install pandoc
       run: |
-        apt update && apt upgrade && apt install pandoc
+        sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
     - uses: actions/checkout@v2
 
