@@ -73,3 +73,4 @@ from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from .metadata import __version__
 from .metadata import __author__
 from .metadata import __email__
+from .metadata import __license__
