@@ -13,6 +13,13 @@
 import os
 import sys
 
+# import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
+# documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
+# it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
+from matplotlib.font_manager import fontManager
+fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
+
+# include conflowgen from source code, avoid getting served an outdated installation
 sys.path.insert(
     0,
     os.path.abspath(
@@ -58,12 +65,15 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+add_module_names = False
+
+todo_include_todos = True
+
+autoclass_content = 'both'
+
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -75,11 +85,9 @@ html_logo = "../logos/conflowgen_logo_small.png"
 
 html_favicon = "../logos/conflowgen_logo_favicon.png"
 
-add_module_names = False
 
-todo_include_todos = True
+# -- Options for formula -----------------------------------------------------
 
-autoclass_content = 'both'
 
 mathjax3_config = {
     'tex2jax': {
@@ -87,6 +95,9 @@ mathjax3_config = {
         'displayMath': [["\\[", "\\]"]],
     },
 }
+
+
+# -- Options for Linking to types --------------------------------------------
 
 nitpicky = True
 nitpick_ignore = []
@@ -98,6 +109,9 @@ with open('.nitpick-exceptions', encoding="utf-8") as f:
         sphinx_label, sphinx_object_name = line.split(None, 1)
         sphinx_object_name = sphinx_object_name.strip()
         nitpick_ignore.append((sphinx_label, sphinx_object_name))
+
+
+# -- Options for Included Jupyter Notebooks ----------------------------------
 
 nbsphinx_execute = "always"
 
