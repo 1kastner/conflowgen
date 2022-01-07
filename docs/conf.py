@@ -49,6 +49,7 @@ extensions = [
     'sphinx.ext.todo',  # create to-do boxes
     'sphinx.ext.napoleon',  # use google-style document strings
     'sphinx.ext.mathjax',  # support LaTeX-style formula
+    'sphinx.ext.intersphinx',  # add links to other docs
 
     'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
     'enum_tools.autoenum',  # automatically document enums
@@ -97,19 +98,12 @@ mathjax3_config = {
 }
 
 
-# -- Options for Linking to types --------------------------------------------
+# -- Options for Linking  ----------------------------------------------------
 
-nitpicky = True
-nitpick_ignore = []
-
-with open('.nitpick-exceptions', encoding="utf-8") as f:
-    for line in f:
-        if line.strip() == "" or line.startswith("#"):
-            continue
-        sphinx_label, sphinx_object_name = line.split(None, 1)
-        sphinx_object_name = sphinx_object_name.strip()
-        nitpick_ignore.append((sphinx_label, sphinx_object_name))
-
+version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
+intersphinx_mapping = {
+    'python': (f'https://docs.python.org/{version_link}', None)  # link to used Python version
+}
 
 # -- Options for Included Jupyter Notebooks ----------------------------------
 
