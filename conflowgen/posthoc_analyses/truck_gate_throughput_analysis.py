@@ -23,8 +23,7 @@ class TruckGateThroughputAnalysis(AbstractPostHocAnalysis):
     def get_throughput_over_time(cls, inbound: bool = True, outbound: bool = True) -> Dict[datetime.datetime, float]:
         """
         For each hour, the trucks entering through the truck gate are checked. Based on this, the required truck gate
-        capacity in boxes can be deduced - it is the maximum of these values (based on all the assumptions, in reality
-        an additional buffer might be reasonable to add).
+        capacity in boxes can be deduced.
 
         Args:
             inbound: Whether to check for trucks which deliver a container on their inbound journey

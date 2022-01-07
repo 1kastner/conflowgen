@@ -25,6 +25,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
     The analysis summary returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport`.
     """
+
     def get_summary(
             self
     ) -> ContainerFlowAdjustedToVehicleType:
