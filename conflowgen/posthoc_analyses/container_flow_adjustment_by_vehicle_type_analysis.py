@@ -21,9 +21,11 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractPostHocAnalysis):
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
         onward transportation might change. The initial outbound vehicle type is the vehicle type that is drawn
         randomly for a container at the time of generation. The adjusted vehicle type is the vehicle type that is drawn
-        in case no vehicle of the initial outbound vehicle type is left within the maximum dwell time. The returned
-        data structure describes how often an initial outbound vehicle type had to be adjusted with which other vehicle
-        type.
+        in case no vehicle of the initial outbound vehicle type is left within the maximum dwell time.
+
+        Returns:
+            The data structure describes how often an initial outbound vehicle type had to be adjusted with which other
+            vehicle type.
         """
 
         # Initialize empty data structures

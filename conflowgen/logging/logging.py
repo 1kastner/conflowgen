@@ -12,6 +12,15 @@ logs_root_dir = os.path.join(
 
 
 def setup_logger() -> logging.Logger:
+    """
+    This sets up the default logger.
+    Several classes and functions use the same logger to inform the user about the current progress.
+
+    Returns:
+        The set-up logger instance.
+        It can now be retrieved by invoking ``logging.getLogger('conflowgen')``.
+
+    """
     time_prefix = str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".", maxsplit=1)[0]
     # noinspection SpellCheckingInspection
     formatter = logging.Formatter(

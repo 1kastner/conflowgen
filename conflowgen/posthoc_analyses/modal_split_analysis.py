@@ -32,8 +32,9 @@ class ModalSplitAnalysis(AbstractPostHocAnalysis):
 
     def get_transshipment_and_hinterland_fraction(self) -> TransshipmentAndHinterlandComparison:
         """
-        Returns: The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of
-            containers in TEU that are transshipment.
+        Returns:
+            The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of containers
+            in TEU that are transshipment.
         """
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
 
@@ -63,7 +64,8 @@ class ModalSplitAnalysis(AbstractPostHocAnalysis):
             inbound: Whether to account for inbound journeys
             outbound: Whether to account for outbound journeys
 
-        Returns: The modal split for the hinterland as synthetically generated.
+        Returns:
+            The modal split for the hinterland as generated.
         """
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
 

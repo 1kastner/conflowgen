@@ -59,6 +59,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 
 # List of functions
 from conflowgen.logging.logging import setup_logger
+from conflowgen.posthoc_analyses import run_all_posthoc_analyses
 
 # List of named tuples
 from conflowgen.previews.vehicle_capacity_exceeded_preview import RequiredAndMaximumCapacityComparison

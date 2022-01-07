@@ -22,7 +22,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
         )
 
     @staticmethod
-    def get_inbound_capacity_of_vehicles() -> Dict[ModeOfTransport, int]:
+    def get_inbound_capacity_of_vehicles() -> Dict[ModeOfTransport, float]:
         """
         This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
         """

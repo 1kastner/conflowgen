@@ -64,6 +64,8 @@ API documentation
     :members:
 .. autoclass:: conflowgen.QuaySideThroughputAnalysisReport
     :members:
+.. autofunction:: conflowgen.run_all_posthoc_analyses
+.. autofunction:: conflowgen.setup_logger
 .. autoenum:: conflowgen.StorageRequirement
     :members:
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison

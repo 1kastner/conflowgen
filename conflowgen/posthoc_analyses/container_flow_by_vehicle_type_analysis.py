@@ -14,8 +14,12 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPostHocAnalysis):
     as it is the case with :class:`.ContainerFlowByVehicleTypeAnalysisReport`.
     """
     @staticmethod
-    def get_inbound_to_outbound_flow() -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
-        """This is the overview of the generated inbound to outbound container flow."""
+    def get_inbound_to_outbound_flow(
+            as_teu: bool = True
+    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
+        """
+        This is the overview of the generated inbound to outbound container flow by vehicle type.
+        """
         inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
                 {
@@ -25,11 +29,17 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPostHocAnalysis):
             for vehicle_type_inbound in ModeOfTransport
         }
 
+        if as_teu:
+            unit_steps = -1  # it will be replaced a few lines later
+        else:
+            unit_steps = 1  # each container counts as one container
+
         container: Container
         for container in Container.select():
             inbound_vehicle_type = container.delivered_by
             outbound_vehicle_type = container.picked_up_by
-            teu_factor_of_container: float = ContainerLength.get_factor(container.length)
-            inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type] += teu_factor_of_container
+            if as_teu:
+                unit_steps = ContainerLength.get_factor(container.length)
+            inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type] += unit_steps
 
         return inbound_to_outbound_flow

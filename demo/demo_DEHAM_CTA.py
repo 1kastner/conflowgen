@@ -10,6 +10,8 @@ import random
 import sys
 import pandas as pd
 
+from conflowgen import run_all_posthoc_analyses
+
 try:
     import conflowgen
     print(f"Importing ConFlowGen version {conflowgen.__version__}")
@@ -303,53 +305,7 @@ container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run post-hoc analyses on them")
 
-logger.info("Analyze the amount of containers being delivered at the terminal and being picked by by mode of transport")
-inbound_and_outbound_vehicle_capacity_analysis_report = conflowgen.InboundAndOutboundVehicleCapacityAnalysisReport()
-report = inbound_and_outbound_vehicle_capacity_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Analyze the amount of containers being delivered by one vehicle and being picked up by another vehicle "
-            "(by vehicle type)")
-container_flow_by_vehicle_type_analysis_report = conflowgen.ContainerFlowByVehicleTypeAnalysisReport()
-report = container_flow_by_vehicle_type_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Reformat same data to show the transshipment share and modal split in the hinterland")
-modal_split_analysis_report = conflowgen.ModalSplitAnalysisReport()
-report = modal_split_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Analyze the amount of containers which require an adjustment in mode of transport because they could not "
-            "leave the container terminal within the maximum container dwell time otherwise. If the initial type "
-            "and the adjusted type are identical, no adjustment has taken place. These numbers are just reported "
-            "for reference.")
-container_flow_adjustment_by_vehicle_type_analysis_report = \
-    conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisReport()
-report = container_flow_adjustment_by_vehicle_type_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Summarize the previous figures of how containers have been redirected to other vehicle types")
-container_flow_adjustment_by_vehicle_type_analysis_summary = \
-    conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport()
-report = container_flow_adjustment_by_vehicle_type_analysis_summary.get_report_as_text()
-logger.info(report)
-
-logger.info("Analyse the throughput at the quay side")
-quay_side_throughput_analysis_report = conflowgen.QuaySideThroughputAnalysisReport()
-report = quay_side_throughput_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Analyse the used capacity in the yard")
-yard_capacity_analysis_report = conflowgen.YardCapacityAnalysisReport()
-report = yard_capacity_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("Analyse the throughput at the truck gate")
-truck_gate_throughput_analysis_report = conflowgen.TruckGateThroughputAnalysisReport()
-report = truck_gate_throughput_analysis_report.get_report_as_text()
-logger.info(report)
-
-logger.info("All post-hoc analyses have been run.")
+run_all_posthoc_analyses()
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
             "post-hoc analysis results")
