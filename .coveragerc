@@ -4,3 +4,10 @@ omit =
     conflowgen/demo/
     docs/conf.py
     setup.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    @abstract
+    @abc.abstract
+    raise NotImplementedError
