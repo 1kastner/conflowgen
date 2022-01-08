@@ -16,13 +16,15 @@ DESIRED_LINE_LENGTH = 80  # doc: The console width used for wrapping output to n
 
 def setup_logger() -> logging.Logger:
     """
-    This sets up the default logger.
+    This sets up the default logger with the name 'conflowgen'.
     Several classes and functions use the same logger to inform the user about the current progress.
+    This is just a convenience function, you can easily set up your own logger that uses the same name.
+    See e.g.
+    https://docs.python.org/3/howto/logging.html#configuring-logging
+    for how to set up your own logger.
 
     Returns:
         The set-up logger instance.
-        It can now be retrieved by invoking ``logging.getLogger('conflowgen')``.
-
     """
     time_prefix = str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".", maxsplit=1)[0]
     # noinspection SpellCheckingInspection
