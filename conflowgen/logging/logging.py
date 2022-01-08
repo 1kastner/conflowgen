@@ -11,6 +11,9 @@ logs_root_dir = os.path.join(
 )
 
 
+DESIRED_LINE_LENGTH = 80  # doc: The console width used for wrapping output to new lines. This is not mandatory.
+
+
 def setup_logger() -> logging.Logger:
     """
     This sets up the default logger.

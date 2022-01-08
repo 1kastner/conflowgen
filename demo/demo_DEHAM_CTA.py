@@ -59,7 +59,8 @@ df_trains = pd.read_csv(
 # Start logging
 logger = conflowgen.setup_logger()
 
-logger.info("""####
+logger.info("""
+####
 ## Demo DEHAM CTA
 ####
 This is a demo based on some publicly available figures, some educated guesses, and some random assumptions due to the
@@ -275,30 +276,15 @@ logger.info("All trains are imported")
 
 logger.info("All vehicles have been imported")
 
-logger.info("Generating reports on the input data (preview of container flow to generate)")
-inbound_and_outbound_vehicle_capacity_preview_report = conflowgen.InboundAndOutboundVehicleCapacityPreviewReport()
-report = inbound_and_outbound_vehicle_capacity_preview_report.get_report_as_text()
-logger.info("Inbound and outbound traffic: ")
-logger.info(report)
+###
+# Now, all schedules and input distributions are set up - no further inputs are required
+###
 
-container_flow_by_vehicle_type_preview_report = conflowgen.ContainerFlowByVehicleTypePreviewReport()
-report = container_flow_by_vehicle_type_preview_report.get_report_as_text()
-logger.info("Container flow between vehicle types as defined by schedules and distributions: ")
-logger.info(report)
+logger.info("Preview the results with some light-weight approaches.")
 
-modal_split_preview_report = conflowgen.ModalSplitPreviewReport()
-report = modal_split_preview_report.get_report_as_text()
-logger.info("The same container flow expressed in terms of transshipment and modal split for the hinterland: ")
-logger.info(report)
+conflowgen.run_all_previews()
 
-vehicle_capacity_exceeded_preview_report = conflowgen.VehicleCapacityExceededPreviewReport()
-report = vehicle_capacity_exceeded_preview_report.get_report_as_text()
-logger.info("Consequences of container flow for outgoing vehicles: ")
-logger.info(report)
-
-logger.info("All reports on the input data have been generated")
-
-# Generate all fleets with all vehicles. This is the core of the whole code.
+logger.info("Generate all fleets with all vehicles. This is the core of the whole project.")
 container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run post-hoc analyses on them")

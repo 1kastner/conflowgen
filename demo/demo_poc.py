@@ -17,7 +17,8 @@ except ImportError:
 # Start logging
 logger = conflowgen.setup_logger()
 
-logger.info("""####
+logger.info("""
+####
 ## Demo Proof of Concept
 ####
 This demo is based on some example data and is meant to show the basic functionality. For a slightly more realistic
@@ -97,30 +98,15 @@ if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=conflo
 else:
     logger.info(f"Deep sea service '{deep_sea_service_name}' already exists")
 
-logger.info("Generating reports on the input data (preview of container flow to generate)")
-inbound_and_outbound_vehicle_capacity_preview_report = conflowgen.InboundAndOutboundVehicleCapacityPreviewReport()
-report = inbound_and_outbound_vehicle_capacity_preview_report.get_report_as_text()
-logger.info("Inbound and outbound traffic: ")
-logger.info(report)
+###
+# Now, all schedules and input distributions are set up - no further inputs are required
+###
 
-container_flow_by_vehicle_type_preview_report = conflowgen.ContainerFlowByVehicleTypePreviewReport()
-report = container_flow_by_vehicle_type_preview_report.get_report_as_text()
-logger.info("Container flow between vehicle types as defined by schedules and distributions: ")
-logger.info(report)
+logger.info("Preview the results with some light-weight approaches.")
 
-modal_split_preview_report = conflowgen.ModalSplitPreviewReport()
-report = modal_split_preview_report.get_report_as_text()
-logger.info("The same container flow expressed in terms of transshipment and modal split for the hinterland: ")
-logger.info(report)
+conflowgen.run_all_previews()
 
-vehicle_capacity_exceeded_preview_report = conflowgen.VehicleCapacityExceededPreviewReport()
-report = vehicle_capacity_exceeded_preview_report.get_report_as_text()
-logger.info("Consequences of container flow for outgoing vehicles: ")
-logger.info(report)
-
-logger.info("All reports on the input data have been generated")
-
-# Generate all fleets with all vehicles. This is the core of the whole code.
+logger.info("Generate all fleets with all vehicles. This is the core of the whole project.")
 container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run post-hoc analyses on them")

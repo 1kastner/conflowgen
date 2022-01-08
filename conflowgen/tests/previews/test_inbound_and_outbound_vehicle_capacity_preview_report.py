@@ -70,12 +70,12 @@ class TestInboundAndOutboundVehicleCapacityPreviewReport(unittest.TestCase):
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-vehicle type    inbound capacity outbound avg capacity outbound max capacity
-deep sea vessel              0.0                   0.0                   0.0
-feeder                       0.0                   0.0                   0.0
-barge                        0.0                   0.0                   0.0
-train                        0.0                   0.0                   0.0
-truck                        0.0                   0.0                  -1.0
+vehicle type    inbound capacity (in TEU) outbound avg capacity (in TEU) outbound max capacity (in TEU)
+deep sea vessel                       0.0                            0.0                            0.0
+feeder                                0.0                            0.0                            0.0
+barge                                 0.0                            0.0                            0.0
+train                                 0.0                            0.0                            0.0
+truck                                 0.0                            0.0                           -1.0
 (rounding errors might exist)
 """
         self.assertEqual(expected_report, actual_report)
@@ -94,12 +94,12 @@ truck                        0.0                   0.0                  -1.0
         schedule.save()
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-vehicle type    inbound capacity outbound avg capacity outbound max capacity
-deep sea vessel              0.0                   0.0                   0.0
-feeder                     300.0                 300.0                 360.0
-barge                        0.0                   0.0                   0.0
-train                        0.0                   0.0                   0.0
-truck                       60.0                  60.0                  -1.0
+vehicle type    inbound capacity (in TEU) outbound avg capacity (in TEU) outbound max capacity (in TEU)
+deep sea vessel                       0.0                            0.0                            0.0
+feeder                              300.0                          300.0                          360.0
+barge                                 0.0                            0.0                            0.0
+train                                 0.0                            0.0                            0.0
+truck                                60.0                           60.0                           -1.0
 (rounding errors might exist)
 """
         self.assertEqual(expected_report, actual_report)

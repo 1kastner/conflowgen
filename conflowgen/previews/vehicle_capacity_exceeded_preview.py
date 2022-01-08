@@ -30,8 +30,9 @@ class VehicleCapacityExceededPreview(AbstractPreview):
 
     The preview returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.VehicleCapacityExceededPreviewReport`.
-    The preview is intended to provide a first estimate before running the expensive
-    :meth:`.ContainerFlowGenerationManager.generate` method.
+    The preview is intended to provide a first estimate before running
+    :meth:`.ContainerFlowGenerationManager.generate`
+    which is time-consuming.
     The preview does not consider all restrictions (such as container dwell times in combination with the schedules)
     into consideration, thus later deviations might exist.
     """
