@@ -1,9 +1,10 @@
 [run]
 omit =
-    */tests/*
-    conflowgen/demo/
+    conflowgen/tests/*
+    demo/*
     docs/conf.py
     setup.py
+    conflowgen/logging/logging.py
 
 [report]
 exclude_lines =
