@@ -13,7 +13,7 @@ from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
 from .quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
 from .truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 from .yard_capacity_analysis_report import YardCapacityAnalysisReport
-
+from ..logging.logging import DESIRED_LINE_LENGTH
 
 logger = logging.getLogger("conflowgen")
 
@@ -33,7 +33,7 @@ report_order: Iterable[Type[AbstractPosthocAnalysisReport]] = [
 def run_all_posthoc_analyses(as_text: bool = True, as_graph: bool = False) -> None:
     """
     Runs all post-hoc analyses in sequence.
-    This is just a convencience function to ensure that all reports are created.
+    This is just a convenience function to ensure that all reports are presented.
     The text output is logged to the logger with the name 'conflowgen'.
     See
     :func:`setup_logger`
@@ -52,7 +52,7 @@ def run_all_posthoc_analyses(as_text: bool = True, as_graph: bool = False) -> No
         logger.info(f"Analysis report: {report_instance.__class__.__name__}")
         # noinspection PyTypeChecker
         report_description: str = report_instance.report_description
-        introduction_of_report = fill(dedent(report_description).strip(), width=80)
+        introduction_of_report = fill(dedent(report_description).strip(), width=DESIRED_LINE_LENGTH)
         logger.info(introduction_of_report)
         if as_text:
             report_as_text = report_instance.get_report_as_text()
