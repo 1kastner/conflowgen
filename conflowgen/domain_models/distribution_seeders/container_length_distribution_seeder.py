@@ -7,7 +7,7 @@ def seed():
     """
     Seeds the database with some initial values for the length categories.
 
-    The fraction of 60% forty-foot containers has been taken from expert interviews in the port of Hamburg
+    The fraction of 60% forty-foot containers has been taken from expert interviews in the port of Hamburg.
     """
     ContainerLengthDistributionRepository.set_distribution({
         ContainerLength.twenty_feet: 0.4,

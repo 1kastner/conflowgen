@@ -29,16 +29,13 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractPostHocAnalysis):
             for vehicle_type_inbound in ModeOfTransport
         }
 
-        if as_teu:
-            unit_steps = -1  # it will be replaced a few lines later
-        else:
-            unit_steps = 1  # each container counts as one container
+        unit_steps = 1  # each container counts as one container, this is overwritten later in case of counting TEU
 
         container: Container
         for container in Container.select():
             inbound_vehicle_type = container.delivered_by
             outbound_vehicle_type = container.picked_up_by
-            if as_teu:
+            if as_teu:  # in case it is counted as TEU, the TEU factor replaces the default constant '1'
                 unit_steps = ContainerLength.get_factor(container.length)
             inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type] += unit_steps
 

@@ -10,8 +10,6 @@ import random
 import sys
 import pandas as pd
 
-from conflowgen import run_all_posthoc_analyses
-
 try:
     import conflowgen
     print(f"Importing ConFlowGen version {conflowgen.__version__}")
@@ -305,7 +303,7 @@ container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run post-hoc analyses on them")
 
-run_all_posthoc_analyses()
+conflowgen.run_all_posthoc_analyses()
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
             "post-hoc analysis results")

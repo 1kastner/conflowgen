@@ -32,7 +32,8 @@ report_order: Iterable[Type[AbstractPosthocAnalysisReport]] = [
 
 def run_all_posthoc_analyses(as_text: bool = True, as_graph: bool = False) -> None:
     """
-    Runs all post-hoc analyses so that the user does not need to invoke all instances.
+    Runs all post-hoc analyses in sequence.
+    This is just a convencience function to ensure that all reports are created.
     The text output is logged to the logger with the name 'conflowgen'.
     See
     :func:`setup_logger`
@@ -40,10 +41,7 @@ def run_all_posthoc_analyses(as_text: bool = True, as_graph: bool = False) -> No
 
     Args:
         as_text: Whether to get the reports as text and log them
-        as_graph: Whether to display the reports as graphs
-
-    Returns:
-
+        as_graph: Whether to display the reports as graphs (visualizations will pop up)
     """
     assert as_text or as_graph, "At least one of the two modes should be chosen"
 
