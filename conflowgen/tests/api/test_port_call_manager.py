@@ -18,8 +18,8 @@ class TestPortCallManager(unittest.TestCase):
         total_capacity = 100
         moved_capacity = 3
         next_destinations = [
-            ("DEBRV", 0.5),  # 50% of the containers go here...
-            ("RULED", 0.5)  # and the other 50% of the containers go here.
+            ("DEBRV", 0.6),  # 60% of the containers go here...
+            ("RULED", 0.4)  # and the other 40% of the containers go here.
         ]
         with unittest.mock.patch.object(
                 self.port_call_manager.schedule_factory,
@@ -51,9 +51,10 @@ class TestPortCallManager(unittest.TestCase):
         with unittest.mock.patch.object(
                 self.port_call_manager.schedule_factory,
                 'get_schedule',
-                return_value=None) as mock_method:
-            self.port_call_manager.has_schedule(service_name, vehicle_type)
+                return_value=True) as mock_method:
+            has_schedule = self.port_call_manager.has_schedule(service_name, vehicle_type)
         mock_method.assert_called_once_with(
             service_name,
             vehicle_type
         )
+        self.assertTrue(has_schedule)
