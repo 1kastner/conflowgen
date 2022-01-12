@@ -30,7 +30,7 @@ container terminals.
 
 A documentation on the background of this project, its API, and a step-by-step guide is available
 [at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
-Please check 
+Please check
 [in the background section](https://conflowgen.readthedocs.io/en/latest/background.html)
 first whether ConFlowGen is the right tool for your purpose.
 
@@ -42,7 +42,7 @@ CMD).
 ```bash
 git clone https://github.com/1kastner/conflowgen
 cd conflowgen
-pip install --user .
+pip install .
 ```
 
 After you have installed the library, you are ready to define your own scenarios and generate the data.
