@@ -37,17 +37,19 @@ class SqliteDatabaseConnection:
         'synchronous': 0
     }
 
-    DEFAULT_SQLITE_ROOT_DIR = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        os.pardir,
-        "data",
-        "databases"
+    SQLITE_DEFAULT_DIR = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            os.pardir,
+            "data",
+            "databases"
+        )
     )
 
     def __init__(self, sqlite_databases_directory: Optional[str] = None):
         self.logger = logging.getLogger("conflowgen")
         if sqlite_databases_directory is None:
-            self.sqlite_databases_directory = self.DEFAULT_SQLITE_ROOT_DIR
+            self.sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
             if not os.path.isdir(self.sqlite_databases_directory):
                 self.logger.debug(f"Creating SQLite directory at '{sqlite_databases_directory}'")
                 os.makedirs(self.sqlite_databases_directory, exist_ok=True)

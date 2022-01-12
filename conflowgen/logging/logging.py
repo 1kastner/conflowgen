@@ -5,11 +5,13 @@ import sys
 from typing import Optional
 
 
-LOGGING_DEFAULT_DIR = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    os.pardir,
-    "data",
-    "logs"
+LOGGING_DEFAULT_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        os.pardir,
+        "data",
+        "logs"
+    )
 )
 
 

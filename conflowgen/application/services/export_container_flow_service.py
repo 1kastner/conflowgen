@@ -23,12 +23,14 @@ from conflowgen.domain_models.large_vehicle_schedule import Destination
 from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicle, Feeder, Barge, Train, Truck, \
     AbstractLargeScheduledVehicle
 
-EXPORTS_DEFAULT_DIR = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)),
-    os.pardir,
-    os.pardir,
-    "data",
-    "exports"
+EXPORTS_DEFAULT_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        os.pardir,
+        os.pardir,
+        "data",
+        "exports"
+    )
 )
 
 
