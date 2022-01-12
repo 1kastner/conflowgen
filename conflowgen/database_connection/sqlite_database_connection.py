@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 from peewee import SqliteDatabase
 
@@ -24,6 +24,7 @@ class AmbiguousParameterException(Exception):
 class SqliteDatabaseConnection:
     """
     The SQLite database stores all content from the API calls to enable reproducible results.
+    See :class:`.DatabaseChooser` for more information.
     """
 
     SQLITE_DEFAULT_SETTINGS = {
@@ -36,23 +37,27 @@ class SqliteDatabaseConnection:
         'synchronous': 0
     }
 
-    def __init__(self, sqlite_databases_directory=None):
+    SQLITE_DEFAULT_DIR = os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            os.pardir,
+            "data",
+            "databases"
+        )
+    )
+
+    def __init__(self, sqlite_databases_directory: Optional[str] = None):
         self.logger = logging.getLogger("conflowgen")
         if sqlite_databases_directory is None:
-            self.sqlite_databases_directory = os.path.join(
-                os.path.dirname(os.path.realpath(__file__)),
-                os.pardir,
-                "data",
-                "databases"
-            )
+            self.sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
+            if not os.path.isdir(self.sqlite_databases_directory):
+                self.logger.debug(f"Creating SQLite directory at '{sqlite_databases_directory}'")
+                os.makedirs(self.sqlite_databases_directory, exist_ok=True)
         else:
             self.sqlite_databases_directory = sqlite_databases_directory
         self.sqlite_db_connection = None
 
     def list_all_sqlite_databases(self) -> List[str]:
-        """
-        Returns: A list of all SQLite databases in the path '<PROJECTROOT>/data/databases/'
-        """
         sqlite_databases = [_file for _file
                             in os.listdir(self.sqlite_databases_directory)
                             if _file.endswith("sqlite")]
@@ -69,10 +74,11 @@ class SqliteDatabaseConnection:
             path_to_sqlite_database = ":memory:"
             sqlite_database_existed_before = False
         else:
-            path_to_sqlite_database, sqlite_database_existed_before = self._handle_sqlite_file_on_harddrive(
+            path_to_sqlite_database, sqlite_database_existed_before = self._load_or_create_sqlite_file_on_hard_drive(
                 database_name=database_name, create=create, reset=reset
             )
 
+        self.logger.debug(f"Opening file '{path_to_sqlite_database}'")
         self.sqlite_db_connection = SqliteDatabase(
             path_to_sqlite_database,
             pragmas=self.SQLITE_DEFAULT_SETTINGS
@@ -80,10 +86,10 @@ class SqliteDatabaseConnection:
         database_proxy.initialize(self.sqlite_db_connection)
         self.sqlite_db_connection.connect()
 
-        self.logger.info(f'journal_mode: {self.sqlite_db_connection.journal_mode}')
-        self.logger.info(f'cache_size: {self.sqlite_db_connection.cache_size}')
-        self.logger.info(f'page_size: {self.sqlite_db_connection.page_size}')
-        self.logger.info(f'foreign_keys: {self.sqlite_db_connection.foreign_keys}')
+        self.logger.debug(f'journal_mode: {self.sqlite_db_connection.journal_mode}')
+        self.logger.debug(f'cache_size: {self.sqlite_db_connection.cache_size}')
+        self.logger.debug(f'page_size: {self.sqlite_db_connection.page_size}')
+        self.logger.debug(f'foreign_keys: {self.sqlite_db_connection.foreign_keys}')
 
         if not sqlite_database_existed_before:
             self.logger.debug(f"Creating new database: '{path_to_sqlite_database}'")
@@ -95,11 +101,18 @@ class SqliteDatabaseConnection:
 
         return self.sqlite_db_connection
 
-    def _handle_sqlite_file_on_harddrive(self, database_name: str, create: bool, reset: bool) -> Tuple[str, bool]:
-        path_to_sqlite_database = os.path.join(
-            self.sqlite_databases_directory,
-            database_name
-        )
+    def delete_database(self, database_name: str) -> None:
+        path_to_sqlite_database = self._get_path_to_database(database_name)
+        if os.path.isfile(path_to_sqlite_database):
+            self.logger.debug(f"Deleting database: '{path_to_sqlite_database}'")
+            os.remove(path_to_sqlite_database)
+        else:
+            raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
+
+    def _load_or_create_sqlite_file_on_hard_drive(
+            self, database_name: str, create: bool, reset: bool
+    ) -> Tuple[str, bool]:
+        path_to_sqlite_database = self._get_path_to_database(database_name)
         sqlite_database_existed_before = os.path.isfile(path_to_sqlite_database)
         if sqlite_database_existed_before:
             if create and not reset:
@@ -114,17 +127,8 @@ class SqliteDatabaseConnection:
                 self.logger.debug(f"No previous database detected, creating new: '{path_to_sqlite_database}'")
         return path_to_sqlite_database, sqlite_database_existed_before
 
-    def delete_database(self, database_name: str) -> None:
-        """
-        Args:
-            database_name: The file name of the SQLite database to delete
-        """
-        path_to_sqlite_database = os.path.join(
+    def _get_path_to_database(self, database_name: str) -> str:
+        return os.path.join(
             self.sqlite_databases_directory,
             database_name
         )
-        if os.path.isfile(path_to_sqlite_database):
-            self.logger.debug(f"Deleting database: '{path_to_sqlite_database}'")
-            os.remove(path_to_sqlite_database)
-        else:
-            raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
