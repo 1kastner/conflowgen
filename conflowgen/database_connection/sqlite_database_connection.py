@@ -48,6 +48,9 @@ class SqliteDatabaseConnection:
         self.logger = logging.getLogger("conflowgen")
         if sqlite_databases_directory is None:
             self.sqlite_databases_directory = self.DEFAULT_SQLITE_ROOT_DIR
+            if not os.path.isdir(self.sqlite_databases_directory):
+                self.logger.debug(f"Creating SQLite directory at '{sqlite_databases_directory}'")
+                os.makedirs(self.sqlite_databases_directory, exist_ok=True)
         else:
             self.sqlite_databases_directory = sqlite_databases_directory
         self.sqlite_db_connection = None

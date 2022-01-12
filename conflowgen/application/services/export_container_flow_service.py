@@ -3,11 +3,12 @@ from __future__ import annotations
 import enum
 import logging
 import os
-from typing import Dict, Type
+from typing import Dict, Type, Optional
 from functools import lru_cache
 
 import numpy as np
 import pandas as pd
+# noinspection PyProtectedMember
 from peewee import ModelSelect
 
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
@@ -22,7 +23,7 @@ from conflowgen.domain_models.large_vehicle_schedule import Destination
 from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicle, Feeder, Barge, Train, Truck, \
     AbstractLargeScheduledVehicle
 
-exports_root_dir = os.path.join(
+EXPORTS_DEFAULT_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
     os.pardir,
     os.pardir,
@@ -231,17 +232,22 @@ class ExportContainerFlowService:
         result["trucks"] = df_trucks
         return result
 
-    def export(self, folder_name: str, file_format: ExportFileFormat):
+    def export(self, folder_name: str, path_to_export_folder: Optional[str], file_format: ExportFileFormat):
         """Export container flow to other file formats, simplify internal representation for further processing.
         """
-        path_to_folder = os.path.join(
-            exports_root_dir,
+        if path_to_export_folder is None:
+            path_to_export_folder = EXPORTS_DEFAULT_DIR
+        if not os.path.isdir(path_to_export_folder):
+            self.logger.info(f"Creating export folder '{path_to_export_folder}'...")
+            os.makedirs(path_to_export_folder, exist_ok=True)
+        path_to_target_folder = os.path.join(
+            path_to_export_folder,
             folder_name
         )
-        if os.path.isdir(path_to_folder):
-            raise ExportOnlyAllowedToNotExistingFolderException(path_to_folder)
-        self.logger.info(f"Creating folder {path_to_folder}...")
-        os.mkdir(path_to_folder)
+        if os.path.isdir(path_to_target_folder):
+            raise ExportOnlyAllowedToNotExistingFolderException(path_to_target_folder)
+        self.logger.info(f"Creating folder '{path_to_target_folder}'...")
+        os.mkdir(path_to_target_folder)
         self.logger.info(f"Converting SQL database into file format '.{file_format.value}'")
         dfs = self._convert_sql_database_to_pandas_dataframe()
         for file_name, df in dfs.items():
