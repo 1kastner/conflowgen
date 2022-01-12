@@ -28,7 +28,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip3 install --user  ${{ matrix.python-inplace }} .
+        pip3 install --user ${{ matrix.python-inplace }} .
 
     - name: Run demos
       run: |

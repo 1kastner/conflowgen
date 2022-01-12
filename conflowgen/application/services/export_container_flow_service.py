@@ -253,7 +253,7 @@ class ExportContainerFlowService:
         for file_name, df in dfs.items():
             full_file_name = file_name + "." + file_format.value
             path_to_file = os.path.join(
-                path_to_folder,
+                path_to_target_folder,
                 full_file_name
             )
             self.logger.debug(f"Saving file '{full_file_name}'...")
