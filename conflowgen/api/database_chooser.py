@@ -1,4 +1,7 @@
-from typing import List
+import logging
+from typing import List, Optional
+
+from peewee import SqliteDatabase
 
 from conflowgen.database_connection.sqlite_database_connection import SqliteDatabaseConnection
 
@@ -14,13 +17,21 @@ class DatabaseChooser:
     databases.
     """
 
-    def __init__(self):
-        self.sqlite_database_connection = SqliteDatabaseConnection()
-        self.peewee_sqlite_db = None
+    def __init__(self, sqlite_databases_directory: Optional[str] = None):
+        """
+        Args:
+            sqlite_databases_directory: The DatabaseChooser opens one directory. All databases are saved to and load
+                from this directory. It defaults to ``<project root>/data/databases/``.
+        """
+        self.logger = logging.getLogger("conflowgen")
+        self.sqlite_database_connection = SqliteDatabaseConnection(
+            sqlite_databases_directory=sqlite_databases_directory
+        )
+        self.peewee_sqlite_db: Optional[SqliteDatabase] = None
 
     def list_all_sqlite_databases(self) -> List[str]:
         """
-        Returns: A list of all SQLite databases in the path ``<project root>/data/databases/``
+        Returns: A list of all SQLite databases in the opened directory
         """
         all_sqlite_databases = self.sqlite_database_connection.list_all_sqlite_databases()
         return all_sqlite_databases
@@ -28,8 +39,10 @@ class DatabaseChooser:
     def load_existing_sqlite_database(self, file_name: str) -> None:
         """
         Args:
-            file_name: The file name of an SQLite database residing in ``<project root>/data/databases/``
+            file_name: The file name of an SQLite database in the opened directory
         """
+        if self.peewee_sqlite_db is not None:
+            self._close_and_reset_db()
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
 
     def create_new_sqlite_database(self, file_name: str, **seeder_options) -> None:
@@ -52,6 +65,8 @@ class DatabaseChooser:
         or similar.
         By default, no schedules and no vehicles exist.
         """
+        if self.peewee_sqlite_db is not None:
+            self._close_and_reset_db()
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(
             file_name, create=True, reset=False, **seeder_options)
 
@@ -60,6 +75,11 @@ class DatabaseChooser:
         Close current connection, e.g. as a preparatory step to create a new SQLite database.
         """
         if self.peewee_sqlite_db:
-            self.peewee_sqlite_db.close()
+            self._close_and_reset_db()
         else:
             raise NoCurrentConnectionException("You must first create a connection to an SQLite database.")
+
+    def _close_and_reset_db(self):
+        self.logger.debug("Closing current database connection.")
+        self.peewee_sqlite_db.close()
+        self.peewee_sqlite_db = None
