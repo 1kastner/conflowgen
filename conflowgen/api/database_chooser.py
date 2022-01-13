@@ -1,3 +1,4 @@
+import logging
 from typing import List, Optional
 
 from peewee import SqliteDatabase
@@ -22,6 +23,7 @@ class DatabaseChooser:
             sqlite_databases_directory: The DatabaseChooser opens one directory. All databases are saved to and load
                 from this directory. It defaults to ``<project root>/data/databases/``.
         """
+        self.logger = logging.getLogger("conflowgen")
         self.sqlite_database_connection = SqliteDatabaseConnection(
             sqlite_databases_directory=sqlite_databases_directory
         )
@@ -73,10 +75,11 @@ class DatabaseChooser:
         Close current connection, e.g. as a preparatory step to create a new SQLite database.
         """
         if self.peewee_sqlite_db:
-            self.peewee_sqlite_db.close()
+            self._close_and_reset_db()
         else:
             raise NoCurrentConnectionException("You must first create a connection to an SQLite database.")
 
     def _close_and_reset_db(self):
+        self.logger.debug("Closing current database connection.")
         self.peewee_sqlite_db.close()
         self.peewee_sqlite_db = None
