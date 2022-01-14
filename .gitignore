@@ -48,3 +48,5 @@ docs/_build/
 *_BASE_*
 *_LOCAL_*
 *_REMOTE_*
+build/
+dist/
