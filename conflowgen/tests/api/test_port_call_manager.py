@@ -18,8 +18,8 @@ class TestPortCallManager(unittest.TestCase):
         total_capacity = 100
         moved_capacity = 3
         next_destinations = [
-            ("DEBRV", 0.6),  # 60% of the containers go here...
-            ("RULED", 0.4)  # and the other 40% of the containers go here.
+            ("DEBRV", 0.6),  # 60% of the containers (in boxes) go here...
+            ("RULED", 0.4)  # and the other 40% of the containers (in boxes) go here.
         ]
         with unittest.mock.patch.object(
                 self.port_call_manager.schedule_factory,
