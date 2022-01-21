@@ -4,6 +4,47 @@ API documentation
 .. automodule:: conflowgen
 .. autonamedtuple:: conflowgen.ContainersAndTEUContainerFlowPair
 .. autonamedtuple:: conflowgen.ContainerFlowAdjustedToVehicleType
+.. autoenum:: conflowgen.ContainerLength
+    :members:
+.. autoenum:: conflowgen.ModeOfTransport
+    :members:
+.. autonamedtuple:: conflowgen.OutboundUsedAndMaximumCapacity
+    :members:
+.. autofunction:: conflowgen.setup_logger
+.. autoenum:: conflowgen.StorageRequirement
+    :members:
+.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
+
+
+Interact with the database
+==========================
+
+.. autoclass:: conflowgen.DatabaseChooser
+    :members:
+
+
+Managers
+========
+
+.. autoclass:: conflowgen.ContainerLengthDistributionManager
+    :members:
+.. autoclass:: conflowgen.ContainerFlowGenerationManager
+    :members:
+.. autoclass:: conflowgen.ContainerStorageRequirementDistributionManager
+    :members:
+.. autoclass:: conflowgen.ExportContainerFlowManager
+    :members:
+.. autoclass:: conflowgen.ModeOfTransportDistributionManager
+    :members:
+.. autoclass:: conflowgen.PortCallManager
+    :members:
+.. autoclass:: conflowgen.TruckArrivalDistributionManager
+    :members:
+
+
+Data Outputs
+============
+
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysis
     :members:
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisReport
@@ -19,20 +60,6 @@ API documentation
 .. autoclass:: conflowgen.ContainerFlowByVehicleTypePreview
     :members:
 .. autoclass:: conflowgen.ContainerFlowByVehicleTypePreviewReport
-    :members:
-.. autoenum:: conflowgen.ContainerLength
-    :members:
-.. autoclass:: conflowgen.ContainerLengthDistributionManager
-    :members:
-.. autoclass:: conflowgen.ContainerFlowGenerationManager
-    :members:
-.. autoclass:: conflowgen.ContainerStorageRequirementDistributionManager
-    :members:
-.. autoclass:: conflowgen.DatabaseChooser
-    :members:
-.. autoclass:: conflowgen.ExportContainerFlowManager
-    :members:
-.. autoenum:: conflowgen.ExportFileFormat
     :members:
 .. autonamedtuple:: conflowgen.HinterlandModalSplit
 .. autoclass:: conflowgen.InboundAndOutboundVehicleCapacityAnalysis
@@ -52,26 +79,12 @@ API documentation
     :members:
 .. autoclass:: conflowgen.ModalSplitPreviewReport
     :members:
-.. autoenum:: conflowgen.ModeOfTransport
-    :members:
-.. autoclass:: conflowgen.ModeOfTransportDistributionManager
-    :members:
-.. autonamedtuple:: conflowgen.OutboundUsedAndMaximumCapacity
-    :members:
-.. autoclass:: conflowgen.PortCallManager
-    :members:
 .. autoclass:: conflowgen.QuaySideThroughputAnalysis
     :members:
 .. autoclass:: conflowgen.QuaySideThroughputAnalysisReport
     :members:
 .. autofunction:: conflowgen.run_all_posthoc_analyses
 .. autofunction:: conflowgen.run_all_previews
-.. autofunction:: conflowgen.setup_logger
-.. autoenum:: conflowgen.StorageRequirement
-    :members:
-.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
-.. autoclass:: conflowgen.TruckArrivalDistributionManager
-    :members:
 .. autoclass:: conflowgen.TruckGateThroughputAnalysis
     :members:
 .. autoclass:: conflowgen.TruckGateThroughputAnalysisReport
@@ -84,3 +97,11 @@ API documentation
     :members:
 .. autoclass:: conflowgen.YardCapacityAnalysisReport
     :members:
+
+
+Data Export
+===========
+
+.. autoenum:: conflowgen.ExportFileFormat
+    :members:
+
