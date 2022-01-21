@@ -37,7 +37,7 @@ setup(
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
-            'sphinx',
+            'sphinx==4.4',
             'sphinx-rtd-theme',
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
