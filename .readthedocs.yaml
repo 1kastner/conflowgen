@@ -5,10 +5,17 @@
 # Required
 version: 2
 
+# Use new Python version
+build:
+  os: ubuntu-20.04
+  tools:
+    python: "3.9"
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
    configuration: docs/conf.py
 
+# Install via pip before running
 python:
   install:
     - method: pip
