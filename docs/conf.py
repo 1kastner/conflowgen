@@ -71,6 +71,8 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
+autodoc_typehints_format = 'short'
+
 
 # -- Options for HTML output -------------------------------------------------
 
