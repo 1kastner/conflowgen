@@ -8,6 +8,9 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 class ContainerLengthDistributionManager:
     """
     This manager provides the interface to set and get the container length distribution.
+
+    The default distribution is presented in the section
+    `Input Distributions <notebooks/input_distributions.ipynb#Container-Length-Distribution>`_.
     """
 
     def __init__(self):

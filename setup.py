@@ -42,16 +42,21 @@ setup(
             'sphinx-toolbox',
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
+            'nbsphinx',
+            'jupyterlab',
+            'matplotlib',
 
             # checking code quality
             'pylint',
             'flake8',
+
+            # publish at PyPI
+            'twine'
         ],
         # Only needed when you run the unittests in debug mode, or you run the Jupyter Notebooks that create additional
         # visualizations. This is not compulsory though.
         'ui': [
             'plotly',
-            'matplotlib',
             'seaborn',
             'kaleido',  # plotly depends on this package for SVG export
         ]

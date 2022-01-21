@@ -13,6 +13,13 @@
 import os
 import sys
 
+# import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
+# documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
+# it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
+from matplotlib.font_manager import fontManager
+fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
+
+# include conflowgen from source code, avoid getting served an outdated installation
 sys.path.insert(
     0,
     os.path.abspath(
@@ -37,15 +44,17 @@ author = 'Marvin Kastner and Ole Grasse'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.coverage',
+    # sphinx-internal extensions
+    'sphinx.ext.autodoc',  # automatically document classes
+    'sphinx.ext.todo',  # create to-do boxes
+    'sphinx.ext.napoleon',  # use google-style document strings
+    'sphinx.ext.mathjax',  # support LaTeX-style formula
+    'sphinx.ext.intersphinx',  # add links to other docs
 
-    'sphinx_math_dollar',
-    'enum_tools.autoenum',
-    'sphinx_toolbox.more_autodoc.autonamedtuple'
+    'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
+    'enum_tools.autoenum',  # automatically document enums
+    'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
+    'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -56,12 +65,15 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+add_module_names = False
+
+todo_include_todos = True
+
+autoclass_content = 'both'
+
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
 html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -73,14 +85,9 @@ html_logo = "../logos/conflowgen_logo_small.png"
 
 html_favicon = "../logos/conflowgen_logo_favicon.png"
 
-autodoc_typehints = 'both'
-autodoc_typehints_format = 'short'
 
-add_module_names = False
+# -- Options for formula -----------------------------------------------------
 
-todo_include_todos = True
-
-autoclass_content = 'both'
 
 mathjax3_config = {
     'tex2jax': {
@@ -89,13 +96,19 @@ mathjax3_config = {
     },
 }
 
-nitpicky = True
-nitpick_ignore = []
 
-with open('.nitpick-exceptions', encoding="utf-8") as f:
-    for line in f:
-        if line.strip() == "" or line.startswith("#"):
-            continue
-        sphinx_label, sphinx_object_name = line.split(None, 1)
-        sphinx_object_name = sphinx_object_name.strip()
-        nitpick_ignore.append((sphinx_label, sphinx_object_name))
+# -- Options for Linking  ----------------------------------------------------
+
+version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
+intersphinx_mapping = {
+    'python': (f'https://docs.python.org/{version_link}', None)  # link to used Python version
+}
+
+# -- Options for Included Jupyter Notebooks ----------------------------------
+
+nbsphinx_execute = "always"
+
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc=figure.dpi=96",
+]

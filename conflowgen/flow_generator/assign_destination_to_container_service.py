@@ -30,7 +30,13 @@ class AssignDestinationToContainerService:
                 self.logger.debug(f"Destination '{destination.destination_name}' is frequented by {100*fraction:.2f}% "
                                   f"of the containers and is number {destination.sequence_id}")
 
-    def assign(self):
+    def assign(self) -> None:
+        """
+        Whenever a container continues its journey on a vehicle that can transport larger amounts of containers,
+        grouping containers in the yard helps to avoid reshuffles. The next destination for a container is determined
+        in the following. This step can only be done if the next destinations of the vehicle are determined in the
+        schedule (this is an optional user input). The frequency is expressed in boxes.
+        """
         destination_with_distinct_schedules: Iterable[Destination] = Destination.select(
             Destination.belongs_to_schedule).distinct()
         schedules = [

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
+from typing import cast
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -17,6 +18,13 @@ class AbstractPreviewReport(abc.ABC):
         ModeOfTransport.train,
         ModeOfTransport.truck
     ]
+
+    @property
+    @abc.abstractmethod
+    def report_description(self) -> str:
+        """The report description is a text representation describing an preview report. It is formatted to allow being
+        logged to a command line interface or a file. This short description does not contain all information available.
+        If in doubt, the user should return to the documentation."""
 
     def __init__(self):
         assert set(self.order_of_vehicle_types_in_report) == set(ModeOfTransport), "Missing ModeOfTransport type"
@@ -47,3 +55,27 @@ class AbstractPreviewReport(abc.ABC):
 
     def get_report_as_graph(self) -> object:
         raise NotImplementedError("No graph representation of this report has yet been defined.")
+
+    def show_report_as_graph(self, **kwargs) -> None:
+        """
+        This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g. by invoking
+        ``plt.show()`` or ``fig.show``. This depends on the visualisation library.
+
+        Args:
+            **kwargs: The additional keyword arguments are passed to the analysis instance.
+        """
+        raise NotImplementedError("No show method has yet been defined.")
+
+
+class AbstractPreviewReportWithMatplotlib(AbstractPreviewReport, metaclass=abc.ABCMeta):
+    def show_report_as_graph(self, **kwargs) -> None:
+        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
+        self.get_report_as_graph()
+        plt.show()
+
+
+class AbstractPreviewReportWithPlotly(AbstractPreviewReport, metaclass=abc.ABCMeta):
+    def show_report_as_graph(self, **kwargs) -> None:
+        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
+        fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
+        fig.show()

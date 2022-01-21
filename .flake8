@@ -4,6 +4,7 @@ exclude =
     venv,
     conflowgen-venv,
     __pycache__,
+    build,
     docs,
     ConFlowGen.egg-info,
     .pytest_cache,

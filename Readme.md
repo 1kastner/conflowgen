@@ -1,16 +1,19 @@
 [![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/en/latest/?badge=latest)
 [![Docs](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml)
+
 [![Tests](https://github.com/1kastner/conflowgen/actions/workflows/unittests.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/unittests.yaml)
 [![codecov](https://codecov.io/gh/1kastner/conflowgen/branch/main/graph/badge.svg?token=GICVMYHJ42)](https://codecov.io/gh/1kastner/conflowgen)
+
 [![Linting](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/1kastner/conflowgen/badge)](https://www.codefactor.io/repository/github/1kastner/conflowgen)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/context:python)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/alerts/)
 
+[![Demo](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml)
 [![Windows conda installation (conda in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml)
 [![Windows conda installation (conda not in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml)
-[![Demo](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml)
 
+[![DOI](https://zenodo.org/badge/433930077.svg)](https://zenodo.org/badge/latestdoi/433930077)
 
 <table style="border: none">
   <tr style="border: none">
@@ -30,7 +33,7 @@ container terminals.
 
 A documentation on the background of this project, its API, and a step-by-step guide is available
 [at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
-Please check 
+Please check
 [in the background section](https://conflowgen.readthedocs.io/en/latest/background.html)
 first whether ConFlowGen is the right tool for your purpose.
 
@@ -42,7 +45,7 @@ CMD).
 ```bash
 git clone https://github.com/1kastner/conflowgen
 cd conflowgen
-pip install --user .
+pip install .
 ```
 
 After you have installed the library, you are ready to define your own scenarios and generate the data.
@@ -61,55 +64,5 @@ Examples how to generate synthetic data with ConFlowGen exist
 Additional use cases are presented
 [in the example usage subdirectory](https://github.com/1kastner/conflowgen/tree/main/example%20usage).
 
-
-## Development installation
-
-For the development installation, instead of simply invoking `pip install` in the CLI in the project root folder, we 
-additionally add the optional dependencies `dev` and `ui`.
-The dependencies listed in `dev` allow us to run the unit tests and create the documentation.
-The dependencies listed in `ui` allow us to create the visuals that are e.g. used when debugging probability-based 
-unit tests or when creating visuals in Jupyter notebooks. 
-
-```bash
-git clone https://github.com/1kastner/conflowgen
-cd conflowgen
-pip install --user -e .[dev,ui]
-```
-
-After introducing the changed, you can run `run_ci_light.bat` on Windows.
-It executes most of the continuous integration (CI) checks. 
-On GitHub, these are implemented as GitHub workflows.
-Once all jobs finish successfully, you can create a pull request if you would like to share your changes with the
-ConFlowGen community.
-You can also run the checks individually which is explained in the following.
-
-### Run all tests
-
-Set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
-If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
-Parallel test execution has not been tested and might not work.
-If you prefer to also check the test coverage, you can run
-`pytest --cov="./conflowgen" --cov-report html`
-from the project root directory.
-After the execution, the test coverage report is located in `<project-root>/htmlcov/index.html`.
-Each new feature should be covered by tests unless there are very good reasons why this is not fruitful.
-
-### Generate the documentation
-
-For generating the documentation, 
-[sphinx](https://www.sphinx-doc.org/)
-is used - mostly the default settings are maintained.
-The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
-To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
-Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
-Linux users invoke `make html` instead.
-It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
-(see the corresponding
-[GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
-for reference).
-
-### Checking the code quality
-
-For checking the code quality, pylint and flake8 are used.
-Pylint is run by executing `pylint conflowgen` on the project root level.
-For flake8, simply invoke `flake8` at the same level.
+If you wish to contribute to the project, please have a look at
+[Contributing.md](Contributing.md).

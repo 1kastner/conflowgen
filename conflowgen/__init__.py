@@ -59,6 +59,8 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 
 # List of functions
 from conflowgen.logging.logging import setup_logger
+from conflowgen.posthoc_analyses import run_all_posthoc_analyses
+from conflowgen.previews import run_all_previews
 
 # List of named tuples
 from conflowgen.previews.vehicle_capacity_exceeded_preview import RequiredAndMaximumCapacityComparison
@@ -73,3 +75,4 @@ from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from .metadata import __version__
 from .metadata import __author__
 from .metadata import __email__
+from .metadata import __license__

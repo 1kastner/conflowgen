@@ -63,9 +63,10 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             inbound_capacity_of_vehicles: Dict[ModeOfTransport, float]
     ) -> float:
         """
-        Get the capacity in TEU which is transported by truck. Currently, during the generation process each
-        import container is picked up by one truck and for each import container, in the next step one export container
-        is created. Thus, this method accounts for both import and export.
+        Get the capacity in TEU which is transported by truck. Currently, during the generation process each import
+        container is picked up by one truck and for each import container, in the next step one export container is
+        created.
+        Thus, this method accounts for both import and export.
         """
         truck_capacity = 0
         for vehicle_type in ModeOfTransport.get_scheduled_vehicles():
@@ -90,7 +91,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         depending on the outbound distribution, are created based on the assumptions of the further container flow
         generation process.
         """
-        inbound_capacity: Dict[ModeOfTransport, int | float] = {
+        inbound_capacity: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
@@ -103,7 +104,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
                 schedule.vehicle_arrives_every_k_days,
                 schedule.vehicle_arrives_at_time
             )
-            total_capacity_moved_by_vessel = len(arrivals) * schedule.average_moved_capacity
+            total_capacity_moved_by_vessel = (len(arrivals)  # number of vehicles that are planned
+                                              * schedule.average_moved_capacity)  # TEU capacity of each vehicle
             inbound_capacity[schedule.vehicle_type] += total_capacity_moved_by_vessel
 
         inbound_capacity[ModeOfTransport.truck] = self._get_truck_capacity_for_export_containers(inbound_capacity)
