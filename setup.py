@@ -40,6 +40,7 @@ setup(
             'sphinx',
             'sphinx-rtd-theme',
             'sphinx-toolbox',
+            'myst-parser',
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
             'nbsphinx',

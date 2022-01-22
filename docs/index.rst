@@ -13,3 +13,4 @@ Its source code hosted
    notebooks/input_distributions.ipynb
    api
    demo
+   contributing
