@@ -1,0 +1,14 @@
+/**
+  Overwrite default behavior of sphinxcontrib.bibtex to set up labels in front of the authors.
+  Here, the labels are not wanted and at the same time bibtex links should be resolved, see here for more details:
+  - https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#bullet-lists-and-enumerated-lists
+  - https://github.com/mcmtroffaes/sphinxcontrib-bibtex/issues/8#issuecomment-300141183 for more details.
+  */
+dl.citation dt.label {
+    display: none !important;
+}
+
+dl.citation dd {
+    display: list-item;
+    list-style-type: arabic;
+}
