@@ -23,7 +23,6 @@ DEFAULT_CONTAINER_LENGTH_FREQUENCIES = {
 
 
 def seed():
-    """
-    Seeds the database with some initial values for the length categories.
-    """
-    ContainerLengthDistributionRepository.set_distribution(DEFAULT_CONTAINER_LENGTH_FREQUENCIES)
+    ContainerLengthDistributionRepository().set_distribution(
+        DEFAULT_CONTAINER_LENGTH_FREQUENCIES
+    )
