@@ -51,6 +51,7 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
 
+    'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text
     'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
     'enum_tools.autoenum',  # automatically document enums
@@ -114,3 +115,9 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.figure_formats={'svg', 'pdf'}",
     "--InlineBackend.rc=figure.dpi=96",
 ]
+
+# -- Options for Citing Sources -----------------------------------------------
+
+bibtex_bibfiles = ['references.bib']
+
+bibtex_reference_style = "author_year"

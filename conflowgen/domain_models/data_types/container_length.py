@@ -33,7 +33,7 @@ class ContainerLength(enum.Enum):
             cls.other: 2.5  # This is assumed to be a bad shape taking a lot of capacity.
         }[container_length]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         The representation is e.g. '20 foot' instead of '<ContainerLength.twenty_feet>' and thus nicer for the logs.
         """

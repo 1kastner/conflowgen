@@ -41,6 +41,7 @@ setup(
             'sphinx-rtd-theme',
             'sphinx-toolbox',
             'myst-parser',
+            'sphinxcontrib-bibtex',
             'sphinx-autodoc-typehints',
             'sphinx-math-dollar',
             'nbsphinx',
