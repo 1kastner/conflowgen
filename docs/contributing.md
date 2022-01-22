@@ -1,2 +1,2 @@
-```{include} ..\Contributing.md
+```{include} ../Contributing.md
 ```
