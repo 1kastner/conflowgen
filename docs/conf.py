@@ -51,6 +51,7 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
 
+    'myst_parser',  # allow Markdown text
     'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_autodoc_typehints',  # add typehints to signatures
