@@ -12,8 +12,8 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 #: In an expert interview it was said that the TEU factor in their case is approximately 1.6 and 45 foot containers made
 #: up less than 5%.
 #:
-#: The numbers used here are inspired by the statistics and the expert interview.
-#: They are believed to be a reasonable first assumption if no other data is available.
+#: The numbers used here are inspired by the reported statistics and the expert interview.
+#: They are believed to be a reasonable first assumption if no data is available.
 DEFAULT_CONTAINER_LENGTH_FREQUENCIES = {
     ContainerLength.twenty_feet: 0.4,
     ContainerLength.forty_feet: 0.57,
