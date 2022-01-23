@@ -11,7 +11,7 @@ class ContainerFlowGenerationManager:
     """
     This manager provides the interface to set the properties (i.e., not the distributions that are handled elsewhere)
     and trigger the synthetic container flow generation.
-    If not provided, for many of these values `default values <notebooks/input_distributions.ipynb#Default-values>`_
+    If not provided, for many of these values `default values <notebooks/input_distributions.ipynb#Default-Values>`_
     exist.
     """
 
