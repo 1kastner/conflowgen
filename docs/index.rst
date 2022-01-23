@@ -12,6 +12,7 @@ Its source code hosted
    background
    notebooks/input_distributions.ipynb
    demo
+   example_usage
    api
    contributing
    bibliography
