@@ -1,7 +1,7 @@
 import unittest
 
 from conflowgen.database_connection.create_tables import create_tables
-from conflowgen.domain_models.distribution_seeders.seed_database import seed_all_distributions
+from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 from conflowgen.posthoc_analyses import run_all_posthoc_analyses
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
