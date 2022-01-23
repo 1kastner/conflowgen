@@ -6,7 +6,7 @@ from peewee import SqliteDatabase
 
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.base_model import database_proxy
-from conflowgen.domain_models.distribution_seeders.seed_database import seed_all_distributions
+from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 
 
 class SqliteDatabaseIsMissingException(Exception):

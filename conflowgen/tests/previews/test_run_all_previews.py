@@ -3,7 +3,7 @@ import datetime
 
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
 from conflowgen.database_connection.create_tables import create_tables
-from conflowgen.domain_models.distribution_seeders.seed_database import seed_all_distributions
+from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 from conflowgen.previews import run_all_previews
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 

@@ -1,5 +1,5 @@
 import datetime
-from typing import Union, Dict
+from typing import Union, Dict, Optional
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -11,6 +11,8 @@ class ContainerFlowGenerationManager:
     """
     This manager provides the interface to set the properties (i.e., not the distributions that are handled elsewhere)
     and trigger the synthetic container flow generation.
+    If not provided, for many of these values `default values <notebooks/input_distributions.ipynb#Default-values>`_
+    exist.
     """
 
     def __init__(self):
@@ -21,16 +23,16 @@ class ContainerFlowGenerationManager:
             self,
             start_date: datetime.date,
             end_date: datetime.date,
-            name: Union[str, None] = None,
-            minimum_dwell_time_of_import_containers_in_hours: Union[int, None] = None,
-            maximum_dwell_time_of_import_containers_in_hours: Union[int, None] = None,
-            minimum_dwell_time_of_export_containers_in_hours: Union[int, None] = None,
-            maximum_dwell_time_of_export_containers_in_hours: Union[int, None] = None,
-            minimum_dwell_time_of_transshipment_containers_in_hours: Union[int, None] = None,
-            maximum_dwell_time_of_transshipment_containers_in_hours: Union[int, None] = None
+            name: Optional[str] = None,
+            minimum_dwell_time_of_import_containers_in_hours: Optional[int] = None,
+            maximum_dwell_time_of_import_containers_in_hours: Optional[int] = None,
+            minimum_dwell_time_of_export_containers_in_hours: Optional[int] = None,
+            maximum_dwell_time_of_export_containers_in_hours: Optional[int] = None,
+            minimum_dwell_time_of_transshipment_containers_in_hours: Optional[int] = None,
+            maximum_dwell_time_of_transshipment_containers_in_hours: Optional[int] = None,
+            transportation_buffer: Optional[float] = None
     ) -> None:
         """
-
         Args:
             start_date: The earliest day any scheduled vehicle arrives. Trucks that drop off containers might arrive
                 earlier though.
@@ -49,6 +51,8 @@ class ContainerFlowGenerationManager:
                 hours to pick up a transshipment container that has previously been dropped off.
             maximum_dwell_time_of_transshipment_containers_in_hours: No vehicles arrives later than this amount of hours
                 after the previous vehicle which has dropped off the transshipment container has arrived.
+            transportation_buffer: Determines how many percent more of the inbound journey capacity is used at most to
+                transport containers on the outbound journey.
         """
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
 
@@ -81,6 +85,9 @@ class ContainerFlowGenerationManager:
         if maximum_dwell_time_of_transshipment_containers_in_hours is not None:
             properties.maximum_dwell_time_of_transshipment_containers_in_hours = \
                 maximum_dwell_time_of_transshipment_containers_in_hours
+
+        if transportation_buffer is not None:
+            properties.transportation_buffer = transportation_buffer
 
         self.container_flow_generation_properties_repository.set_container_flow_generation_properties(
             properties
