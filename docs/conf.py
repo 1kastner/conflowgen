@@ -55,7 +55,6 @@ extensions = [
     'myst_parser',  # allow Markdown text
     'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
     'enum_tools.autoenum',  # automatically document enums
-    'sphinx_autodoc_typehints',  # add typehints to signatures
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
 ]
@@ -73,6 +72,8 @@ add_module_names = False
 todo_include_todos = True
 
 autoclass_content = 'both'
+
+autodoc_typehints_format = 'short'
 
 
 # -- Options for HTML output -------------------------------------------------
