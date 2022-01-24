@@ -23,9 +23,9 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
         """Must be updated once the seeded values change"""
         distribution = ContainerLengthDistributionRepository.get_distribution()
         self.assertEqual(distribution[ContainerLength.twenty_feet], 0.4)
-        self.assertEqual(distribution[ContainerLength.forty_feet], 0.6)
-        self.assertEqual(distribution[ContainerLength.forty_five_feet], 0)
-        self.assertEqual(distribution[ContainerLength.other], 0)
+        self.assertEqual(distribution[ContainerLength.forty_feet], 0.57)
+        self.assertEqual(distribution[ContainerLength.forty_five_feet], 0.029)
+        self.assertEqual(distribution[ContainerLength.other], 0.001)
 
     def test_container_lengths_in_distribution(self):
         container_length_distribution = ContainerLengthDistributionRepository.get_distribution()

@@ -61,8 +61,7 @@ The next steps from here are described
 [in the docs](https://conflowgen.readthedocs.io/en/latest/demo.html).
 Examples how to generate synthetic data with ConFlowGen exist
 [in the demo subdirectory](https://github.com/1kastner/conflowgen/tree/main/demo).
-Additional use cases are presented
-[in the example usage subdirectory](https://github.com/1kastner/conflowgen/tree/main/example%20usage).
-
+Use cases for the generated output data are presented
+[in the example usage subdirectory](https://github.com/1kastner/conflowgen/tree/main/example-usage).
 If you wish to contribute to the project, please have a look at
 [Contributing.md](Contributing.md).
