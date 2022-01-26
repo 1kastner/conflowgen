@@ -21,5 +21,8 @@ pylint conflowgen || ECHO.While linting, pylint failed && EXIT /B
 REM build docs
 CALL docs/make html || ECHO.Building the documentation failed && EXIT /B
 
+REM check the links in the docs
+CALL python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkcheck || ECHO.Links in docs broken && EXIT /B
+
 ECHO.All steps were executed successfully. Please consider also checking the skipped CI steps manually if you changed
 ECHO.related files.
