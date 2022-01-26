@@ -10,19 +10,19 @@ class ContainerLengthDistributionManager:
     This manager provides the interface to set and get the container length distribution.
 
     The default distribution is presented in the section
-    `Input Distributions <notebooks/input_distributions.ipynb#Container-Length-Distribution>`_.
+    `Container Length Distribution <notebooks/input_distributions.ipynb#Container-Length-Distribution>`_.
     """
 
     def __init__(self):
         self.container_length_repository = ContainerLengthDistributionRepository()
 
-    def get_container_lengths(self) -> Dict[ContainerLength, float]:
+    def get_container_length_distribution(self) -> Dict[ContainerLength, float]:
         """
         Returns: The distribution of container lengths. Each length is assigned its frequency of showing up.
         """
         return self.container_length_repository.get_distribution()
 
-    def set_container_lengths(
+    def set_container_length_distribution(
             self,
             container_lengths: Dict[ContainerLength, float]
     ) -> None:

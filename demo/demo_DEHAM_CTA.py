@@ -99,7 +99,7 @@ container_flow_generation_manager.set_properties(
 
 # Set some general assumptions regarding the container properties
 container_length_distribution_manager = conflowgen.ContainerLengthDistributionManager()
-container_length_distribution_manager.set_container_lengths({
+container_length_distribution_manager.set_container_length_distribution({
     conflowgen.ContainerLength.twenty_feet: 0.33,
     conflowgen.ContainerLength.forty_feet: 0.67,
     conflowgen.ContainerLength.forty_five_feet: 0,

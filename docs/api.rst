@@ -3,6 +3,7 @@ API documentation
 
 .. automodule:: conflowgen
 
+
 Domain datatypes
 ================
 
@@ -28,21 +29,31 @@ Domain datatypes
 
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
 
-Interacting with the database
-=============================
+
+Setting up ConFlowGen
+=====================
 
 .. autoclass:: conflowgen.DatabaseChooser
     :members:
 
+.. autofunction:: conflowgen.setup_logger
+
 Setting input data
 ==================
 
-.. autofunction:: conflowgen.setup_logger
+With the following classes, the schedules, input values and input distributions are set.
+These are all required for generating the synthetic data.
+
+.. autoclass:: conflowgen.ContainerFlowGenerationManager
+    :members:
 
 .. autoclass:: conflowgen.ContainerLengthDistributionManager
     :members:
 
 .. autoclass:: conflowgen.ContainerStorageRequirementDistributionManager
+    :members:
+
+.. autoclass:: conflowgen.ContainerWeightDistributionManager
     :members:
 
 .. autoclass:: conflowgen.ModeOfTransportDistributionManager
@@ -54,8 +65,6 @@ Setting input data
 .. autoclass:: conflowgen.TruckArrivalDistributionManager
     :members:
 
-.. autoclass:: conflowgen.ContainerFlowGenerationManager
-    :members:
 
 Getting previews
 ================

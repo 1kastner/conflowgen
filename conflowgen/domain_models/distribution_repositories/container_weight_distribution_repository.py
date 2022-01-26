@@ -95,6 +95,13 @@ class ContainerWeightDistributionRepository:
                 }
         return distributions
 
-    def set_distribution(self, distribution: Dict[ContainerLength, Dict[int, float]]) -> None:
-        self._verify_container_weights(distribution)
-        raise NotImplementedError("Now, the container weight distribution must be saved in the peewee database")
+    def set_distribution(self, distributions: Dict[ContainerLength, Dict[int, float]]) -> None:
+        self._verify_container_weights(distributions)
+        ContainerWeightDistribution.delete().execute()
+        for container_length, weight_distribution in distributions.items():
+            for container_weight_category, fraction in weight_distribution.items():
+                ContainerWeightDistribution.create(
+                    container_length=container_length,
+                    weight_category=container_weight_category,
+                    fraction=fraction
+                ).save()

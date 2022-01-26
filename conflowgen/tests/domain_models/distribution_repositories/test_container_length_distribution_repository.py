@@ -33,7 +33,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
         self.assertIn(ContainerLength.forty_feet, container_length_distribution.keys())
         self.assertIn(ContainerLength.forty_five_feet, container_length_distribution.keys())
 
-    def test_distribution_loader_sums_up_to_one_per_container_length(self):
+    def test_distribution_sums_up_to_one_per_container_length(self):
         container_length_distribution = ContainerLengthDistributionRepository.get_distribution()
         sum_of_all_fractions = sum(container_length_distribution.values())
         self.assertAlmostEqual(
@@ -42,7 +42,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
             msg=f"All probabilities must sum to 1, but you only achieved {sum_of_all_fractions}"
         )
 
-    def test_distribution_loader_values_range_between_zero_to_one(self):
+    def test_distribution_values_range_between_zero_to_one(self):
         container_length_distribution = ContainerLengthDistributionRepository.get_distribution()
         for container_length in ContainerLength:
             proportion = container_length_distribution[container_length]

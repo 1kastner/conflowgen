@@ -22,7 +22,7 @@ class TestContainerLengthDistributionManager(unittest.TestCase):
                 self.container_length_distribution_manager.container_length_repository,
                 'get_distribution',
                 return_value=self.SAMPLE_LENGTH_DISTRIBUTION) as mock_method:
-            distribution = self.container_length_distribution_manager.get_container_lengths()
+            distribution = self.container_length_distribution_manager.get_container_length_distribution()
         mock_method.assert_called_once()
         self.assertEqual(distribution, self.SAMPLE_LENGTH_DISTRIBUTION)
 
@@ -31,5 +31,6 @@ class TestContainerLengthDistributionManager(unittest.TestCase):
                 self.container_length_distribution_manager.container_length_repository,
                 'set_distribution',
                 return_value=None) as mock_method:
-            self.container_length_distribution_manager.set_container_lengths(self.SAMPLE_LENGTH_DISTRIBUTION)
+            self.container_length_distribution_manager.set_container_length_distribution(
+                self.SAMPLE_LENGTH_DISTRIBUTION)
         mock_method.assert_called_once_with(self.SAMPLE_LENGTH_DISTRIBUTION)

@@ -5,7 +5,9 @@ from conflowgen.domain_models.field_types.container_length import ContainerLengt
 
 
 class ContainerWeightDistribution(BaseModel):
-    """The weight distribution of the containers"""
+    """
+    The weight distribution of the containers
+    """
     container_length = ContainerLengthField(null=False)
     weight_category = IntegerField(null=False)
     fraction = FloatField(null=False)

@@ -28,7 +28,7 @@ class TestContainerWeightDistributionManager(unittest.TestCase):
                 self.container_weight_distribution_manager.container_weight_repository,
                 'get_distribution',
                 return_value=self.CONTAINER_SAMPLE_DISTRIBUTION) as mock_method:
-            self.container_weight_distribution_manager.get_container_weights()
+            self.container_weight_distribution_manager.get_container_weight_distribution()
         mock_method.assert_called_once()
 
     def test_set_container_lengths(self):
@@ -36,5 +36,6 @@ class TestContainerWeightDistributionManager(unittest.TestCase):
                 self.container_weight_distribution_manager.container_weight_repository,
                 'set_distribution',
                 return_value=None) as mock_method:
-            self.container_weight_distribution_manager.set_container_weights(self.CONTAINER_SAMPLE_DISTRIBUTION)
+            self.container_weight_distribution_manager.set_container_weight_distribution(
+                self.CONTAINER_SAMPLE_DISTRIBUTION)
         mock_method.assert_called_once_with(self.CONTAINER_SAMPLE_DISTRIBUTION)

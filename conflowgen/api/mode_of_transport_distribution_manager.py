@@ -14,7 +14,7 @@ class ModeOfTransportDistributionManager:
     def __init__(self):
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
 
-    def get_mode_of_transport_distributions(
+    def get_mode_of_transport_distribution(
             self
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
@@ -26,7 +26,7 @@ class ModeOfTransportDistributionManager:
         """
         return self.mode_of_transport_distribution_repository.get_distribution()
 
-    def set_mode_of_transport_distributions(
+    def set_mode_of_transport_distribution(
             self,
             distributions: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ) -> None:
