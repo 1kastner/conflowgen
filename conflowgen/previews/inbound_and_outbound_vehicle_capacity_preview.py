@@ -85,7 +85,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         self.validator.validate(mode_of_transport_distribution)
         self.mode_of_transport_distribution = mode_of_transport_distribution
 
-    def get_inbound_capacity_of_vehicles(self) -> Dict[ModeOfTransport, int]:
+    def get_inbound_capacity_of_vehicles(self) -> Dict[ModeOfTransport, float]:
         """
         For the inbound capacity, first vehicles that adhere to a schedule are considered. Trucks, which are created
         depending on the outbound distribution, are created based on the assumptions of the further container flow

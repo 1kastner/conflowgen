@@ -22,7 +22,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
         self.mode_of_transport_distribution_manager = ModeOfTransportDistributionManager()
 
     def test_get(self):
-        distribution = self.mode_of_transport_distribution_manager.get_mode_of_transport_distributions()
+        distribution = self.mode_of_transport_distribution_manager.get_mode_of_transport_distribution()
         for delivered_by in ModeOfTransport:
             self.assertIn(delivered_by, distribution.keys())
             for picked_up_by in ModeOfTransport:
@@ -35,7 +35,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
 
     def test_set_with_missing_keys_first_level(self) -> None:
         with self.assertRaises(ModeOfTransportDeliveredWithMissing):
-            self.mode_of_transport_distribution_manager.set_mode_of_transport_distributions(
+            self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
                         ModeOfTransport.train: 0.2,
@@ -50,7 +50,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
 
     def test_set_with_missing_keys_second_level(self) -> None:
         with self.assertRaises(ModeOfTransportPickedUpByMissing):
-            self.mode_of_transport_distribution_manager.set_mode_of_transport_distributions(
+            self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
                         ModeOfTransport.train: 0.2,
@@ -76,7 +76,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             )
 
     def test_happy_path(self) -> None:
-        self.mode_of_transport_distribution_manager.set_mode_of_transport_distributions(
+        self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
             {
                 ModeOfTransport.feeder: {
                     ModeOfTransport.train: 0.2,
@@ -118,7 +118,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
 
     def test_set_with_wrong_proportions(self) -> None:
         with self.assertRaises(ModeOfTransportProportionOutOfRangeException):
-            self.mode_of_transport_distribution_manager.set_mode_of_transport_distributions(
+            self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
                         ModeOfTransport.train: 1.1,  # the malicious entry
@@ -159,7 +159,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
 
     def test_set_what_do_not_add_up_to_one(self) -> None:
         with self.assertRaises(ModeOfTransportProportionsUnequalOneException):
-            self.mode_of_transport_distribution_manager.set_mode_of_transport_distributions(
+            self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {  # these together are beyond 1
                         ModeOfTransport.train: 0.9,

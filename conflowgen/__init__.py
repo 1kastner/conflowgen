@@ -4,6 +4,7 @@ This is the intended interface for users who want to generate synthetic containe
 
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
+from conflowgen.api.container_weight_distribution_manager import ContainerWeightDistributionManager
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
 from conflowgen.api.database_chooser import DatabaseChooser
 from conflowgen.api.export_container_flow_manager import ExportContainerFlowManager

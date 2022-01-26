@@ -16,7 +16,7 @@ class TruckArrivalDistributionManager:
     def __init__(self):
         self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
 
-    def get_truck_arrival_distributions(self) -> Dict[int, float]:
+    def get_truck_arrival_distribution(self) -> Dict[int, float]:
         """
         Returns: The truck arrival distribution.
             Each key represents the hour in the week and each value represents the
@@ -25,7 +25,7 @@ class TruckArrivalDistributionManager:
         """
         return self.truck_arrival_distribution_repository.get_distribution()
 
-    def set_truck_arrival_distributions(self, distribution: Dict[int, float]) -> None:
+    def set_truck_arrival_distribution(self, distribution: Dict[int, float]) -> None:
         """
 
         Args:

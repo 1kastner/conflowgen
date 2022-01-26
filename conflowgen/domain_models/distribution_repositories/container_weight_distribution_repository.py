@@ -1,14 +1,46 @@
+import math
 from typing import Dict
 
 from conflowgen.domain_models.distribution_models.container_weight_distribution import ContainerWeightDistribution
 from conflowgen.domain_models.data_types.container_length import ContainerLength
+from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
+    ContainerLengthMissing
 
 
 class MissingContainerWeightDistributionEntryException(Exception):
     pass
 
 
+class ContainerWeightProbabilitiesUnequalOne(Exception):
+    pass
+
+
+class ContainerWeightProportionOutOfRangeException(Exception):
+    pass
+
+
 class ContainerWeightDistributionRepository:
+
+    @staticmethod
+    def _verify_container_weights(container_weights: Dict[ContainerLength, Dict[int, float]]):
+        for container_length in ContainerLength:
+            if container_length not in container_weights.keys():
+                raise ContainerLengthMissing(container_length)
+
+            container_weight_distribution_for_container_length = container_weights[container_length]
+            total_probability_for_container_length = sum(container_weight_distribution_for_container_length.values())
+            if not math.isclose(total_probability_for_container_length, 1):
+                raise ContainerWeightProbabilitiesUnequalOne(
+                    f"Container length: {container_length}, "
+                    f"sum of all probabilities: {total_probability_for_container_length}"
+                )
+
+            for key, proportion in container_weight_distribution_for_container_length.items():
+                if not (0 <= proportion <= 1):
+                    raise ContainerWeightProportionOutOfRangeException(
+                        f"Container length: {container_length}, "
+                        f"key: {key}, value: {proportion}"
+                    )
 
     @staticmethod
     def _get_fraction_for_container_type(
@@ -62,3 +94,14 @@ class ContainerWeightDistributionRepository:
                     for container_weight_category in container_weight_categories
                 }
         return distributions
+
+    def set_distribution(self, distributions: Dict[ContainerLength, Dict[int, float]]) -> None:
+        self._verify_container_weights(distributions)
+        ContainerWeightDistribution.delete().execute()
+        for container_length, weight_distribution in distributions.items():
+            for container_weight_category, fraction in weight_distribution.items():
+                ContainerWeightDistribution.create(
+                    container_length=container_length,
+                    weight_category=container_weight_category,
+                    fraction=fraction
+                ).save()
