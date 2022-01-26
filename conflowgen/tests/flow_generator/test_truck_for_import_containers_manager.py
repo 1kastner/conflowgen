@@ -3,7 +3,6 @@ import unittest
 from collections import Counter
 
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 from conflowgen.domain_models.distribution_models.truck_arrival_distribution import TruckArrivalDistribution
 from conflowgen.domain_models.distribution_seeders import truck_arrival_distribution_seeder
@@ -45,6 +44,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             pickup_times.append(pickup_time)
 
         if self.debug:
+            import seaborn as sns  # pylint: disable=import-outside-toplevel
             sns.kdeplot(pickup_times, bw=0.01)
             plt.show(block=True)
 
@@ -76,6 +76,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         self.assertIn(0, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
                                                  "At least once a Monday was counted (02.08.2021)")
         if self.debug:
+            import seaborn as sns  # pylint: disable=import-outside-toplevel
             sns.kdeplot(pickup_times, bw=0.01)
             plt.show(block=True)
 
@@ -107,5 +108,6 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         self.assertIn(0, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
                                                  "At least once a Monday was counted (02.08.2021)")
         if self.debug:
+            import seaborn as sns  # pylint: disable=import-outside-toplevel
             sns.kdeplot(pickup_times, bw=0.01)
             plt.show(block=True)

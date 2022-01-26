@@ -58,8 +58,8 @@ if not port_call_manager.has_schedule(feeder_service_name, vehicle_type=conflowg
         average_vehicle_capacity=800,
         average_moved_capacity=100,
         next_destinations=[
-            ("DEBRV", 0.4),  # 50% of the containers go here...
-            ("RULED", 0.6)   # and the other 50% of the containers go here.
+            ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
+            ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
         ]
     )
 else:
@@ -91,8 +91,8 @@ if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=conflo
         average_vehicle_capacity=16000,
         average_moved_capacity=150,  # for faster demo
         next_destinations=[
-            ("ZADUR", 0.3),  # 30% of the containers go here...
-            ("CNSHG", 0.7)   # and the other 70% of the containers go here.
+            ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
+            ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
         ]
     )
 else:

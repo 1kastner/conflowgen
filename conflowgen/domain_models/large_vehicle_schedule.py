@@ -32,12 +32,12 @@ class Schedule(BaseModel):
     vehicle_arrives_at = DateField(
         null=False,
         help_text="This is a fixed arrival of the vehicle. "
-                  "This is taken as the base for `vehicle_arrives_every_k_days`"
+                  "This is taken as the base for `vehicle_arrives_every_k_days`."
     )
     vehicle_arrives_every_k_days = IntegerField(
         null=False, default=7,
-        help_text="After the first arrival, the vehicle is supposed to arrive every k days. If this is -1, it means "
-                  "that the vehicle only arrives once."
+        help_text="After the first arrival, the vehicle is supposed to arrive every k days."
+                  "If this is -1, it means that the vehicle only arrives once."
     )
     vehicle_arrives_at_time = TimeField(
         null=True, default=None,
@@ -74,7 +74,7 @@ class Destination(BaseModel):
     )
 
     def __str__(self) -> str:
-        return "<Destination '{destination_name}'>"
+        return f"<Destination '{self.destination_name}'>"
 
     @classmethod
     def initialize_index(cls):

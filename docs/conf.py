@@ -51,9 +51,10 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
 
+    'sphinxcontrib.bibtex',  # allow bib style citation
+    'myst_parser',  # allow Markdown text
     'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
     'enum_tools.autoenum',  # automatically document enums
-    'sphinx_autodoc_typehints',  # add typehints to signatures
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
 ]
@@ -72,6 +73,8 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
+autodoc_typehints_format = 'short'
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -81,6 +84,12 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+html_css_files = [
+    'css/custom.css',
+]
+
+# html_style = 'css/custom.css'
 
 html_logo = "../logos/conflowgen_logo_small.png"
 
@@ -113,3 +122,9 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.figure_formats={'svg', 'pdf'}",
     "--InlineBackend.rc=figure.dpi=96",
 ]
+
+# -- Options for Citing Sources -----------------------------------------------
+
+bibtex_bibfiles = ['references.bib']
+
+bibtex_reference_style = "author_year"

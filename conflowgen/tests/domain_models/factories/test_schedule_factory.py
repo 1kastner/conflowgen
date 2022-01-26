@@ -19,16 +19,85 @@ class TestScheduleFactory(unittest.TestCase):
         self.schedule_factory = ScheduleFactory()
 
     def test_add_schedule(self) -> None:
-        """Happy path"""
+        test_service_name = "LX050"
         self.schedule_factory.add_schedule(
-            service_name="LX050",
+            service_name=test_service_name,
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
             average_moved_capacity=1,
             next_destinations=[
-                ("DEBRV", 0.5),
-                ("CNSHG", 0.5)
+                ("DEBRV", 0.6),
+                ("CNSHG", 0.4)
             ]
         )
+        schedule = Schedule.get_or_none(Schedule.service_name == test_service_name)
+        self.assertIsNotNone(schedule)
+        self.assertEqual(schedule.vehicle_type, ModeOfTransport.feeder)
+        self.assertEqual(schedule.vehicle_arrives_at, datetime.date(2021, 7, 9))
+        self.assertEqual(schedule.average_vehicle_capacity, 800)
+        self.assertEqual(schedule.average_moved_capacity, 1)
+        next_destinations = Destination.select().where(Destination.belongs_to_schedule == schedule)
+        next_destinations = list(next_destinations)
+        self.assertEqual(len(next_destinations), 2)
+        next_destination_names = map(lambda destination: destination.destination_name, next_destinations)
+        self.assertSetEqual(set(next_destination_names), {"DEBRV", "CNSHG"})
+
+    def test_repeated_add_schedule(self) -> None:
+        test_service_name = "LX050"
+        self.schedule_factory.add_schedule(
+            service_name=test_service_name,
+            vehicle_type=ModeOfTransport.feeder,
+            vehicle_arrives_at=datetime.date(2021, 7, 9),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=1,
+            next_destinations=[
+                ("DEBRV", 0.6),
+                ("CNSHG", 0.4)
+            ]
+        )
+        self.schedule_factory.add_schedule(
+            service_name=test_service_name,
+            vehicle_type=ModeOfTransport.feeder,
+            vehicle_arrives_at=datetime.date(2021, 7, 10),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=1,
+            next_destinations=[
+                ("DEBRV", 0.6),
+                ("CNSHG", 0.4)
+            ]
+        )
+        schedules = Schedule.select().where(Schedule.service_name == test_service_name)
+        self.assertEqual(len(schedules), 2)
+        schedule_1 = Schedule.get_or_none(Schedule.service_name == test_service_name)
+        self.assertIsNotNone(schedule_1)
+        # This does not throw an exception, but it might not be what the user expects
+
+    def test_get_schedule(self) -> None:
+        test_service_name = "LX050"
+        self.schedule_factory.add_schedule(
+            service_name=test_service_name,
+            vehicle_type=ModeOfTransport.feeder,
+            vehicle_arrives_at=datetime.date(2021, 7, 9),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=1,
+            next_destinations=[
+                ("DEBRV", 0.6),
+                ("CNSHG", 0.4)
+            ]
+        )
+        schedule = self.schedule_factory.get_schedule(test_service_name, ModeOfTransport.feeder)
+        self.assertIsNotNone(schedule)
+        self.assertEqual(schedule.vehicle_type, ModeOfTransport.feeder)
+        self.assertEqual(schedule.vehicle_arrives_at, datetime.date(2021, 7, 9))
+        self.assertEqual(schedule.average_vehicle_capacity, 800)
+        self.assertEqual(schedule.average_moved_capacity, 1)
+        next_destinations = Destination.select().where(Destination.belongs_to_schedule == schedule)
+        next_destinations = list(next_destinations)
+        self.assertEqual(len(next_destinations), 2)
+        next_destination_names = map(lambda destination: destination.destination_name, next_destinations)
+        self.assertSetEqual(set(next_destination_names), {"DEBRV", "CNSHG"})

@@ -1,7 +1,7 @@
 # Contributing
 
 If you find bugs, errors, omissions or other things that need improvement, please create an issue or a pull request at 
-https://github.com/1kastner/conflowgen/.
+[https://github.com/1kastner/conflowgen/](https://github.com/1kastner/conflowgen/).
 Contributions are always welcome!
 
 ## Development installation
@@ -28,7 +28,7 @@ Once all jobs finish successfully, you can create a pull request if you would li
 ConFlowGen community.
 You can also run the checks individually which is explained in the following.
 
-### Run all tests
+## Run all tests
 
 Set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
 If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
@@ -39,7 +39,7 @@ from the project root directory.
 After the execution, the test coverage report is located in `<project-root>/htmlcov/index.html`.
 Each new feature should be covered by tests unless there are very good reasons why this is not fruitful.
 
-### Generate the documentation
+## Generate the documentation
 
 For generating the documentation, 
 [sphinx](https://www.sphinx-doc.org/)
@@ -53,7 +53,7 @@ It is advised to use a strict approach by using the additional argument `SPHINXO
 [GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
 for reference).
 
-### Checking the code quality
+## Checking the code quality
 
 For checking the code quality, pylint and flake8 are used.
 Pylint is run by executing `pylint conflowgen` on the project root level.
