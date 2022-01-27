@@ -110,6 +110,8 @@ class ContainerFactory:
             length: ContainerLength
     ) -> int | None:
         weight = None
+        # TODO: restructure code so that this translation table can be determined by the user in the
+        # ContainerWeightDistributionManager
         if storage_requirement == StorageRequirement.empty:
             if length == ContainerLength.twenty_feet:
                 weight = 2
