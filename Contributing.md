@@ -21,11 +21,11 @@ cd conflowgen
 pip install --user -e .[dev,ui]
 ```
 
-After introducing the changed, you can run `run_ci_light.bat` on Windows.
-It executes most of the continuous integration (CI) checks. 
+After modification, you can run `run_ci_light.bat` on Windows.
+It executes most of the continuous integration (CI) checks that are also automatically executed for GitHub pull requests. 
 On GitHub, these are implemented as GitHub workflows.
-Once all jobs finish successfully, you can create a pull request if you would like to share your changes with the
-ConFlowGen community.
+Once all jobs finish successfully, you can create a pull request if you would like to share your changes with the ConFlowGen community.
+Contributions are always welcome!
 You can also run the checks individually which is explained in the following.
 
 ## Run all tests
