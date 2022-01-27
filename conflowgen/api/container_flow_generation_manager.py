@@ -95,7 +95,8 @@ class ContainerFlowGenerationManager:
 
     def get_properties(self) -> Dict[str, Union[str, datetime.date, float, int]]:
         """
-        Returns: The properties of the container flow
+        Returns:
+            The properties of the container flow
         """
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
         return {
@@ -122,5 +123,7 @@ class ContainerFlowGenerationManager:
         Generate the synthetic container flow according to all the information stored in the database so far.
         This triggers a multistep procedure of generating vehicles and the containers which are delivered or picked up
         by the vehicles.
+        More is described in the Section
+        `Data Generation Process <background.rst#data-generation-process>`_.
         """
         self.container_flow_generation_service.generate()

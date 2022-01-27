@@ -14,14 +14,6 @@ ConFlowGen.egg-info
 *.sqlite-shm
 *.sqlite-wal
 
-# Visualizations
-*.emf
-*.svg
-*.png
-*.jpg
-*.bmp
-*.tif
-
 # Microsoft Office Products
 **/~$*
 

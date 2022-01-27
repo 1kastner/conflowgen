@@ -128,3 +128,7 @@ nbsphinx_execute_arguments = [
 bibtex_bibfiles = ['references.bib']
 
 bibtex_reference_style = "author_year"
+
+# -- Options for Referencing Figures ------------------------------------------
+
+numfig = True
