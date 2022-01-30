@@ -2,14 +2,13 @@ from __future__ import annotations
 import datetime
 from typing import Dict, NamedTuple
 
+from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.distribution_validators.mode_of_transport_distribution_validator import \
-    ModeOfTransportDistributionValidator
 
 
 class RequiredAndMaximumCapacityComparison(NamedTuple):
@@ -66,13 +65,12 @@ class VehicleCapacityExceededPreview(AbstractPreview):
             end_date=end_date,
             transportation_buffer=transportation_buffer
         )
-        self.validator = ModeOfTransportDistributionValidator()
 
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ):
-        self.validator.validate(mode_of_transport_distribution)
+        validate_distribution_with_one_dependent_variable(mode_of_transport_distribution)
         self.inbound_and_outbound_vehicle_capacity_preview.hypothesize_with_mode_of_transport_distribution(
             mode_of_transport_distribution
         )

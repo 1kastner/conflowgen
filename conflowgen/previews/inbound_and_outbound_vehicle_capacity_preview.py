@@ -2,12 +2,11 @@ from __future__ import annotations
 import datetime
 from typing import Dict, NamedTuple
 
+from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
-from conflowgen.domain_models.distribution_validators.mode_of_transport_distribution_validator import \
-    ModeOfTransportDistributionValidator
 from conflowgen.domain_models.factories.fleet_factory import create_arrivals_within_time_range
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 
@@ -56,7 +55,6 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         )
 
         self.mode_of_transport_distribution = ModeOfTransportDistributionRepository().get_distribution()
-        self.validator = ModeOfTransportDistributionValidator()
 
     def _get_truck_capacity_for_export_containers(
             self,
@@ -82,7 +80,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ):
-        self.validator.validate(mode_of_transport_distribution)
+        validate_distribution_with_one_dependent_variable(mode_of_transport_distribution)
         self.mode_of_transport_distribution = mode_of_transport_distribution
 
     def get_inbound_capacity_of_vehicles(self) -> Dict[ModeOfTransport, float]:

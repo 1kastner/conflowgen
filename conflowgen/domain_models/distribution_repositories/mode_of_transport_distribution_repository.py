@@ -2,14 +2,10 @@ from typing import Dict
 
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.distribution_validators.mode_of_transport_distribution_validator import \
-    ModeOfTransportDistributionValidator
+from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 
 
 class ModeOfTransportDistributionRepository:
-
-    def __init__(self):
-        self.validator = ModeOfTransportDistributionValidator()
 
     @staticmethod
     def _get_fraction(
@@ -47,11 +43,11 @@ class ModeOfTransportDistributionRepository:
             }
         return distributions
 
+    @staticmethod
     def set_mode_of_transport_distributions(
-            self,
             distributions: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ) -> None:
-        self.validator.validate(distributions)
+        validate_distribution_with_one_dependent_variable(distributions)
         ModeOfTransportDistribution.delete().execute()
         for delivered_by, picked_up_by_distribution in distributions.items():
             for picked_up_by, fraction in picked_up_by_distribution.items():
