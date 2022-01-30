@@ -5,7 +5,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.distribution_validators import DistributionProbabilitiesUnequalOne, \
-    DistributionFrequencyOutOfRange, DistributionElementIsMissingException
+    DistributionProbabilityOutOfRange, DistributionElementIsMissingException
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -129,7 +129,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
         )
 
     def test_set_with_wrong_proportions(self) -> None:
-        with self.assertRaises(DistributionFrequencyOutOfRange) as cm:
+        with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
@@ -170,7 +170,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
                 })
         expected_exception_message = (
             'The probability of an element to be drawn must range between 0 and 1 but for '
-            "element 'train' the frequency was 1.1 for the distribution {'train': "
+            "the element 'train' the probability was 1.1 in the distribution {'train': "
             "'1.10000', 'truck': '0.20000', 'barge': '0.20000', 'feeder': '0.20000', "
             "'deep_sea_vessel': '0.20000'}. This is error occurred while examining the "
             "dependent variable 'feeder'.")
@@ -217,7 +217,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
                     }
                 })
         expected_message = (
-            'The sum of all frequencies/probabilities should sum to 1 but for the '
+            'The sum of all probabilities should sum to 1 but for the '
             "distribution {'train': '0.90000', 'truck': '0.90000', 'barge': '0.20000', "
             "'feeder': '0.20000', 'deep_sea_vessel': '0.20000'} the sum was 2.40000. This "
             "is error occurred while examining the dependent variable 'feeder'."

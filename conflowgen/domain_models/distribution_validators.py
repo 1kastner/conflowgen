@@ -11,7 +11,7 @@ class DistributionElementIsMissingException(Exception):
     pass
 
 
-class DistributionFrequencyOutOfRange(Exception):
+class DistributionProbabilityOutOfRange(Exception):
     pass
 
 
@@ -53,31 +53,26 @@ def _check_value_range_of_frequencies_in_distribution(
         distribution: Dict[enum.Enum, float],
         context: Optional[str] = None
 ) -> None:
-    sum_of_frequencies = 0
-    for element, frequency in distribution.items():
-        if not (0 <= frequency <= 1):
+    sum_of_probabilities = 0
+    for element, probability in distribution.items():
+        if not (0 <= probability <= 1):
             msg = (
                 "The probability of an element to be drawn must range between 0 and 1 "
-                f"but for element '{element}' the frequency was {frequency} for the distribution "
+                f"but for the element '{element}' the probability was {probability} in the distribution "
                 f"{_format_distribution(distribution)}."
             )
             if context is not None:
                 msg += f" This is error occurred while examining {context}."
-            raise DistributionFrequencyOutOfRange(msg)
-        sum_of_frequencies += frequency
-    if not math.isclose(sum_of_frequencies, 1, abs_tol=ABSOLUTE_TOLERANCE):
+            raise DistributionProbabilityOutOfRange(msg)
+        sum_of_probabilities += probability
+    if not math.isclose(sum_of_probabilities, 1, abs_tol=ABSOLUTE_TOLERANCE):
         msg = (
-            "The sum of all frequencies/probabilities should sum to 1 "
-            f"but for the distribution {_format_distribution(distribution)} the sum was {sum_of_frequencies:.5f}."
+            "The sum of all probabilities should sum to 1 "
+            f"but for the distribution {_format_distribution(distribution)} the sum was {sum_of_probabilities:.5f}."
         )
         if context is not None:
             msg += f" This is error occurred while examining {context}."
         raise DistributionProbabilitiesUnequalOne(msg)
-
-
-def validate_distribution_without_dependent_variable(distribution: Dict[enum.Enum, float]) -> None:
-    _check_all_required_keys_are_set_in_distribution(distribution)
-    _check_value_range_of_frequencies_in_distribution(distribution)
 
 
 def _format_dependent_variable(dependent_variable: enum.Enum):
@@ -85,7 +80,7 @@ def _format_dependent_variable(dependent_variable: enum.Enum):
 
 
 def _format_entry(value: Any):
-    if str(value).replace('.', '', 1).isdigit():
+    if str(value).replace('.', '', 1).replace('-', '', 1).isdigit():
         return f"{value:.5f}"
     if isinstance(value, enum.Enum):
         return str(value)
@@ -106,6 +101,11 @@ def _format_distribution(distribution: Dict[enum.Enum, Any]) -> str:
             for enum_type_key, value in distribution.items()
         }
     )
+
+
+def validate_distribution_with_no_dependent_variables(distribution: Dict[enum.Enum, float]) -> None:
+    _check_all_required_keys_are_set_in_distribution(distribution)
+    _check_value_range_of_frequencies_in_distribution(distribution)
 
 
 def validate_distribution_with_one_dependent_variable(
