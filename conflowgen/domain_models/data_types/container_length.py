@@ -22,17 +22,18 @@ class ContainerLength(enum.Enum):
     @classmethod
     def get_factor(cls, container_length: ContainerLength) -> float:
         """
-        Args:
-            container_length: The length of the sea container
+        Each container occupies a certain amount of space when stored which is typically expressed in TEU.
 
-        Returns: The TEU factor of that container
+        .. note::
+            .. autodata:: conflowgen.domain_models.data_types.container_length.CONTAINER_LENGTH_TO_USED_TEU
+
+        Args:
+            container_length: The length of the container
+
+        Returns:
+            The TEU factor of that container
         """
-        return {
-            cls.twenty_feet: 1,
-            cls.forty_feet: 2,
-            cls.forty_five_feet: 2.25,
-            cls.other: 2.5  # This is assumed to be a bad shape taking a lot of capacity.
-        }[container_length]
+        return CONTAINER_LENGTH_TO_USED_TEU[container_length]
 
     def __str__(self) -> str:
         """
@@ -62,3 +63,17 @@ class ContainerLength(enum.Enum):
             casted_number_part = int(number_part)
             return cls(casted_number_part)
         return None
+
+
+CONTAINER_LENGTH_TO_USED_TEU = {
+    ContainerLength.twenty_feet: 1,
+    ContainerLength.forty_feet: 2,
+    ContainerLength.forty_five_feet: 2.25,
+    ContainerLength.other: 2.5
+}
+"""
+This is the translation table to specify the occupied storage space in TEU.
+For 20', 40', and 45', the typical values are picked.
+The TEU factor for the value 'other' is chosen to be rather large because it is thought to be difficult to store
+properly.
+"""
