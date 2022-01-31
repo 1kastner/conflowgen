@@ -47,7 +47,7 @@ class ModeOfTransportDistributionRepository:
     def set_mode_of_transport_distributions(
             distributions: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ) -> None:
-        validate_distribution_with_one_dependent_variable(distributions)
+        validate_distribution_with_one_dependent_variable(distributions, ModeOfTransport, ModeOfTransport)
         ModeOfTransportDistribution.delete().execute()
         for delivered_by, picked_up_by_distribution in distributions.items():
             for picked_up_by, fraction in picked_up_by_distribution.items():
