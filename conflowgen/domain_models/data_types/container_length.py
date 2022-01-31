@@ -1,5 +1,6 @@
 from __future__ import annotations
 import enum
+
 import enum_tools.documentation
 
 
@@ -35,8 +36,29 @@ class ContainerLength(enum.Enum):
 
     def __str__(self) -> str:
         """
-        The representation is e.g. '20 foot' instead of '<ContainerLength.twenty_feet>' and thus nicer for the logs.
+        The textual representation is e.g. '20 feet' instead of '<ContainerLength.twenty_feet>' so it is easier to read
+        in the logs.
         """
         if self.value > 0:
             return f"{self.value} feet"
         return "other"
+
+    @classmethod
+    def cast_element_type(cls, text: str) -> ContainerLength | None:
+        """
+        Args:
+            text: The text to parse
+
+        Returns:
+            The container length enum entry if the cast was successful, ``None`` otherwise.
+        """
+        if text == "other":
+            return cls.other
+        feet_suffix = " feet"
+        if text.endswith(feet_suffix):
+            number_part = text[:-len(feet_suffix)]
+            if not number_part.isdigit():
+                return None
+            casted_number_part = int(number_part)
+            return cls(casted_number_part)
+        return None

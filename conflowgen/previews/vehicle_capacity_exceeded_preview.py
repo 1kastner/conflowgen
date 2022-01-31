@@ -70,7 +70,9 @@ class VehicleCapacityExceededPreview(AbstractPreview):
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ):
-        validate_distribution_with_one_dependent_variable(mode_of_transport_distribution)
+        validate_distribution_with_one_dependent_variable(
+            mode_of_transport_distribution, ModeOfTransport, ModeOfTransport
+        )
         self.inbound_and_outbound_vehicle_capacity_preview.hypothesize_with_mode_of_transport_distribution(
             mode_of_transport_distribution
         )
