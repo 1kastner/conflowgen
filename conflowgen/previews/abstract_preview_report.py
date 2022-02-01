@@ -5,7 +5,6 @@ import datetime
 import tempfile
 from typing import cast
 
-import PIL.Image
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
 
