@@ -14,6 +14,8 @@ class VehicleCapacityExceededPreviewReport(AbstractPreviewReportWithMatplotlib):
     and creates a comprehensible representation for the user, either as text or as a graph.
     A similar report can be found at
     :class:`.InboundAndOutboundVehicleCapacityPreviewReport`.
+    The visual and table are expected to approximately look like in the
+    `example InboundAndOutboundVehicleCapacityPreviewReport <notebooks/previews.html#InboundAndOutboundVehicleCapacityPreviewReport>`_.
     """
 
     report_description = """
