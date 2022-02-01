@@ -2,7 +2,12 @@ from __future__ import annotations
 
 import abc
 import datetime
+import tempfile
 from typing import cast
+
+import PIL.Image
+import matplotlib.pyplot as plt
+from matplotlib import image as mpimg
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -69,7 +74,6 @@ class AbstractPreviewReport(abc.ABC):
 
 class AbstractPreviewReportWithMatplotlib(AbstractPreviewReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
-        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
         self.get_report_as_graph()
         plt.show()
 
@@ -78,4 +82,14 @@ class AbstractPreviewReportWithPlotly(AbstractPreviewReport, metaclass=abc.ABCMe
     def show_report_as_graph(self, **kwargs) -> None:
         import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
-        fig.show()
+        if "static" in kwargs and kwargs["static"]:
+            png_format_image = fig.to_image(format="png", width=800)
+            with tempfile.TemporaryFile() as f:
+                f.write(png_format_image)
+                img = mpimg.imread(f)
+            plt.figure(figsize=(20, 10))
+            plt.imshow(img)
+            plt.axis('off')
+            plt.show()
+        else:
+            fig.show()

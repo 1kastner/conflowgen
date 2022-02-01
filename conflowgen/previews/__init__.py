@@ -23,7 +23,8 @@ def run_all_previews(
         as_text: bool = True,
         as_graph: bool = False,
         display_text_func: Optional[Callable] = logger.info,
-        display_in_markup_language: Union[DisplayInMarkupLanguage, str, None] = None
+        display_in_markup_language: Union[DisplayInMarkupLanguage, str, None] = None,
+        static_graphs=False
 ) -> None:
     """
     Runs all preview analyses in sequence.
@@ -39,6 +40,9 @@ def run_all_previews(
         display_text_func: The function to use to display the text. Defaults to :meth:`logger.info`.
         display_in_markup_language: The output style for certain markup languages.
             Defaults to :class:`.PlainOutputStyle`
+        static_graphs: Whether the graphs should be static. Plotly has some nice interactive options that are currently
+            not supported inside some websites such as the HTML version of the documentation. In such cases, the static
+            version of the plots is used.
     """
     assert as_text or as_graph, "At least one of the two modes should be chosen"
 
@@ -52,14 +56,15 @@ def run_all_previews(
 
     for report in report_order:
         report_instance = report()
-        output.display_headline(report_instance.__class__.__name__)
+        name_of_report = report_instance.__class__.__name__
+        output.display_headline(name_of_report)
         output.display_explanation(report_instance.report_description)
         if as_text:
             report_as_text = report_instance.get_report_as_text()
             output.display_verbatim(report_as_text)
         if as_graph:
             try:
-                report_instance.show_report_as_graph()
+                report_instance.show_report_as_graph(static=static_graphs)
             except NotImplementedError:
                 output.display_explanation(f"Skipping {report} as no graph version of the report is implemented")
 

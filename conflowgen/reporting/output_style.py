@@ -11,12 +11,15 @@ class DisplayInMarkupLanguage(abc.ABC):
     """
     Every logging message
     """
+    @abc.abstractmethod
     def display_headline(self, text: str):
         ...
 
+    @abc.abstractmethod
     def display_verbatim(self, text: str):
         ...
 
+    @abc.abstractmethod
     def display_explanation(self, text: str):
         ...
 
