@@ -15,7 +15,7 @@ class ModalSplitPreviewReport(AbstractPreviewReportWithMatplotlib):
     :class:`.ModalSplitPreview`
     and creates a comprehensible representation for the user, either as text or as a graph.
     The visual and table are expected to approximately look like in the
-    `example ModalSplitPreviewReport <notebooks/previews.html#ModalSplitPreviewReport>`_.
+    `example ModalSplitPreviewReport <notebooks/previews.ipynb#ModalSplitPreviewReport>`_.
     """
 
     report_description = """

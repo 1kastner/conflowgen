@@ -17,7 +17,7 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractPreviewReportWithMa
     :class:`.VehicleCapacityExceededPreviewReport`.
     The visual and table are expected to approximately look like in the
     `example InboundAndOutboundVehicleCapacityPreviewReport \
-    <notebooks/previews.html#InboundAndOutboundVehicleCapacityPreviewReport>`_.
+    <notebooks/previews.ipynb#InboundAndOutboundVehicleCapacityPreviewReport>`_.
     """
 
     report_description = """

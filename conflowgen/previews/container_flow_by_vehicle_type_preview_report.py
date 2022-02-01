@@ -15,7 +15,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractPreviewReportWithPlotly):
     and creates a comprehensible representation for the user, either as text or as a graph.
     The visual and table are expected to approximately look like in the
     `example ContainerFlowByVehicleTypePreviewReport \
-    <notebooks/previews.html#ContainerFlowByVehicleTypePreviewReport>`_.
+    <notebooks/previews.ipynb#ContainerFlowByVehicleTypePreviewReport>`_.
 
     .. _SQLAlchemy: http://www.sqlalchemy.org
     """
