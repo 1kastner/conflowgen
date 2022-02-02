@@ -12,6 +12,7 @@
 #
 import os
 import sys
+import platform
 
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
@@ -129,5 +130,17 @@ bibtex_reference_style = "author_year"
 
 numfig = True
 
-os.system("git lfs install")
-os.system("git lfs fetch")
+repo_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.pardir
+    )
+)
+
+if platform.system() == "Linux":  # guess this is read-the-docs
+    if not os.path.exists('./git-lfs'):
+        os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-linux-amd64-v2.7.1.tar.gz')
+        os.system('tar xvfz git-lfs-linux-amd64-v2.7.1.tar.gz')
+        os.system('./git-lfs install')  # make lfs available in current repository
+        os.system('./git-lfs fetch')  # download content from remote
+        os.system('./git-lfs checkout')  # make local files to have the real content on them
