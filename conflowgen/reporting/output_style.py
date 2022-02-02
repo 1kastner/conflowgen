@@ -3,7 +3,7 @@ from typing import Callable
 from textwrap import dedent, fill
 
 
-def remove_unnecessary_spaces(text):
+def _remove_unnecessary_spaces(text):
     return dedent(text).strip()
 
 
@@ -41,7 +41,7 @@ class DisplayAsPlainText(DisplayInMarkupLanguage):
         self.display_text_func(text)
 
     def display_explanation(self, text: str):
-        text = fill(remove_unnecessary_spaces(text), width=self.DESIRED_LINE_LENGTH)
+        text = fill(_remove_unnecessary_spaces(text), width=self.DESIRED_LINE_LENGTH)
         self.display_text_func(text)
 
 
@@ -59,4 +59,4 @@ class DisplayAsMarkdown(DisplayInMarkupLanguage):
         self.display_markdown_func("\n```\n" + text + "\n```\n")
 
     def display_explanation(self, text: str):
-        self.display_markdown_func(remove_unnecessary_spaces(text))
+        self.display_markdown_func(_remove_unnecessary_spaces(text))

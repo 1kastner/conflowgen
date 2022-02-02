@@ -23,6 +23,9 @@ jobs:
         sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
     - uses: actions/checkout@v2
+      with:
+        lfs: 'true'
+    - run: git lfs pull
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
