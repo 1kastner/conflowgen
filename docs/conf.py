@@ -13,10 +13,12 @@
 import os
 import sys
 
+import git_lfs  # required for read-the-docs
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
 from matplotlib.font_manager import fontManager
+
 fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
 
 # include conflowgen from source code, avoid getting served an outdated installation
@@ -30,13 +32,11 @@ sys.path.insert(
     )
 )
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
 project_copyright = '2021, Marvin Kastner and Ole Grasse'
 author = 'Marvin Kastner and Ole Grasse'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -75,7 +75,6 @@ autoclass_content = 'both'
 
 autodoc_typehints_format = 'short'
 
-
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "sphinx_rtd_theme"
@@ -95,7 +94,6 @@ html_logo = "../logos/conflowgen_logo_small.png"
 
 html_favicon = "../logos/conflowgen_logo_favicon.png"
 
-
 # -- Options for formula -----------------------------------------------------
 
 
@@ -105,7 +103,6 @@ mathjax3_config = {
         'displayMath': [["\\[", "\\]"]],
     },
 }
-
 
 # -- Options for Linking  ----------------------------------------------------
 
@@ -132,3 +129,16 @@ bibtex_reference_style = "author_year"
 # -- Options for Referencing Figures ------------------------------------------
 
 numfig = True
+
+# -- Downloading git LFS content ----------------------------------------------
+
+repo_dir = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.pardir
+    )
+)
+
+print("Working with ", repo_dir)
+
+git_lfs.fetch(repo_dir)
