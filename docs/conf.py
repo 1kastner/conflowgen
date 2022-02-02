@@ -65,7 +65,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.tools']
 
 add_module_names = False
 
@@ -139,8 +139,9 @@ repo_dir = os.path.abspath(
 
 if platform.system() == "Linux":  # guess this is read-the-docs
     if not os.path.exists('./git-lfs'):
-        os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v2.7.1/git-lfs-linux-amd64-v2.7.1.tar.gz')
-        os.system('tar xvfz git-lfs-linux-amd64-v2.7.1.tar.gz')
+        os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v3.0.2/git-lfs-linux-amd64-v3.0.2.tar.gz')
+        os.system('tar xvfz git-lfs-linux-amd64-v3.0.2.tar.gz -C ./.tools')
+        os.system('cp ./.tools/git-lfs ./git-lfs')
         os.system('./git-lfs install')  # make lfs available in current repository
-        os.system('./git-lfs fetch')  # download content from remote
+        os.system('yes | ./git-lfs fetch')  # download content from remote
         os.system('./git-lfs checkout')  # make local files to have the real content on them

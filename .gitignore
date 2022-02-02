@@ -42,3 +42,5 @@ docs/_build/
 *_REMOTE_*
 build/
 dist/
+docs/.tools/
+docs/git-lfs*
