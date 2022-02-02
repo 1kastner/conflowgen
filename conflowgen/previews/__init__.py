@@ -6,7 +6,7 @@ from .inbound_and_outbound_vehicle_capacity_preview_report import InboundAndOutb
 from .container_flow_by_vehicle_type_preview_report import ContainerFlowByVehicleTypePreviewReport
 from .modal_split_preview_report import ModalSplitPreviewReport
 from .vehicle_capacity_exceeded_preview_report import VehicleCapacityExceededPreviewReport
-from ..reporting.output_style import DisplayInMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
+from ..reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
 
 logger = logging.getLogger("conflowgen")
 
@@ -22,8 +22,8 @@ report_order: Iterable[Type[AbstractPreviewReport]] = [
 def run_all_previews(
         as_text: bool = True,
         as_graph: bool = False,
-        display_text_func: Optional[Callable] = logger.info,
-        display_in_markup_language: Union[DisplayInMarkupLanguage, str, None] = None,
+        display_text_func: Optional[Callable] = None,
+        display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None] = None,
         static_graphs=False
 ) -> None:
     """
@@ -38,13 +38,17 @@ def run_all_previews(
         as_text: Whether to get the reports as text and log them.
         as_graph: Whether to display the reports as graphs (visualizations will pop up).
         display_text_func: The function to use to display the text. Defaults to :meth:`logger.info`.
-        display_in_markup_language: The output style for certain markup languages.
-            Defaults to :class:`.PlainOutputStyle`
+        display_in_markup_language: The markup language to use. Currently, the options 'markdown' and 'plaintext' exist.
+            Defaults to :class:`.DisplayAsPlainText` (same as 'plaintext'), users can provide their own approach with
+            :class:`.DisplayAsMarkupLanguage`.
         static_graphs: Whether the graphs should be static. Plotly has some nice interactive options that are currently
             not supported inside some websites such as the HTML version of the documentation. In such cases, the static
             version of the plots is used.
     """
     assert as_text or as_graph, "At least one of the two modes should be chosen"
+
+    if display_text_func is None:
+        display_text_func = logger.info
 
     output = {
         None: DisplayAsPlainText(display_text_func),

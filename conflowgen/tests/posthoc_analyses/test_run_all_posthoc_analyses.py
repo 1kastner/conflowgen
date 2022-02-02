@@ -2,7 +2,7 @@ import unittest
 
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
-from conflowgen.posthoc_analyses import run_all_posthoc_analyses
+from conflowgen.posthoc_analyses import run_all_analyses
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -14,5 +14,5 @@ class TestRunAllPosthocAnalyses(unittest.TestCase):
 
     def test_with_no_data(self):
         with self.assertLogs('conflowgen', level='INFO') as cm:
-            run_all_posthoc_analyses()
+            run_all_analyses()
         self.assertEqual(len(cm.output), 26)

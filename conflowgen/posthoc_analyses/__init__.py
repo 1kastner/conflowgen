@@ -12,7 +12,7 @@ from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
 from .quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
 from .truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 from .yard_capacity_analysis_report import YardCapacityAnalysisReport
-from ..reporting.output_style import DisplayInMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
+from ..reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
 
 logger = logging.getLogger("conflowgen")
 
@@ -29,11 +29,11 @@ report_order: Iterable[Type[AbstractPosthocAnalysisReport]] = [
 ]
 
 
-def run_all_posthoc_analyses(
+def run_all_analyses(
         as_text: bool = True,
         as_graph: bool = False,
-        display_text_func: Optional[Callable] = logger.info,
-        display_in_markup_language: Union[DisplayInMarkupLanguage, str, None] = None
+        display_text_func: Optional[Callable] = None,
+        display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None] = None
 ) -> None:
     """
     Runs all post-hoc analyses in sequence.
@@ -47,10 +47,14 @@ def run_all_posthoc_analyses(
         as_text: Whether to get the reports as text and log them
         as_graph: Whether to display the reports as graphs (visualizations will pop up)
         display_text_func: The function to use to display the text. Defaults to :meth:`logger.info`.
-        display_in_markup_language: The output style for certain markup languages.
-            Defaults to :class:`.PlainOutputStyle`
+        display_in_markup_language: The markup language to use. Currently, the options 'markdown' and 'plaintext' exist.
+            Defaults to :class:`.DisplayAsPlainText` (same as 'plaintext'), users can provide their own approach with
+            :class:`.DisplayAsMarkupLanguage`.
     """
     assert as_text or as_graph, "At least one of the two modes should be chosen"
+
+    if display_text_func is None:
+        display_text_func = logger.info
 
     output = {
         None: DisplayAsPlainText(display_text_func),

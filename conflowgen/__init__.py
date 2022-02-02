@@ -52,6 +52,8 @@ from conflowgen.posthoc_analyses.quay_side_throughput_analysis_report import Qua
 from conflowgen.posthoc_analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.posthoc_analyses.truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 
+from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
+
 # List of enums
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -60,7 +62,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 
 # List of functions
 from conflowgen.logging.logging import setup_logger
-from conflowgen.posthoc_analyses import run_all_posthoc_analyses
+from conflowgen.posthoc_analyses import run_all_analyses
 from conflowgen.previews import run_all_previews
 
 # List of named tuples

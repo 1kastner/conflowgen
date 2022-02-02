@@ -26,7 +26,13 @@ setup(
         'pandas',
         'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
         'peewee',
-        'enum_tools'  # used for documenting enums via decorators
+        'enum_tools',  # used for documenting enums via decorators
+
+        # for creating the visuals
+        'matplotlib',
+        'plotly',
+        'seaborn',
+        'kaleido',  # plotly depends on this package for SVG export
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -45,7 +51,7 @@ setup(
             'sphinx-math-dollar',
             'nbsphinx',
             'jupyterlab',
-            'matplotlib',
+
 
             # checking code quality
             'pylint',
@@ -53,13 +59,6 @@ setup(
 
             # publish at PyPI
             'twine'
-        ],
-        # Only needed when you run the unittests in debug mode, or you run the Jupyter Notebooks that create additional
-        # visualizations. This is not compulsory though.
-        'ui': [
-            'plotly',
-            'seaborn',
-            'kaleido',  # plotly depends on this package for SVG export
         ]
     },
     license=metadata['__license__'],

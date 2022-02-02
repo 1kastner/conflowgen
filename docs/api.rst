@@ -134,7 +134,7 @@ Getting analyses
 .. autoclass:: conflowgen.QuaySideThroughputAnalysisReport
     :members:
 
-.. autofunction:: conflowgen.run_all_posthoc_analyses
+.. autofunction:: conflowgen.run_all_analyses
 
 .. autoclass:: conflowgen.TruckGateThroughputAnalysis
     :members:
@@ -146,6 +146,20 @@ Getting analyses
     :members:
 
 .. autoclass:: conflowgen.YardCapacityAnalysisReport
+    :members:
+
+Working with reports
+====================
+
+When working with :func:`.run_all_previews` or :func:`.run_all_analyses`, there is some common functionality.
+
+.. autoclass:: conflowgen.DisplayAsMarkdown
+    :members:
+
+.. autoclass:: conflowgen.DisplayAsMarkupLanguage
+    :members:
+
+.. autoclass:: conflowgen.DisplayAsPlainText
     :members:
 
 Exporting data
