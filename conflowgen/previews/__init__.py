@@ -29,7 +29,7 @@ def run_all_previews(
     """
     Runs all preview analyses in sequence.
     This is just a convenience function to ensure that all reports are presented.
-    The text output is logged to the logger with the name 'conflowgen'.
+    The text output is logged to the logger with the name 'conflowgen' by default.
     See
     :func:`setup_logger`
     for more details.

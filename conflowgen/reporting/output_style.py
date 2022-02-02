@@ -11,7 +11,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
     """
     This is the abstract class new markup language definitions can derive from.
     """
-    
+
     @abc.abstractmethod
     def display_headline(self, text: str, level: int) -> None:
         """

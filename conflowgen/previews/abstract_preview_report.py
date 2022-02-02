@@ -83,7 +83,7 @@ class AbstractPreviewReportWithPlotly(AbstractPreviewReport, metaclass=abc.ABCMe
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
         if "static" in kwargs and kwargs["static"]:
             png_format_image = fig.to_image(format="png", width=800)
-            with tempfile.TemporaryFile() as _file:
+            with tempfile.NamedTemporaryFile() as _file:
                 _file.write(png_format_image)
                 img = mpimg.imread(_file)
             plt.figure(figsize=(20, 10))
