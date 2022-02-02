@@ -13,7 +13,6 @@
 import os
 import sys
 
-import git_lfs  # required for read-the-docs
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
@@ -130,15 +129,5 @@ bibtex_reference_style = "author_year"
 
 numfig = True
 
-# -- Downloading git LFS content ----------------------------------------------
-
-repo_dir = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        os.pardir
-    )
-)
-
-print("Working with ", repo_dir)
-
-git_lfs.fetch(repo_dir)
+os.system("git lfs install")
+os.system("git lfs fetch")

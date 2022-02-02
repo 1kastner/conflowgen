@@ -51,7 +51,6 @@ setup(
             'sphinx-math-dollar',
             'nbsphinx',
             'jupyterlab',
-            'git-lfs',
 
             # checking code quality
             'pylint',
