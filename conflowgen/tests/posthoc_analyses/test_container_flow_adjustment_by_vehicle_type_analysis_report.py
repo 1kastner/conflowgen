@@ -1,3 +1,4 @@
+import datetime
 import unittest
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
@@ -29,7 +30,10 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(unittest.TestCase):
             ContainerFlowGenerationProperties
         ])
         mode_of_transport_distribution_seeder.seed()
-        ContainerFlowGenerationProperties.create()
+        ContainerFlowGenerationProperties.create(
+            start_date=datetime.datetime(2021, 12, 1),
+            end_date=datetime.datetime(2021, 12, 6)
+        )
         self.analysis = ContainerFlowAdjustmentByVehicleTypeAnalysisReport()
 
     def test_with_no_data(self):
