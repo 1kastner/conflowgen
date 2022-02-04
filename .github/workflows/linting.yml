@@ -31,7 +31,7 @@ jobs:
 
     - name: Check code quality with pylint
       run: |
-        pylint conflowgen
+        pylint conflowgen && pylint setup.py
 
     - name: Check code quality with flake8
       run: |
