@@ -18,7 +18,8 @@ class TruckArrivalDistributionManager:
 
     def get_truck_arrival_distribution(self) -> Dict[int, float]:
         """
-        Returns: The truck arrival distribution.
+        Returns:
+            The truck arrival distribution.
             Each key represents the hour in the week and each value represents the
             probability of a truck to arrive between that hour and the start of the next time slot (the successor
             is the nearest key larger than the current key).

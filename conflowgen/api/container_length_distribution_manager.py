@@ -18,7 +18,8 @@ class ContainerLengthDistributionManager:
 
     def get_container_length_distribution(self) -> Dict[ContainerLength, float]:
         """
-        Returns: The distribution of container lengths. Each length is assigned its frequency of showing up.
+        Returns:
+             The distribution of container lengths. Each length is assigned its frequency of showing up.
         """
         return self.container_length_repository.get_distribution()
 

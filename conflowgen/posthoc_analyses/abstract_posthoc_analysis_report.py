@@ -38,7 +38,8 @@ class AbstractPosthocAnalysisReport(abc.ABC):
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
 
-        Returns: The report in text format (possibly spanning over several lines).
+        Returns:
+             The report in text format (possibly spanning over several lines).
         """
         ...
 

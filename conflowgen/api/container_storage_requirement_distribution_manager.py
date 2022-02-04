@@ -16,7 +16,8 @@ class ContainerStorageRequirementDistributionManager:
 
     def get_storage_requirement_distribution(self) -> Dict[ContainerLength, Dict[StorageRequirement, float]]:
         """
-        Returns: The distribution of storage requirements based on the length of the container.
+        Returns:
+            The distribution of storage requirements based on the length of the container.
         """
         return self.storage_requirement_repository.get_distribution()
 

@@ -77,7 +77,8 @@ class VehicleCapacityExceededPreviewReport(AbstractPreviewReportWithMatplotlib):
     def get_report_as_graph(self) -> object:
         """
 
-        Returns: The matplotlib axis of the bar chart.
+        Returns:
+             The matplotlib axis of the bar chart.
         """
         comparison = self._get_comparison()
         import pandas as pd  # pylint: disable=import-outside-toplevel

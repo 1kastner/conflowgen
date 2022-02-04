@@ -46,7 +46,8 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractPosthocAnalysisReportWith
         """
         The container flow is represented by a Sankey diagram.
 
-        Returns: The plotly figure of the Sankey diagram.
+        Returns:
+             The plotly figure of the Sankey diagram.
 
         .. note::
             At the time of writing, plotly comes with some shortcomings.
