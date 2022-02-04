@@ -54,14 +54,15 @@ For generating the documentation,
 [sphinx](https://www.sphinx-doc.org/)
 is used - mostly the default settings are maintained.
 The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
-To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
+To generate the documentation, move to the directory `<project-root>/docs`.
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
 Linux users invoke `make html` instead.
 The landing page of the documentation is created at `<project-root>/docs/_build/html/index.html`.
 It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
 (see the corresponding
-[GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
+[GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L38)
 for reference).
+The invocation should be equivalent to `python -m sphinx -W --keep-going ./docs ./docs/_build`.
 
 ## Checking the code quality
 
