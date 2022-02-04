@@ -4,6 +4,15 @@ If you find bugs, errors, omissions or other things that need improvement, pleas
 [https://github.com/1kastner/conflowgen/](https://github.com/1kastner/conflowgen/).
 Contributions are always welcome!
 
+## Isolating the ConFlowGen development environment
+
+When you work on different tasks related to ConFlowGen, it might be helpful to isolate the development environment from
+the other Python environment(s) you use for daily tasks.
+This can be achieved e.g. with
+[virtualenv](https://virtualenv.pypa.io/en/latest/)
+or
+[conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+
 ## Development installation
 
 For the development installation, instead of simply invoking `pip install` in the CLI in the project root folder, we 
@@ -13,12 +22,12 @@ Furthermore, an additional dependency on
 exists.
 The dependencies listed in `dev` allow us to run the unit tests and create the documentation.
 The dependencies listed in `ui` allow us to create the visuals that are e.g. used when debugging probability-based 
-unit tests or when creating visuals in Jupyter notebooks. 
+unit tests or when creating visuals in Jupyter notebooks.
 
 ```bash
 git clone https://github.com/1kastner/conflowgen
 cd conflowgen
-pip install --user -e .[dev,ui]
+pip install -e .[dev,ui]
 ```
 
 After modification, you can run `run_ci_light.bat` on Windows.
@@ -48,6 +57,7 @@ The documentation generation process is based on the sphinx boilerplate and the 
 To generate the documentation, move to the `docs` subdirectory (relative to the project root folder).
 Here, as a Windows user you run `.\make.bat html` from the PowerShell or CMD.
 Linux users invoke `make html` instead.
+The landing page of the documentation is created at `<project-root>/docs/_build/html/index.html`.
 It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
 (see the corresponding
 [GitHub CI pipeline](https://github.com/1kastner/conflowgen/blob/main/.github/workflows/docs.yaml#L34)
@@ -56,5 +66,5 @@ for reference).
 ## Checking the code quality
 
 For checking the code quality, pylint and flake8 are used.
-Pylint is run by executing `pylint conflowgen` on the project root level.
+Pylint is run by executing `pylint conflowgen` and `pylint setup.py` on the project root level.
 For flake8, simply invoke `flake8` at the same level.
