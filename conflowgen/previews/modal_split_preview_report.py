@@ -3,6 +3,9 @@ from __future__ import annotations
 from typing import Dict
 
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -129,9 +132,6 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         .. todo:: All pie charts should be plotted in a single plot using subplots.
         """
         preview = self._get_updated_preview()
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
 
         sns.set_palette(sns.color_palette())
 

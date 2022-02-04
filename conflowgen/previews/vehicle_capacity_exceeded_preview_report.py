@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from typing import Dict
 
-from conflowgen.previews.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
+import pandas as pd
+import seaborn as sns
+
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.previews.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
 from conflowgen.reporting import AbstractReportWithMatplotlib
 
 
@@ -83,8 +86,6 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
         Returns: The matplotlib axis of the bar chart.
         """
         comparison = self._get_comparison()
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
         sns.set_palette(sns.color_palette())
         df = pd.DataFrame.from_dict(comparison).T
         df.columns = ["currently planned", "maximum", "exceeded"]

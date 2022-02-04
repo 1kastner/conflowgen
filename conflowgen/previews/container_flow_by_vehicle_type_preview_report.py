@@ -2,6 +2,8 @@ from __future__ import annotations
 import itertools
 from typing import Dict
 
+import plotly.graph_objects as go
+
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -16,8 +18,6 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
     The visual and table are expected to approximately look like in the
     `example ContainerFlowByVehicleTypePreviewReport \
     <notebooks/previews.ipynb#ContainerFlowByVehicleTypePreviewReport>`_.
-
-    .. _SQLAlchemy: http://www.sqlalchemy.org
     """
 
     report_description = """
@@ -90,8 +90,6 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
-        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
-
         inbound_to_outbound_flow = self._get_inbound_to_outbound_flow()
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]

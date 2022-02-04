@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import Dict
 
+import pandas as pd
+import seaborn as sns
+
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -64,8 +67,6 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
         Returns: The matplotlib axis of the bar chart.
         """
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
         sns.set_palette(sns.color_palette())
 
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
