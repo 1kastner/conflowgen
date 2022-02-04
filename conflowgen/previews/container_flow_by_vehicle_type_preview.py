@@ -66,7 +66,8 @@ class ContainerFlowByVehicleTypePreview(AbstractPreview):
         The estimated flow of containers from vehicles on their inbound journey to vehicles on their outbound journey
         based on the mode of transport distribution.
 
-        Returns: A flow from vehicle type A to vehicle type B estimated in TEU.
+        Returns:
+            A flow from vehicle type A to vehicle type B estimated in TEU.
         """
         inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:

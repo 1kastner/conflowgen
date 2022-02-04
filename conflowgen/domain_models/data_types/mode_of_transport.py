@@ -25,7 +25,8 @@ class ModeOfTransport(enum.Enum):
     @classmethod
     def get_scheduled_vehicles(cls) -> List[ModeOfTransport]:
         """
-        Returns: A list of vehicles that follow a schedule
+        Returns:
+            A list of vehicles that follow a schedule
         """
         return [
             cls.train,
@@ -37,7 +38,8 @@ class ModeOfTransport(enum.Enum):
     @classmethod
     def get_unscheduled_vehicles(cls) -> List[ModeOfTransport]:
         """
-        Returns: A list of vehicles that are created as they are needed to transport a container
+        Returns:
+             A list of vehicles that are created as they are needed to transport a container
         """
         return [
             cls.truck

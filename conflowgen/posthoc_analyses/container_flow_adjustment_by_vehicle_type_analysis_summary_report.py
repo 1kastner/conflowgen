@@ -62,7 +62,8 @@ changed to truck:            0.0        (-%)
         """
         The report as a graph is represented as a pie chart.
 
-        Returns: The matplotlib axis of the pie chart.
+        Returns:
+             The matplotlib axis of the pie chart.
         """
 
         adjusted_to = self.analysis_summary.get_summary()

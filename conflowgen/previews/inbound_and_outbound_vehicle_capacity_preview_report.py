@@ -60,7 +60,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractPreviewReportWithMa
         """
         The report as a graph is represented as a bar chart using pandas.
 
-        Returns: The matplotlib axis of the bar chart.
+        Returns:
+             The matplotlib axis of the bar chart.
         """
         import pandas as pd  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
