@@ -127,7 +127,8 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         """
         The report as a graph is represented as a set of pie charts using pandas.
 
-        Returns: The matplotlib axis of the last bar chart.
+        Returns:
+             The matplotlib axis of the last bar chart.
 
         .. todo:: All pie charts should be plotted in a single plot using subplots.
         """

@@ -65,7 +65,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         """
         The report as a graph is represented as a bar chart using pandas.
 
-        Returns: The matplotlib axis of the bar chart.
+        Returns:
+             The matplotlib axis of the bar chart.
         """
         sns.set_palette(sns.color_palette())
 

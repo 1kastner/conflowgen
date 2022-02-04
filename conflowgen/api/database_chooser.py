@@ -31,7 +31,8 @@ class DatabaseChooser:
 
     def list_all_sqlite_databases(self) -> List[str]:
         """
-        Returns: A list of all SQLite databases in the opened directory
+        Returns:
+             A list of all SQLite databases in the opened directory
         """
         all_sqlite_databases = self.sqlite_database_connection.list_all_sqlite_databases()
         return all_sqlite_databases

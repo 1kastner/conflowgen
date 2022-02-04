@@ -83,7 +83,8 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
     def get_report_as_graph(self) -> object:
         """
 
-        Returns: The matplotlib axis of the bar chart.
+        Returns:
+             The matplotlib axis of the bar chart.
         """
         comparison = self._get_comparison()
         sns.set_palette(sns.color_palette())
