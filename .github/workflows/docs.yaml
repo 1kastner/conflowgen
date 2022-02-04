@@ -34,7 +34,7 @@ jobs:
 
     - name: Install Python dependencies including sphinx
       run: |
-        pip3 install --user -e .[dev,ui]
+        pip3 install --user -e .[dev]
 
     - name: Build documentation and check for warnings
       run: |

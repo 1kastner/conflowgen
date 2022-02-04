@@ -22,7 +22,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip3 install --user -e .[dev,ui]
+        pip3 install --user -e .[dev]
 
     - name: Test with pytest
       run: |
