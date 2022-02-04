@@ -18,12 +18,11 @@ class ModeOfTransportDistributionManager:
             self
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
+        If a container is delivered by a vehicle of type ``<first-key>``, the floating point number describes the
+        fraction that the container is later picked up by vehicle of type ``<second-key>``.
 
         Returns:
             The distribution of mode of transports dependent on the vehicle the container is delivered by.
-            If a container is delivered by a vehicle of type ``<first-key>``, the floating point number describes the
-            fraction that the container is later picked up by vehicle of type ``<second-key>``.
-
         """
         return self.mode_of_transport_distribution_repository.get_distribution()
 
