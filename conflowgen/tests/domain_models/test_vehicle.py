@@ -66,6 +66,7 @@ class TestFeeder(unittest.TestCase):
             average_moved_capacity=200
         )
         lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=1000,
             moved_capacity=200,
             scheduled_arrival=datetime.datetime.now(),

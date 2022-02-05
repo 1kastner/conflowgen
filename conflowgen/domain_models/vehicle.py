@@ -52,7 +52,7 @@ class LargeScheduledVehicle(BaseModel):
     """
     id = AutoField()
     vehicle_name = CharField(
-        null=True
+        null=False
     )
     capacity_in_teu = IntegerField(
         null=False,

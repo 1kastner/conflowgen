@@ -10,12 +10,12 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis_report import \
-    InboundAndOutboundVehicleCapacityAnalysisReport
+from conflowgen.posthoc_analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
+    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
+class TestInboundToOutboundCapacityUtilizationAnalysisReport(unittest.TestCase):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()
@@ -31,19 +31,14 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
         ])
         mode_of_transport_distribution_seeder.seed()
         ContainerFlowGenerationProperties.create()
-        self.analysis = InboundAndOutboundVehicleCapacityAnalysisReport()
+        self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
 
     def test_with_no_data(self):
-        """If no schedules are provided, no capacity is needed"""
         actual_report = self.analysis.get_report_as_text()
+        print(actual_report)
         expected_report = """
-vehicle type    inbound capacity outbound actual capacity outbound max capacity
-deep sea vessel              0.0                      0.0                   0.0
-feeder                       0.0                      0.0                   0.0
-barge                        0.0                      0.0                   0.0
-train                        0.0                      0.0                   0.0
-truck                        0.0                      0.0                  -1.0
-(rounding errors might exist)
+vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)
+--no vehicles exist--
 """
         self.assertEqual(actual_report, expected_report)
 
@@ -55,13 +50,13 @@ truck                        0.0                      0.0                  -1.0
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_moved_capacity=250,
             vehicle_arrives_every_k_days=-1
         )
         schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
-            capacity_in_teu=300,
+            capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
@@ -71,25 +66,21 @@ truck                        0.0                      0.0                  -1.0
             large_scheduled_vehicle=feeder_lsv
         )
         feeder.save()
-        container = Container.create(
+        Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.feeder,
-            delivered_by_large_scheduled_vehicle=feeder_lsv,
-            picked_up_by=ModeOfTransport.truck,
+            delivered_by=ModeOfTransport.truck,
+            picked_up_by_large_scheduled_vehicle=feeder_lsv,
+            picked_up_by=ModeOfTransport.feeder,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container.save()
 
         actual_report = self.analysis.get_report_as_text()
+        print(actual_report)
         expected_report = """
-vehicle type    inbound capacity outbound actual capacity outbound max capacity
-deep sea vessel              0.0                      0.0                   0.0
-feeder                       1.0                      0.0                 300.0
-barge                        0.0                      0.0                   0.0
-train                        0.0                      0.0                   0.0
-truck                        0.0                      1.0                  -1.0
+vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)
+feeder-TestFeederService-TestFeeder1                                   250.0                        1.0
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)

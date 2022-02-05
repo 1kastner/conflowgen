@@ -48,14 +48,13 @@ class TestContainerFlowStatisticsReport(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300,
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        feeder_lsv.save()
         feeder = Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )

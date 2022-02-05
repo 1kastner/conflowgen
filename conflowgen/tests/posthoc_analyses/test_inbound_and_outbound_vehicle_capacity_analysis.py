@@ -65,6 +65,7 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
         )
         schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=300,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=datetime.datetime.now(),
@@ -111,6 +112,7 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
         )
         schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=300,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=datetime.datetime.now(),
