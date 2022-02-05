@@ -2,7 +2,8 @@
 The VehicleFactory including its exceptions.
 """
 import datetime
-from typing import Union
+import uuid
+from typing import Union, Optional
 
 from conflowgen.domain_models.arrival_information import \
     TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
@@ -33,6 +34,22 @@ class VehicleFactory:
     with that support.
     """
 
+    maximum_iterations_for_unique_suffix = 1000
+
+    def __init__(self):
+        self.used_suffixes = set()
+
+    def _get_unique_suffix(self):
+        rounds = 0
+        suffix = uuid.uuid4().hex[:6].upper()
+        while suffix in self.used_suffixes:
+            rounds += 1
+            if rounds == self.maximum_iterations_for_unique_suffix:
+                raise RuntimeError("We ran out of suffices")
+            suffix = uuid.uuid4().hex[:6].upper()
+        self.used_suffixes.add(suffix)
+        return suffix
+
     @staticmethod
     def create_truck(
             delivers_container: bool,
@@ -56,27 +73,34 @@ class VehicleFactory:
             truck_arrival_information_for_delivery=truck_arrival_information_for_delivery,
             truck_arrival_information_for_pickup=truck_arrival_information_for_pickup
         )
-        truck.save()
         return truck
 
-    @staticmethod
     def _create_large_vehicle(
+            self,
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Union[str, None]
     ) -> LargeScheduledVehicle:
-        """Checks all parameters for logical consistency and only then creates the new large vehicle."""
+        """
+        Checks all parameters for logical consistency and only then creates the new large vehicle.
+        """
 
         if capacity_in_teu < 0:
-            raise UnrealisticValuesException("Feeder capacity must be positive.")
+            raise UnrealisticValuesException(f"Vehicle capacity must be positive but it was {capacity_in_teu}")
 
         if moved_capacity < 0:
-            raise UnrealisticValuesException("Feeder must move positive amount.")
+            raise UnrealisticValuesException(f"Vehicle must move positive amount but it was {moved_capacity}")
 
         if moved_capacity > capacity_in_teu:
-            raise UnrealisticValuesException("Feeder can't move more than its capacity")
+            raise UnrealisticValuesException(
+                f"Vehicle can't move more than its capacity but for the vehicle with an overall capacity of "
+                f"{capacity_in_teu} the moved capacity was set to {moved_capacity}"
+            )
+
+        if vehicle_name is None:
+            vehicle_name = schedule.service_name + self._get_unique_suffix()
 
         lsv = LargeScheduledVehicle.create(
             vehicle_name=vehicle_name,
@@ -87,18 +111,17 @@ class VehicleFactory:
         )
         return lsv
 
-    @classmethod
     def create_feeder(
-            cls,
+            self,
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
-            vehicle_name: Union[str, None] = None
+            vehicle_name: Optional[str] = None
     ) -> Feeder:
         """Checks all parameters for logical consistency and only then creates the new feeder."""
 
-        lsv = cls._create_large_vehicle(
+        lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
@@ -108,21 +131,19 @@ class VehicleFactory:
         feeder = Feeder.create(
             large_scheduled_vehicle=lsv
         )
-        feeder.save()
         return feeder
 
-    @classmethod
     def create_deep_sea_vessel(
-            cls,
+            self,
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
-            vehicle_name: Union[str, None] = None,
+            vehicle_name: Optional[str] = None
     ) -> DeepSeaVessel:
         """Checks all parameters for logical consistency and only then creates the new deep sea vessel."""
 
-        lsv = cls._create_large_vehicle(
+        lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
@@ -132,21 +153,19 @@ class VehicleFactory:
         deep_sea_vessel = DeepSeaVessel.create(
             large_scheduled_vehicle=lsv
         )
-        deep_sea_vessel.save()
         return deep_sea_vessel
 
-    @classmethod
     def create_train(
-            cls,
+            self,
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
-            vehicle_name: Union[str, None] = None,
+            vehicle_name: Optional[str] = None
     ) -> Train:
         """Checks all parameters for logical consistency and only then creates the new train."""
 
-        lsv = cls._create_large_vehicle(
+        lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
@@ -156,21 +175,19 @@ class VehicleFactory:
         train = Train.create(
             large_scheduled_vehicle=lsv
         )
-        train.save()
         return train
 
-    @classmethod
     def create_barge(
-            cls,
+            self,
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
-            vehicle_name: Union[str, None] = None
+            vehicle_name: Optional[str] = None
     ) -> Barge:
         """Checks all parameters for logical consistency and only then creates the new barge."""
 
-        lsv = cls._create_large_vehicle(
+        lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,

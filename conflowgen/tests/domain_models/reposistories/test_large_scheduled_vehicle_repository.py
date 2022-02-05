@@ -35,6 +35,7 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             average_moved_capacity=90,
         )
         self.train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=3,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
