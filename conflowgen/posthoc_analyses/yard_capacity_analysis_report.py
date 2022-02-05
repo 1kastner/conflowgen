@@ -117,8 +117,7 @@ class YardCapacityAnalysisReport(AbstractPosthocAnalysisReportWithMatplotlib):
             return str(storage_requirement)
         if isinstance(storage_requirement, Iterable):
             return " & ".join([str(element) for element in storage_requirement])
-        else:
-            return str(storage_requirement)
+        return str(storage_requirement)
 
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs
