@@ -68,6 +68,12 @@ class YardCapacityAnalysisReport(AbstractPosthocAnalysisReportWithMatplotlib):
         """
         The report as a graph is represented as a line graph using pandas.
 
+        Keyword Args:
+            storage_requirement: Either a single storage requirement of type :class:`.StorageRequirement` or a whole
+                collection of them e.g. passed as a :class:`list` or :class:`set`.
+                For the exact interpretation of the parameter, check
+                :meth:`.YardCapacityAnalysis.get_used_yard_capacity_over_time`.
+
         Returns:
              The matplotlib axis of the bar chart.
         """

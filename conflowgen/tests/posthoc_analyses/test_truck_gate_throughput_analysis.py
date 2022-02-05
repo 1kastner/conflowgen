@@ -49,6 +49,7 @@ class TestTruckGateThroughputAnalysis(unittest.TestCase):
             average_moved_capacity=300,
         )
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=300,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=now,
@@ -92,6 +93,7 @@ class TestTruckGateThroughputAnalysis(unittest.TestCase):
             average_moved_capacity=300,
         )
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=300,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=now,

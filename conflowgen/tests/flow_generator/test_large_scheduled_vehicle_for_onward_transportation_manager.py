@@ -66,6 +66,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         )
         schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=scheduled_arrival,
@@ -90,6 +91,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         )
         schedule.save()
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=96,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=scheduled_arrival,

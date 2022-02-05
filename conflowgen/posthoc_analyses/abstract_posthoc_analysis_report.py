@@ -34,9 +34,12 @@ class AbstractPosthocAnalysisReport(abc.ABC):
         assert -1 < self.transportation_buffer
 
     @abc.abstractmethod
-    def get_report_as_text(self) -> str:
+    def get_report_as_text(self, **kwargs) -> str:
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
+
+        Args:
+            **kwargs: The additional keyword arguments are passed to the analysis instance.
 
         Returns:
              The report in text format (possibly spanning over several lines).
