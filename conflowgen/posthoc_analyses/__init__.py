@@ -1,22 +1,23 @@
 import logging
-from typing import Iterable, Type
 from textwrap import dedent, fill
+from typing import Iterable, Type
 
 from .abstract_posthoc_analysis_report import AbstractPosthocAnalysisReport
-from .inbound_and_outbound_vehicle_capacity_analysis_report import InboundAndOutboundVehicleCapacityAnalysisReport
-from .container_flow_by_vehicle_type_analysis_report import ContainerFlowByVehicleTypeAnalysisReport
-from .modal_split_analysis_report import ModalSplitAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from .container_flow_by_vehicle_type_analysis_report import ContainerFlowByVehicleTypeAnalysisReport
+from .inbound_and_outbound_vehicle_capacity_analysis_report import InboundAndOutboundVehicleCapacityAnalysisReport
+from .inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
+    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from .modal_split_analysis_report import ModalSplitAnalysisReport
 from .quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
 from .truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 from .yard_capacity_analysis_report import YardCapacityAnalysisReport
 from ..logging.logging import DESIRED_LINE_LENGTH
 
 logger = logging.getLogger("conflowgen")
-
 
 report_order: Iterable[Type[AbstractPosthocAnalysisReport]] = [
     InboundAndOutboundVehicleCapacityAnalysisReport,
@@ -26,7 +27,8 @@ report_order: Iterable[Type[AbstractPosthocAnalysisReport]] = [
     ModalSplitAnalysisReport,
     QuaySideThroughputAnalysisReport,
     TruckGateThroughputAnalysisReport,
-    YardCapacityAnalysisReport
+    YardCapacityAnalysisReport,
+    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
 ]
 
 
