@@ -40,7 +40,14 @@ docs/_build/
 *_BASE_*
 *_LOCAL_*
 *_REMOTE_*
+
+# Publishing new versions
 build/
 dist/
+
+# The dirty Read the Docs hack - downloading git-lfs on-the-fly in case it is missing
 docs/.tools/
 docs/git-lfs*
+
+# Avoid publishing Jupyter Notebooks that were created for tampering
+Untitled*.ipynb

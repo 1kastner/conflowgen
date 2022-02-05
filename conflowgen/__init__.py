@@ -32,6 +32,10 @@ from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis 
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis_report import \
     InboundAndOutboundVehicleCapacityAnalysisReport
+from conflowgen.posthoc_analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
+    InboundToOutboundVehicleCapacityUtilizationAnalysis
+from conflowgen.posthoc_analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
+    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
 from conflowgen.posthoc_analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.posthoc_analyses.container_flow_by_vehicle_type_analysis_report import \
     ContainerFlowByVehicleTypeAnalysisReport
@@ -73,6 +77,8 @@ from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analy
     ContainerFlowAdjustedToVehicleType
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
+from conflowgen.posthoc_analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
+    CompleteVehicleIdentifier
 
 # Add metadata constants
 from .metadata import __version__

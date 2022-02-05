@@ -71,6 +71,7 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
         )
         schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=scheduled_arrival,
@@ -95,6 +96,7 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
         )
         schedule.save()
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=96,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=scheduled_arrival,
@@ -132,7 +134,6 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             picked_up_by=ModeOfTransport.feeder,
             picked_up_by_initial=ModeOfTransport.feeder
         )
-        container.save()
         return container
 
     @staticmethod
@@ -174,7 +175,6 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             picked_up_by=ModeOfTransport.truck,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container.save()
 
         # due to the existing import container, one export container must be generated
         self.assertEqual(self.service._get_number_containers_to_allocate(), 1)

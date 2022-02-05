@@ -64,6 +64,7 @@ standard deviation:                                 -1.0
             average_moved_capacity=300,
         )
         feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
             capacity_in_teu=300,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=now,
@@ -132,6 +133,7 @@ standard deviation:                                  0.3
             average_moved_capacity=90,
         )
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=schedule.average_moved_capacity,
             scheduled_arrival=now,

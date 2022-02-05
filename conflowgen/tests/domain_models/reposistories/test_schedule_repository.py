@@ -44,7 +44,7 @@ class TestScheduleRepository(unittest.TestCase):
     def test_find_vehicle_if_in_time_range(self):
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.train,
-            service_name="TestService",
+            service_name="TestTrainService",
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
@@ -52,6 +52,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -77,7 +78,7 @@ class TestScheduleRepository(unittest.TestCase):
         self.schedule_repository.set_transportation_buffer(transportation_buffer=1)
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.train,
-            service_name="TestService",
+            service_name="TestTrainService",
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
@@ -85,6 +86,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -109,7 +111,7 @@ class TestScheduleRepository(unittest.TestCase):
         self.schedule_repository.set_transportation_buffer(transportation_buffer=1)
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.train,
-            service_name="TestService",
+            service_name="TestTrainService",
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=4,
@@ -117,6 +119,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=8,
             moved_capacity=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -148,6 +151,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity = 7
         train = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -175,6 +179,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity_in_teu = 2
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -217,6 +222,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity_in_teu = 3
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
@@ -258,6 +264,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
         train_moves_this_capacity_in_teu = 3
         train_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestTrain1",
             capacity_in_teu=90,
             moved_capacity=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),

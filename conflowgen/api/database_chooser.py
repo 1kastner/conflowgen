@@ -48,15 +48,6 @@ class DatabaseChooser:
 
     def create_new_sqlite_database(self, file_name: str, **seeder_options) -> None:
         """
-        Args:
-            file_name: The file name of an SQLite database that will reside in ``<project root>/data/databases/``
-            **seeder_options: In case the database is seeded with default values, some variations exist that the user
-                can choose from. The following options exist:
-
-        For the seeder options, the following keywords are available:
-            * ``assume_tas (bool)``: Whether to assume a truck appointment system for the truck arrival distribution.
-              Based on this selection, one of the two truck arrival distributions is chosen.
-
         All required tables are created and all input distributions are seeded with default values. These can be simply
         overwritten by the use-case specific distributions with the help of the API, e.g. the
         :class:`.ContainerLengthDistributionManager`,
@@ -65,6 +56,15 @@ class DatabaseChooser:
         :class:`.TruckArrivalDistributionManager`,
         or similar.
         By default, no schedules and no vehicles exist.
+
+        Args:
+            file_name: The file name of an SQLite database that will reside in ``<project root>/data/databases/``
+            **seeder_options: In case the database is seeded with default values, some variations exist that the user
+                can choose from. The following options exist:
+
+        Keyword Args:
+            assume_tas (bool): Whether to assume a truck appointment system for the truck arrival distribution.
+                Based on this selection, one of the two truck arrival distributions is chosen.
         """
         if self.peewee_sqlite_db is not None:
             self._close_and_reset_db()
