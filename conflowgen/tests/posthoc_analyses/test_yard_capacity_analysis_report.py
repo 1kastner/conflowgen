@@ -40,6 +40,7 @@ class TestYardCapacityAnalysisReport(unittest.TestCase):
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
+storage requirement = all
                                      (reported in TEU)
 maximum used yard capacity:                        0.0
 average used yard capacity:                        0.0
@@ -111,6 +112,7 @@ standard deviation (laden):                       -1.0
         )
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
+storage requirement = all
                                      (reported in TEU)
 maximum used yard capacity:                        3.0
 average used yard capacity:                        1.9
