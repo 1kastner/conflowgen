@@ -137,6 +137,28 @@ repo_dir = os.path.abspath(
     )
 )
 
+
+# -- Style nbsphinx notebook rendering ----------------------------------------
+nbsphinx_prolog = """
+.. raw:: html
+
+    <style>
+        .nbinput .prompt,
+        .nboutput .prompt {
+            display: none;
+        }
+        
+        div.nboutput.container {
+            background-color: #efefef;
+        }
+        
+        div.nbinput {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+    </style>
+"""
+
 if platform.system() == "Linux":  # guess this is read-the-docs
     if not os.path.exists('./git-lfs'):
         os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v3.0.2/git-lfs-linux-amd64-v3.0.2.tar.gz')
