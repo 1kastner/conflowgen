@@ -11,7 +11,7 @@ Its source code hosted
 
    background
    notebooks/input_distributions.ipynb
-   demo
+   notebooks/minimal_example.ipynb
    notebooks/previews.ipynb
    example_usage
    api
