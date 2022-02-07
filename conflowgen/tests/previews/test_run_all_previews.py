@@ -27,14 +27,14 @@ class TestRunAllPreviews(unittest.TestCase):
         self.maxDiff = None
         self.assertEqual(len(cm.output), 14)
 
-        # Test only some of the entries. The detailled tests should be done in the unit test of the respective report.
+        # Test only some entries. The detailed tests should be done in the unit test of the respective report.
         self.assertEqual(
             cm.output[0],
             "INFO:conflowgen:Run all previews for the input distributions in combination with the schedules."
         )
         self.assertEqual(
             cm.output[1],
-            "INFO:conflowgen:Preview: InboundAndOutboundVehicleCapacityPreviewReport"
+            "INFO:conflowgen:\nInboundAndOutboundVehicleCapacityPreviewReport\n"
         )
         self.assertEqual(
             cm.output[-1],
