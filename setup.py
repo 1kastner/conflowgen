@@ -43,19 +43,19 @@ setup(
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
-            'sphinx',
-            'sphinx-rtd-theme',
-            'sphinx-toolbox',
-            'myst-parser',
-            'sphinxcontrib-bibtex',
-            'sphinx-math-dollar',
-            'nbsphinx',
-            'jupyterlab',
+            'sphinx',  # build the documentation
+            'sphinx-rtd-theme',  # adding nice sphinx theme
+            'sphinx-toolbox',  # dependency of enum_tools
+            'myst-parser',  # for Contributing.md
+            'sphinxcontrib-bibtex',  # citing...
+            'sphinx-math-dollar',  # allow writing LaTeX code in math mode using dollar symbols
+            'nbsphinx',  # use Jupyter Notebooks
+            'jupyterlab',  # develop the Jupyter Notebooks
 
             # checking code quality
-            'pylint',
-            'flake8',
-            'flake8_nb',
+            'pylint',  # lint Python code
+            'flake8',  # lint Python code
+            'flake8_nb',  # lint Jupyter Notebooks
 
             # publish at PyPI
             'twine'
