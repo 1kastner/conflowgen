@@ -12,7 +12,6 @@
 #
 import os
 import sys
-import platform
 
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
@@ -130,14 +129,6 @@ bibtex_reference_style = "author_year"
 
 numfig = True
 
-repo_dir = os.path.abspath(
-    os.path.join(
-        os.path.dirname(__file__),
-        os.pardir
-    )
-)
-
-
 # -- Style nbsphinx notebook rendering ----------------------------------------
 nbsphinx_prolog = """
 .. raw:: html
@@ -147,11 +138,11 @@ nbsphinx_prolog = """
         .nboutput .prompt {
             display: none;
         }
-        
+
         div.nboutput.container {
             background-color: #efefef;
         }
-        
+
         div.nbinput {
             padding-top: 5px;
             padding-bottom: 5px;
@@ -159,11 +150,38 @@ nbsphinx_prolog = """
     </style>
 """
 
-if platform.system() == "Linux":  # guess this is read-the-docs
-    if not os.path.exists('./git-lfs'):
-        os.system('wget https://github.com/git-lfs/git-lfs/releases/download/v3.0.2/git-lfs-linux-amd64-v3.0.2.tar.gz')
-        os.system('tar xvfz git-lfs-linux-amd64-v3.0.2.tar.gz -C ./.tools')
-        os.system('cp ./.tools/git-lfs ./git-lfs')
-        os.system('./git-lfs install')  # make lfs available in current repository
-        os.system('yes | ./git-lfs fetch')  # download content from remote
-        os.system('./git-lfs checkout')  # make local files to have the real content on them
+# -- Setting up git lfs if Missing ---------------------------------------------
+
+
+def _install_git_lfs_on_linux_on_the_fly() -> str:
+    """
+    A dirty hack as there is no clean way how to install git lfs on Read the Docs at the moment.
+    """
+    _git_lfs_cmd = "./git-lfs"
+    if os.path.isfile(_git_lfs_cmd):
+        return _git_lfs_cmd
+
+    os.system("echo 'Installing git-lfs on-the-fly'")
+    version = 'v3.0.2'
+    file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
+    if not os.path.isfile(file_to_download):
+        os.system(
+            f'wget https://github.com/git-lfs/git-lfs/releases/download/{version}/{file_to_download}'
+        )  # download git lfs
+    os.system(f'tar xvfz git-lfs-linux-amd64-{version}.tar.gz -C ./.tools')  # extract to ./.tools subdirectory
+    os.system('cp ./.tools/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
+    os.system('./git-lfs install')  # make lfs available in current repository
+    os.system("echo 'git-lfs is installed'")
+    return _git_lfs_cmd
+
+
+if os.environ.get("IS_RTD", False):
+    os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
+    git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
+    os.system("echo 'Fetching the sqlite database'")
+    os.system(
+        f"yes | {git_lfs_cmd} fetch -I '*.sqlite'"
+    )  # download sqlite databases from remote, say yes to trusting certs
+    os.system("echo 'Start checking out the file'")
+    os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
+    os.system("echo 'Checkout finished'")
