@@ -161,6 +161,7 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
     if os.path.isfile(_git_lfs_cmd):
         return _git_lfs_cmd
 
+    os.system("echo 'Installing git-lfs on-the-fly'")
     version = 'v3.0.2'
     file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
     if not os.path.isfile(file_to_download):
@@ -170,14 +171,17 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
     os.system(f'tar xvfz git-lfs-linux-amd64-{version}.tar.gz -C ./.tools')  # extract to ./.tools subdirectory
     os.system('cp ./.tools/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
     os.system('./git-lfs install')  # make lfs available in current repository
-    os.system('ln -s ./git-lfs "$(git --exec-path)/git-lfs"')  #
+    os.system("echo 'git-lfs is installed'")
     return _git_lfs_cmd
 
 
 if os.environ.get("IS_RTD", False):
-    print("We are currently on the Read-the-Docs server or somebody is pretending to be it")
+    os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
+    os.system("echo 'Fetching the sqlite database'")
     os.system(
-        f"yes | {git_lfs_cmd} fetch -I '*.sqlite*'"
+        f"yes | {git_lfs_cmd} fetch -I '*.sqlite'"
     )  # download sqlite databases from remote, say yes to trusting certs
+    os.system("echo 'Start checking out the file'")
     os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
+    os.system("echo 'Checkout finished'")
