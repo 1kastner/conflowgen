@@ -136,7 +136,7 @@ numfig = True
 # -- Setting up git lfs if Missing ---------------------------------------------
 
 
-def _install_git_lfs_on_linux_on_the_fly() -> None:
+def _install_git_lfs_on_linux_on_the_fly() -> str:
     """
     A dirty hack as there is no clean way how to install git lfs on Read the Docs at the moment.
     """
@@ -147,10 +147,11 @@ def _install_git_lfs_on_linux_on_the_fly() -> None:
     os.system(f'tar xvfz git-lfs-linux-amd64-v{version}.tar.gz -C ./.tools')  # extract to ./.tools subdirectory
     os.system('cp ./.tools/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
     os.system('./git-lfs install')  # make lfs available in current repository
+    return "./git-lfs"
 
 
 if os.environ.get("IS_RTD", False):
     # We are currently on the Read-the-Docs server or somebody is pretending to be it
-    _install_git_lfs_on_linux_on_the_fly()
-    os.system("yes | git lfs fetch -I '*.sqlite*'")  # download sqlite databases from remote, say yes to trusting certs
-    os.system('git lfs checkout')  # Replace SQLite database LFS references with the actual files
+    git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
+    os.system(f"yes | {git_lfs_cmd} fetch -I '*.sqlite*'")  # download sqlite databases from remote, say yes to trusting certs
+    os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
