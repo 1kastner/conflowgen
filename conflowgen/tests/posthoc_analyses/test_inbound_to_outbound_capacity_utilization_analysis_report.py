@@ -30,7 +30,10 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(unittest.TestCase):
             ContainerFlowGenerationProperties
         ])
         mode_of_transport_distribution_seeder.seed()
-        ContainerFlowGenerationProperties.create()
+        ContainerFlowGenerationProperties.create(
+            start_date=datetime.date(2021, 12, 15),
+            end_date=datetime.date(2021, 12, 17)
+        )
         self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
 
     def test_with_no_data(self):

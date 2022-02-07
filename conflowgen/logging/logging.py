@@ -15,9 +15,6 @@ LOGGING_DEFAULT_DIR = os.path.abspath(
 )
 
 
-DESIRED_LINE_LENGTH = 80  # doc: The console width used for wrapping output to new lines. This is not mandatory.
-
-
 def setup_logger(
     logging_directory: Optional[str] = None
 ) -> logging.Logger:

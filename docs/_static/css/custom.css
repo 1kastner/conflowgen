@@ -1,4 +1,13 @@
 /**
+  Overwrite the max width of the page content in the read-the-docs theme.
+  The tables presented in the previews and analyses are a bit wider than the original 800px.
+ */
+
+div.wy-nav-content {
+    max-width: 900px
+}
+
+/**
   Overwrite default behavior of sphinxcontrib.bibtex to set up labels in front of the authors.
   Here, the labels are not wanted and at the same time bibtex links should be resolved, see here for more details:
   - https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#bullet-lists-and-enumerated-lists

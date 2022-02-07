@@ -27,7 +27,7 @@ jobs:
 
     - name: Install Python dependencies including pylint
       run: |
-        pip3 install --user -e .[dev,ui]
+        pip3 install --user -e .[dev]
 
     - name: Check code quality with pylint
       run: |

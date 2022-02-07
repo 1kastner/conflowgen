@@ -17,6 +17,7 @@ import sys
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
 from matplotlib.font_manager import fontManager
+
 fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
 
 # include conflowgen from source code, avoid getting served an outdated installation
@@ -30,13 +31,11 @@ sys.path.insert(
     )
 )
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
 project_copyright = '2021, Marvin Kastner and Ole Grasse'
 author = 'Marvin Kastner and Ole Grasse'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -65,7 +64,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.tools']
 
 add_module_names = False
 
@@ -74,7 +73,6 @@ todo_include_todos = True
 autoclass_content = 'both'
 
 autodoc_typehints_format = 'short'
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -95,7 +93,6 @@ html_logo = "../logos/conflowgen_logo_small.png"
 
 html_favicon = "../logos/conflowgen_logo_favicon.png"
 
-
 # -- Options for formula -----------------------------------------------------
 
 
@@ -105,7 +102,6 @@ mathjax3_config = {
         'displayMath': [["\\[", "\\]"]],
     },
 }
-
 
 # -- Options for Linking  ----------------------------------------------------
 
@@ -132,6 +128,27 @@ bibtex_reference_style = "author_year"
 # -- Options for Referencing Figures ------------------------------------------
 
 numfig = True
+
+# -- Style nbsphinx notebook rendering ----------------------------------------
+nbsphinx_prolog = """
+.. raw:: html
+
+    <style>
+        .nbinput .prompt,
+        .nboutput .prompt {
+            display: none;
+        }
+
+        div.nboutput.container {
+            background-color: #efefef;
+        }
+
+        div.nbinput {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+    </style>
+"""
 
 # -- Setting up git lfs if Missing ---------------------------------------------
 

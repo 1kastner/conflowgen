@@ -21,13 +21,11 @@ Furthermore, an additional dependency on
 [pandoc](https://pandoc.org/installing.html)
 exists.
 The dependencies listed in `dev` allow us to run the unit tests and create the documentation.
-The dependencies listed in `ui` allow us to create the visuals that are e.g. used when debugging probability-based 
-unit tests or when creating visuals in Jupyter notebooks.
 
 ```bash
 git clone https://github.com/1kastner/conflowgen
 cd conflowgen
-pip install -e .[dev,ui]
+pip install -e .[dev]
 ```
 
 After modification, you can run `run_ci_light.bat` on Windows.

@@ -47,20 +47,26 @@ class SqliteDatabaseConnection:
     )
 
     def __init__(self, sqlite_databases_directory: Optional[str] = None):
-        self.logger = logging.getLogger("conflowgen")
+
         if sqlite_databases_directory is None:
-            self.sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
-            if not os.path.isdir(self.sqlite_databases_directory):
-                self.logger.debug(f"Creating SQLite directory at '{sqlite_databases_directory}'")
-                os.makedirs(self.sqlite_databases_directory, exist_ok=True)
-        else:
-            self.sqlite_databases_directory = sqlite_databases_directory
+            sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
+        sqlite_databases_directory = os.path.abspath(sqlite_databases_directory)
+        self.sqlite_databases_directory = sqlite_databases_directory
+
+        self.logger = logging.getLogger("conflowgen")
+
+        if not os.path.isdir(self.sqlite_databases_directory):
+            self.logger.debug(f"Creating SQLite directory at {sqlite_databases_directory}")
+            os.makedirs(self.sqlite_databases_directory, exist_ok=True)
+
         self.sqlite_db_connection = None
 
     def list_all_sqlite_databases(self) -> List[str]:
-        sqlite_databases = [_file for _file
-                            in os.listdir(self.sqlite_databases_directory)
-                            if _file.endswith("sqlite")]
+        sqlite_databases = [
+            _file for _file
+            in os.listdir(self.sqlite_databases_directory)
+            if _file.endswith(".sqlite")
+        ]
         return sqlite_databases
 
     def choose_database(
@@ -78,7 +84,7 @@ class SqliteDatabaseConnection:
                 database_name=database_name, create=create, reset=reset
             )
 
-        self.logger.debug(f"Opening file '{path_to_sqlite_database}'")
+        self.logger.debug(f"Opening file {path_to_sqlite_database}")
         self.sqlite_db_connection = SqliteDatabase(
             path_to_sqlite_database,
             pragmas=self.SQLITE_DEFAULT_SETTINGS
@@ -104,7 +110,7 @@ class SqliteDatabaseConnection:
     def delete_database(self, database_name: str) -> None:
         path_to_sqlite_database = self._get_path_to_database(database_name)
         if os.path.isfile(path_to_sqlite_database):
-            self.logger.debug(f"Deleting database: '{path_to_sqlite_database}'")
+            self.logger.debug(f"Deleting database at {path_to_sqlite_database}")
             os.remove(path_to_sqlite_database)
         else:
             raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
@@ -118,13 +124,13 @@ class SqliteDatabaseConnection:
             if create and not reset:
                 raise SqliteDatabaseAlreadyExistsException(path_to_sqlite_database)
             if reset:
-                self.logger.debug(f"Deleting old database: '{path_to_sqlite_database}'")
+                self.logger.debug(f"Deleting old database at {path_to_sqlite_database}")
                 os.remove(path_to_sqlite_database)
         else:
             if not create:
                 raise SqliteDatabaseIsMissingException(path_to_sqlite_database)
             if create:
-                self.logger.debug(f"No previous database detected, creating new: '{path_to_sqlite_database}'")
+                self.logger.debug(f"No previous database detected, creating new at {path_to_sqlite_database}")
         return path_to_sqlite_database, sqlite_database_existed_before
 
     def _get_path_to_database(self, database_name: str) -> str:

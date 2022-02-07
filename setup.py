@@ -22,17 +22,23 @@ setup(
     packages=find_packages(),
     url='https://github.com/1kastner/conflowgen',
     install_requires=[
-        'numpy',
-        'pandas',
+        'pandas',  # CSV/Excel import and export
+        'numpy',  # used in combination with pandas for column types
         'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
-        'peewee',
-        'enum_tools'  # used for documenting enums via decorators
+        'peewee',  # ORM mapper
+        'enum_tools',  # used for documenting enums via decorators
+
+        # for creating the visuals
+        'matplotlib',  # default plots such as bar charts, pie charts, etc.
+        'plotly',  # useful for e.g. Sankey diagrams
+        'seaborn',  # exchanges matplotlib color palletes
+        'kaleido',  # plotly depends on this package for SVG export
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
         'dev': [
             # testing
-            'pytest',
+            'pytest',  # running the unit tests
             'pytest-cov',  # create coverage report
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
@@ -45,7 +51,6 @@ setup(
             'sphinx-math-dollar',
             'nbsphinx',
             'jupyterlab',
-            'matplotlib',
 
             # checking code quality
             'pylint',
@@ -53,13 +58,6 @@ setup(
 
             # publish at PyPI
             'twine'
-        ],
-        # Only needed when you run the unittests in debug mode, or you run the Jupyter Notebooks that create additional
-        # visualizations. This is not compulsory though.
-        'ui': [
-            'plotly',
-            'seaborn',
-            'kaleido',  # plotly depends on this package for SVG export
         ]
     },
     license=metadata['__license__'],

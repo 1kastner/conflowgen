@@ -23,6 +23,9 @@ jobs:
         sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
     - uses: actions/checkout@v2
+      with:
+        lfs: 'true'
+    - run: git lfs pull
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -31,7 +34,7 @@ jobs:
 
     - name: Install Python dependencies including sphinx
       run: |
-        pip3 install --user -e .[dev,ui]
+        pip3 install --user -e .[dev]
 
     - name: Build documentation and check for warnings
       run: |

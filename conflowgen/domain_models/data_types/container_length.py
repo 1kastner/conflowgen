@@ -51,7 +51,7 @@ class ContainerLength(enum.Enum):
             text: The text to parse
 
         Returns:
-            The container length enum entry if the cast was successful, ``None`` otherwise.
+            The container length enum name if the cast was successful, ``None`` otherwise.
         """
         if text == "other":
             return cls.other
