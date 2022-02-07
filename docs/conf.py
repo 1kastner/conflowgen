@@ -141,7 +141,7 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
     A dirty hack as there is no clean way how to install git lfs on Read the Docs at the moment.
     """
     _git_lfs_cmd = "./git-lfs"
-    if os.path.isfile(_git_lfs_cmd)
+    if os.path.isfile(_git_lfs_cmd):
         return _git_lfs_cmd
 
     version = 'v3.0.2'
