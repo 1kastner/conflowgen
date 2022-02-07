@@ -64,4 +64,4 @@ Examples how to generate synthetic data with ConFlowGen exist
 Use cases for the generated output data are presented
 [in the example usage subdirectory](https://github.com/1kastner/conflowgen/tree/main/example-usage).
 If you wish to contribute to the project, please have a look at
-[Contributing.md](Contributing.md).
+[how to contribute](Contributing.md).

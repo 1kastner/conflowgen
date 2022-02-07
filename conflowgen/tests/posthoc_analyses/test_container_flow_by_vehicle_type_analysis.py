@@ -51,7 +51,6 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
@@ -59,12 +58,10 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
-        feeder_lsv.save()
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
-        container = Container.create(
+        Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard,
@@ -73,7 +70,6 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             picked_up_by=ModeOfTransport.truck,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container.save()
 
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
         self.assertSetEqual(set(ModeOfTransport), set(inbound_to_outbound_flow.keys()))

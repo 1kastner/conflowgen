@@ -7,7 +7,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 class ModeOfTransportDistributionManager:
     """
-    This manager provides the interface to set and get the distribution that controls from which vehicle containers are
+    This is the interface to set and get the distribution that controls from which vehicle containers are
     transshipped to which other type of vehicle.
     """
 
@@ -18,11 +18,10 @@ class ModeOfTransportDistributionManager:
             self
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
-        If a container is delivered by a vehicle of type ``<first-key>``, the floating point number describes the
-        fraction that the container is later picked up by vehicle of type ``<second-key>``.
-
         Returns:
             The distribution of mode of transports dependent on the vehicle the container is delivered by.
+            If a container is delivered by a vehicle of type ``<first-key>``, the floating point number describes the
+            fraction that the container is later picked up by vehicle of type ``<second-key>``.
         """
         return self.mode_of_transport_distribution_repository.get_distribution()
 

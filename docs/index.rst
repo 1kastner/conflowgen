@@ -13,6 +13,7 @@ Its source code hosted
    notebooks/input_distributions.ipynb
    notebooks/minimal_example.ipynb
    notebooks/previews.ipynb
+   notebooks/analyses.ipynb
    example_usage
    api
    contributing

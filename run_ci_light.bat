@@ -16,7 +16,9 @@ pip3 install -e .[dev,ui] || ECHO.Installation failed && EXIT /B
 
 REM check code quality
 flake8 || ECHO.While linting, flake8 failed && EXIT /B
-pylint conflowgen || ECHO.While linting, pylint failed && EXIT /B
+flake8_nb || ECHO.While linting, flake8_nb failed && EXIT /B
+pylint conflowgen || ECHO.While linting the conflowgen module, pylint failed && EXIT /B
+pylint setup.py || ECHO.While linting setup.py, pylint failed && EXIT /B
 
 REM build docs
 CALL docs/make html || ECHO.Building the documentation failed && EXIT /B

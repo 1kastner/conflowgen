@@ -107,6 +107,10 @@ class ContainerFlowGenerationService:
 
         Truck.delete().execute()
 
+    @staticmethod
+    def container_flow_data_exists() -> bool:
+        return len(Container.select().limit(1)) == 1
+
     def generate(self):
         self.logger.info("Remove previous data...")
         self.clear_previous_container_flow()

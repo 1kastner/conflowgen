@@ -8,8 +8,8 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 
 class ContainerWeightDistributionManager:
     """
-    This manager provides the interface to set and get the container weight distribution.
-
+    This is the interface to set and get the container weight distribution.
+    It determines how many containers are selected to have which weight.
     The default distribution is presented in the section
     `Container Weight Distribution <notebooks/input_distributions.ipynb#Container-Weight-Distribution>`_.
     """

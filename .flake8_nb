@@ -1,0 +1,16 @@
+[flake8_nb]
+
+exclude =
+    *.git*
+    *venv*
+    *.ipynb_checkpoints*
+    *.virtual_documents*
+    *build*
+    *.py
+
+ignore =
+    F821  # Variables such as 'In' or 'display' are not detected and variables of imported Jupyter Notebook cannot be detected
+    E501  # Allow long lines
+    W503  # Long lines need to be broken somewhere and otherwise W504 is violated
+
+show_source = True

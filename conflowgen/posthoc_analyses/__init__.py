@@ -70,4 +70,4 @@ def run_all_analyses(
         "Run all analyses on the synthetically generated data."
     )
     auto_reporter.present_reports(reports)
-    auto_reporter.output.display_explanation("All post-hoc analyses have been run.")
+    auto_reporter.output.display_explanation("All analyses have been run.")

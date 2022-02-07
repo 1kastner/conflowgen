@@ -17,7 +17,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
     and creates a comprehensible representation for the user, either as text or as a graph.
     The visual and table are expected to approximately look like in the
     `example ContainerFlowByVehicleTypePreviewReport \
-    <notebooks/previews.ipynb#ContainerFlowByVehicleTypePreviewReport>`_.
+    <notebooks/previews.ipynb#Container-Flow-By-Vehicle-Type-Preview-Report>`_.
     """
 
     report_description = """
