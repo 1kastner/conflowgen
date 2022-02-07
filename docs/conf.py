@@ -149,7 +149,7 @@ def _install_git_lfs_on_linux_on_the_fly() -> None:
     os.system('./git-lfs install')  # make lfs available in current repository
 
 
-if os.environ["IS_RTD"]:
+if os.environ.get("IS_RTD", False):
     # We are currently on the Read-the-Docs server or somebody is pretending to be it
     _install_git_lfs_on_linux_on_the_fly()
     os.system("yes | git lfs fetch -I '*.sqlite*'")  # download sqlite databases from remote, say yes to trusting certs
