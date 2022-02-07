@@ -55,6 +55,7 @@ setup(
             # checking code quality
             'pylint',
             'flake8',
+            'flake8_nb',
 
             # publish at PyPI
             'twine'
