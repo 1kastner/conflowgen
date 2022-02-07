@@ -140,18 +140,27 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
     """
     A dirty hack as there is no clean way how to install git lfs on Read the Docs at the moment.
     """
+    _git_lfs_cmd = "./git-lfs"
+    if os.path.isfile(_git_lfs_cmd)
+        return _git_lfs_cmd
+
     version = 'v3.0.2'
-    os.system(
-        f'wget https://github.com/git-lfs/git-lfs/releases/download/v{version}/git-lfs-linux-amd64-{version}.tar.gz'
-    )  # download git lfs
-    os.system(f'tar xvfz git-lfs-linux-amd64-v{version}.tar.gz -C ./.tools')  # extract to ./.tools subdirectory
+    file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
+    if not os.path.isfile(file_to_download):
+        os.system(
+            f'wget https://github.com/git-lfs/git-lfs/releases/download/{version}/{file_to_download}'
+        )  # download git lfs
+    os.system(f'tar xvfz git-lfs-linux-amd64-{version}.tar.gz -C ./.tools')  # extract to ./.tools subdirectory
     os.system('cp ./.tools/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
     os.system('./git-lfs install')  # make lfs available in current repository
-    return "./git-lfs"
+    os.system('ln -s ./git-lfs "$(git --exec-path)/git-lfs"')  #
+    return _git_lfs_cmd
 
 
 if os.environ.get("IS_RTD", False):
-    # We are currently on the Read-the-Docs server or somebody is pretending to be it
+    print("We are currently on the Read-the-Docs server or somebody is pretending to be it")
     git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
-    os.system(f"yes | {git_lfs_cmd} fetch -I '*.sqlite*'")  # download sqlite databases from remote, say yes to trusting certs
+    os.system(
+        f"yes | {git_lfs_cmd} fetch -I '*.sqlite*'"
+    )  # download sqlite databases from remote, say yes to trusting certs
     os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
