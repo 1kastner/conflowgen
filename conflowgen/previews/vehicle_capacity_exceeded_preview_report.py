@@ -19,7 +19,7 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
     :class:`.InboundAndOutboundVehicleCapacityPreviewReport`.
     The visual and table are expected to approximately look like in the
     `example InboundAndOutboundVehicleCapacityPreviewReport \
-    <notebooks/previews.ipynb#InboundAndOutboundVehicleCapacityPreviewReport>`_.
+    <notebooks/previews.ipynb#Inbound-And-Outbound-Vehicle-Capacity-Preview-Report>`_.
     """
 
     report_description = """

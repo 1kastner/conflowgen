@@ -33,10 +33,16 @@ class AutoReporter:
 
         self.static_graphs = static_graphs
 
+    @staticmethod
+    def _get_report_name(report_instance: object) -> str:
+        class_name: str = report_instance.__class__.__name__
+        class_name_with_spaces = ''.join(map(lambda x: x if x.islower() else " " + x, class_name))
+        return class_name_with_spaces.strip()
+
     def present_reports(self, reports: Iterable[Type[AbstractReport]]):
         for report in reports:
             report_instance = report()
-            name_of_report = report_instance.__class__.__name__
+            name_of_report = self._get_report_name(report_instance)
             self.output.display_headline(name_of_report)
             self.output.display_explanation(report_instance.report_description)
             if self.as_text:

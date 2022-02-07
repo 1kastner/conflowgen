@@ -1,4 +1,5 @@
 import datetime
+import logging
 from typing import Union, Dict, Optional
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
@@ -18,6 +19,7 @@ class ContainerFlowGenerationManager:
     def __init__(self):
         self.container_flow_generation_service = ContainerFlowGenerationService()
         self.container_flow_generation_properties_repository = ContainerFlowGenerationPropertiesRepository()
+        self.logger = logging.getLogger("conflowgen")
 
     def set_properties(
             self,
@@ -96,7 +98,7 @@ class ContainerFlowGenerationManager:
     def get_properties(self) -> Dict[str, Union[str, datetime.date, float, int]]:
         """
         Returns:
-            The properties of the container flow
+            The properties of the container flow.
         """
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
         return {
@@ -118,12 +120,30 @@ class ContainerFlowGenerationManager:
                 properties.maximum_dwell_time_of_transshipment_containers_in_hours
         }
 
-    def generate(self) -> None:
+    def container_flow_data_exists(self) -> bool:
+        """
+        When an existing database is opened, pre-existing container flow data could already be stored inside.
+        Invoking :meth:`.ContainerFlowGenerationManager.generate` again would reset that stored data.
+        You might want to skip that set and just re-use the data already stored in the database.
+
+        Returns:
+            Whether container flow data exists in the database.
+        """
+        return self.container_flow_generation_service.container_flow_data_exists()
+
+    def generate(self, overwrite: bool = True) -> None:
         """
         Generate the synthetic container flow according to all the information stored in the database so far.
         This triggers a multistep procedure of generating vehicles and the containers which are delivered or picked up
         by the vehicles.
         More is described in the Section
         `Data Generation Process <background.rst#data-generation-process>`_.
+        The invocation of this method overwrites any already existent data in the database.
+        Consider checking for
+        :meth:`.ContainerFlowGenerationManager.container_flow_data_exists`
+        and skip invoking this method.
         """
+        if not overwrite and self.container_flow_data_exists():
+            self.logger.debug("Data already exists and it was not asked to overwrite existent data, skip this.")
+            return
         self.container_flow_generation_service.generate()

@@ -34,7 +34,7 @@ class TestRunAllPreviews(unittest.TestCase):
         )
         self.assertEqual(
             cm.output[1],
-            "INFO:conflowgen:\nInboundAndOutboundVehicleCapacityPreviewReport\n"
+            "INFO:conflowgen:\nInbound And Outbound Vehicle Capacity Preview Report\n"
         )
         self.assertEqual(
             cm.output[-1],

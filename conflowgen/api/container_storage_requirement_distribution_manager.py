@@ -8,7 +8,8 @@ from conflowgen.domain_models.distribution_repositories.container_storage_requir
 
 class ContainerStorageRequirementDistributionManager:
     """
-    This manager provides the interface to set and get the storage requirement distribution.
+    This is the interface to set and get the storage requirement distribution.
+    It determines how many containers are selected to have a certain :class:`.StorageRequirement`.
     """
 
     def __init__(self):
@@ -26,8 +27,8 @@ class ContainerStorageRequirementDistributionManager:
             storage_requirements: Dict[ContainerLength, Dict[StorageRequirement, float]]
     ) -> None:
         """
-        Set the assumed global distribution of container storage requirements. This is applied to all vehicles that
-        arrive at the terminal.
+        Set the assumed global distribution of container storage requirements.
+        This is applied to all containers passing through the terminal.
 
         Args:
             storage_requirements: The distribution of storage requirements depending on the container length.

@@ -33,6 +33,6 @@ jobs:
       run: |
         pylint conflowgen && pylint setup.py
 
-    - name: Check code quality with flake8
+    - name: Check code quality with flake8 and flake8_nb
       run: |
-        flake8
+        flake8 && flake8_nb

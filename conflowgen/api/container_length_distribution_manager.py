@@ -28,8 +28,8 @@ class ContainerLengthDistributionManager:
             container_lengths: Dict[ContainerLength, float]
     ) -> None:
         """
-        Set the assumed global distribution of container lengths. This is applied to all vehicles that arrive at the
-        terminal.
+        Set the assumed global distribution of container lengths.
+        This is applied to all vehicles that arrive at the terminal.
 
         Args:
             container_lengths: The distribution of container lengths and their corresponding frequency.
