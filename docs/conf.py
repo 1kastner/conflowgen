@@ -134,20 +134,28 @@ nbsphinx_prolog = """
 .. raw:: html
 
     <style>
+        /* Hide the prompts, i.e. the leading numbers in square brackets of Jupyter Notebooks such as '[1]' */
         .nbinput .prompt,
         .nboutput .prompt {
             display: none;
         }
 
+        /* Set output in gray to distinguish it from the remaining Jupyter Notebook */
         div.nboutput.container {
             background-color: #efefef;
-            word-wrap: break-word;
         }
 
+        /* Add some white space between the input cell and the remaining cells, especially to the output */
         div.nbinput {
             padding-top: 5px;
             padding-bottom: 5px;
         }
+
+        /* Some of the log statements are too long and a scrolling bar appears. This needs to be avoided */
+        div#Generate-the-data pre {
+            white-space: pre-wrap !important;
+        }
+
     </style>
 """
 
