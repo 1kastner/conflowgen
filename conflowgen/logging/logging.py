@@ -38,6 +38,9 @@ def setup_logger(
             Defaults to ``<project root>/data/logs/``.
         format_string:
             The format string to use.
+            See e.g.
+            https://docs.python.org/3/library/logging.html#logrecord-attributes
+            for how to create your own format string.
             Defaults to ``{DEFAULT_LOGGING_FORMAT_STRING}``.
 
     Returns:
