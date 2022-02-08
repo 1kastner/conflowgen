@@ -141,6 +141,7 @@ nbsphinx_prolog = """
 
         div.nboutput.container {
             background-color: #efefef;
+            word-wrap: break-word;
         }
 
         div.nbinput {

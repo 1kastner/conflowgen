@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Dict, Tuple
+from typing import Dict
 
 from conflowgen.domain_models.container import Container
+from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
@@ -39,7 +40,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
 
         return inbound_capacity
 
-    def get_outbound_capacity_of_vehicles(self) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
+    def get_outbound_capacity_of_vehicles(self) -> OutboundUsedAndMaximumCapacity:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
         in TEU. If for a vehicle type, the used capacity is very close to the maximum capacity, you might want to
@@ -74,4 +75,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractPostHocAnalysis):
 
         outbound_maximum_capacity[ModeOfTransport.truck] = -1  # Not meaningful, trucks can always be added as required
 
-        return outbound_actual_capacity, outbound_maximum_capacity
+        return OutboundUsedAndMaximumCapacity(
+            used=outbound_actual_capacity,
+            maximum=outbound_maximum_capacity
+        )

@@ -15,7 +15,11 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
     report_description = """
     Analyse the throughput at the quay side.
     In the text version of the report, only the statistics are reported.
-    In the visual version of the report, the time series is plotted."""
+    In the visual version of the report, the time series is plotted.
+    There is no concept of handling times in the data generation process (as this is the task of the simulation or
+    optimization model using this data on a later stage) and thus all containers are loaded and discharged at once.
+    The impact of this fact is mitigated by averaging the data over certain time ranges.
+    """
 
     def __init__(self):
         super().__init__()

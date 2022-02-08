@@ -22,6 +22,10 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
     Based on this, the required yard capacity in TEU can be deduced.
     In the text version of the report, only the statistics are reported.
     In the visual version of the report, the time series is plotted.
+    There is no concept of handling times in the data generation process (as this is the task of the simulation or
+    optimization model using this data on a later stage) and thus all containers are loaded and discharged at once.
+    Thus, the yard utilization shows certain peaks that will most likely not occur, especially if the discharging and
+    loading process of a vessel is parallelized.
     """
 
     def __init__(self):
