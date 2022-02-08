@@ -49,6 +49,7 @@ extensions = [
     'sphinx.ext.napoleon',  # use google-style document strings
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
+    'sphinx.ext.autosectionlabel',  # create reference for each section
 
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text
