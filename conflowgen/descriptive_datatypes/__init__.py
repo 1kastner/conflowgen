@@ -1,4 +1,6 @@
-from typing import NamedTuple
+from typing import NamedTuple, Dict
+
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
 class TransshipmentAndHinterlandComparison(NamedTuple):
@@ -19,3 +21,12 @@ class HinterlandModalSplit(NamedTuple):
     train_capacity: float
     barge_capacity: float
     truck_capacity: float
+
+
+class OutboundUsedAndMaximumCapacity(NamedTuple):
+    """
+    This tuple keeps track of how much each vehicle type transports on the outbound journey and what the maximum
+    capacity is.
+    """
+    used: Dict[ModeOfTransport, float]
+    maximum: Dict[ModeOfTransport, float]
