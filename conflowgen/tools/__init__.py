@@ -21,4 +21,3 @@ def hashable(obj: Any) -> bool:
     except TypeError:
         return False
     return True
-
