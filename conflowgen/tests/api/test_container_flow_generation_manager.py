@@ -2,7 +2,7 @@ import datetime
 import unittest
 import unittest.mock
 
-from conflowgen import ContainerFlowGenerationManager
+from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
