@@ -22,7 +22,7 @@ or
 ## Development installation
 
 For the development installation, instead of simply invoking `pip install` in the CLI in the project root folder, we 
-additionally add the optional dependencies `dev` and `ui`.
+additionally add the optional dependencies `dev`.
 Furthermore, an additional dependency on
 [pandoc](https://pandoc.org/installing.html)
 exists.
