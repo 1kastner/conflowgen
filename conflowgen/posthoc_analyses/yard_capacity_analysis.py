@@ -11,6 +11,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis, get_hour_based_time_window, \
     get_hour_based_range
+from conflowgen.tools import hashable
 
 
 class YardCapacityAnalysis(AbstractPostHocAnalysis):
@@ -52,7 +53,7 @@ class YardCapacityAnalysis(AbstractPostHocAnalysis):
         if storage_requirement == "all":
             selected_containers = Container.select()
         else:
-            if storage_requirement in set(StorageRequirement):
+            if hashable(storage_requirement) and storage_requirement in set(StorageRequirement):
                 selected_containers = Container.select().where(
                     Container.storage_requirement == storage_requirement
                 )

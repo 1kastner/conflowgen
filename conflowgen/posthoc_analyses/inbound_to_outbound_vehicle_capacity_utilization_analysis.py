@@ -8,6 +8,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
 from conflowgen.posthoc_analyses.abstract_posthoc_analysis import AbstractPostHocAnalysis
+from conflowgen.tools import hashable
 
 
 class CompleteVehicleIdentifier(NamedTuple):
@@ -50,7 +51,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractPostHocAnalysi
         if vehicle_type == "all":
             selected_large_scheduled_vehicles = base_selection
         else:
-            if vehicle_type in set(ModeOfTransport):
+            if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
                 selected_large_scheduled_vehicles = base_selection.where(
                     LargeScheduledVehicle.schedule.vehicle_type == vehicle_type
                 )
