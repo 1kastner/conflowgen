@@ -67,7 +67,8 @@ class PortCallManager:
 
                 If you have calibrated the aforementioned distribution accordingly, the actual number of containers on
                 the outbound journey in TEU should be on average the same as on the inbound journey.
-
+                In that case, the vehicle moves ``average_moved_capacity`` number of containers in TEU on its inbound
+                journey and the same number of containers in TEU again on its outbound journey.
             next_destinations:
                 Pairs of destination and frequency of the destination being chosen.
             vehicle_arrives_every_k_days:
