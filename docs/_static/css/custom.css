@@ -8,6 +8,14 @@ div.wy-nav-content {
 }
 
 /**
+  Overwrite the font size of formulas set with MathJax
+ */
+
+.MathJax {
+    font-size: 100% !important;
+}
+
+/**
   Overwrite default behavior of sphinxcontrib.bibtex to set up labels in front of the authors.
   Here, the labels are not wanted and at the same time bibtex links should be resolved, see here for more details:
   - https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#bullet-lists-and-enumerated-lists

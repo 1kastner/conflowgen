@@ -28,7 +28,7 @@ class PortCallManager:
             next_destinations: Optional[List[Tuple[str, float]]] = None,
             vehicle_arrives_every_k_days: Optional[int] = None
     ) -> None:
-        """
+        r"""
         Add the schedule of a ship of any size or a train. The concrete vehicle instances are automatically generated
         when :meth:`.ContainerFlowGenerationManager.generate` is invoked.
 
@@ -48,12 +48,32 @@ class PortCallManager:
                 A time at the day (between 00:00 and 23:59).
             average_vehicle_capacity:
                 Number of TEU that can be transported with the vehicle at most.
+                The number of moved containers can never exceed this number, no matter what the value for the
+                ``transportation_buffer`` is set to.
             average_moved_capacity:
-                Number of TEU which is imported.
+                The average moved capacity describes the number of TEU which the vehicle delivers to the terminal on its
+                inbound journey.
+                When summing up the TEU factors of each of the loaded containers on the inbound journey, this value is
+                never exceeded but closely approximated.
+                For the outbound journey, the containers are assigned depending on the distribution kept in
+                :class:`.ModeOfTransportDistributionManager`.
+                The maximum number of containers in TEU on the outbound journey of the vehicle is bound by
+
+                .. math::
+
+                    min(
+                        \text{average_moved_capacity} \cdot \text{transportation_buffer},\text{average_vehicle_capacity}
+                    )
+
+                If you have calibrated the aforementioned distribution accordingly, the actual number of containers on
+                the outbound journey in TEU should be on average the same as on the inbound journey.
+                In that case, the vehicle moves ``average_moved_capacity`` number of containers in TEU on its inbound
+                journey and the same number of containers in TEU again on its outbound journey.
             next_destinations:
                 Pairs of destination and frequency of the destination being chosen.
             vehicle_arrives_every_k_days:
-                Defaults to weekly services (arrival every 7 days). Other frequencies are possible as well.
+                Defaults to weekly services (arrival every 7 days).
+                Other frequencies are possible as well.
                 In the special case of ``-1``, only a single arrival at the day ``vehicle_arrives_at`` is scheduled.
                 This arrival is only part of the generated container flow if that arrival lies between ``start_date``
                 and ``end_date``.
@@ -82,7 +102,7 @@ class PortCallManager:
             vehicle_type: The mode of transport to restrict the search to.
 
         Returns:
-            Whether the requested schedule already exist in the database
+            Whether the requested schedule already exist in the database.
         """
         assert vehicle_type in ModeOfTransport.get_scheduled_vehicles(), f"Vehicle of type {vehicle_type} not " \
                                                                          f"suitable for this method."
