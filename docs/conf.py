@@ -10,6 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import datetime
 import os
 import sys
 
@@ -34,8 +35,10 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-project_copyright = '2021, Marvin Kastner and Ole Grasse'
 author = 'Marvin Kastner and Ole Grasse'
+current_year = datetime.datetime.now().year
+project_copyright = f'{current_year}, {author}'
+
 
 # -- General configuration ---------------------------------------------------
 
