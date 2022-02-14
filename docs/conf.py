@@ -123,6 +123,8 @@ nbsphinx_execute_arguments = [
     "--InlineBackend.rc=figure.dpi=96",
 ]
 
+nbsphinx_kernel_name = 'python3'  # always use python3 kernel, even if a different one is used in the notebook
+
 # -- Options for Citing Sources -----------------------------------------------
 
 bibtex_bibfiles = ['references.bib']

@@ -50,6 +50,8 @@ setup(
             'sphinxcontrib-bibtex',  # citing...
             'sphinx-math-dollar',  # allow writing LaTeX code in math mode using dollar symbols
             'nbsphinx',  # use Jupyter Notebooks
+            'ipython',  # for setting up the pygments_lexer
+            'ipykernel',  # for allowing nbsphinx to execute Jupyter Notebooks
             'jupyterlab',  # develop the Jupyter Notebooks
 
             # checking code quality
