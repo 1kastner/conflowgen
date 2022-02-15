@@ -1,4 +1,11 @@
 """
+Demo Proof of Concept (PoC)
+===========================
+
+This demo is based on some example data and is meant to show the basic functionality. For a slightly more realistic
+example, please check out `demo_DEHAM_CTA.py`. However, computing those numbers also takes longer than quickly running
+this small example.
+
 The intention of this script is to provide a demonstration of how ConFlowGen is supposed to be used as a library.
 It is, by design, a stateful library that persists all input in an SQL database format to enable reproducibility.
 The intention of this demo is further explained in the logs it generated.
@@ -16,15 +23,7 @@ except ImportError:
 
 # Start logging
 logger = conflowgen.setup_logger()
-
-logger.info("""
-####
-## Demo Proof of Concept
-####
-This demo is based on some example data and is meant to show the basic functionality. For a slightly more realistic
-example, please check out `demo_DEHAM_CTA.py`. However, computing those numbers also takes longer than quickly running
-this small example.
-""")
+logger.info(__doc__)
 
 # Pick database
 database_chooser = conflowgen.DatabaseChooser()
