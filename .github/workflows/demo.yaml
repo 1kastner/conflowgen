@@ -30,6 +30,6 @@ jobs:
       run: |
         pip3 install --user ${{ matrix.python-inplace }} .
 
-    - name: Run demos
+    - name: Run demo
       run: |
-        python ./demo/demo_poc.py
+        python "./examples/Python_Script/demo_poc.py"

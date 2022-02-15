@@ -18,7 +18,6 @@ import sys
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
 from matplotlib.font_manager import fontManager
-
 fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
 
 # include conflowgen from source code, avoid getting served an outdated installation

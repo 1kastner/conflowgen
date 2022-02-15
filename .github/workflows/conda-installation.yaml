@@ -22,7 +22,7 @@ jobs:
         activate-environment: ""
 
     - name: Create and update environment
-      working-directory: .\examples\Jupyter Notebook\
+      working-directory: .\examples\Jupyter_Notebook\
       run: |
         .\create-env.bat
         .\update-env.bat
