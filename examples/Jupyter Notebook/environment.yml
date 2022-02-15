@@ -1,0 +1,13 @@
+name: conflowgen
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - jupyterlab=3
+  - jupyterlab-spellchecker
+  - jupyterlab-lsp
+  - python-lsp-server
+  - pylint
+  - pip
+  - pip:
+      - -e ../../.

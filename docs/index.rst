@@ -10,11 +10,11 @@ Its source code hosted
    :caption: Contents:
 
    background
+   notebooks/first_steps.ipynb
    notebooks/input_distributions.ipynb
-   notebooks/minimal_example.ipynb
    notebooks/previews.ipynb
    notebooks/analyses.ipynb
-   example_usage
+   examples
    api
    contributing
    bibliography
