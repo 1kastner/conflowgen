@@ -1,5 +1,5 @@
-API documentation
------------------
+API
+---
 
 .. automodule:: conflowgen
 
@@ -160,6 +160,8 @@ Working with reports
 ====================
 
 When working with :func:`.run_all_previews` or :func:`.run_all_analyses`, there is some common functionality.
+If you wish to add another markup language besides plaintext and markdown for these two lists of reports,
+you can define them here and pass them as parameters to the aforementioned functions.
 
 .. autoclass:: conflowgen.DisplayAsMarkdown
     :members:
