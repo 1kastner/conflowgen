@@ -22,7 +22,7 @@ jobs:
         .\miniconda.exe /InstallationType=JustMe /RegisterPython=0
 
     - name: Create and update environment (miniconda is not in PATH)
-      working-directory: .\examples\Jupyter Notebook\
+      working-directory: .\examples\Jupyter_Notebook\
       run: |
         .\create-env.bat
         .\update-env.bat
