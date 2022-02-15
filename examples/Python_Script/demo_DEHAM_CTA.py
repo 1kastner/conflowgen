@@ -1,7 +1,23 @@
 """
+Demo for DEHAM CTA
+==================
+
+This is a demo based on some publicly available figures, some educated guesses, and some random assumptions due to the
+lack of information regarding the Container Terminal Altenwerder (CTA) in the port of Hamburg. While this demo only
+poorly reflects processes in place, in addition this is only a (poor) snapshot of what has been happening in July
+2021.
+
+No affiliations with the container terminal operators exist. Then why this example was chosen? ConFlowGen is an
+extension of the work of Sönke Hartmann [1] and he presented some sample figures. For showing the similarities and
+differences, similar assumptions have been made throughout this demo.
+
 The intention of this script is to provide a demonstration of how ConFlowGen is supposed to be used as a library.
 It is, by design, a stateful library that persists all input in an SQL database format to enable reproducibility.
 The intention of this demo is further explained in the logs it generated.
+
+
+[1] Hartmann, S.: Generating scenarios for simulation and optimization of container terminal logistics. OR Spectrum,
+vol. 26, 171–192 (2004). doi: 10.1007/s00291-003-0150-6
 """
 
 import datetime
@@ -58,23 +74,8 @@ df_trains = pd.read_csv(
 
 # Start logging
 logger = conflowgen.setup_logger()
+logger.info(__doc__)
 
-logger.info("""
-####
-## Demo DEHAM CTA
-####
-This is a demo based on some publicly available figures, some educated guesses, and some random assumptions due to the
-lack of information regarding the Container Terminal Altenwerder (CTA) in the port of Hamburg. While this demo only
-poorly reflects processes in place, in addition this is only a (poor) snapshot of what has been happening in summer
-2021.
-
-No affiliations with the container terminal operators exist. Then why this example was chosen? This is an extension of
-the work of Sönke Hartmann [1] and he presented some sample figures. For showing the similarities and differences,
-similar assumptions have been made throughout this demo.
-
-[1] Hartmann, S.: Generating scenarios for simulation and optimization of container terminal logistics. OR Spectrum,
-vol. 26, 171–192 (2004). doi: 10.1007/s00291-003-0150-6
-""")
 # Pick database
 database_chooser = conflowgen.DatabaseChooser()
 demo_file_name = "demo_deham_cta.sqlite"
