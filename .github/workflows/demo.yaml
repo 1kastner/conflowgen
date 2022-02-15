@@ -32,4 +32,4 @@ jobs:
 
     - name: Run demo
       run: |
-        python "./examples/Python Script/demo_poc.py"
+        python "./examples/Python_Script/demo_poc.py"
