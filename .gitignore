@@ -51,3 +51,6 @@ docs/git-lfs*
 
 # Avoid publishing Jupyter Notebooks that were created for tampering
 Untitled*.ipynb
+
+# Ignore log files
+*.log 
