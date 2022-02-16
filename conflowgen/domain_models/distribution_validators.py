@@ -88,17 +88,12 @@ def _cast_element_type(actual_element: Any, desired_element_type: Type[enum.Enum
     return None
 
 
-def _check_all_required_keys_are_set_in_distribution(
+def _check_all_required_keys_of_enum_are_set_in_distribution(
         distribution: Dict[enum.Enum, Any],
         desired_element_type: Type[enum.Enum],
         context: Optional[str] = None
-) -> Dict[enum.Enum, Any]:
+):
     sanitized_distribution = copy.deepcopy(distribution)
-    if len(distribution) == 0:
-        msg = "The distribution does not have any elements to draw from."
-        if context is not None:
-            msg += f" This is error occurred while examining {context}."
-        raise DistributionHasNoElementsException(msg)
     provided_elements_in_distribution = list(distribution.keys())
     for element in provided_elements_in_distribution:
         casted_element = _cast_element_type(element, desired_element_type)
@@ -119,6 +114,55 @@ def _check_all_required_keys_are_set_in_distribution(
         if context is not None:
             msg += f" This is error occurred while examining {context}."
         raise DistributionElementIsMissingException(msg)
+    return sanitized_distribution
+
+
+def _check_all_keys_are_of_intended_primitive_type(
+        distribution: Dict[enum.Enum, Any],
+        desired_element_type: Any
+):
+    sanitized_distribution = copy.deepcopy(distribution)
+    provided_elements_in_distribution = list(distribution.keys())
+    for element in provided_elements_in_distribution:
+        try:
+            casted_element = desired_element_type(element)
+        except ValueError as exception:
+            raise DistributionElementIsInvalidException(
+                f"Element '{element}' could not be casted to type '{desired_element_type}'"
+            ) from exception
+        if casted_element != element:
+            sanitized_distribution[casted_element] = sanitized_distribution.pop(element)  # update key
+    return sanitized_distribution
+
+
+SUPPORTED_PRIMITIVE_KEY_TYPES = (int, )
+
+
+def _check_all_required_keys_are_set_in_distribution(
+        distribution: Dict[enum.Enum, Any],
+        desired_element_type: Type[enum.Enum] | int,
+        context: Optional[str] = None
+) -> Dict[enum.Enum | int, Any]:
+
+    if len(distribution) == 0:
+        msg = "The distribution does not have any elements to draw from."
+        if context is not None:
+            msg += f" This is error occurred while examining {context}."
+        raise DistributionHasNoElementsException(msg)
+
+    if desired_element_type in SUPPORTED_PRIMITIVE_KEY_TYPES:
+        # This is a primitive and for such no obligatory value lists exist.
+        # This is the case e.g. for container weights.
+        sanitized_distribution = _check_all_keys_are_of_intended_primitive_type(
+            distribution,
+            desired_element_type
+        )
+    else:
+        sanitized_distribution = _check_all_required_keys_of_enum_are_set_in_distribution(
+            distribution,
+            desired_element_type,
+            context
+        )
     return sanitized_distribution
 
 
@@ -149,19 +193,19 @@ def _check_value_range_of_frequencies_in_distribution(
 
 
 def validate_distribution_with_no_dependent_variables(
-        distribution: Dict[enum.Enum, float],
-        key_type: Type[enum.Enum]
-) -> Dict[enum.Enum, Dict[enum.Enum, float]]:
+        distribution: Dict[enum.Enum | int, float],
+        key_type: Type[enum.Enum] | Type[int]
+) -> Dict[enum.Enum | int, float]:
     sanitized_distribution = _check_all_required_keys_are_set_in_distribution(distribution, key_type)
     _check_value_range_of_frequencies_in_distribution(sanitized_distribution)
     return sanitized_distribution
 
 
 def validate_distribution_with_one_dependent_variable(
-        distribution: Dict[enum.Enum, Dict[enum.Enum, float]],
+        distribution: Dict[enum.Enum, Dict[enum.Enum | int, float]],
         key_type_of_independent_variable: Type[enum.Enum],
-        key_type_of_dependent_variable: Type[enum.Enum]
-) -> Dict[enum.Enum, Dict[enum.Enum, float]]:
+        key_type_of_dependent_variable: Type[enum.Enum] | Type[int]
+) -> Dict[enum.Enum, Dict[enum.Enum | int, float]]:
     sanitized_distribution = _check_all_required_keys_are_set_in_distribution(
         distribution, key_type_of_independent_variable
     )

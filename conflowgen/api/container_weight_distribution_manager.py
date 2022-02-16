@@ -1,12 +1,12 @@
 from typing import Dict
 
-from conflowgen.domain_models.distribution_repositories import normalize_nested_distribution
+from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_weight_distribution_repository import \
     ContainerWeightDistributionRepository
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 
 
-class ContainerWeightDistributionManager:
+class ContainerWeightDistributionManager(AbstractDistributionManager):
     """
     This is the interface to set and get the container weight distribution.
     It determines how many containers are selected to have which weight.
@@ -34,5 +34,9 @@ class ContainerWeightDistributionManager:
         Args:
             container_weights: The distribution of container weights for the respective container lengths.
         """
-        normalized_container_weights = normalize_nested_distribution(container_weights)
-        self.container_weight_repository.set_distribution(normalized_container_weights)
+        sanitized_distribution = self._normalize_and_validate_distribution_with_one_dependent_variable(
+            container_weights,
+            ContainerLength,
+            int
+        )
+        self.container_weight_repository.set_distribution(sanitized_distribution)

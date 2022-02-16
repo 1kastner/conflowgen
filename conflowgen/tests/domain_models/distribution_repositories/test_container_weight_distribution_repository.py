@@ -1,7 +1,7 @@
 import unittest
 
 from conflowgen.domain_models.distribution_models.container_weight_distribution import ContainerWeightDistribution
-from conflowgen.domain_models.distribution_repositories import normalize_nested_distribution
+from conflowgen.domain_models.distribution_repositories import normalize_distribution_with_one_dependent_variable
 from conflowgen.domain_models.distribution_repositories.container_weight_distribution_repository import \
     ContainerWeightDistributionRepository
 from conflowgen.domain_models.distribution_seeders import container_weight_distribution_seeder
@@ -60,7 +60,7 @@ class TestContainerWeightDistributionRepository(unittest.TestCase):
                 20: 8
             }
         }
-        normalized_default_distribution = normalize_nested_distribution(default_distribution)
+        normalized_default_distribution = normalize_distribution_with_one_dependent_variable(default_distribution)
         self.repository.set_distribution(normalized_default_distribution)
         distribution = self.repository.get_distribution()
         self.assertDictEqual(normalized_default_distribution, distribution)
