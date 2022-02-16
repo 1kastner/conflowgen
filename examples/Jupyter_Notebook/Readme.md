@@ -1,11 +1,13 @@
 # Jupyter Notebook
 
 If you wish to execute the Jupyter notebooks that come along the source code, there is an `environment.yml` defined in 
-this directory. This can be imported by
-[default conda commands](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
+this directory. This can be imported e.g. by
+[default conda commands](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
+or by using the
+[Anaconda Navigator](https://docs.anaconda.com/anaconda/navigator/index.html).
 For the casual conda user on Windows, the two batch scripts `create-env.bat` and `update-env.bat` exist for managing the
 environment.
-These you can either run on the CLI or just by double-clicking on them.
+These you can either run from the command line interface (CLI) or just by double-clicking on them.
 They do not require any additional user input.
 In `create-env.bat`, the conda environment is set up from the `environment.yml`.
 Once a while you might want to update the conda environment for which the shortcut is to run `update-env.bat`.

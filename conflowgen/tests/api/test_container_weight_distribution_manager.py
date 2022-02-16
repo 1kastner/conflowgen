@@ -18,6 +18,12 @@ class TestContainerWeightDistributionManager(unittest.TestCase):
             20: 0.45,
             30: 0.3
         },
+        ContainerLength.forty_five_feet: {
+            20: 1
+        },
+        ContainerLength.other: {
+            20: 1
+        }
     }
 
     def setUp(self) -> None:
