@@ -6,16 +6,36 @@ evaluating solutions.
 For testing new solutions, an extensive amount of realistic data are urgently needed but constantly scarce.
 Since comprehensive real-life data are often unavailable or are classified, the generation of synthetic data is a
 helpful way to get around this issue.
+One such instance is when we want to study of the dynamics at a container terminal.
+They are nodes which connect the seaside with the hinterland, transshipping containers between vessels of different
+sizes, trains, and trucks (see
+:numref:`container-terminal`
+for reference).
+The container terminal functions as a buffer between these and offers to keep the containers in the yard for some hours
+or days.
+The data describing the arrival of each of these vehicle at the container terminal including the containers it unloads
+and loads are called container flow data in the following.
+
+When examining new approaches quantitatively (e.g. by means of simulation or optimization experiments), it is helpful
+to generate scenarios that approximate the day-to-day operations at a container terminal without losing generality.
+This is true both in academia and industry.
 Sometimes even the owners of comprehensive container flow data can benefit from synthetic data,
-e.g. for testing their business models, as well as to improve and adapt to the future.
-A synthetic data generator for the creation of incoming and outgoing containers from the perspective of a maritime
-container terminal has already been proposed by
+e.g. when testing new processes or estimating the impact of current developments.
+In both cases, no operational data of these cases can exist and the generation must be (partly) driven by assumptions.
+
+A synthetic data generator capable of generating container flow data has been previously proposed by
 :cite:t:`hartmann2004generating`.
 Since his approach is now more than 15 years old, there are significant changes in the shipping industry.
-We took this changes as a motivation to rethink, rework, and improve the existing generator.
+We took this changes as a motivation to rethink, rework, and improve the existing generator conceptually.
 Therefore, we created an improved container flow generator, named ConFlowGen, which allows the user to create synthetic
 but yet realistic data of container flows for maritime container terminals.
 
+.. figure:: images/container_terminal.svg
+   :name: container-terminal
+   :align: center
+   :width: 80%
+
+   A container terminal serves different interfaces
 
 Separated scenario generation
 =============================
@@ -54,6 +74,7 @@ A final check for the plausibility of the generated data with an external tool i
 
 .. figure:: images/separate_traffic_demand_scenarios_from_simulation.svg
    :name: separated-traffic-demand-scenario-process
+   :align: center
    :width: 80%
 
    Separating the container flow generation from running the experiments
