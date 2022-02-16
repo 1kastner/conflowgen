@@ -9,5 +9,6 @@ dependencies:
   - python-lsp-server
   - pylint
   - pip
+  - git
   - pip:
       - -e ../../.
