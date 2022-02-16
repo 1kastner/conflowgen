@@ -10,10 +10,10 @@ We would love to see ConFlowGen grow in different dimensions, including (but not
 - ...increasing the quality of the previews and analyses
 - ...reduce technical debt - some features were implemented as they were needed and better patterns exist.
 
-## Isolating the ConFlowGen development environment
+## Isolating the development environment
 
-When you work on different tasks related to ConFlowGen, it might be helpful to isolate the development environment from
-the other Python environment(s) you use for daily tasks.
+When you work on different tasks related to ConFlowGen, it is suggested to isolate the development environment from the
+other Python environment(s) you use for daily tasks.
 This can be achieved e.g. with
 [virtualenv](https://virtualenv.pypa.io/en/latest/)
 or
