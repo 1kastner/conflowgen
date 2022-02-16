@@ -174,6 +174,37 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             "while examining the dependent variable 'other'.")
         self.assertEqual(expected_message, str(cm.exception))
 
+    def test_distribution_with_ints_on_second_level(self):
+        distribution_with_int_keys = {
+            ContainerLength.twenty_feet: {
+                10: 0.2,
+                20: 0.5,
+                30: 0.3,
+            },
+            ContainerLength.forty_feet: {
+                10: 0.2,
+                20: 0.5,
+                30: 0.3,
+            },
+            ContainerLength.forty_five_feet: {
+                10: 0.2,
+                20: 0.5,
+                30: 0.3,
+            },
+            ContainerLength.other: {
+                10: 0.2,
+                20: 0.5,
+                30: 0.3,
+            }
+        }
+        sanitized_distribution = validate_distribution_with_one_dependent_variable(
+            distribution_with_int_keys,
+            ContainerLength,
+            int
+        )
+
+        self.assertDictEqual(distribution_with_int_keys, sanitized_distribution)
+
 
 class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
 
@@ -268,3 +299,16 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             dirty_distribution, ContainerLength
         )
         self.assertDictEqual(clean_distribution, sanitized_distribution)
+
+    def test_distribution_with_ints(self):
+        distribution_with_int_keys = {
+            10: 0.2,
+            20: 0.5,
+            30: 0.3,
+        }
+        sanitized_distribution = validate_distribution_with_no_dependent_variables(
+            distribution_with_int_keys,
+            int
+        )
+
+        self.assertDictEqual(distribution_with_int_keys, sanitized_distribution)
