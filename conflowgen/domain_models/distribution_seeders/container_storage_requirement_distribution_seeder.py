@@ -3,7 +3,8 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
     ContainerStorageRequirementDistributionRepository
 
-default_values = {
+
+DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS = {
     # Whatever is not an empty, a reefer or a dangerous goods container is considered a standard container.
     # Formula: All containers minus number of empties minus number of reefers and of that ninety percent
     StorageRequirement.standard: (1 - .12 - .07) * 0.9,
@@ -20,15 +21,16 @@ default_values = {
     StorageRequirement.dangerous_goods: (1 - .12 - .07) * 0.1
 }
 
+#: Containers come with different storage requirements.
+#: The given distribution is estimated based on the combination of several sources.
+#: Currently, no differentiation between the different container lengths exist.
+DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION = {
+    ContainerLength.twenty_feet: DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS,
+    ContainerLength.forty_feet: DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS,
+    ContainerLength.forty_five_feet: DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS,
+    ContainerLength.other: DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS
+}
+
 
 def seed():
-    """
-    Seeds the database with some initial values. Currently, for all container lengths the same default values are used.
-    The default values are reverse-engineered based on several news articles.
-    """
-    ContainerStorageRequirementDistributionRepository().set_distribution({
-        ContainerLength.twenty_feet: default_values,
-        ContainerLength.forty_feet: default_values,
-        ContainerLength.forty_five_feet: default_values,
-        ContainerLength.other: default_values
-    })
+    ContainerStorageRequirementDistributionRepository().set_distribution(DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION)
