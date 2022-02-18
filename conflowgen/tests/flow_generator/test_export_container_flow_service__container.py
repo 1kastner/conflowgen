@@ -51,8 +51,8 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             set(df_container.columns),
             {
                 "weight", "delivered_by", "picked_up_by", "length", "storage_requirement",
-                "picked_up_by_truck", "picked_up_by_large_scheduled_vehicle", "delivered_by_truck",
-                "delivered_by_large_scheduled_vehicle", "emergency_pickup", "picked_up_by_initial"
+                "picked_up_by_truck", "picked_up_by_vehicle", "delivered_by_truck",
+                "delivered_by_vehicle", "emergency_pickup", "picked_up_by_initial"
             }
         )
         self.assertEqual(
@@ -85,7 +85,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             None
         )
         self.assertEqual(
-            container_df_entry.picked_up_by_large_scheduled_vehicle,
+            container_df_entry.picked_up_by_vehicle,
             None
         )
         self.assertEqual(
@@ -93,7 +93,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             None
         )
         self.assertEqual(
-            container_df_entry.delivered_by_large_scheduled_vehicle,
+            container_df_entry.delivered_by_vehicle,
             None
         )
 
@@ -137,8 +137,8 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             set(df_container.columns),
             {
                 "weight", "delivered_by", "picked_up_by", "length", "storage_requirement",
-                "picked_up_by_truck", "picked_up_by_large_scheduled_vehicle", "delivered_by_truck",
-                "delivered_by_large_scheduled_vehicle", "emergency_pickup", "picked_up_by_initial",
+                "picked_up_by_truck", "picked_up_by_vehicle", "delivered_by_truck",
+                "delivered_by_vehicle", "emergency_pickup", "picked_up_by_initial",
                 "destination_name", "destination_sequence_id"
             }
         )
@@ -172,7 +172,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             None
         )
         self.assertEqual(
-            container_df_entry.picked_up_by_large_scheduled_vehicle,
+            container_df_entry.picked_up_by_vehicle,
             None
         )
         self.assertEqual(
@@ -180,7 +180,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             None
         )
         self.assertEqual(
-            container_df_entry.delivered_by_large_scheduled_vehicle,
+            container_df_entry.delivered_by_vehicle,
             None
         )
         self.assertEqual(
