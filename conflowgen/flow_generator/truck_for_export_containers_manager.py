@@ -89,8 +89,11 @@ class TruckForExportContainersManager:
                     f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks generated "
                     f"for export containers")
             picked_up_with: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
-            container_pickup_time: datetime.datetime = \
-                picked_up_with.delayed_arrival or picked_up_with.scheduled_arrival
+
+            # assume that the vessel arrival time changes are not communicated on time so that the trucks which deliver
+            # a container for that vessel drop off the container too early
+            container_pickup_time: datetime.datetime = picked_up_with.scheduled_arrival
+
             truck_arrival_time = self._get_container_delivery_time(container_pickup_time)
             truck_arrival_information_for_delivery = TruckArrivalInformationForDelivery.create(
                 planned_container_delivery_time_at_window_start=truck_arrival_time,

@@ -28,10 +28,11 @@ logger.info(__doc__)
 # Pick database
 database_chooser = conflowgen.DatabaseChooser()
 demo_file_name = "demo_poc.sqlite"
-if demo_file_name in database_chooser.list_all_sqlite_databases():
-    database_chooser.load_existing_sqlite_database(demo_file_name)
-else:
-    database_chooser.create_new_sqlite_database(demo_file_name)
+database_chooser.create_new_sqlite_database(
+    demo_file_name,
+    assume_tas=True,
+    overwrite=True
+)
 
 
 # Set settings
@@ -42,60 +43,50 @@ container_flow_generation_manager.set_properties(
     end_date=datetime.datetime.now().date() + datetime.timedelta(days=21)
 )
 
+port_call_manager = conflowgen.PortCallManager()
 
 # Add vehicles that frequently visit the terminal.
-
-port_call_manager = conflowgen.PortCallManager()
 feeder_service_name = "LX050"
-if not port_call_manager.has_schedule(feeder_service_name, vehicle_type=conflowgen.ModeOfTransport.feeder):
-    logger.info(f"Add feeder service '{feeder_service_name}' to database")
-    port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=conflowgen.ModeOfTransport.feeder,
-        service_name=feeder_service_name,
-        vehicle_arrives_at=datetime.date(2021, 7, 9),
-        vehicle_arrives_at_time=datetime.time(11),
-        average_vehicle_capacity=800,
-        average_moved_capacity=100,
-        next_destinations=[
-            ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
-            ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
-        ]
-    )
-else:
-    logger.info(f"Feeder service '{feeder_service_name}' already exists")
+logger.info(f"Add feeder service '{feeder_service_name}' to database")
+port_call_manager.add_large_scheduled_vehicle(
+    vehicle_type=conflowgen.ModeOfTransport.feeder,
+    service_name=feeder_service_name,
+    vehicle_arrives_at=datetime.date(2021, 7, 9),
+    vehicle_arrives_at_time=datetime.time(11),
+    average_vehicle_capacity=800,
+    average_moved_capacity=100,
+    next_destinations=[
+        ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
+        ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
+    ]
+)
 
 train_service_name = "JR03A"
-if not port_call_manager.has_schedule(train_service_name, vehicle_type=conflowgen.ModeOfTransport.train):
-    logger.info(f"Add train service '{train_service_name}' to database")
-    port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=conflowgen.ModeOfTransport.train,
-        service_name=train_service_name,
-        vehicle_arrives_at=datetime.date(2021, 7, 12),
-        vehicle_arrives_at_time=datetime.time(17),
-        average_vehicle_capacity=90,
-        average_moved_capacity=90,
-        next_destinations=None  # Here we don't have containers that need to be grouped by destination
-    )
-else:
-    logger.info(f"Train service '{train_service_name}' already exists")
+logger.info(f"Add train service '{train_service_name}' to database")
+port_call_manager.add_large_scheduled_vehicle(
+    vehicle_type=conflowgen.ModeOfTransport.train,
+    service_name=train_service_name,
+    vehicle_arrives_at=datetime.date(2021, 7, 12),
+    vehicle_arrives_at_time=datetime.time(17),
+    average_vehicle_capacity=90,
+    average_moved_capacity=90,
+    next_destinations=None  # Here we don't have containers that need to be grouped by destination
+)
 
 deep_sea_service_name = "LX050"
-if not port_call_manager.has_schedule(deep_sea_service_name, vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel):
-    logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
-    port_call_manager.add_large_scheduled_vehicle(
-        vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
-        service_name=deep_sea_service_name,
-        vehicle_arrives_at=datetime.date(2021, 7, 10),
-        vehicle_arrives_at_time=datetime.time(19),
-        average_vehicle_capacity=16000,
-        average_moved_capacity=150,  # for faster demo
-        next_destinations=[
-            ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
-            ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
-        ]
-    )
-else:
-    logger.info(f"Deep sea service '{deep_sea_service_name}' already exists")
+logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
+port_call_manager.add_large_scheduled_vehicle(
+    vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
+    service_name=deep_sea_service_name,
+    vehicle_arrives_at=datetime.date(2021, 7, 10),
+    vehicle_arrives_at_time=datetime.time(19),
+    average_vehicle_capacity=16000,
+    average_moved_capacity=150,  # for faster demo
+    next_destinations=[
+        ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
+        ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
+    ]
+)
 
 ###
 # Now, all schedules and input distributions are set up - no further inputs are required

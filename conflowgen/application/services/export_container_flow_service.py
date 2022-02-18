@@ -99,11 +99,14 @@ class ExportContainerFlowService:
             "planned_container_delivery_time_at_window_start",  # this is a feature awaiting implementation
         ],
         Container: [
-            "destination"  # it is already joined, so only the key would remain
+            "destination",  # it is already joined, so only the key would remain
         ],
         LargeScheduledVehicle: [
             "schedule",  # it is already joined, so only the key would remain
-            "delayed_arrival",  # this is a feature awaiting implementation
+            "scheduled_arrival",  # this is a feature awaiting implementation (diff realized / scheduled arrival)
+            "port_call_cancelled",  # this is a feature awaiting implementation
+            "capacity_exhausted_while_determining_onward_transportation",  # an internal value for debugging
+            "capacity_exhausted_while_allocating_space_for_export_containers",  # an internal value for debugging
         ],
         Destination: [
             "fraction",  # unnecessary knowledge
@@ -114,7 +117,14 @@ class ExportContainerFlowService:
     columns_to_rename = {
         Container: {
             "sequence_id": "destination_sequence_id",  # it is already joined, so only the key would remain
-        }
+            "delivered_by_large_scheduled_vehicle": "delivered_by_vehicle",
+            "picked_up_by_large_scheduled_vehicle": "picked_up_by_vehicle",
+        },
+        **{
+            AbstractLargeScheduledVehicle.map_mode_of_transport_to_class(mode_of_transport): {
+                'large_scheduled_vehicle': "id"
+            } for mode_of_transport in ModeOfTransport.get_scheduled_vehicles()
+        },
     }
 
     def __init__(self):
@@ -190,11 +200,17 @@ class ExportContainerFlowService:
                                    f"{model} and the current table columns {df_table.columns}.") from error
 
         if model in cls.columns_to_rename:
-            columns_to_rename = cls.columns_to_rename[model]
-            df_table.rename(columns=columns_to_rename, inplace=True)
+            column_translation_for_model = cls.columns_to_rename[model]
+            columns_to_introduce_for_model = column_translation_for_model.values()
+            overwritten_columns = set(columns_to_introduce_for_model).intersection(set(df_table.columns))
+            if overwritten_columns:
+                df_table.drop(columns=overwritten_columns, inplace=True)
+            df_table.rename(columns=column_translation_for_model, inplace=True)
 
         # use SQL id instead of newly created pandas id if present
         if len(data) > 0:
+            if "id" not in df_table.columns:
+                raise RuntimeError(f"No column 'id' present for '{model}', just {df_table.columns}")
             df_table.set_index("id", drop=True, inplace=True)
 
         # use nullable int instead of float (currently we don't use any floats in the whole application)
@@ -226,9 +242,7 @@ class ExportContainerFlowService:
         for file_name, large_schedule_vehicle_as_subtype in large_schedule_vehicles_as_subtype.items():
             cls.logger.debug(f"Gathering data for generating the '{file_name}' table...")
             df = cls._convert_table_to_pandas_dataframe(large_schedule_vehicle_as_subtype)
-            if len(df):
-                df.set_index("large_scheduled_vehicle", drop=True, inplace=True)
-            else:
+            if len(df) == 0:
                 cls.logger.info(f"No content found for the {file_name} table, the file will be empty.")
             result[file_name] = df
 
@@ -243,13 +257,16 @@ class ExportContainerFlowService:
             file_format: ExportFileFormat,
             overwrite: bool
     ) -> str:
+
         if path_to_export_folder is None:
             path_to_export_folder = EXPORTS_DEFAULT_DIR
+
         if not os.path.isdir(path_to_export_folder):
             self.logger.info(f"Creating export folder {path_to_export_folder}")
             os.makedirs(path_to_export_folder, exist_ok=True)
         else:
             self.logger.info(f"Using existing export folder at {path_to_export_folder}")
+
         path_to_target_folder = os.path.join(
             path_to_export_folder,
             folder_name
@@ -262,6 +279,7 @@ class ExportContainerFlowService:
         else:
             self.logger.info(f"Creating folder at {path_to_target_folder}")
             os.mkdir(path_to_target_folder)
+
         self.logger.info(f"Converting SQL database into file format '.{file_format.value}'")
         dfs = self._convert_sql_database_to_pandas_dataframe()
         for file_name, df in dfs.items():
