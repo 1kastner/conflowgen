@@ -3,8 +3,8 @@ from __future__ import annotations
 import enum
 import logging
 import os
-from typing import Dict, Type, Optional
 from functools import lru_cache
+from typing import Dict, Type, Optional
 
 import numpy as np
 import pandas as pd
@@ -23,14 +23,12 @@ from conflowgen.domain_models.large_vehicle_schedule import Destination
 from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicle, Feeder, Barge, Train, Truck, \
     AbstractLargeScheduledVehicle
 
-EXPORTS_DEFAULT_DIR = os.path.abspath(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        os.pardir,
-        os.pardir,
-        "data",
-        "exports"
-    )
+EXPORTS_DEFAULT_DIR = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    os.pardir,
+    os.pardir,
+    "data",
+    "exports"
 )
 
 
@@ -43,7 +41,6 @@ class CastingException(Exception):
 
 
 class ExportContainerFlowService:
-
     logger = logging.getLogger("conflowgen")
 
     @classmethod
@@ -94,24 +91,29 @@ class ExportContainerFlowService:
     # e.g. because it is a foreign key that is already resolved.
     columns_to_drop = {
         Truck: [
-            "truck_arrival_information_for_delivery",
-            "truck_arrival_information_for_pickup"
+            "truck_arrival_information_for_delivery",  # it is already joined, so only the key would remain
+            "truck_arrival_information_for_pickup",  # it is already joined, so only the key would remain
+
+            "planned_container_pickup_time_prior_berthing",  # this is a feature awaiting implementation
+            "planned_container_pickup_time_after_initial_storage",  # this is a feature awaiting implementation
+            "planned_container_delivery_time_at_window_start",  # this is a feature awaiting implementation
         ],
         Container: [
-            "destination"
+            "destination"  # it is already joined, so only the key would remain
         ],
         LargeScheduledVehicle: [
-            "schedule"
+            "schedule",  # it is already joined, so only the key would remain
+            "delayed_arrival",  # this is a feature awaiting implementation
         ],
         Destination: [
-            "fraction",
-            "belongs_to_schedule"
+            "fraction",  # unnecessary knowledge
+            "belongs_to_schedule",  # it is already joined, so only the key would remain
         ]
     }
 
     columns_to_rename = {
         Container: {
-            "sequence_id": "destination_sequence_id"
+            "sequence_id": "destination_sequence_id",  # it is already joined, so only the key would remain
         }
     }
 
@@ -234,22 +236,32 @@ class ExportContainerFlowService:
         result["trucks"] = df_trucks
         return result
 
-    def export(self, folder_name: str, path_to_export_folder: Optional[str], file_format: ExportFileFormat):
-        """Export container flow to other file formats, simplify internal representation for further processing.
-        """
+    def export(
+            self,
+            folder_name: str,
+            path_to_export_folder: Optional[str],
+            file_format: ExportFileFormat,
+            overwrite: bool
+    ) -> str:
         if path_to_export_folder is None:
             path_to_export_folder = EXPORTS_DEFAULT_DIR
         if not os.path.isdir(path_to_export_folder):
-            self.logger.info(f"Creating export folder '{path_to_export_folder}'...")
+            self.logger.info(f"Creating export folder {path_to_export_folder}")
             os.makedirs(path_to_export_folder, exist_ok=True)
+        else:
+            self.logger.info(f"Using existing export folder at {path_to_export_folder}")
         path_to_target_folder = os.path.join(
             path_to_export_folder,
             folder_name
         )
         if os.path.isdir(path_to_target_folder):
-            raise ExportOnlyAllowedToNotExistingFolderException(path_to_target_folder)
-        self.logger.info(f"Creating folder '{path_to_target_folder}'...")
-        os.mkdir(path_to_target_folder)
+            if overwrite:
+                self.logger.info(f"The folder {path_to_target_folder} already exists, potentially overwriting files.")
+            else:
+                raise ExportOnlyAllowedToNotExistingFolderException(path_to_target_folder)
+        else:
+            self.logger.info(f"Creating folder at {path_to_target_folder}")
+            os.mkdir(path_to_target_folder)
         self.logger.info(f"Converting SQL database into file format '.{file_format.value}'")
         dfs = self._convert_sql_database_to_pandas_dataframe()
         for file_name, df in dfs.items():
@@ -258,7 +270,8 @@ class ExportContainerFlowService:
                 path_to_target_folder,
                 full_file_name
             )
-            self.logger.debug(f"Saving file '{full_file_name}'...")
+            self.logger.debug(f"Saving file {full_file_name}")
             # noinspection PyArgumentList
             self.save_as_file_format_mapping[file_format](df, path_to_file)
         self.logger.info("Export has finished successfully.")
+        return path_to_target_folder

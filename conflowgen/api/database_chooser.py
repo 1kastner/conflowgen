@@ -46,7 +46,12 @@ class DatabaseChooser:
             self._close_and_reset_db()
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
 
-    def create_new_sqlite_database(self, file_name: str, **seeder_options) -> None:
+    def create_new_sqlite_database(
+            self,
+            file_name: str,
+            overwrite: bool = False,
+            **seeder_options
+    ) -> None:
         """
         All required tables are created and all input distributions are seeded with default values. These can be simply
         overwritten by the use-case specific distributions with the help of the API, e.g. the
@@ -59,6 +64,7 @@ class DatabaseChooser:
 
         Args:
             file_name: The file name of an SQLite database that will reside in ``<project root>/data/databases/``
+            overwrite: Whether to overwrite an existing database
             **seeder_options: In case the database is seeded with default values, some variations exist that the user
                 can choose from. The following options exist:
 
@@ -69,7 +75,8 @@ class DatabaseChooser:
         if self.peewee_sqlite_db is not None:
             self._close_and_reset_db()
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(
-            file_name, create=True, reset=False, **seeder_options)
+            file_name, create=True, reset=overwrite, **seeder_options
+        )
 
     def close_current_connection(self) -> None:
         """
