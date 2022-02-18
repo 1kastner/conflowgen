@@ -242,7 +242,7 @@ class ExportContainerFlowService:
         for file_name, large_schedule_vehicle_as_subtype in large_schedule_vehicles_as_subtype.items():
             cls.logger.debug(f"Gathering data for generating the '{file_name}' table...")
             df = cls._convert_table_to_pandas_dataframe(large_schedule_vehicle_as_subtype)
-            if not len(df):
+            if len(df) == 0:
                 cls.logger.info(f"No content found for the {file_name} table, the file will be empty.")
             result[file_name] = df
 
