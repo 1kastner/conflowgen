@@ -21,8 +21,9 @@ class ExportContainerFlowManager:
             self,
             folder_name: str,
             path_to_export_folder: Optional[str] = None,
-            file_format: Optional[ExportFileFormat] = None
-    ) -> None:
+            file_format: Optional[ExportFileFormat] = None,
+            overwrite: bool = False
+    ) -> str:
         """
         This extracts the container movement data from the SQL database to a folder of choice in a tabular data format.
 
@@ -30,9 +31,18 @@ class ExportContainerFlowManager:
             folder_name: Name of folder that bundles the tabular data which belongs together
             path_to_export_folder: Path to directory where all exports are kept,
                 defaults to ``<project root>/data/exports/``
-            file_format: Desired tabular format,
-                defaults to :class:`ExportFileFormat.csv`.
+            file_format: Desired tabular format, defaults to :class:`ExportFileFormat.csv`.
+            overwrite: Whether to overwrite previously exported data, defaults to False
+
+        Returns:
+            The path to the folder where the tabular data is located
         """
         if file_format is None:
             file_format = ExportFileFormat.csv
-        self.service.export(folder_name, path_to_export_folder, file_format)
+        path_to_target_folder = self.service.export(
+            folder_name=folder_name,
+            path_to_export_folder=path_to_export_folder,
+            file_format=file_format,
+            overwrite=overwrite
+        )
+        return path_to_target_folder

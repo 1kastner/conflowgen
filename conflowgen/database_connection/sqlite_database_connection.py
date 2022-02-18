@@ -97,14 +97,16 @@ class SqliteDatabaseConnection:
         self.logger.debug(f'page_size: {self.sqlite_db_connection.page_size}')
         self.logger.debug(f'foreign_keys: {self.sqlite_db_connection.foreign_keys}')
 
-        if not sqlite_database_existed_before:
-            self.logger.debug(f"Creating new database: '{path_to_sqlite_database}'")
+        if not sqlite_database_existed_before or reset:
+            self.logger.debug(f"Creating new database at {path_to_sqlite_database}")
             create_tables(self.sqlite_db_connection)
             self.logger.debug("Seed with default values...")
             seed_all_distributions(**seeder_options)
         else:
-            self.logger.debug(f"Open existing database: '{path_to_sqlite_database}'")
-
+            if not reset:
+                self.logger.debug(f"Open existing database at {path_to_sqlite_database}")
+            else:
+                self.logger.debug(f"Open new database at {path_to_sqlite_database}")
         return self.sqlite_db_connection
 
     def delete_database(self, database_name: str) -> None:

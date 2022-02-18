@@ -54,3 +54,5 @@ Untitled*.ipynb
 
 # Ignore log files
 *.log 
+docs/notebooks/data/db/
+docs/notebooks/data/export/
