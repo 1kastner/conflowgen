@@ -79,10 +79,11 @@ logger.info(__doc__)
 # Pick database
 database_chooser = conflowgen.DatabaseChooser()
 demo_file_name = "demo_deham_cta.sqlite"
-if demo_file_name in database_chooser.list_all_sqlite_databases():
-    database_chooser.load_existing_sqlite_database(demo_file_name)
-else:
-    database_chooser.create_new_sqlite_database(demo_file_name, assume_tas=True)
+database_chooser.create_new_sqlite_database(
+    demo_file_name,
+    assume_tas=True,
+    overwrite=True
+)
 
 # Set settings
 container_flow_generation_manager = conflowgen.ContainerFlowGenerationManager()

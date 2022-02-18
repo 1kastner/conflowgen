@@ -60,8 +60,12 @@ class TruckForImportContainersManager:
                 self.logger.info(f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks "
                                  f"generated for import containers")
             delivered_by: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
+
+            # assume that the vessel arrival time changes are communicated early enough so that the trucks which pick
+            # up a container never try to go to the terminal before the vessel has arrived
             container_arrival_time: datetime.datetime = \
-                delivered_by.delayed_arrival or delivered_by.scheduled_arrival
+                delivered_by.realized_arrival or delivered_by.scheduled_arrival
+
             truck_arrival_time = self._get_container_pickup_time(container_arrival_time)
             truck_arrival_information_for_pickup = TruckArrivalInformationForPickup.create(
                 planned_container_pickup_time_prior_berthing=None,  # TODO: set value if required

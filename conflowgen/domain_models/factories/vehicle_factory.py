@@ -80,6 +80,7 @@ class VehicleFactory:
             capacity_in_teu: int,
             moved_capacity: int,
             scheduled_arrival: datetime.datetime,
+            realized_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Union[str, None]
     ) -> LargeScheduledVehicle:
@@ -107,6 +108,7 @@ class VehicleFactory:
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
             scheduled_arrival=scheduled_arrival,
+            realized_arrival=realized_arrival,
             schedule=schedule
         )
         return lsv
@@ -126,6 +128,7 @@ class VehicleFactory:
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
             scheduled_arrival=scheduled_arrival,
+            realized_arrival=scheduled_arrival,
             schedule=schedule
         )
         feeder = Feeder.create(
@@ -148,6 +151,7 @@ class VehicleFactory:
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
             scheduled_arrival=scheduled_arrival,
+            realized_arrival=scheduled_arrival,
             schedule=schedule
         )
         deep_sea_vessel = DeepSeaVessel.create(
@@ -170,6 +174,7 @@ class VehicleFactory:
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
             scheduled_arrival=scheduled_arrival,
+            realized_arrival=scheduled_arrival,
             schedule=schedule
         )
         train = Train.create(
@@ -192,10 +197,10 @@ class VehicleFactory:
             capacity_in_teu=capacity_in_teu,
             moved_capacity=moved_capacity,
             scheduled_arrival=scheduled_arrival,
+            realized_arrival=scheduled_arrival,
             schedule=schedule
         )
         barge = Barge.create(
             large_scheduled_vehicle=lsv
         )
-        barge.save()
         return barge

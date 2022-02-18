@@ -66,10 +66,10 @@ class LargeScheduledVehicle(BaseModel):
         null=False,
         help_text="This is the arrival time as it is noted in the schedule of the company."
     )
-    delayed_arrival = DateTimeField(
+    realized_arrival = DateTimeField(
         null=True,
         default=None,
-        help_text="If not null, this indicates the new arrival time including the delay."
+        help_text="If not null, this indicates the realized arrival time."
     )
     port_call_cancelled = BooleanField(
         null=False,
