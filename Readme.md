@@ -18,7 +18,7 @@
 <table style="border: none">
   <tr style="border: none">
     <td style="border: none">
-<img src="./logos/conflowgen_logo_small.png">
+<img src="https://raw.githubusercontent.com/1kastner/conflowgen/main/logos/conflowgen_logo_small.png">
     </td>
     <td style="border: none">
       <h1>ConFlowGen</h1>
@@ -28,19 +28,20 @@ container terminals.
   </tr>
 </table>
   
-
-## Documentation
-
-A documentation on the background of this project, its API, and a step-by-step guide is available
-[at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
-Please check
-[in the background section](https://conflowgen.readthedocs.io/en/latest/background.html)
+Please check in the
+[background section of the documentation](https://conflowgen.readthedocs.io/en/latest/background.html)
 first whether ConFlowGen is the right tool for your purpose.
 
-## User installation
+If you wish to use the module conflowgen, you can install the latest version using pip from the command line interface
+(CLI) of your choice (e.g., bash, PowerShell, or CMD).
 
-Please just execute the following lines in a command line interface (CLI) of your choice (e.g., bash, PowerShell, or 
-CMD).
+```bash
+pip install conflowgen
+```
+
+If you want to download all examples, it is best to obtain a full copy of this repository.
+Please ensure that git-lfs is installed to properly download the larger files.
+Then, please execute the following lines in your CLI:
 
 ```bash
 git clone https://github.com/1kastner/conflowgen
@@ -48,7 +49,7 @@ cd conflowgen
 pip install .
 ```
 
-After you have installed the library, you are ready to define your own scenarios and generate the data.
+After you have installed the module, you are ready to define your own scenarios and generate the data.
 
 ```python
 import conflowgen
@@ -57,5 +58,5 @@ database_chooser.create_new_sqlite_database("new_example.sqlite")
 ...
 ```
 
-The next steps from here are described
-[at Read the Docs](https://conflowgen.readthedocs.io/en/latest/).
+The next steps are described
+[in the documentation](https://conflowgen.readthedocs.io/en/latest/).

@@ -1,4 +1,9 @@
-__author__ = "Marvin Kastner"
-__version__ = "0.0.1"
+__version__ = "1.0.0"
+__license__ = "MIT"
+__description__ = """
+A generator for synthetic container flows at maritime container terminals with a focus on yard operations
+"""
+
+__author__ = "Marvin Kastner and Ole Grasse"
+__maintainer__ = "Marvin Kastner"
 __email__ = "marvin.kastner@tuhh.de"
-__license__ = __licence__ = "MIT"

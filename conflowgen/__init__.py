@@ -1,7 +1,3 @@
-"""
-This is the intended interface for users who want to generate synthetic container flow data by means of a script.
-"""
-
 # List of classes
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.api.container_weight_distribution_manager import ContainerWeightDistributionManager
@@ -85,3 +81,4 @@ from .metadata import __version__
 from .metadata import __author__
 from .metadata import __email__
 from .metadata import __license__
+from .metadata import __description__ as __doc__
