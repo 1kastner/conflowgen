@@ -1,5 +1,9 @@
 @ECHO OFF
 
+SETLOCAL
+ECHO Working in directory %~dp0
+CD /d %~dp0
+
 ECHO.
 ECHO Delete previously published versions
 RMDIR /s build dist *.egg-info

@@ -15,7 +15,7 @@ with open(os.path.join(this_directory, 'Readme.md'), encoding='utf-8') as f:
 # Define actual setup
 # noinspection SpellCheckingInspection
 setup(
-    name='ConFlowGen',
+    name='conflowgen',
     version=metadata['__version__'],
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -32,7 +32,7 @@ setup(
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
         'plotly',  # useful for e.g. Sankey diagrams
         'seaborn',  # exchanges matplotlib color palletes
-        'kaleido',  # plotly depends on this package for SVG export
+        'kaleido',  # plotly depends on this package for SVG export, we got this as a present
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -44,14 +44,14 @@ setup(
 
             # build documentation
             'sphinx',  # build the documentation
-            'sphinx-rtd-theme',  # adding nice sphinx theme
-            'sphinx-toolbox',  # dependency of enum_tools
+            'sphinx-rtd-theme',  # adding the nice sphinx theme
+            'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
-            'sphinxcontrib-bibtex',  # citing...
+            'sphinxcontrib-bibtex',  # a good help for citing
             'sphinx-math-dollar',  # allow writing LaTeX code in math mode using dollar symbols
-            'nbsphinx',  # use Jupyter Notebooks
+            'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
-            'ipykernel',  # for allowing nbsphinx to execute Jupyter Notebooks
+            'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
             'jupyterlab',  # develop the Jupyter Notebooks
 
             # checking code quality
@@ -66,6 +66,5 @@ setup(
     license=metadata['__license__'],
     author=metadata['__author__'],
     author_email=metadata['__email__'],
-    description='A generator for synthetic container flows at maritime container terminals with a focus is on yard '
-                'operations'
+    description=metadata['__description__']
 )

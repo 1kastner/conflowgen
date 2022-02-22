@@ -1,9 +1,6 @@
 API
 ---
 
-.. automodule:: conflowgen
-
-
 Domain datatypes
 ================
 
