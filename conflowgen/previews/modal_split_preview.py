@@ -70,7 +70,7 @@ class ModalSplitPreview(AbstractPreview):
         """
         Returns:
              The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of
-             containers in TEU that are transshipment.
+             containers in TEU that are transshipped.
         """
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type_preview.get_inbound_to_outbound_flow()
 

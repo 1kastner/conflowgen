@@ -2,9 +2,12 @@ name: Docs
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   build:
@@ -17,6 +20,9 @@ jobs:
         python-version: [3.8, 3.9, "3.10"]
 
     steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - name: Update Ubuntu and install pandoc
       run: |

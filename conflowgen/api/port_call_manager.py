@@ -8,7 +8,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 class PortCallManager:
     """
-    This manager provides the interface to creates schedules for services that periodically call the container terminal,
+    This manager provides the interface to create schedules for services that periodically call the container terminal,
     e.g. ships of any size and trains. This explicitly does not cover the trucks which arrive according to a
     probability distribution set at
     :class:`.TruckArrivalDistributionManager`.
@@ -45,7 +45,7 @@ class PortCallManager:
                 services. In any case, this is combined with the parameter ``vehicle_arrives_every_k_days`` and only
                 arrivals within the time scope between ``start_date`` and ``end_date`` are considered.
             vehicle_arrives_at_time:
-                A time at the day (between 00:00 and 23:59).
+                A time of the day (between 00:00 and 23:59).
             average_vehicle_capacity:
                 Number of TEU that can be transported with the vehicle at most.
                 The number of moved containers can never exceed this number, no matter what the value for the
@@ -74,7 +74,8 @@ class PortCallManager:
             vehicle_arrives_every_k_days:
                 Defaults to weekly services (arrival every 7 days).
                 Other frequencies are possible as well.
-                In the special case of ``-1``, only a single arrival at the day ``vehicle_arrives_at`` is scheduled.
+                In the special case of ``-1``, only a single arrival is scheduled for day ``vehicle_arrives_at`` as long
+                as the specified date lies within ``start_date`` and ``end_date``.
                 This arrival is only part of the generated container flow if that arrival lies between ``start_date``
                 and ``end_date``.
         """

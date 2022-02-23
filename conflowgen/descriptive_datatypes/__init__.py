@@ -16,7 +16,7 @@ class TransshipmentAndHinterlandComparison(NamedTuple):
 class HinterlandModalSplit(NamedTuple):
     """
     This tuple keeps track of how much of the capacity that is either coming from or is destined to the hinterland is
-    transported by which vehicle type.
+    transported and by which vehicle type.
     """
     train_capacity: float
     barge_capacity: float

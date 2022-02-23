@@ -15,9 +15,9 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule
 class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
     """
     This preview examines how much the inbound vehicles deliver to the terminal and how it is redistributed to the
-    outbound journeys of the other vehicles according to the mode of transport distribution. This way, it is checked
-    whether the transport capacity of the vehicles would be exceeded and are thus not plausible as values to even start
-    the container flow generation with.
+    outbound journeys of the other vehicles according to the mode of transport distribution.
+    This pre-checks whether the transport capacity of the vehicles will be exceeded.
+    In such case, the input schedules and distributions should be further refined before generating a container flow.
 
     The preview returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.InboundAndOutboundVehicleCapacityPreviewReport`.

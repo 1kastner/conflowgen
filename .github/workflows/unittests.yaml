@@ -2,9 +2,12 @@ name: Tests
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   build:
@@ -12,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
 

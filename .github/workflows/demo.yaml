@@ -2,9 +2,12 @@ name: Demo
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   build:
@@ -18,6 +21,9 @@ jobs:
         inplace: ["-e", ""]  # "pip install -e ." installs in place; "pip install ." installs to the default directory
 
     steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
 

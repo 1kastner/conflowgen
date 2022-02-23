@@ -52,7 +52,8 @@ The minimum dwell time for transshipment is the minimum time difference of arriv
 This means that one vessel can request a container from another vessel if and only if the previous vessel has arrived
 these k hours before the first one.
 For short transshipment dwell times, it might result in a direct transfer from one vessel to the other without any
-storage if that is supported by the data-digesting model.
+storage if the user decides to support such activities in their model (such as a simulation model or optimization
+model).
 """
 
 DEFAULT_TRANSPORTATION_BUFFER = 0.2

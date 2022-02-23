@@ -13,8 +13,7 @@ from conflowgen.domain_models.distribution_repositories.mode_of_transport_distri
 
 class ContainerFlowByVehicleTypePreview(AbstractPreview):
     """
-    This preview informs the user about from which vehicle type to which vehicle type how many containers are intended
-    to be moved.
+    This preview tells the user how many containers are planned to be transshipped between which types of vehicles.
 
     The preview returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowByVehicleTypePreviewReport`.
