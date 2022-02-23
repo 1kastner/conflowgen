@@ -20,8 +20,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     report_description = """
     Analyze the used vehicle capacity for each vehicle for the inbound and outbound journeys.
-    Generally, it is striven for to reach an equilibrium - each vehicle should approximately pick up as many containers
-    at the container terminal as it has delivered to.
+    Generally, it expected to reach an equilibrium - each vehicle should approximately pick up as many containers
+    at the container terminal as it has delivered.
     Great disparities between the transported capacities on the inbound and outbound journey are considered noteworthy
     but depending on the input data it might be acceptable.
     """

@@ -8,7 +8,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 #: different from these two standard sizes :cite:p:`destatis.seeschifffahrt.august.2021`.
 #: The same statistics says that approximately 30% of the goods (measured in weight again) are transported in 20'
 #: containers, and 40' containers make up 67%.
-#: For ConFlowGen, however, not the fraction of the weight is needed but the fraction in numbers of containers.
+#: For ConFlowGen, however, the fraction in numbers of containers is required instead of the fraction based on weight.
 #: In an expert interview it was said that the TEU factor in their case is approximately 1.6 and 45 foot containers made
 #: up less than 5%.
 #:

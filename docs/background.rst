@@ -87,7 +87,7 @@ The software is a conceptional elaboration of :cite:t:`hartmann2004generating`.
 In :numref:`generation-process`, the process diagram of the software is shown.
 First, an SQLite database is picked for persisting the user input and the generated container flow data.
 The SQLite database file can be easily shared between users.
-Second, the input data is added and the default values are modified according to one's needs.
+Second, the input data is added and the default values are replaced with the specific assumptions of the user.
 In the third step, the data is generated.
 This is further elaborated in the lower part of the process diagram colored in green.
 In the last step, the data is exported to a tabular format, e.g. XLSX or CSV.
@@ -109,8 +109,8 @@ The required input data can be grouped as such:
   The destination helps identifying container groups if e.g. the synthetic data is later utilized to investigate container
   stacking processes (i.e., containers with the same destination might be kept in the same bay and in the same yard block).
 - The vehicle-type-dependent modal split
-  (i.e., how frequently a container is picked up by a vehicle of a specific vehicle type given the vehicle type the
-  container is delivered by).
+  (i.e., given the vehicle type with which the container is delivered to the container terminal, which vehicle type is
+  used for the outbound journey of the container?).
 
 Data Generation Process
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,6 +145,9 @@ It consists of several steps that are also depicted in
 #. Last, the destination of the container is determined.
    This step is only executed for those containers that are loaded on a vessel or train for which the next destinations
    (ports or intermodal terminals) have been provided.
+
+There is no concept of handling times, neither at the interfaces nor in the yard.
+Determining these will be the task of the simulation or optimization model using this data.
 
 Output Data
 ~~~~~~~~~~~

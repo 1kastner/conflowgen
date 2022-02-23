@@ -69,8 +69,8 @@ class DatabaseChooser:
                 can choose from. The following options exist:
 
         Keyword Args:
-            assume_tas (bool): Whether to assume a truck appointment system for the truck arrival distribution.
-                Based on this selection, one of the two truck arrival distributions is chosen.
+            assume_tas (bool): If a truck appointment system (TAS) is assumed, the corresponding truck arrival
+                distribution is picked.
         """
         if self.peewee_sqlite_db is not None:
             self._close_and_reset_db()
