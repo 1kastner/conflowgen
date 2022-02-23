@@ -39,6 +39,14 @@ If you wish to use the module conflowgen, you can install the latest version usi
 pip install conflowgen
 ```
 
+In addition, conflowgen is also available as a conda package.
+However, currently it is depending on several channels.
+Please ensure that the channel `conda-forge` has a higher priority than `domdfcoding` (i.e., keep the sequence as shown below).
+
+```bash
+conda install -c mkastner -c conda-forge -c domdfcoding conflowgen
+```
+
 If you want to download all examples, it is best to obtain a full copy of this repository.
 Please ensure that git-lfs is installed to properly download the larger files.
 Then, please execute the following lines in your CLI:
