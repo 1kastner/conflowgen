@@ -39,6 +39,17 @@ preferred-citation:
   type: conference-paper
   conference:
       name: "LDIC 2022"
+      city: Bremen
+      country: DE
+  editors:
+    - family-names: Freitag
+      given-names: Michael
+    - family-names: Haasis
+      given-names: Hans-Dietrich
+    - family-names: Kotzab
+      given-names: Herbert
+    - family-names: Pannek
+      given-names: Jürgen
 #  collection-doi: "10.X"
   collection-title: "Dynamics in Logistics : Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany"
   collection-type: "proceedings"
