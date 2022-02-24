@@ -1,0 +1,60 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: ConFlowGen
+message: >-
+  Please cite this software using the metadata from
+  'preferred-citation'.
+type: software
+authors:
+  - given-names: Marvin
+    family-names: Kastner
+    email: marvin.kastner@tuhh.de
+    affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
+    orcid: 'https://orcid.org/0000-0001-8289-2943'
+  - given-names: Ole
+    family-names: Grasse
+    email: ole.grasse@tuhh.de
+    affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
+    orcid: 'https://orcid.org/0000-0003-1982-9436'
+version: 1.0.1
+repository-code: "https://github.com/1kastner/conflowgen"
+keywords:
+  - logistics
+  - "synthetic data"
+  - maritime
+  - "sea container"
+  - "container terminal"
+license: MIT
+identifiers:
+  - description: This is the collection of archived snapshots of all versions of ConFlowGen
+    type: doi
+    value: 10.5281/zenodo.5849322
+  - description: This is the archived snapshot of version 1.0.1 of ConFlowGen
+    type: doi
+    value: 10.5281/zenodo.6245523
+preferred-citation:
+  title: Container Flow Generation for Maritime Container Terminals
+  type: conference-paper
+  conference:
+      name: "LDIC 2022"
+#  collection-doi: "10.X"
+  collection-title: "Dynamics in Logistics : Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany"
+  collection-type: "proceedings"
+  authors:
+    - given-names: Marvin
+      family-names: Kastner
+      email: marvin.kastner@tuhh.de
+      affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
+      orcid: 'https://orcid.org/0000-0001-8289-2943'
+    - given-names: Ole
+      family-names: Grasse
+      email: ole.grasse@tuhh.de
+      affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
+      orcid: 'https://orcid.org/0000-0003-1982-9436'
+    - given-names: Carlos
+      family-names: Jahn
+      email: carlos.jahn@tuhh.de
+      affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
+      orcid: 'https://orcid.org/0000-0002-5409-0748'
