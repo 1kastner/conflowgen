@@ -35,6 +35,7 @@ identifiers:
     type: doi
     value: 10.5281/zenodo.6245523
 preferred-citation:
+  status: in-press  # just drop once done
   title: Container Flow Generation for Maritime Container Terminals
   type: conference-paper
   conference:
@@ -55,7 +56,6 @@ preferred-citation:
 #  collection-doi: "10.X"
   collection-title: "Dynamics in Logistics : Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany"
   collection-type: "proceedings"
-  pages: "[in press]"
   year: 2022
 #  start: 0  # start page
 #  end: 0  # end page
