@@ -29,6 +29,11 @@ Since his approach is now more than 15 years old, there are significant changes 
 We took this changes as a motivation to rethink, rework, and improve the existing generator conceptually.
 Therefore, we created an improved container flow generator, named ConFlowGen, which allows the user to create synthetic
 but yet realistic data of container flows for maritime container terminals.
+It has been first academically described in
+:cite:t:`Kastner_Container_Flow_Generation_2022`,
+including a discussion of recent developments in the shipping industry as well as related academic synthetic data
+generators.
+
 
 .. figure:: images/container_terminal.svg
    :name: container-terminal
@@ -37,7 +42,7 @@ but yet realistic data of container flows for maritime container terminals.
 
    A container terminal serves different interfaces
 
-Separated scenario generation
+Separated Scenario Generation
 =============================
 
 When setting up experiments, e.g. for discrete-event simulation or mathematical optimization, sometimes it might be
@@ -80,7 +85,7 @@ A final check for the plausibility of the generated data with an external tool i
    Separating the container flow generation from running the experiments
 
 
-Concept of data generation
+Concept of Data Generation
 ==========================
 
 The software is a conceptional elaboration of :cite:t:`hartmann2004generating`.
@@ -158,3 +163,27 @@ Each row in the respective vehicle table represents a single vehicle including i
 Further, for each container two vehicle IDs are provided -
 one for the vehicle that delivers the container and one for the vehicle that picks it up.
 As a result, the container's journey-specific attributes are collected from these two vehicles.
+
+Academic Discussion
+===================
+
+ConFlowGen has been first presented at the LDIC2022.
+If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined in our
+`CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
+The following bibtex entry contains less metadata but suffices for a regular citation:
+
+.. code-block:: bibtex
+
+    @inproceedings{Kastner_Container_Flow_Generation_2022,
+        author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
+        title = {Container Flow Generation for Maritime Container Terminals},
+        pages = {[in press]},
+        booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
+        eventdate = {2022-02-23/2022-02-25},
+        year = {2022},
+        editor = {Freitag, Michael and Kinra, Aseem and Kotzab, Herbert and Megow, Nicole},
+        publisher = {Springer},
+        address = {Cham, Switzerland},
+    }
+
+While the article is in press, no DOI is available.
