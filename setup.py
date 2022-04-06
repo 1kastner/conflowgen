@@ -21,18 +21,17 @@ setup(
     long_description_content_type='text/markdown',
     packages=find_packages(),
     url='https://github.com/1kastner/conflowgen',
+    python_requires='>=3.8',
     install_requires=[
-        'pandas',  # CSV/Excel import and export
+        'pandas >=1',  # CSV/Excel import and export
         'numpy',  # used in combination with pandas for column types
-        'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
-        'peewee',  # ORM mapper
-        'enum_tools',  # used for documenting enums via decorators
+        'peewee >=3',  # ORM mapper
+        'enum_tools >=0.7',  # used for documenting enums via decorators
 
         # for creating the visuals
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
         'plotly',  # useful for e.g. Sankey diagrams
         'seaborn',  # exchanges matplotlib color palletes
-        'kaleido',  # plotly depends on this package for SVG export, we got this as a present
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -53,6 +52,10 @@ setup(
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
             'jupyterlab',  # develop the Jupyter Notebooks
+
+            # usually optional dependencies that are used in the documentation
+            'kaleido',  # plotly depends on this package for SVG export, we got this as a present
+            'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
 
             # checking code quality
             'pylint',  # lint Python code

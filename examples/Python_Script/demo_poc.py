@@ -112,12 +112,8 @@ logger.info("Start data export...")
 export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_folder_name = "demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
 export_container_flow_manager.export(
-    folder_name=export_folder_name + "-csv",
+    folder_name=export_folder_name,
     file_format=conflowgen.ExportFileFormat.csv
-)
-export_container_flow_manager.export(
-    folder_name=export_folder_name + "-xlsx",
-    file_format=conflowgen.ExportFileFormat.xlsx
 )
 
 # Gracefully close everything
