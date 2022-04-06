@@ -69,59 +69,59 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
 
         if len(inbound_to_outbound_flow) == 0:
             return no_data_graph()
-        else:
-            vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
-            source_ids = list(range(len(vehicle_types)))
-            target_ids = list(range(len(vehicle_types), 2 * len(vehicle_types)))
-            value_ids = list(itertools.product(source_ids, target_ids))
-            source_ids_with_duplication = [source_id for (source_id, _) in value_ids]
-            target_ids_with_duplication = [target_id for (_, target_id) in value_ids]
-            value = [
-                inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type]
-                for inbound_vehicle_type in inbound_to_outbound_flow.keys()
-                for outbound_vehicle_type in inbound_to_outbound_flow[inbound_vehicle_type].keys()
-            ]
-            inbound_labels = [
-                str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
-                    round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
-                for inbound_vehicle_type in inbound_to_outbound_flow.keys()
-            ]
-            to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
-            for inbound_vehicle_type, inbound_capacity in inbound_to_outbound_flow.items():
-                for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
-                    to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
-            outbound_labels = [
-                str(outbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Outbound: " + str(
-                    round(to_outbound_flow[i], 2))
-                for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
-            ]
-            fig = go.Figure(
-                data=[
-                    go.Sankey(
-                        arrangement='perpendicular',
-                        node=dict(
-                            pad=15,
-                            thickness=20,
-                            line=dict(
-                                color="black",
-                                width=0.5
-                            ),
-                            label=inbound_labels + outbound_labels,
-                            color="dimgray",
-                        ),
-                        link=dict(
-                            source=source_ids_with_duplication,
-                            target=target_ids_with_duplication,
-                            value=value
-                        )
-                    )
-                ]
-            )
 
-            fig.update_layout(
-                title_text="Container flow from vehicle type A to vehicle type B as defined by generated containers",
-                font_size=10,
-                width=900,
-                height=700
-            )
-            return fig
+        vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
+        source_ids = list(range(len(vehicle_types)))
+        target_ids = list(range(len(vehicle_types), 2 * len(vehicle_types)))
+        value_ids = list(itertools.product(source_ids, target_ids))
+        source_ids_with_duplication = [source_id for (source_id, _) in value_ids]
+        target_ids_with_duplication = [target_id for (_, target_id) in value_ids]
+        value = [
+            inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type]
+            for inbound_vehicle_type in inbound_to_outbound_flow.keys()
+            for outbound_vehicle_type in inbound_to_outbound_flow[inbound_vehicle_type].keys()
+        ]
+        inbound_labels = [
+            str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
+                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
+            for inbound_vehicle_type in inbound_to_outbound_flow.keys()
+        ]
+        to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
+        for inbound_vehicle_type, inbound_capacity in inbound_to_outbound_flow.items():
+            for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
+                to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
+        outbound_labels = [
+            str(outbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Outbound: " + str(
+                round(to_outbound_flow[i], 2))
+            for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
+        ]
+        fig = go.Figure(
+            data=[
+                go.Sankey(
+                    arrangement='perpendicular',
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(
+                            color="black",
+                            width=0.5
+                        ),
+                        label=inbound_labels + outbound_labels,
+                        color="dimgray",
+                    ),
+                    link=dict(
+                        source=source_ids_with_duplication,
+                        target=target_ids_with_duplication,
+                        value=value
+                    )
+                )
+            ]
+        )
+
+        fig.update_layout(
+            title_text="Container flow from vehicle type A to vehicle type B as defined by generated containers",
+            font_size=10,
+            width=900,
+            height=700
+        )
+        return fig

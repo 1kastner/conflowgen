@@ -1,6 +1,6 @@
 from __future__ import annotations
-import pandas as pd  # pylint: disable=import-outside-toplevel
-import seaborn as sns  # pylint: disable=import-outside-toplevel
+import pandas as pd
+import seaborn as sns
 
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
@@ -61,17 +61,17 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
         if (len(inbound_capacities) + len(outbound_actual_capacities) + len(outbound_maximum_capacities)) == 0:
             return no_data_graph()
-        else:
-            df = pd.DataFrame({
-                "inbound capacities": inbound_capacities,
-                "outbound actual capacities": outbound_actual_capacities,
-                "outbound maximum capacities": outbound_maximum_capacities
-            })
-            df.index = [str(i).replace("_", " ") for i in df.index]
-            ax = df.plot.barh()
-            ax.set_xlabel("Capacity (in TEU)")
-            ax.set_title("Inbound and outbound vehicle capacity analysis")
-            return ax
+
+        df = pd.DataFrame({
+            "inbound capacities": inbound_capacities,
+            "outbound actual capacities": outbound_actual_capacities,
+            "outbound maximum capacities": outbound_maximum_capacities
+        })
+        df.index = [str(i).replace("_", " ") for i in df.index]
+        ax = df.plot.barh()
+        ax.set_xlabel("Capacity (in TEU)")
+        ax.set_title("Inbound and outbound vehicle capacity analysis")
+        return ax
 
     def _get_capacities(self):
         assert self.transportation_buffer is not None

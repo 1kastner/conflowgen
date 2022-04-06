@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import datetime
 import statistics
-import pandas as pd  # pylint: disable=import-outside-toplevel
-import seaborn as sns  # pylint: disable=import-outside-toplevel
-from collections.abc import Iterable
 from typing import Tuple, Any, Dict
+from collections.abc import Iterable
+import pandas as pd
+import seaborn as sns
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.posthoc_analyses.yard_capacity_analysis import YardCapacityAnalysis
@@ -108,14 +108,14 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
 
         if len(yard_capacity_over_time) == 0:
             return no_data_graph()
-        else:
-            series = pd.Series(yard_capacity_over_time)
-            ax = series.plot()
-            x_label = "Used capacity (in TEU)  - storage requirement = "
-            x_label += self._get_storage_requirement_representation(storage_requirement)
-            ax.set_xlabel(x_label)
-            ax.set_title("Used yard capacity analysis")
-            return ax
+
+        series = pd.Series(yard_capacity_over_time)
+        ax = series.plot()
+        x_label = "Used capacity (in TEU)  - storage requirement = "
+        x_label += self._get_storage_requirement_representation(storage_requirement)
+        ax.set_xlabel(x_label)
+        ax.set_title("Used yard capacity analysis")
+        return ax
 
     @staticmethod
     def _get_storage_requirement_representation(storage_requirement: Any) -> str:

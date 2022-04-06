@@ -96,29 +96,29 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         vehicle_type, capacities = self._get_capacities_depending_on_vehicle_type(kwargs)
         if len(capacities) == 0:
             return no_data_graph()
+
+        df = self._convert_analysis_to_df(capacities)
+
+        if plot_type == "absolute":
+            fig, ax = plt.subplots(1, 1)
+            self._plot_absolute_values(df, vehicle_type, ax=ax)
+        elif plot_type == "relative":
+            fig, ax = plt.subplots(1, 1)
+            self._plot_relative_values(df, vehicle_type, ax=ax)
+        elif plot_type == "both":
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+            self._plot_absolute_values(df, vehicle_type, ax=ax1)
+            self._plot_relative_values(df, vehicle_type, ax=ax2)
+            plt.subplots_adjust(wspace=0.4)
         else:
-            df = self._convert_analysis_to_df(capacities)
+            raise Exception(f"Plot type '{plot_type}' is not supported.")
 
-            if plot_type == "absolute":
-                fig, ax = plt.subplots(1, 1)
-                self._plot_absolute_values(df, vehicle_type, ax=ax)
-            elif plot_type == "relative":
-                fig, ax = plt.subplots(1, 1)
-                self._plot_relative_values(df, vehicle_type, ax=ax)
-            elif plot_type == "both":
-                fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-                self._plot_absolute_values(df, vehicle_type, ax=ax1)
-                self._plot_relative_values(df, vehicle_type, ax=ax2)
-                plt.subplots_adjust(wspace=0.4)
-            else:
-                raise Exception(f"Plot type '{plot_type}' is not supported.")
-
-            plt.legend(
-                loc='lower left',
-                bbox_to_anchor=(1, 0),
-                fancybox=True,
-            )
-            return fig
+        plt.legend(
+            loc='lower left',
+            bbox_to_anchor=(1, 0),
+            fancybox=True,
+        )
+        return fig
 
     @staticmethod
     def _get_vehicle_type_representation(vehicle_type: Any) -> str:
