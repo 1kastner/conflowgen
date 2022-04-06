@@ -89,3 +89,43 @@ feeder-TestFeederService-TestFeeder1                                   250.0    
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
+
+    def test_graph_with_feeder(self):
+        one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
+        schedule = Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=one_week_later.date(),
+            vehicle_arrives_at_time=one_week_later.time(),
+            average_vehicle_capacity=300,
+            average_moved_capacity=250,
+            vehicle_arrives_every_k_days=-1
+        )
+        schedule.save()
+        feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
+            capacity_in_teu=schedule.average_vehicle_capacity,
+            moved_capacity=schedule.average_moved_capacity,
+            scheduled_arrival=datetime.datetime.now(),
+            schedule=schedule
+        )
+        feeder_lsv.save()
+        feeder = Feeder.create(
+            large_scheduled_vehicle=feeder_lsv
+        )
+        feeder.save()
+        Container.create(
+            weight=20,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.truck,
+            picked_up_by_large_scheduled_vehicle=feeder_lsv,
+            picked_up_by=ModeOfTransport.feeder,
+            picked_up_by_initial=ModeOfTransport.truck
+        )
+        graph = self.analysis.get_report_as_graph()
+        self.assertIsNotNone(graph)
+
+    def test_graph_with_no_data(self):
+        empty_graph = self.analysis.get_report_as_graph()
+        self.assertIsNotNone(empty_graph)

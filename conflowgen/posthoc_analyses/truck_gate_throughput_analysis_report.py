@@ -1,9 +1,15 @@
 from __future__ import annotations
 
 import statistics
+import pandas as pd  # pylint: disable=import-outside-toplevel
+import seaborn as sns  # pylint: disable=import-outside-toplevel
+import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
 
 from conflowgen.posthoc_analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
+
+sns.set_palette(sns.color_palette())
 
 
 class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
@@ -53,17 +59,14 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
              The matplotlib axis of the bar chart.
         """
 
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
-        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
-        sns.set_palette(sns.color_palette())
-
         truck_gate_throughput = self.analysis.get_throughput_over_time()
-
-        series = pd.Series(truck_gate_throughput)
-        ax = series.plot()
-        plt.xticks(rotation=45)
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Number of boxes (hourly count)")
-        ax.set_title("Analysis of truck gate throughput")
-        return ax
+        if len(truck_gate_throughput) == 0:
+            return no_data_graph()
+        else:
+            series = pd.Series(truck_gate_throughput)
+            ax = series.plot()
+            plt.xticks(rotation=45)
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Number of boxes (hourly count)")
+            ax.set_title("Analysis of truck gate throughput")
+            return ax

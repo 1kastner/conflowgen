@@ -1,9 +1,13 @@
 from __future__ import annotations
+
 import itertools
+
+import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
+from conflowgen.reporting.no_data_plot import no_data_graph
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
@@ -74,68 +78,70 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         Returns:
             The plotly figure of the Sankey diagram.
         """
-        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
-
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
 
-        vehicle_types = [
-            str(vehicle_type).replace("_", " ")
-            for vehicle_type in initial_to_adjusted_outbound_flow_in_teu.keys()
-        ]
-        source_ids = list(range(len(vehicle_types)))
-        target_ids = list(range(len(vehicle_types), 2 * len(vehicle_types)))
-        value_ids = list(itertools.product(source_ids, target_ids))
-        source_ids_with_duplication = [source_id for (source_id, _) in value_ids]
-        target_ids_with_duplication = [target_id for (_, target_id) in value_ids]
-        value = [
-            initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial][vehicle_type_adjusted]
-            for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
-            for vehicle_type_adjusted in initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].keys()
-        ]
-        initial_labels = [
-            str(vehicle_type_initial).replace("_", " ").capitalize() + ":<br>Initial: " + str(
-                round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2))
-            for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
-        ]
-        to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
-        for vehicle_type_initial, capacity in initial_to_adjusted_outbound_flow_in_teu.items():
-            for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
-                to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
-        adjusted_labels = [
-            str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(
-                round(to_adjusted_flow[i], 2))
-            for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
-        ]
-        fig = go.Figure(
-            data=[
-                go.Sankey(
-                    arrangement='perpendicular',
-                    node=dict(
-                        pad=15,
-                        thickness=20,
-                        line=dict(
-                            color="black",
-                            width=0.5
-                        ),
-                        label=initial_labels + adjusted_labels,
-                        color="dimgray",
-                    ),
-                    link=dict(
-                        source=source_ids_with_duplication,
-                        target=target_ids_with_duplication,
-                        value=value
-                    )
-                )
+        if (len(initial_to_adjusted_outbound_flow) + len(initial_to_adjusted_outbound_flow_in_teu)) == 0:
+            return no_data_graph()
+        else:
+            vehicle_types = [
+                str(vehicle_type).replace("_", " ")
+                for vehicle_type in initial_to_adjusted_outbound_flow_in_teu.keys()
             ]
-        )
+            source_ids = list(range(len(vehicle_types)))
+            target_ids = list(range(len(vehicle_types), 2 * len(vehicle_types)))
+            value_ids = list(itertools.product(source_ids, target_ids))
+            source_ids_with_duplication = [source_id for (source_id, _) in value_ids]
+            target_ids_with_duplication = [target_id for (_, target_id) in value_ids]
+            value = [
+                initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial][vehicle_type_adjusted]
+                for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
+                for vehicle_type_adjusted in initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].keys()
+            ]
+            initial_labels = [
+                str(vehicle_type_initial).replace("_", " ").capitalize() + ":<br>Initial: " + str(
+                    round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2))
+                for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
+            ]
+            to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
+            for vehicle_type_initial, capacity in initial_to_adjusted_outbound_flow_in_teu.items():
+                for i, vehicle_type_adjusted in enumerate(
+                        initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
+                    to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
+            adjusted_labels = [
+                str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(
+                    round(to_adjusted_flow[i], 2))
+                for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
+            ]
+            fig = go.Figure(
+                data=[
+                    go.Sankey(
+                        arrangement='perpendicular',
+                        node=dict(
+                            pad=15,
+                            thickness=20,
+                            line=dict(
+                                color="black",
+                                width=0.5
+                            ),
+                            label=initial_labels + adjusted_labels,
+                            color="dimgray",
+                        ),
+                        link=dict(
+                            source=source_ids_with_duplication,
+                            target=target_ids_with_duplication,
+                            value=value
+                        )
+                    )
+                ]
+            )
 
-        fig.update_layout(
-            title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
-                       "containers the initially intended vehicle type was not available due to constraints "
-                       "(schedules, dwell times, etc.).",
-            font_size=10,
-            width=900,
-            height=700
-        )
-        return fig
+            fig.update_layout(
+                title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
+                           "containers the initially intended vehicle type was not available due to constraints "
+                           "(schedules, dwell times, etc.).",
+                font_size=10,
+                width=900,
+                height=700
+            )
+            return fig

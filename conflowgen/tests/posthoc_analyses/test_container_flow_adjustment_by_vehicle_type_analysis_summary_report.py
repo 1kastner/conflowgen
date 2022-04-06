@@ -82,3 +82,29 @@ changed to truck:            2.0        (66.67%)
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
+
+    def test_graph_with_no_data(self):
+        empty_graph = self.report.get_report_as_graph()
+        self.assertIsNotNone(empty_graph)
+
+    def test_graph_two_containers(self):
+        Container.create(
+            weight=20,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.feeder,
+            delivered_by_large_scheduled_vehicle=None,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck
+        )
+        Container.create(
+            weight=20,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.feeder,
+            delivered_by_large_scheduled_vehicle=None,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.feeder
+        )
+        graph = self.report.get_report_as_graph()
+        self.assertIsNotNone(graph)

@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import datetime
 import statistics
+import pandas as pd  # pylint: disable=import-outside-toplevel
+import seaborn as sns  # pylint: disable=import-outside-toplevel
 from collections.abc import Iterable
 from typing import Tuple, Any, Dict
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.posthoc_analyses.yard_capacity_analysis import YardCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
+
+sns.set_palette(sns.color_palette())
 
 
 class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
@@ -99,19 +104,18 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
              The matplotlib axis of the bar chart.
         """
 
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
-        sns.set_palette(sns.color_palette())
-
         storage_requirement, yard_capacity_over_time = self._get_used_yard_capacity_based_on_storage_requirement(kwargs)
 
-        series = pd.Series(yard_capacity_over_time)
-        ax = series.plot()
-        x_label = "Used capacity (in TEU)  - storage requirement = "
-        x_label += self._get_storage_requirement_representation(storage_requirement)
-        ax.set_xlabel(x_label)
-        ax.set_title("Used yard capacity analysis")
-        return ax
+        if len(yard_capacity_over_time) == 0:
+            return no_data_graph()
+        else:
+            series = pd.Series(yard_capacity_over_time)
+            ax = series.plot()
+            x_label = "Used capacity (in TEU)  - storage requirement = "
+            x_label += self._get_storage_requirement_representation(storage_requirement)
+            ax.set_xlabel(x_label)
+            ax.set_title("Used yard capacity analysis")
+            return ax
 
     @staticmethod
     def _get_storage_requirement_representation(storage_requirement: Any) -> str:

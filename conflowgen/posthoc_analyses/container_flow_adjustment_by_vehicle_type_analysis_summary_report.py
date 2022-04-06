@@ -5,6 +5,7 @@ import pandas as pd
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummary
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWithMatplotlib):
@@ -67,18 +68,21 @@ changed to truck:            0.0        (-%)
         """
 
         adjusted_to = self.analysis_summary.get_summary()
-        data_series = pd.Series({
-            "unchanged": adjusted_to.unchanged,
-            "deep sea vessel": adjusted_to.deep_sea_vessel,
-            "feeder": adjusted_to.feeder,
-            "barge": adjusted_to.barge,
-            "train": adjusted_to.train,
-            "truck": adjusted_to.truck
-        }, name="Transshipment share")
-        ax = data_series.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Adjusted vehicle type"
-        )
-        return ax
+        if sum(adjusted_to) == 0:
+            return no_data_graph()
+        else:
+            data_series = pd.Series({
+                "unchanged": adjusted_to.unchanged,
+                "deep sea vessel": adjusted_to.deep_sea_vessel,
+                "feeder": adjusted_to.feeder,
+                "barge": adjusted_to.barge,
+                "train": adjusted_to.train,
+                "truck": adjusted_to.truck
+            }, name="Transshipment share")
+            ax = data_series.plot.pie(
+                legend=False,
+                autopct='%1.1f%%',
+                label="",
+                title="Adjusted vehicle type"
+            )
+            return ax
