@@ -23,9 +23,15 @@ setup(
     url='https://github.com/1kastner/conflowgen',
     python_requires='>=3.8',
     install_requires=[
-        'pandas >=1',  # CSV/Excel import and export
+        # data export
         'numpy',  # used in combination with pandas for column types
+        'pandas >=1',  # CSV/Excel import and export
+        'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
+
+        # internal data keeping
         'peewee >=3',  # ORM mapper
+
+        # documentation - decorators used for sphinx but are part of the source code delivered to customers
         'enum_tools >=0.7',  # used for documenting enums via decorators
 
         # for creating the visuals
@@ -55,7 +61,7 @@ setup(
 
             # usually optional dependencies that are used in the documentation
             'kaleido',  # plotly depends on this package for SVG export, we got this as a present
-            'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
+
 
             # checking code quality
             'pylint',  # lint Python code
