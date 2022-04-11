@@ -97,7 +97,7 @@ The project is published at the following places:
 - [PyPI](https://pypi.org/project/conflowgen/)
 - [anaconda](https://anaconda.org/mkastner/conflowgen)
 - [GitHub](https://github.com/1kastner/conflowgen/releases)
-- [zenodo](https://zenodo.org/record/6280381#.YlQSZtPP1PY)
+- [zenodo](https://zenodo.org/record/6280381)
 
 While PyPI and anaconda packages are both based on a locally built package that is uploaded, GitHub and zenodo use git
 tags to trigger the publishing process.
