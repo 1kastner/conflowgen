@@ -14,7 +14,8 @@
 [![Windows conda installation (conda not in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation-not-in-path.yaml)
 
 [![pypi](https://img.shields.io/pypi/v/conflowgen)](https://pypi.org/project/conflowgen/)
-[![anaconda](https://img.shields.io/conda/v/mkastner/conflowgen)](https://anaconda.org/mkastner/conflowgen)
+[![conda-forge](https://img.shields.io/conda/v/conda-forge/conflowgen?logo=anaconda)](https://anaconda.org/conda-forge/conflowgen)
+[![anaconda](https://img.shields.io/conda/v/mkastner/conflowgen?logo=anaconda)](https://anaconda.org/mkastner/conflowgen)
 [![GitHub](https://img.shields.io/github/v/release/1kastner/conflowgen?label=github)](https://github.com/1kastner/conflowgen/releases)
 
 
