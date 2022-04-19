@@ -96,23 +96,25 @@ This way, past setups can be recreated in the future.
 The project is published at the following places:
 - [PyPI](https://pypi.org/project/conflowgen/)
 - [anaconda](https://anaconda.org/mkastner/conflowgen)
+- [conda-forge](https://github.com/conda-forge/conflowgen-feedstock)
 - [GitHub](https://github.com/1kastner/conflowgen/releases)
 - [zenodo](https://zenodo.org/record/6280381)
 
-While PyPI and anaconda packages are both based on a locally built package that is uploaded, GitHub and zenodo use git
+While PyPI and conda packages are both based on a locally built package that is uploaded, GitHub and zenodo use git
 tags to trigger the publishing process.
 For all pipelines, the default settings are used.
 For packing the PyPI package,
 [prepare_publish.bat](https://github.com/1kastner/conflowgen/blob/main/prepare_publish.bat)
 can be of guidance for Windows users.
-The conda recipe is based on the PyPI package and is built with
-[conda-build](https://github.com/conda/conda-build).
+The conda recipe is based on the PyPI package and is located at
+[conflowgen-feedstock](https://github.com/conda-forge/conflowgen-feedstock).
 The version number is bumped manually by updating the version number at the following places:
 - [./conflowgen/metadata.py](https://github.com/1kastner/conflowgen/blob/main/conflowgen/metadata.py):
-  Updates the version number for PyPI
-- The conda recipe requires a separat manual version number update
+  Updates the version number for the PyPI package. Afterwards the PyPI package can be uploaded.
+- The conda recipe requires a separat manual version number update in the
+  [recipe](https://github.com/conda-forge/conflowgen-feedstock/blob/main/recipe/meta.yaml).
 - [./CITATION.cff](https://github.com/1kastner/conflowgen/blob/main/CITATION.cff):
-  Updates the version number for zenodo 
+  Updates the version number for zenodo.
 - The version number of
   [the GitHub release](https://github.com/1kastner/conflowgen/releases/new)
   is derived from the user input and can be handled after the other steps are finished.
