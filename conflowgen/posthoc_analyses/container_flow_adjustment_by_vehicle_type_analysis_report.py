@@ -7,7 +7,6 @@ import plotly.graph_objects as go
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
-from conflowgen.reporting.no_data_plot import no_data_graph
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
@@ -81,9 +80,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
 
-        if (len(initial_to_adjusted_outbound_flow) + len(initial_to_adjusted_outbound_flow_in_teu)) == 0:
-            return no_data_graph()
-
         vehicle_types = [
             str(vehicle_type).replace("_", " ")
             for vehicle_type in initial_to_adjusted_outbound_flow_in_teu.keys()
@@ -105,8 +101,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         ]
         to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
         for vehicle_type_initial, capacity in initial_to_adjusted_outbound_flow_in_teu.items():
-            for i, vehicle_type_adjusted in enumerate(
-                    initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
+            for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
                 to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
         adjusted_labels = [
             str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(

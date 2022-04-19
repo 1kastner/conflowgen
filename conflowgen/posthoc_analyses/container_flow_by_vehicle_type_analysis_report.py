@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import itertools
 
-import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
+import plotly.graph_objects as go
 
 from conflowgen.posthoc_analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
-from conflowgen.reporting.no_data_plot import no_data_graph
 
 
 class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
@@ -66,9 +65,6 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         """
 
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
-
-        if len(inbound_to_outbound_flow) == 0:
-            return no_data_graph()
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
         source_ids = list(range(len(vehicle_types)))

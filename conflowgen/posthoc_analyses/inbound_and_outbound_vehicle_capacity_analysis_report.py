@@ -5,7 +5,6 @@ import seaborn as sns
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
-from conflowgen.reporting.no_data_plot import no_data_graph
 
 sns.set_palette(sns.color_palette())
 
@@ -59,8 +58,6 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         """
 
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
-        if (len(inbound_capacities) + len(outbound_actual_capacities) + len(outbound_maximum_capacities)) == 0:
-            return no_data_graph()
 
         df = pd.DataFrame({
             "inbound capacities": inbound_capacities,
