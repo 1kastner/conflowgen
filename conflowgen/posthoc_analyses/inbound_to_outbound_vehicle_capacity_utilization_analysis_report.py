@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import typing
 from typing import Tuple, Any, Dict, Iterable, Optional
 
 import matplotlib.pyplot as plt
@@ -127,7 +126,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             return "all"
         if isinstance(vehicle_type, ModeOfTransport):
             return str(vehicle_type)
-        if isinstance(vehicle_type, typing.Iterable):
+        if isinstance(vehicle_type, Iterable):
             return " & ".join([str(element) for element in vehicle_type])
         return str(vehicle_type)
 
