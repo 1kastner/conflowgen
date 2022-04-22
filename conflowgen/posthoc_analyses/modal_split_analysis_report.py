@@ -104,8 +104,6 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
 
         Returns:
              The matplotlib axis of the last bar chart.
-
-        .. todo:: All pie charts should be plotted in a single plot using subplots.
         """
 
         # gather data
