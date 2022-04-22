@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import statistics
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 from conflowgen.posthoc_analyses.quay_side_throughput_analysis import QuaySideThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
+sns.set_palette(sns.color_palette())
 
 
 class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
@@ -59,12 +64,9 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
              The matplotlib axis of the bar chart.
         """
 
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
-        import matplotlib.pyplot as plt  # pylint: disable=import-outside-toplevel
-        sns.set_palette(sns.color_palette())
-
         quay_side_throughput = self.analysis.get_throughput_over_time()
+        if len(quay_side_throughput) == 0:
+            return no_data_graph()
 
         series = pd.Series(quay_side_throughput)
         ax = series.plot()

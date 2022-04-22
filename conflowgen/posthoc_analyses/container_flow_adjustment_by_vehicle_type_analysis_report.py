@@ -1,5 +1,8 @@
 from __future__ import annotations
+
 import itertools
+
+import plotly.graph_objects as go
 
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
@@ -74,8 +77,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         Returns:
             The plotly figure of the Sankey diagram.
         """
-        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
-
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
 

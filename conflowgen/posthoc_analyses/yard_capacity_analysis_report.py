@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import datetime
 import statistics
-from collections.abc import Iterable
 from typing import Tuple, Any, Dict
+from collections.abc import Iterable
+import pandas as pd
+import seaborn as sns
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.posthoc_analyses.yard_capacity_analysis import YardCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
+
+sns.set_palette(sns.color_palette())
 
 
 class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
@@ -99,11 +104,10 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
              The matplotlib axis of the bar chart.
         """
 
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
-        sns.set_palette(sns.color_palette())
-
         storage_requirement, yard_capacity_over_time = self._get_used_yard_capacity_based_on_storage_requirement(kwargs)
+
+        if len(yard_capacity_over_time) == 0:
+            return no_data_graph()
 
         series = pd.Series(yard_capacity_over_time)
         ax = series.plot()

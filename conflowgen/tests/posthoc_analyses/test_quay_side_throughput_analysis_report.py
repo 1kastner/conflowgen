@@ -16,6 +16,67 @@ from conflowgen.posthoc_analyses.quay_side_throughput_analysis_report import Qua
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
+def setup_feeder_data():
+    """When a feeder arrives, throughput at the quay side rises"""
+    now = datetime.datetime.now()
+    schedule = Schedule.create(
+        vehicle_type=ModeOfTransport.feeder,
+        service_name="TestFeederService",
+        vehicle_arrives_at=now.date(),
+        vehicle_arrives_at_time=now.time(),
+        average_vehicle_capacity=300,
+        average_moved_capacity=300,
+    )
+    feeder_lsv = LargeScheduledVehicle.create(
+        vehicle_name="TestFeeder1",
+        capacity_in_teu=300,
+        moved_capacity=schedule.average_moved_capacity,
+        scheduled_arrival=now,
+        schedule=schedule
+    )
+    Feeder.create(
+        large_scheduled_vehicle=feeder_lsv
+    )
+    aip = TruckArrivalInformationForPickup.create(
+        realized_container_pickup_time=datetime.datetime.now() + datetime.timedelta(hours=25)
+    )
+    truck = Truck.create(
+        delivers_container=False,
+        picks_up_container=True,
+        truck_arrival_information_for_delivery=None,
+        truck_arrival_information_for_pickup=aip
+    )
+    Container.create(
+        weight=20,
+        length=ContainerLength.twenty_feet,
+        storage_requirement=StorageRequirement.standard,
+        delivered_by=ModeOfTransport.feeder,
+        delivered_by_large_scheduled_vehicle=feeder_lsv,
+        picked_up_by=ModeOfTransport.truck,
+        picked_up_by_initial=ModeOfTransport.truck,
+        picked_up_by_truck=truck
+    )
+    aip_2 = TruckArrivalInformationForPickup.create(
+        realized_container_pickup_time=datetime.datetime.now() + datetime.timedelta(hours=12)
+    )
+    truck_2 = Truck.create(
+        delivers_container=False,
+        picks_up_container=True,
+        truck_arrival_information_for_delivery=None,
+        truck_arrival_information_for_pickup=aip_2
+    )
+    Container.create(
+        weight=20,
+        length=ContainerLength.forty_feet,
+        storage_requirement=StorageRequirement.standard,
+        delivered_by=ModeOfTransport.feeder,
+        delivered_by_large_scheduled_vehicle=feeder_lsv,
+        picked_up_by=ModeOfTransport.truck,
+        picked_up_by_initial=ModeOfTransport.truck,
+        picked_up_by_truck=truck_2
+    )
+
+
 class TestQuaySideThroughputAnalysisReport(unittest.TestCase):
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -57,64 +118,7 @@ average hourly quay side throughput:                 0.0
         self.assertEqual(actual_report, expected_report)
 
     def test_with_single_feeder(self):
-        """When a feeder arrives, throughput at the quay side rises"""
-        now = datetime.datetime.now()
-        schedule = Schedule.create(
-            vehicle_type=ModeOfTransport.feeder,
-            service_name="TestFeederService",
-            vehicle_arrives_at=now.date(),
-            vehicle_arrives_at_time=now.time(),
-            average_vehicle_capacity=300,
-            average_moved_capacity=300,
-        )
-        feeder_lsv = LargeScheduledVehicle.create(
-            vehicle_name="TestFeeder1",
-            capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
-            scheduled_arrival=now,
-            schedule=schedule
-        )
-        Feeder.create(
-            large_scheduled_vehicle=feeder_lsv
-        )
-        aip = TruckArrivalInformationForPickup.create(
-            realized_container_pickup_time=datetime.datetime.now() + datetime.timedelta(hours=25)
-        )
-        truck = Truck.create(
-            delivers_container=False,
-            picks_up_container=True,
-            truck_arrival_information_for_delivery=None,
-            truck_arrival_information_for_pickup=aip
-        )
-        Container.create(
-            weight=20,
-            length=ContainerLength.twenty_feet,
-            storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.feeder,
-            delivered_by_large_scheduled_vehicle=feeder_lsv,
-            picked_up_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.truck,
-            picked_up_by_truck=truck
-        )
-        aip_2 = TruckArrivalInformationForPickup.create(
-            realized_container_pickup_time=datetime.datetime.now() + datetime.timedelta(hours=12)
-        )
-        truck_2 = Truck.create(
-            delivers_container=False,
-            picks_up_container=True,
-            truck_arrival_information_for_delivery=None,
-            truck_arrival_information_for_pickup=aip_2
-        )
-        Container.create(
-            weight=20,
-            length=ContainerLength.forty_feet,
-            storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.feeder,
-            delivered_by_large_scheduled_vehicle=feeder_lsv,
-            picked_up_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.truck,
-            picked_up_by_truck=truck_2
-        )
+        setup_feeder_data()
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
                                      (reported in boxes)
@@ -182,3 +186,12 @@ average hourly quay side throughput:                 0.0
 (daily and hourly values are simply scaled weekly values, rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
+
+    def test_graph_with_no_data(self):
+        empty_graph = self.analysis.get_report_as_graph()
+        self.assertIsNotNone(empty_graph)
+
+    def test_graph_with_single_feeder(self):
+        setup_feeder_data()
+        graph = self.analysis.get_report_as_graph()
+        self.assertIsNotNone(graph)

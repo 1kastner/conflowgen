@@ -1,8 +1,12 @@
 from __future__ import annotations
+import pandas as pd
+import seaborn as sns
 
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
+
+sns.set_palette(sns.color_palette())
 
 
 class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotlib):
@@ -53,11 +57,8 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
              The matplotlib axis of the bar chart.
         """
 
-        import pandas as pd  # pylint: disable=import-outside-toplevel
-        import seaborn as sns  # pylint: disable=import-outside-toplevel
-        sns.set_palette(sns.color_palette())
-
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
+
         df = pd.DataFrame({
             "inbound capacities": inbound_capacities,
             "outbound actual capacities": outbound_actual_capacities,

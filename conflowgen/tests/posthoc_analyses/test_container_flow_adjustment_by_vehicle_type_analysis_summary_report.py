@@ -15,6 +15,27 @@ from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analy
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
+def setup_feeder_data():
+    Container.create(
+        weight=20,
+        length=ContainerLength.twenty_feet,
+        storage_requirement=StorageRequirement.standard,
+        delivered_by=ModeOfTransport.feeder,
+        delivered_by_large_scheduled_vehicle=None,
+        picked_up_by=ModeOfTransport.truck,
+        picked_up_by_initial=ModeOfTransport.truck
+    )
+    Container.create(
+        weight=20,
+        length=ContainerLength.forty_feet,
+        storage_requirement=StorageRequirement.standard,
+        delivered_by=ModeOfTransport.feeder,
+        delivered_by_large_scheduled_vehicle=None,
+        picked_up_by=ModeOfTransport.truck,
+        picked_up_by_initial=ModeOfTransport.feeder
+    )
+
+
 class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(unittest.TestCase):
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -52,24 +73,7 @@ changed to truck:            0.0        (-%)
         self.assertEqual(actual_report, expected_report)
 
     def test_with_two_containers(self):
-        Container.create(
-            weight=20,
-            length=ContainerLength.twenty_feet,
-            storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.feeder,
-            delivered_by_large_scheduled_vehicle=None,
-            picked_up_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.truck
-        )
-        Container.create(
-            weight=20,
-            length=ContainerLength.forty_feet,
-            storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.feeder,
-            delivered_by_large_scheduled_vehicle=None,
-            picked_up_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.feeder
-        )
+        setup_feeder_data()
         actual_report = self.report.get_report_as_text()
         expected_report = """
                              Capacity in TEU
@@ -82,3 +86,12 @@ changed to truck:            2.0        (66.67%)
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
+
+    def test_graph_with_no_data(self):
+        empty_graph = self.report.get_report_as_graph()
+        self.assertIsNotNone(empty_graph)
+
+    def test_graph_two_containers(self):
+        setup_feeder_data()
+        graph = self.report.get_report_as_graph()
+        self.assertIsNotNone(graph)

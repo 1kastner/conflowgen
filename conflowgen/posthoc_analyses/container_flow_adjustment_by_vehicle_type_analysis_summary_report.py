@@ -5,6 +5,7 @@ import pandas as pd
 from conflowgen.posthoc_analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummary
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.no_data_plot import no_data_graph
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWithMatplotlib):
@@ -67,6 +68,9 @@ changed to truck:            0.0        (-%)
         """
 
         adjusted_to = self.analysis_summary.get_summary()
+        if sum(adjusted_to) == 0:
+            return no_data_graph()
+
         data_series = pd.Series({
             "unchanged": adjusted_to.unchanged,
             "deep sea vessel": adjusted_to.deep_sea_vessel,

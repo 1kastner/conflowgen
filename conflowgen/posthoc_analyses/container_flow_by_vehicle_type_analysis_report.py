@@ -1,5 +1,8 @@
 from __future__ import annotations
+
 import itertools
+
+import plotly.graph_objects as go
 
 from conflowgen.posthoc_analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
@@ -60,8 +63,6 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
-
-        import plotly.graph_objects as go  # pylint: disable=import-outside-toplevel
 
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
 
