@@ -104,8 +104,6 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
 
         Returns:
              The matplotlib axis of the last bar chart.
-
-        .. todo:: All pie charts should be plotted in a single plot using subplots.
         """
 
         # gather data
@@ -121,20 +119,21 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         )
 
         # Start plotting
-        fig, ax = plt.subplots(2, 2)
+        fig, axes = plt.subplots(2, 2)
         series_hinterland_and_transshipment = pd.Series({
             "hinterland capacity": transshipment.hinterland_capacity,
             "transshipment capacity": transshipment.transshipment_capacity
         }, name="Transshipment share")
 
         if sum(series_hinterland_and_transshipment) == 0:
-            ax[0, 0] = no_data_text()
+            axes[0, 0] = no_data_text()
         else:
-            ax[0, 0] = series_hinterland_and_transshipment.plot.pie(
+            series_hinterland_and_transshipment.plot.pie(
                 legend=False,
                 autopct='%1.1f%%',
                 label="",
-                title="Transshipment share"
+                title="Transshipment share",
+                ax=axes[0, 0]
             )
 
         series_modal_split_inbound = pd.Series({
@@ -144,13 +143,14 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         }, name="Modal split for hinterland (inbound)")
 
         if sum(series_modal_split_inbound) == 0:
-            ax[0, 1] = no_data_text()
+            axes[0, 1] = no_data_text()
         else:
-            ax[0, 1] = series_modal_split_inbound.plot.pie(
+            series_modal_split_inbound.plot.pie(
                 legend=False,
                 autopct='%1.1f%%',
                 label="",
-                title="Modal split for hinterland (inbound)"
+                title="Modal split for hinterland\n(inbound)",
+                ax=axes[0, 1]
             )
 
         series_modal_split_outbound = pd.Series({
@@ -160,13 +160,14 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         }, name="Modal split for hinterland (outbound)")
 
         if sum(series_modal_split_outbound) == 0:
-            ax[1, 0] = no_data_text()
+            axes[1, 0] = no_data_text()
         else:
-            ax[1, 0] = series_modal_split_outbound.plot.pie(
+            series_modal_split_outbound.plot.pie(
                 legend=False,
                 autopct='%1.1f%%',
                 label="",
-                title="Modal split for hinterland (outbound)"
+                title="Modal split for hinterland\n(outbound)",
+                ax=axes[1, 0]
             )
 
         series_modal_split_both = pd.Series({
@@ -176,13 +177,14 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         }, name="Modal split for hinterland (inbound and outbound)")
 
         if sum(series_modal_split_both) == 0:
-            ax[1, 1] = no_data_text()
+            axes[1, 1] = no_data_text()
         else:
-            ax[1, 1] = series_modal_split_both.plot.pie(
+            series_modal_split_both.plot.pie(
                 legend=False,
                 autopct='%1.1f%%',
                 label="",
-                title="Modal split for hinterland (inbound and outbound)"
+                title="Modal split for hinterland\n(inbound and outbound)",
+                ax=axes[1, 1]
             )
 
-        return ax
+        return axes

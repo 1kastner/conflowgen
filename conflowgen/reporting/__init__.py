@@ -74,13 +74,13 @@ class AbstractReport(abc.ABC):
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:
+    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
         self.get_report_as_graph()
         plt.show()
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:
+    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
         if "static" in kwargs and kwargs["static"]:
             png_format_image = fig.to_image(format="png", width=800)
