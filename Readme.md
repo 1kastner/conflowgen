@@ -3,7 +3,6 @@
 
 [![Tests](https://github.com/1kastner/conflowgen/actions/workflows/unittests.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/unittests.yaml)
 [![codecov](https://codecov.io/gh/1kastner/conflowgen/branch/main/graph/badge.svg?token=GICVMYHJ42)](https://codecov.io/gh/1kastner/conflowgen)
-
 [![Linting](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/1kastner/conflowgen/badge)](https://www.codefactor.io/repository/github/1kastner/conflowgen)
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/context:python)
@@ -17,9 +16,7 @@
 [![conda-forge](https://img.shields.io/conda/v/conda-forge/conflowgen?logo=anaconda)](https://anaconda.org/conda-forge/conflowgen)
 [![anaconda](https://img.shields.io/conda/v/mkastner/conflowgen?logo=anaconda)](https://anaconda.org/mkastner/conflowgen)
 [![GitHub](https://img.shields.io/github/v/release/1kastner/conflowgen?label=github)](https://github.com/1kastner/conflowgen/releases)
-
-
-[![DOI](https://zenodo.org/badge/433930077.svg)](https://zenodo.org/badge/latestdoi/433930077)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6447686.svg)](https://zenodo.org/badge/latestdoi/433930077)
 
 <table style="border: none">
   <tr style="border: none">
