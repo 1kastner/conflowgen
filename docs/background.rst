@@ -174,16 +174,17 @@ The following bibtex entry contains less metadata but suffices for a regular cit
 
 .. code-block:: bibtex
 
-    @inproceedings{Kastner_Container_Flow_Generation_2022,
-        author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
-        title = {Container Flow Generation for Maritime Container Terminals},
-        pages = {[in press]},
-        booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
-        eventdate = {2022-02-23/2022-02-25},
-        year = {2022},
-        editor = {Freitag, Michael and Kinra, Aseem and Kotzab, Herbert and Megow, Nicole},
-        publisher = {Springer},
-        address = {Cham, Switzerland},
-    }
+   @inproceedings{Kastner_Container_Flow_Generation_2022,
+      address = {Bremen, DE},
+      author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
+      booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
+      doi = {10.1007/978-3-031-05359-7_11},
+      month = {2},
+      pages = {133--143},
+      publisher = {Springer},
+      series = {LDIC 2022},
+      title = {Container Flow Generation for Maritime Container Terminals},
+      year = {2022}
+   }
 
 While the article is in press, no DOI is available.
