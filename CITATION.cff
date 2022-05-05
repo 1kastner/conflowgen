@@ -35,7 +35,6 @@ identifiers:
     type: doi
     value: 10.5281/zenodo.6245523
 preferred-citation:
-  status: in-press  # TODO: drop this key the conference proceedings are published
   title: Container Flow Generation for Maritime Container Terminals
   type: conference-paper
   doi: 10.1007/978-3-031-05359-7_11
@@ -65,8 +64,8 @@ preferred-citation:
   collection-type: "proceedings"
   year: 2022
   isbn: 978-3-031-05359-7
-#  start: 0  # start page - TODO: Insert once the conference proceedings are published
-#  end: 0  # end page - TODO: Insert once the conference proceedings are published
+  start: 133
+  end: 143
   authors:
     - given-names: Marvin
       family-names: Kastner
