@@ -65,6 +65,8 @@ jobs:
 
     - name: Run tests
       run: |
+        eval "$(conda shell.bash hook)"
+        conda activate base
         python -m pytest --pyargs conflowgen
 
   build-pip:
