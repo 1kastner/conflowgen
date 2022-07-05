@@ -14,9 +14,9 @@
 
 [![pypi](https://img.shields.io/pypi/v/conflowgen)](https://pypi.org/project/conflowgen/)
 [![conda-forge](https://img.shields.io/conda/v/conda-forge/conflowgen?logo=anaconda)](https://anaconda.org/conda-forge/conflowgen)
-[![anaconda](https://img.shields.io/conda/v/mkastner/conflowgen?logo=anaconda)](https://anaconda.org/mkastner/conflowgen)
 [![GitHub](https://img.shields.io/github/v/release/1kastner/conflowgen?label=github)](https://github.com/1kastner/conflowgen/releases)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6447686.svg)](https://zenodo.org/badge/latestdoi/433930077)
+[![Install from repository](https://github.com/1kastner/conflowgen/actions/workflows/installation-from-remote.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/installation-from-remote.yaml)
 
 <table style="border: none">
   <tr style="border: none">
