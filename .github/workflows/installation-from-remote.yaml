@@ -10,17 +10,13 @@ on:
     types: [opened, reopened, edited, synchronize]
 
 jobs:
-  build:
+  build-conda:
 
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        install-command: [
-          "conda install -c conda-forge conflowgen",
-          "pip install conflowgen"
-        ]
 
-    name: ConFlowGen installation
+    name: ConFlowGen installation via conda
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -38,5 +34,26 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        ${{ matrix.install-command }}
+        conda install -c conda-forge conflowgen pytest
+        python -m pytest --pyargs conflowgen
+
+  build-pip:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    name: ConFlowGen installation via pip
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
+
+    - uses: actions/checkout@v2
+
+    - name: Install ConFlowGen
+      run: |
+        python -m pip install conflowgen pytest
         python -m pytest --pyargs conflowgen
