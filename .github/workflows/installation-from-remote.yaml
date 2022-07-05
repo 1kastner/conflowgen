@@ -1,0 +1,42 @@
+name: Installation from remote
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, edited, synchronize]
+
+jobs:
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        install-command: [
+          "conda install -c conda-forge conflowgen",
+          "pip install conflowgen"
+        ]
+
+    name: ConFlowGen installation
+    runs-on: ${{ matrix.os }}
+
+    steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
+
+    - uses: actions/checkout@v2
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ""
+
+    - name: Install ConFlowGen
+      run: |
+        ${{ matrix.install-command }}
+        python -m pytest --pyargs conflowgen
