@@ -1,14 +1,14 @@
 # Contributing
 
-If you find bugs, errors, omissions or other things that need improvement, please create an issue or a pull request at 
+If you find bugs, errors, omissions, or other things that need improvement, please create an issue or a pull request at 
 [https://github.com/1kastner/conflowgen/](https://github.com/1kastner/conflowgen/).
 Contributions are always welcome!
-We would love to see ConFlowGen grow in different dimensions, including (but not limited to)...
-- ...adding reliable data sources for the default distributions and domain constants
-- ...improving the data generation process to be closer to production data
-  (as long as the number of assumptions stays reasonable)
-- ...increasing the quality of the previews and analyses
-- ...reduce technical debt - some features were implemented as they were needed and better patterns exist.
+We would love to see ConFlowGen grow in different dimensions, including (but not limited to) the...
+- ...addition of reliable data sources for the default distributions and domain constants.
+- ...improvement of the data generation process to be closer to production data
+  (as long as the number of assumptions stays reasonable).
+- ...more insightful previews and analyses.
+- ...reduction of technical debt - some features were implemented as they were needed and better programming and software architecture patterns exist.
 
 ## Isolating the development environment
 
