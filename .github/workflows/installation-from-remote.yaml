@@ -15,6 +15,7 @@ jobs:
   build-conda:
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
 
@@ -54,6 +55,10 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
 
     - name: Install ConFlowGen
       run: |
