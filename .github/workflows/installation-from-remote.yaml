@@ -1,4 +1,4 @@
-name: Installation from remote
+name: Install from repository
 
 on:
   push:
