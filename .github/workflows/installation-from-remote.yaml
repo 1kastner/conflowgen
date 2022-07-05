@@ -35,10 +35,16 @@ jobs:
         auto-activate-base: true
         activate-environment: ""
 
-    - name: Install ConFlowGen
+    - name: Install ConFlowGen and run tests
       run: |
+        conda activate base
         conda install -c conda-forge conflowgen pytest
+
+    - name: Run tests
+      run: |
+        conda activate base
         python -m pytest --pyargs conflowgen
+
 
   build-pip:
 
@@ -63,4 +69,7 @@ jobs:
     - name: Install ConFlowGen
       run: |
         python -m pip install conflowgen pytest
+
+    - name: Run tests
+      run: |
         python -m pytest --pyargs conflowgen
