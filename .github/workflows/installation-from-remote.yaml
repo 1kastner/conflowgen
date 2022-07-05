@@ -8,6 +8,8 @@ on:
     branches:
       - main
     types: [opened, reopened, edited, synchronize]
+  schedule:
+    - cron: '42 23 * * 3'  # every Wednesday at 23:42
 
 jobs:
   build-conda:
