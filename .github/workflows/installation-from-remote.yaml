@@ -12,15 +12,10 @@ on:
     - cron: '42 23 * * 3'  # every Wednesday at 23:42
 
 jobs:
-  build-conda:
+  build-conda-on-windows:
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    name: ConFlowGen installation via conda
-    runs-on: ${{ matrix.os }}
+    name: ConFlowGen installation via conda on Windows
+    runs-on: windows-latest
 
     steps:
 
@@ -35,16 +30,41 @@ jobs:
         auto-activate-base: true
         activate-environment: ""
 
-    - name: Install ConFlowGen and run tests
+    - name: Install ConFlowGen
       run: |
+        conda install -c conda-forge conflowgen pytest
+
+    - name: Run tests
+      run: |
+        python -m pytest --pyargs conflowgen
+
+  build-conda-on-linux:
+
+    name: ConFlowGen installation via conda on Linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v3.4.1
+
+    - uses: actions/checkout@v2
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: true
+        auto-activate-base: true
+        activate-environment: ""
+
+    - name: Install ConFlowGen
+      run: |
+        conda init bash
         conda activate base
         conda install -c conda-forge conflowgen pytest
 
     - name: Run tests
       run: |
-        conda activate base
         python -m pytest --pyargs conflowgen
-
 
   build-pip:
 
