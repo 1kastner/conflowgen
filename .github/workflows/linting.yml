@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Check code quality with pylint and flake8
+    name: Check code quality with pylint, flake8, and flake8_nb
     runs-on: ubuntu-latest
 
     strategy:
