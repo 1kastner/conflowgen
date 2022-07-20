@@ -192,7 +192,7 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
-    os.system("echo 'Fetching the sqlite database'")
+    os.system("echo 'Fetching sqlite databases'")
     os.system(
         f"yes | {git_lfs_cmd} fetch -p -I '**/notebooks/data/prepared_dbs/*.sqlite'"
     )  # download sqlite databases from remote, say yes to trusting certs
