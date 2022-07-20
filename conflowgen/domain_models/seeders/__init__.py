@@ -5,7 +5,7 @@ The maximum dwell time for import containers is set by the container terminal op
 In practice, a later pickup would typically result in additional storage charges and is thus avoided by supply chain
 partners.
 The default value of 3 days is inspired by the pricing policy of HHLA as described in
-:cite:p:`hhla.quay.tariff.2021`
+:cite:p:`hhla2021quaytariff`.
 """
 
 DEFAULT_MINIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS = 3
@@ -24,7 +24,7 @@ DEFAULT_MAXIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS = (5 * 24)
 The maximum dwell time for export containers is set by the container terminal.
 In practice, typically trucks are simply not allowed to deliver the container earlier than this.
 The default value of 5 days is inspired by the pricing policy of HHLA as described in
-:cite:p:`hhla.quay.tariff.2021`
+:cite:p:`hhla2021quaytariff`.
 """
 
 DEFAULT_MINIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS = 12
@@ -43,7 +43,7 @@ DEFAULT_MAXIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS = (7 * 24)
 """
 The maximum dwell time for transshipment is the maximum time difference of arrival between two vessels.
 The value of 7 days is inspired by
-:cite:p:`hhla.quay.tariff.2021`
+:cite:p:`hhla2021quaytariff`.
 """
 
 DEFAULT_MINIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS = 3

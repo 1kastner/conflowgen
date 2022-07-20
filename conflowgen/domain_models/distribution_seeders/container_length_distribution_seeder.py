@@ -5,7 +5,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 
 #: In general, most containerized goods are transported in 20' and 40' sea containers.
 #: In Germany in August 2021, only 1% of containerized goods (measured in weight) were transported in a container
-#: different from these two standard sizes :cite:p:`destatis.seeschifffahrt.august.2021`.
+#: different from these two standard sizes :cite:p:`destatis2021seeschifffahrt`.
 #: The same statistics says that approximately 30% of the goods (measured in weight again) are transported in 20'
 #: containers, and 40' containers make up 67%.
 #: For ConFlowGen, however, the fraction in numbers of containers is required instead of the fraction based on weight.

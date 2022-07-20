@@ -62,7 +62,6 @@ setup(
             # usually optional dependencies that are used in the documentation
             'kaleido',  # plotly depends on this package for SVG export, we got this as a present
 
-
             # checking code quality
             'pylint',  # lint Python code
             'flake8',  # lint Python code

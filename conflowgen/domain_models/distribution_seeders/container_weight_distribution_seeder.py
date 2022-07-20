@@ -20,7 +20,7 @@ DEFAULT_FORTY_AND_FORTY_FIVE_FEET_CONTAINER_WEIGHT_DISTRIBUTION = {
 }
 
 #: The initially seeded weight distributions stem from the cargo profile of the brochure
-#: :cite:p:`macgregor.container.securing.2016`.
+#: :cite:p:`macgregor2016containersecuring`.
 #: The key refers to the weight of the container in metric tonnes.
 #: The value describes the relative frequency.
 DEFAULT_CONTAINER_WEIGHT_DISTRIBUTION = {

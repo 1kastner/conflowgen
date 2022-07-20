@@ -30,7 +30,7 @@ We took this changes as a motivation to rethink, rework, and improve the existin
 Therefore, we created an improved container flow generator, named ConFlowGen, which allows the user to create synthetic
 but yet realistic data of container flows for maritime container terminals.
 It has been first academically described in
-:cite:t:`Kastner_Container_Flow_Generation_2022`,
+:cite:t:`kastner2022conflowgen`,
 including a discussion of recent developments in the shipping industry as well as related academic synthetic data
 generators.
 
@@ -167,6 +167,11 @@ As a result, the container's journey-specific attributes are collected from thes
 Academic Discussion
 ===================
 
+ConFlowGen has been created in the context of academic research while having a clear application in mind.
+
+Presentation of ConFlowGen
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 ConFlowGen has been first presented at the LDIC2022.
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined in our
 `CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
@@ -177,14 +182,45 @@ The following bibtex entry contains less metadata but suffices for a regular cit
    @inproceedings{Kastner_Container_Flow_Generation_2022,
       address = {Bremen, DE},
       author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
+      editors = {Freitag, Michael and Kinra, Aseem, and Kotzab, Herbert, and Megow, Nicole},
       booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
       doi = {10.1007/978-3-031-05359-7_11},
       month = {2},
       pages = {133--143},
-      publisher = {Springer},
-      series = {LDIC 2022},
+      publisher = {Springer Cham},
+      series = {Lecture Notes in Logistics},
       title = {Container Flow Generation for Maritime Container Terminals},
       year = {2022}
    }
 
-While the article is in press, no DOI is available.
+Similar projects
+~~~~~~~~~~~~~~~~
+
+With ConFlowGen, we have extended a certain tradition in academia to synthetically generate use cases for operational
+research in maritime logistics.
+As previously elaborated, we have built upon concepts first introduced by :cite:t:`hartmann2004generating`.
+While assessing the currently available alternatives, among others we have come across the following existing solutions:
+
+- In order to reduce the number of unproductive container moves,
+  :cite:t:`exposito2012marshalling`
+  developed a heuristic solution method.
+  To test the solution method under various conditions, they also developed an instance generator that is located at
+  :cite:`exposito2012marshalling-software`.
+
+- :cite:t:`briskorn2019generator`
+  developed a test data generator that may be used to simulate yard crane container handling processes.
+  Their generic approach generates test examples of crane scheduling issues and is available at
+  :cite:`briskorn2019generator-software`.
+
+- A technique for the evaluation of quay crane scheduling models and solution methods is presented by
+  :cite:t:`meisel2011unified`.
+  They developed an instance benchmark generator, with the goal of creating test scenarios for exhibiting the potentials
+  and comparing models that handle the quay crane scheduling problem.
+  The generator can be found at
+  :cite:`meisel2011unified-software`.
+
+Most likely, this list is not exhaustive and there is more software available online to synthetically generate data for
+evaluating new solutions in the field of maritime logistics.
+If you know about a suitable candidate or you have even developed one yourself, please feel free to reach out to
+marvin.kastner@tuhh.de.
+We are more than pleased to discuss the topic and add it to the list if suitable.
