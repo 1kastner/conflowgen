@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    name: Check code quality with pylint and flake8
+    name: Check code quality with pylint, flake8, and flake8_nb
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,6 +25,8 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2

@@ -20,6 +20,8 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
