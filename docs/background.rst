@@ -169,30 +169,6 @@ Academic Discussion
 
 ConFlowGen has been created in the context of academic research while having a clear application in mind.
 
-Presentation of ConFlowGen
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-ConFlowGen has been first presented at the LDIC2022.
-If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined in our
-`CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
-The following bibtex entry contains less metadata but suffices for a regular citation:
-
-.. code-block:: bibtex
-
-   @inproceedings{Kastner_Container_Flow_Generation_2022,
-      address = {Bremen, DE},
-      author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
-      editors = {Freitag, Michael and Kinra, Aseem, and Kotzab, Herbert, and Megow, Nicole},
-      booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
-      doi = {10.1007/978-3-031-05359-7_11},
-      month = {2},
-      pages = {133--143},
-      publisher = {Springer Cham},
-      series = {Lecture Notes in Logistics},
-      title = {Container Flow Generation for Maritime Container Terminals},
-      year = {2022}
-   }
-
 Similar projects
 ~~~~~~~~~~~~~~~~
 
@@ -224,3 +200,28 @@ evaluating new solutions in the field of maritime logistics.
 If you know about a suitable candidate or you have even developed one yourself, please feel free to reach out to
 marvin.kastner@tuhh.de.
 We are more than pleased to discuss the topic and add it to the list if suitable.
+
+Presentation of ConFlowGen
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ConFlowGen has been first presented at the International Conference on Dynamics in Logistics in February 2022.
+If ConFlowGen served you well in your research, and you would like to acknowledge the project in your publication,
+we would be glad if you mention our work as defined in our
+`CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
+If you just need a BibTeX entry for your citation software, this should do the job:
+
+.. code-block:: bibtex
+
+   @inproceedings{Kastner_Container_Flow_Generation_2022,
+      address = {Bremen, DE},
+      author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
+      editors = {Freitag, Michael and Kinra, Aseem, and Kotzab, Herbert, and Megow, Nicole},
+      booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
+      doi = {10.1007/978-3-031-05359-7_11},
+      month = {2},
+      pages = {133--143},
+      publisher = {Springer Cham},
+      series = {Lecture Notes in Logistics},
+      title = {Container Flow Generation for Maritime Container Terminals},
+      year = {2022}
+   }
