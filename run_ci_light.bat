@@ -39,26 +39,63 @@ if /i "%answer:~,1%" EQU "N" exit /b
 ECHO.Please type Y for Yes or N for No
 GOTO AGAIN
 
-
 :START_PIPELINE
 REM Try the installation process - as a developer this is the default installation anyway
 REM This also ships the commands that are used in the latter stages of the pipeline
-python -m pip install -e .[dev] || ECHO.Installation failed && EXIT /B
+REM try installation process - as a developer this is the default installation anyways
+python -m pip install -e .[dev] || (
+    ECHO.Installation failed!
+    EXIT /B
+)
 
 REM run tests
-python -m pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html || ECHO.Tests failed && EXIT /B
+python -m pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html || (
+    ECHO.Tests failed!
+    EXIT /B
+)
+
+REM Please check the code coverage!
+START "" ./htmlcov/index.html
 
 REM check code quality
-flake8 || ECHO.While linting, flake8 failed && EXIT /B
-flake8_nb || ECHO.While linting, flake8_nb failed && EXIT /B
-pylint conflowgen || ECHO.While linting the conflowgen module, pylint failed && EXIT /B
-pylint setup.py || ECHO.While linting setup.py, pylint failed && EXIT /B
+flake8 || (
+    ECHO.While linting, flake8 failed!
+    EXIT /B
+)
+
+flake8_nb || (
+    ECHO.While linting, flake8_nb failed!
+    EXIT /B
+)
+
+pylint conflowgen || (
+    ECHO.While linting the conflowgen module, pylint failed!
+    EXIT /B
+)
+
+pylint setup.py || (
+    ECHO.While linting setup.py, pylint failed!
+    EXIT /B
+)
 
 REM build docs
-CALL docs/make html || ECHO.Building the documentation failed && EXIT /B
+CALL docs/make clean || (
+    ECHO.Cleaning up the last built of the documentation failed!
+    EXIT /B
+)
+CALL docs/make html || (
+    ECHO.Building the documentation failed!
+    EXIT /B
+)
+
+REM Please check the docs!
+START "" ./docs/_build/html/index.html
 
 REM check the links in the docs
-CALL python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkcheck || ECHO.Links in docs broken && EXIT /B
+CALL python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkcheck || (
+    ECHO.At least one link in the docs is broken!
+    EXIT /B
+)
 
 ECHO.All steps were executed successfully. Please consider also checking the skipped CI steps manually if you changed
 ECHO.related files.

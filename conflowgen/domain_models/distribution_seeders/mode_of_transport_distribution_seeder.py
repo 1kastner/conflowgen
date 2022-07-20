@@ -3,11 +3,11 @@ from conflowgen.domain_models.distribution_repositories.mode_of_transport_distri
     ModeOfTransportDistributionRepository
 
 #: This mode of transport distribution is based on the report
-#: :cite:p:`isl.2015.umschlagpotenzial`.
+#: :cite:p:`isl2015umschlagpotenzial`.
 #: The exact data for transshipment and hinterland share is taken from page 22, Figure 12
 #: "Containerumschlag des Hafens Hamburg in TEU / Marktsegment 2013".
 #: The modal split of the hinterland is updated based on the figures presented by
-#: :cite:t:`hafen.hamburg.2020.modal.split`.
+#: :cite:t:`hafenhamburg2020modalsplit`.
 #: After those adaptions, still there were several imbalances.
 #: Thus, some traffic was shifted from deep sea vessels to feeders by adding/subtracting some constants.
 #: In summary, this is an educated guess based on several sources.
