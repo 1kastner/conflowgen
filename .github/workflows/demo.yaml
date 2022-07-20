@@ -26,6 +26,8 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2

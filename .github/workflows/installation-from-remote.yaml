@@ -23,6 +23,8 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -49,6 +51,8 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -84,10 +88,12 @@ jobs:
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
     - uses: actions/checkout@v2
+      with:
+        lfs: false
 
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
+        python-version: '3.10'
 
     - name: Install ConFlowGen
       run: |
