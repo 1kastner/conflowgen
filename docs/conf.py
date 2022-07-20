@@ -20,7 +20,7 @@ import sys
 from matplotlib.font_manager import fontManager
 fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
 
-# include conflowgen from source code, avoid getting served an outdated installation
+# include conflowgen from source code, avoid being served an outdated installation
 sys.path.insert(
     0,
     os.path.abspath(
@@ -176,7 +176,7 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
         return _git_lfs_cmd
 
     os.system("echo 'Installing git-lfs on-the-fly'")
-    version = 'v3.0.2'
+    version = 'v3.2.0'
     file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
     if not os.path.isfile(file_to_download):
         os.system(
