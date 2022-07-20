@@ -194,7 +194,7 @@ if os.environ.get("IS_RTD", False):
     git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
     os.system("echo 'Fetching the sqlite database'")
     os.system(
-        f"yes | {git_lfs_cmd} fetch -p -I './notebooks/data/prepared_dbs/*.sqlite'"
+        f"yes | {git_lfs_cmd} fetch -p -I '**/notebooks/data/prepared_dbs/*.sqlite'"
     )  # download sqlite databases from remote, say yes to trusting certs
     os.system("echo 'Start checking out the file'")
     os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
