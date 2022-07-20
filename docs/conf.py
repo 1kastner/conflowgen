@@ -178,13 +178,15 @@ def _install_git_lfs_on_linux_on_the_fly() -> str:
     os.system("echo 'Installing git-lfs on-the-fly'")
     version = 'v3.2.0'
     file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
+    folder_inside_file = f"git-lfs-{version[1:]}"
     if not os.path.isfile(file_to_download):
         os.system(
             f'wget https://github.com/git-lfs/git-lfs/releases/download/{version}/{file_to_download}'
         )  # download git lfs
-    os.system("mkdir -p ./.tools")  # create subdirectory ./.tools for git-lfs to be allocated in
     os.system(f'tar xvfz {file_to_download} -C ./.tools')  # extract to ./.tools subdirectory
-    os.system('cp ./.tools/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
+    os.system(f'ls ./.tools/')
+    os.system(f'ls ./.tools/{folder_inside_file}')
+    os.system(f'cp ./.tools/{folder_inside_file}/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
     os.system('./git-lfs install')  # make lfs available in current repository
     os.system("echo 'git-lfs is installed'")
     return _git_lfs_cmd
