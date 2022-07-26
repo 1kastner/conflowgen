@@ -216,7 +216,7 @@ If you just need a BibTeX entry for your citation software, this should do the j
       address = {Bremen, DE},
       author = {Kastner, Marvin and Grasse, Ole and Jahn, Carlos},
       editors = {Freitag, Michael and Kinra, Aseem, and Kotzab, Herbert, and Megow, Nicole},
-      booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference LDIC 2022, Bremen, Germany},
+      booktitle = {Dynamics in Logistics. Proceedings of the 8th International Conference {LDIC} 2022, {Bremen, Germany}},
       doi = {10.1007/978-3-031-05359-7_11},
       month = {2},
       pages = {133--143},
