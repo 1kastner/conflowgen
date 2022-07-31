@@ -21,6 +21,8 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
             self
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]]:
         """
+        TODO: Convert TheoreticalDistribution to Dict[str, Any] description
+
         Returns:
             The container dwell time distribution depends on the vehicle the container is delivered by, picked up by,
             and the storage requirement.
@@ -32,13 +34,14 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
             distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, Dict[str, Any]]]]
     ) -> None:
         """
+        The container dwell time distribution depends on the vehicle the container is delivered by, picked up by,
+        and the storage requirement.
 
-        Args:
-            The container dwell time distribution depends on the vehicle the container is delivered by, picked up by,
-            and the storage requirement. A distribution is described by the following parameters:
-            - average: float - the expected mean
-            - minimum: float - the lower bound
-            - maximum: float - the upper bound
+        A distribution is described by the following parameters:
+            * distribution_name (str) - The name of the distribution. Currently, only 'lognormal' is supported.
+            * average (float) - The expected mean
+            * minimum (float) - The lower bound
+            * maximum (float) - The upper bound
         """
         sanitized_distribution = self._normalize_and_validate_distribution_with_two_dependent_variables(
             distribution,
