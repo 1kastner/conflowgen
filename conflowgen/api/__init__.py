@@ -18,9 +18,13 @@ class AbstractDistributionManager(abc.ABC):
     @staticmethod
     def _normalize_and_validate_distribution_without_dependent_variables(
             distribution: Dict[Any, float],
-            key_type: Type[KeyEnumFirstLevel]
+            key_type: Type[KeyEnumFirstLevel],
+            values_are_frequencies: bool
     ) -> Dict[KeyEnumFirstLevel, float]:
-        normalized_distribution = normalize_distribution_with_no_dependent_variable(distribution)
+        normalized_distribution = normalize_distribution_with_no_dependent_variable(
+            distribution,
+            values_are_frequencies=values_are_frequencies
+        )
         validated_distribution = validate_distribution_with_no_dependent_variables(
             normalized_distribution,
             key_type,
@@ -35,7 +39,10 @@ class AbstractDistributionManager(abc.ABC):
             key_type_second_level: Type[KeyEnumSecondLevel],
             values_are_frequencies: bool
     ) -> Dict[KeyEnumFirstLevel, Dict[KeyEnumSecondLevel, float]]:
-        normalized_distribution = normalize_distribution_with_one_dependent_variable(distribution)
+        normalized_distribution = normalize_distribution_with_one_dependent_variable(
+            distribution,
+            values_are_frequencies=values_are_frequencies
+        )
         validated_distribution = validate_distribution_with_one_dependent_variable(
             normalized_distribution,
             key_type_first_level,

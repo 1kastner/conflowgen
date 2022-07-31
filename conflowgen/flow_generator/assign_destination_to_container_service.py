@@ -18,9 +18,9 @@ class AssignDestinationToContainerService:
     def __init__(self):
         self.repository = ContainerDestinationDistributionRepository()
         self.distribution: Dict[Schedule, Dict[Destination, float]] | None = None
-        self.reload_distribution()
+        self.reload_distributions()
 
-    def reload_distribution(self):
+    def reload_distributions(self):
         self.distribution = self.repository.get_distribution()
         self.logger.debug("Loading destination distribution...")
         for schedule, distribution_for_schedule in self.distribution.items():

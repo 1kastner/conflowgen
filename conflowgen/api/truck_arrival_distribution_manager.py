@@ -39,6 +39,7 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
         """
         sanitized_distribution = self._normalize_and_validate_distribution_without_dependent_variables(
             distribution,
-            int
+            int,
+            values_are_frequencies=True
         )
         self.truck_arrival_distribution_repository.set_distribution(sanitized_distribution)

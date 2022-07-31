@@ -47,6 +47,7 @@ class TestContainer(unittest.TestCase):
                 weight=20,
                 delivered_by=None,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=ContainerLength.twenty_feet,
                 storage_requirement=StorageRequirement.standard
             )
@@ -56,6 +57,7 @@ class TestContainer(unittest.TestCase):
             Container.create(
                 weight=20,
                 delivered_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 picked_up_by=None,
                 length=ContainerLength.twenty_feet,
                 storage_requirement=StorageRequirement.standard
@@ -67,6 +69,7 @@ class TestContainer(unittest.TestCase):
                 weight=10,
                 delivered_by=ModeOfTransport.barge,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=None,
                 storage_requirement=StorageRequirement.dangerous_goods
             )
@@ -77,6 +80,18 @@ class TestContainer(unittest.TestCase):
                 weight=10,
                 delivered_by=ModeOfTransport.barge,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=ContainerLength.forty_feet,
                 storage_requirement=None
             )
+
+    def test_container_repr(self) -> None:
+        container = Container.create(
+            weight=10,
+            delivered_by=ModeOfTransport.barge,
+            picked_up_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        repr(container)

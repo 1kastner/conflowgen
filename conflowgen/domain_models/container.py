@@ -1,10 +1,7 @@
-import datetime
-
 from peewee import AutoField, BooleanField
 from peewee import ForeignKeyField
 from peewee import IntegerField
 
-from .arrival_information import TruckArrivalInformationForDelivery
 from .base_model import BaseModel
 from .field_types.container_length import ContainerLengthField
 from .field_types.mode_of_transport import ModeOfTransportField
@@ -12,7 +9,6 @@ from .field_types.storage_requirement import StorageRequirementField
 from .large_vehicle_schedule import Destination
 from .vehicle import LargeScheduledVehicle
 from .vehicle import Truck
-from .data_types.mode_of_transport import ModeOfTransport
 
 
 class Container(BaseModel):
@@ -84,15 +80,6 @@ class Container(BaseModel):
         help_text="This indicates that no regular means of transport was available so that a vehicle had to be called "
                   "explicitly to pick up the container so that the maximum dwell time is not exceeded."
     )
-
-    def get_arrival_time(self) -> datetime.datetime:
-        if self.delivered_by == ModeOfTransport.truck:
-            truck: Truck = self.delivered_by_truck
-            tai: TruckArrivalInformationForDelivery = truck.truck_arrival_information_for_delivery
-            return tai.planned_container_delivery_time_at_window_start
-        else:
-            lsv: LargeScheduledVehicle = self.delivered_by_large_scheduled_vehicle
-            return lsv.scheduled_arrival
 
     def __repr__(self):
         return "<Container " \

@@ -160,7 +160,7 @@ class TestAssignDestinationToContainerService(unittest.TestCase):
             }
         }
         self.repository.set_distribution(distribution)
-        self.service.reload_distribution()
+        self.service.reload_distributions()
 
         self.service.assign()
 
@@ -196,7 +196,7 @@ class TestAssignDestinationToContainerService(unittest.TestCase):
             }
         }
         self.repository.set_distribution(distribution)
-        self.service.reload_distribution()
+        self.service.reload_distributions()
 
         self.service.assign()
 

@@ -60,7 +60,10 @@ class TestContainerWeightDistributionRepository(unittest.TestCase):
                 20: 8
             }
         }
-        normalized_default_distribution = normalize_distribution_with_one_dependent_variable(default_distribution)
+        normalized_default_distribution = normalize_distribution_with_one_dependent_variable(
+            default_distribution,
+            values_are_frequencies=True
+        )
         self.repository.set_distribution(normalized_default_distribution)
         distribution = self.repository.get_distribution()
         self.assertDictEqual(normalized_default_distribution, distribution)

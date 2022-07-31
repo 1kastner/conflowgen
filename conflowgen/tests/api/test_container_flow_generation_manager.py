@@ -75,13 +75,7 @@ class TestContainerFlowGenerationManager(unittest.TestCase):
             'name': "my test data",
             'start_date': datetime.date(2030, 1, 1),
             'end_date': datetime.date(2030, 12, 31),
-            'transportation_buffer': 0.2,
-            'minimum_dwell_time_of_import_containers_in_hours': 3,
-            'minimum_dwell_time_of_export_containers_in_hours': 4,
-            'minimum_dwell_time_of_transshipment_containers_in_hours': 5,
-            'maximum_dwell_time_of_import_containers_in_hours': 40,
-            'maximum_dwell_time_of_export_containers_in_hours': 50,
-            'maximum_dwell_time_of_transshipment_containers_in_hours': 60
+            'transportation_buffer': 0.2
         }
 
         with unittest.mock.patch.object(

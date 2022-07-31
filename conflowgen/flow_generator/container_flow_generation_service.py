@@ -51,13 +51,13 @@ class ContainerFlowGenerationService:
         self.allocate_space_for_containers_delivered_by_truck_service.reload_distribution(
             transportation_buffer=self.transportation_buffer
         )
-        self.truck_for_import_containers_manager.reload_distribution()
-        self.truck_for_export_containers_manager.reload_distribution()
+        self.truck_for_import_containers_manager.reload_distributions()
+        self.truck_for_export_containers_manager.reload_distributions()
         self.large_scheduled_vehicle_creation_service.reload_properties(
             container_flow_start_date=self.container_flow_start_date,
             container_flow_end_date=self.container_flow_end_date
         )
-        self.assign_destination_to_container_service.reload_distribution()
+        self.assign_destination_to_container_service.reload_distributions()
 
     @staticmethod
     def clear_previous_container_flow():

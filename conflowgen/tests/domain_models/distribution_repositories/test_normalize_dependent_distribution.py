@@ -17,7 +17,10 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
             }
         }
         with self.assertLogs('conflowgen', level='DEBUG') as cm:
-            normalized_distribution = normalize_distribution_with_one_dependent_variable(distributions)
+            normalized_distribution = normalize_distribution_with_one_dependent_variable(
+                distributions,
+                values_are_frequencies=True
+            )
         self.assertDictEqual(
             normalized_distribution, {
                 "a": {
@@ -52,7 +55,10 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
             }
         }
         with self.assertLogs('conflowgen', level='DEBUG') as cm:
-            normalized_distribution = normalize_distribution_with_one_dependent_variable(distributions)
+            normalized_distribution = normalize_distribution_with_one_dependent_variable(
+                distributions,
+                values_are_frequencies=True
+            )
         self.assertDictEqual(
             normalized_distribution, {
                 "a": {

@@ -37,6 +37,7 @@ class ContainerStorageRequirementDistributionManager(AbstractDistributionManager
         sanitized_distribution = self._normalize_and_validate_distribution_with_one_dependent_variable(
             storage_requirements,
             ContainerLength,
-            StorageRequirement
+            StorageRequirement,
+            values_are_frequencies=True
         )
         self.storage_requirement_repository.set_distribution(sanitized_distribution)

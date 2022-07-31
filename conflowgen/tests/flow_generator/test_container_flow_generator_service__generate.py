@@ -10,8 +10,8 @@ from conflowgen.domain_models.distribution_models.container_dwell_time_distribut
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_models.storage_requirement_distribution import StorageRequirementDistribution
-from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, seed_all_distributions, \
-    container_dwell_time_distribution_seeder
+from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, \
+    seed_all_distributions, container_dwell_time_distribution_seeder
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService

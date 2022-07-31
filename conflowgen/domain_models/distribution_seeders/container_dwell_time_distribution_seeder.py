@@ -254,10 +254,6 @@ _import_or_transshipment = {
 }
 
 #: The minimum container dwell times are an absolute value in hours.
-#: Three different cases are considered:
-#: - .. autodata:: DEFAULT_MINIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS
-#: - .. autodata:: DEFAULT_MINIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS
-#: - .. autodata:: DEFAULT_MINIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS
 #: These are composed into the origin-destination matrix.
 DEFAULT_MINIMUM_DWELL_TIMES_IN_HOURS = {
     ModeOfTransport.truck: _export,

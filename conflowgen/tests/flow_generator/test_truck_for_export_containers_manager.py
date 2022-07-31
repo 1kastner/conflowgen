@@ -36,19 +36,18 @@ class TestTruckForExportContainersManager(unittest.TestCase):
 
         # Enables visualisation, helpful for probability distributions
         # However, this blocks the execution of tests.
-        self.debug = True
+        self.debug = False
 
         self.manager = TruckForExportContainersManager()
-        self.manager.reload_distribution()
+        self.manager.reload_distributions()
 
-    def visualize_probabilities(self, container: Container, drawn_times):
+    def visualize_probabilities(self, container: Container, drawn_times, container_departure_time):
         import inspect  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
         container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
-        container_arrival_time = container.get_arrival_time()
-        plt.axvline(x=container_arrival_time + container_dwell_time_distribution.minimum)
-        plt.axvline(x=container_arrival_time + container_dwell_time_distribution.maximum)
+        plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.minimum))
+        plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.maximum))
         plt.show(block=True)
 
     def test_delivery_time_in_required_time_range_weekday(self):
@@ -65,7 +64,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         delivery_times = []
-        for i in range(100):
+        for i in range(1000):
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
             self.assertLessEqual(delivery_time, container_departure_time,
                                  "container must not arrive later than their departure time "
@@ -75,7 +74,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             delivery_times.append(delivery_time)
 
         if self.debug:
-            self.visualize_probabilities(container, delivery_times)
+            self.visualize_probabilities(container, delivery_times, container_departure_time)
 
     def test_delivery_time_in_required_time_range_with_sunday(self):
         container_departure_time = datetime.datetime(
@@ -90,7 +89,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         delivery_times = []
-        for i in range(100):
+        for i in range(1000):
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
             delivery_times.append(delivery_time)
             self.assertLessEqual(delivery_time, container_departure_time,
@@ -100,7 +99,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
                             f"containers do not arrive on Sundays, but here we had {delivery_time} in round {i + 1}")
 
         if self.debug:
-            self.visualize_probabilities(container, delivery_times)
+            self.visualize_probabilities(container, delivery_times, container_departure_time)
 
         weekday_counter = Counter([delivery_time.weekday() for delivery_time in delivery_times])
         self.assertIn(4, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
@@ -123,7 +122,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         delivery_times = []
-        for i in range(100):
+        for i in range(1000):
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
             delivery_times.append(delivery_time)
             self.assertLessEqual(delivery_time, container_departure_time,
@@ -134,7 +133,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
                                 f"but here we had {delivery_time} in round {i + 1}")
 
         if self.debug:
-            self.visualize_probabilities(container, delivery_times)
+            self.visualize_probabilities(container, delivery_times, container_departure_time)
 
         weekday_counter = Counter([delivery_time.weekday() for delivery_time in delivery_times])
         self.assertIn(4, weekday_counter.keys(), "Probability (out of 1000 repetitions): "

@@ -1,7 +1,5 @@
 import unittest
 
-import numpy as np
-
 from conflowgen.tools.theoretical_distribution import ClippedLogNormal
 
 

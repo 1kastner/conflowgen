@@ -39,16 +39,15 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
         # Enables visualisation, helpful for visualizing the probability distributions.
         # However, this blocks the execution of tests.
-        self.debug = True
+        self.debug = False
 
-    def visualize_probabilities(self, container, drawn_times):
+    def visualize_probabilities(self, container, drawn_times, container_arrival_time):
         import inspect  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
         container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
-        container_arrival_time = container.get_arrival_time()
-        plt.axvline(x=container_arrival_time + container_dwell_time_distribution.minimum)
-        plt.axvline(x=container_arrival_time + container_dwell_time_distribution.maximum)
+        plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.minimum))
+        plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.maximum))
         plt.show(block=True)
 
     def test_container_dwell_time_and_truck_arrival_distributions_match(self):
@@ -78,7 +77,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
     def test_pickup_time_in_required_time_range_weekday(self):
 
-        _datetime = datetime.datetime(
+        container_arrival_time = datetime.datetime(
             year=2021, month=8, day=1
         )
         container: Container = Container.create(
@@ -90,16 +89,16 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         pickup_times = []
-        for _ in range(100):
-            pickup_time = self.manager._get_container_pickup_time(container, _datetime)
-            self.assertGreaterEqual(pickup_time, _datetime)
+        for _ in range(1000):
+            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
+            self.assertGreaterEqual(pickup_time, container_arrival_time)
             pickup_times.append(pickup_time)
 
         if self.debug:
-            self.visualize_probabilities(container, pickup_times)
+            self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
     def test_pickup_time_in_required_time_range_with_sunday_starting_from_a_full_hour(self):
-        _datetime = datetime.datetime(
+        container_arrival_time = datetime.datetime(
             year=2021, month=8, day=6  # a Monday
         )
         container: Container = Container.create(
@@ -111,15 +110,16 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         pickup_times = []
-        for _ in range(100):
-            pickup_time = self.manager._get_container_pickup_time(container, _datetime)
+        for _ in range(1000):
+            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
             pickup_times.append(pickup_time)
-            self.assertGreaterEqual(pickup_time, _datetime, "Container is picked up after it has arrived in the yard")
+            self.assertGreaterEqual(pickup_time, container_arrival_time,
+                                    "Container is picked up after it has arrived in the yard")
             self.assertTrue(pickup_time.weekday() != 6,
                             f"containers are not picked up on Sundays but {pickup_time} was presented")
 
         if self.debug:
-            self.visualize_probabilities(container, pickup_times)
+            self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
         weekday_counter = Counter([pickup_time.weekday() for pickup_time in pickup_times])
         self.assertIn(4, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
@@ -130,7 +130,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
                                                  "At least once a Monday was counted (02.08.2021)")
 
     def test_pickup_time_in_required_time_range_with_sunday_starting_within_an_hour(self):
-        _datetime = datetime.datetime(
+        container_arrival_time = datetime.datetime(
             year=2021, month=8, day=6, hour=12, minute=13  # a Monday
         )
         container: Container = Container.create(
@@ -142,15 +142,16 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet
         )
         pickup_times = []
-        for _ in range(100):
-            pickup_time = self.manager._get_container_pickup_time(container, _datetime)
+        for _ in range(1000):
+            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
             pickup_times.append(pickup_time)
-            self.assertGreaterEqual(pickup_time, _datetime, "Container is picked up after it has arrived in the yard")
+            self.assertGreaterEqual(pickup_time, container_arrival_time,
+                                    "Container is picked up after it has arrived in the yard")
             self.assertTrue(pickup_time.weekday() != 6,
                             f"containers are not picked up on Sundays but {pickup_time} was presented")
 
         if self.debug:
-            self.visualize_probabilities(container, pickup_times)
+            self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
         weekday_counter = Counter([pickup_time.weekday() for pickup_time in pickup_times])
         self.assertIn(4, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
