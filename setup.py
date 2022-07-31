@@ -23,6 +23,9 @@ setup(
     url='https://github.com/1kastner/conflowgen',
     python_requires='>=3.8',
     install_requires=[
+        # working with distributions and statistics
+        'scipy',  # used for, e.g., the lognorm distribution
+
         # data export
         'numpy',  # used in combination with pandas for column types
         'pandas >=1',  # CSV/Excel import and export
@@ -36,7 +39,7 @@ setup(
 
         # for creating the visuals
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
-        'plotly',  # useful for e.g. Sankey diagrams
+        'plotly',  # useful for, e.g., Sankey diagrams
         'seaborn',  # exchanges matplotlib color palletes
     ],
     extras_require={

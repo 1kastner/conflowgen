@@ -73,7 +73,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ):
         validate_distribution_with_one_dependent_variable(
-            mode_of_transport_distribution, ModeOfTransport, ModeOfTransport
+            mode_of_transport_distribution, ModeOfTransport, ModeOfTransport, values_are_frequencies=True
         )
         self.mode_of_transport_distribution = mode_of_transport_distribution
 

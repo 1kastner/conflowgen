@@ -22,7 +22,7 @@ class ExportFileFormat(enum.Enum):
     However, this file format comes with known limitations listed at
     https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3.
     On January 4th, 2022, the known maximum number of rows is 1,048,576.
-    Thus, if e.g. 1.1 million containers are generated, opening this xlsx file in Excel is not supported by the
+    Thus, if, e.g., 1.1 million containers are generated, opening this xlsx file in Excel is not supported by the
     specifications.
     """
 

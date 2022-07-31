@@ -1,18 +1,23 @@
 from __future__ import annotations
 import datetime
 import logging
+import math
 import random
-from typing import Collection, Tuple, List
+from typing import Collection, Tuple, List, Dict, Any
 
 from peewee import fn
 
+from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
 from ..domain_models.container import Container
+from ..domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
+    ContainerDwellTimeDistributionRepository
 from ..domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.repositories.schedule_repository import ScheduleRepository
 from ..domain_models.vehicle import AbstractLargeScheduledVehicle, LargeScheduledVehicle, Truck
+from ..tools.theoretical_distribution import TheoreticalDistribution, multiply_discretized_probability_densities
 
 
 class LargeScheduledVehicleForOnwardTransportationManager:
@@ -26,49 +31,22 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         self.number_assigned_containers = 0
         self.number_not_assignable_containers = 0
 
-        self.minimum_dwell_time_of_import_containers_in_hours = None
-        self.minimum_dwell_time_of_export_containers_in_hours = None
-        self.minimum_dwell_time_of_transshipment_containers_in_hours = None
-        self.maximum_dwell_time_of_import_containers_in_hours = None
-        self.maximum_dwell_time_of_export_containers_in_hours = None
-        self.maximum_dwell_time_of_transshipment_containers_in_hours = None
+        self.container_dwell_time_distribution_repository = ContainerDwellTimeDistributionRepository()
+        self.container_dwell_time_distributions: \
+            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]] | None \
+            = None
 
     def reload_properties(
             self,
-            minimum_dwell_time_of_import_containers_in_hours: int,
-            minimum_dwell_time_of_transshipment_containers_in_hours: int,
-            minimum_dwell_time_of_export_containers_in_hours: int,
-            maximum_dwell_time_of_import_containers_in_hours: int,
-            maximum_dwell_time_of_transshipment_containers_in_hours: int,
-            maximum_dwell_time_of_export_containers_in_hours: int,
             transportation_buffer: float
     ):
-        # Minimum for import, export, and transshipment
-        self.minimum_dwell_time_of_import_containers_in_hours = minimum_dwell_time_of_import_containers_in_hours
-        self.minimum_dwell_time_of_export_containers_in_hours = minimum_dwell_time_of_export_containers_in_hours
-        self.minimum_dwell_time_of_transshipment_containers_in_hours = \
-            minimum_dwell_time_of_transshipment_containers_in_hours
-
-        # Maximum for import, export, and transshipment
-        self.maximum_dwell_time_of_import_containers_in_hours = maximum_dwell_time_of_import_containers_in_hours
-        self.maximum_dwell_time_of_export_containers_in_hours = maximum_dwell_time_of_export_containers_in_hours
-        self.maximum_dwell_time_of_transshipment_containers_in_hours = \
-            maximum_dwell_time_of_transshipment_containers_in_hours
-
-        assert (self.minimum_dwell_time_of_import_containers_in_hours
-                < self.maximum_dwell_time_of_import_containers_in_hours)
-        assert (self.minimum_dwell_time_of_export_containers_in_hours
-                < self.maximum_dwell_time_of_export_containers_in_hours)
-        assert (self.minimum_dwell_time_of_transshipment_containers_in_hours
-                < self.maximum_dwell_time_of_transshipment_containers_in_hours)
-
         assert -1 < transportation_buffer
         self.schedule_repository.set_transportation_buffer(transportation_buffer)
         self.logger.debug(f"Using transportation buffer of {transportation_buffer} when choosing the departing "
                           f"vehicles that adhere a schedule.")
 
+        self.container_dwell_time_distributions = self.container_dwell_time_distribution_repository.get_distributions()
         self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository
-
         self.mode_of_transport_distribution = self.mode_of_transport_distribution_repository.get_distribution()
 
     def choose_departing_vehicle_for_containers(self) -> None:
@@ -107,9 +85,9 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
             minimum_dwell_time_in_hours, maximum_dwell_time_in_hours = self._get_dwell_times(container)
 
-            # this value has been randomly drawn during container generation for the inbound traffic
-            # we try to adhere to that value as good as possible
-            initial_departing_vehicle_type = container.picked_up_by
+            # This value has been randomly drawn during container generation for the inbound traffic.
+            # We try to adhere to that value as well as possible.
+            initial_departing_vehicle_type = container.picked_up_by_initial
 
             # Get all vehicles which could be used for the onward transportation of the container
             available_vehicles = self.schedule_repository.get_departing_vehicles(
@@ -140,15 +118,34 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             available_vehicles: List[AbstractLargeScheduledVehicle],
             container: Container
     ) -> AbstractLargeScheduledVehicle:
-        """pick vehicle with the probability of its free capacity
+        """Pick vehicle with the probability of its free capacity
         """
-        vehicle_distribution = {
+        vehicle_availability = {
             vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
             for vehicle in available_vehicles
         }
+        available_vehicles = list(vehicle_availability.keys())
+
+        container_arrival = self._get_arrival_time_of_container(container)
+        associated_dwell_times = []
+        for vehicle in available_vehicles:
+            vehicle_departure_date: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+            dwell_time_if_vehicle_is_chosen = vehicle_departure_date - container_arrival
+            dwell_time_if_vehicle_is_chosen_in_hours = dwell_time_if_vehicle_is_chosen.total_seconds() / 3600
+            associated_dwell_times.append(dwell_time_if_vehicle_is_chosen_in_hours)
+
+        container_dwell_time_distribution = self._get_container_dwell_time_distribution(
+            container.delivered_by, container.picked_up_by, container.storage_requirement
+        )
+        container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(associated_dwell_times)
+        total_probabilities = multiply_discretized_probability_densities(
+            associated_dwell_times,
+            container_dwell_time_probabilities
+        )
+
         vehicle: AbstractLargeScheduledVehicle = random.choices(
-            population=list(vehicle_distribution.keys()),
-            weights=list(vehicle_distribution.values())
+            population=available_vehicles,
+            weights=total_probabilities
         )[0]
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
         vehicle_type = vehicle.get_mode_of_transport()
@@ -165,23 +162,13 @@ class LargeScheduledVehicleForOnwardTransportationManager:
     def _get_dwell_times(self, container: Container) -> Tuple[int, int]:
         """get correct dwell time depending on transportation mode.
         """
-        if (container.picked_up_by in (ModeOfTransport.deep_sea_vessel, ModeOfTransport.feeder)
-                and container.delivered_by in (ModeOfTransport.deep_sea_vessel, ModeOfTransport.feeder)):
-            minimum_dwell_time_in_hours = self.minimum_dwell_time_of_transshipment_containers_in_hours
-            maximum_dwell_time_in_hours = self.maximum_dwell_time_of_transshipment_containers_in_hours
-        elif (container.picked_up_by in (ModeOfTransport.train, ModeOfTransport.barge)
-              and container.delivered_by in (ModeOfTransport.deep_sea_vessel, ModeOfTransport.feeder)):
-            minimum_dwell_time_in_hours = self.minimum_dwell_time_of_import_containers_in_hours
-            maximum_dwell_time_in_hours = self.maximum_dwell_time_of_import_containers_in_hours
-        elif (container.picked_up_by in (ModeOfTransport.deep_sea_vessel, ModeOfTransport.feeder)
-              and container.delivered_by in (ModeOfTransport.train, ModeOfTransport.barge, ModeOfTransport.truck)):
-            minimum_dwell_time_in_hours = self.minimum_dwell_time_of_export_containers_in_hours
-            maximum_dwell_time_in_hours = self.maximum_dwell_time_of_export_containers_in_hours
-        else:
-            raise Exception(f"ModeOfTransport "
-                            f"picked_up_by: {container.picked_up_by} "
-                            f"delivered_by: {container.delivered_by} "
-                            f"is not considered at this point.")
+
+        distribution = self.container_dwell_time_distributions[container.delivered_by][container.picked_up_by][
+            container.storage_requirement]
+
+        minimum_dwell_time_in_hours = int(math.ceil(distribution.minimum))
+        maximum_dwell_time_in_hours = int(math.floor(distribution.maximum))
+
         return minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
 
     @staticmethod
@@ -197,6 +184,19 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             large_scheduled_vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
             container_arrival = large_scheduled_vehicle.scheduled_arrival
         return container_arrival
+
+    @staticmethod
+    def _get_departure_time_of_vehicle(vehicle: Any) -> datetime.datetime:
+        """get container arrival from correct source
+        """
+        vehicle_departure: datetime.datetime
+        if isinstance(vehicle, Truck):
+            truck_arrival_information: TruckArrivalInformationForDelivery = \
+                vehicle.truck_arrival_information_for_delivery
+            vehicle_departure = truck_arrival_information.planned_container_delivery_time_at_window_start
+        else:
+            vehicle_departure = vehicle.scheduled_arrival
+        return vehicle_departure
 
     def _find_alternative_mode_of_transportation(
             self,
@@ -253,3 +253,11 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                 # obviously no vehicles of this type are left either, so it should also be excluded from the random
                 # selection procedure in the beginning
                 del vehicle_types_and_frequencies[vehicle_type]
+
+    def _get_container_dwell_time_distribution(
+            self,
+            inbound_vehicle: ModeOfTransport,
+            outbound_vehicle: ModeOfTransport,
+            storage_requirement: StorageRequirement
+    ) -> TheoreticalDistribution:
+        return self.container_dwell_time_distributions[inbound_vehicle][outbound_vehicle][storage_requirement]

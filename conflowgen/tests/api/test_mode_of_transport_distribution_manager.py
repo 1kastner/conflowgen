@@ -248,5 +248,6 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             }
         }
         sanitized_distribution = validate_distribution_with_one_dependent_variable(
-            dirty_distribution, ModeOfTransport, ModeOfTransport)
+            dirty_distribution, ModeOfTransport, ModeOfTransport, values_are_frequencies=True
+        )
         self.assertDictEqual(sanitized_distribution, clean_distribution)

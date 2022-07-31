@@ -16,25 +16,6 @@ class MinimumNotStrictlySmallerThanMaximumException(Exception):
 class ContainerFlowGenerationPropertiesRepository:
 
     @staticmethod
-    def _verify(properties) -> None:
-        if properties.end_date < properties.start_date:
-            raise InvalidTimeRangeException(
-                f"start date '{properties.start_date}' is later than end date '{properties.end_date}'"
-            )
-        if (properties.minimum_dwell_time_of_import_containers_in_hours
-                >= properties.maximum_dwell_time_of_import_containers_in_hours):
-            raise MinimumNotStrictlySmallerThanMaximumException(
-                f"{properties.minimum_dwell_time_of_import_containers_in_hours} "
-                f">= {properties.maximum_dwell_time_of_import_containers_in_hours}"
-            )
-        if (properties.minimum_dwell_time_of_export_containers_in_hours
-                >= properties.maximum_dwell_time_of_export_containers_in_hours):
-            raise MinimumNotStrictlySmallerThanMaximumException(
-                f"{properties.minimum_dwell_time_of_export_containers_in_hours} "
-                f">= {properties.maximum_dwell_time_of_export_containers_in_hours}"
-            )
-
-    @staticmethod
     def get_container_flow_generation_properties() -> ContainerFlowGenerationProperties:
         all_properties = ContainerFlowGenerationProperties.select().execute()
         number_found_rows = len(all_properties)
@@ -49,7 +30,8 @@ class ContainerFlowGenerationPropertiesRepository:
 
     @classmethod
     def set_container_flow_generation_properties(cls, properties: ContainerFlowGenerationProperties) -> None:
-        cls._verify(properties)
+        if properties.start_date >= properties.end_date:
+            raise InvalidTimeRangeException()
         properties.save()
         number_properties_entries: int = ContainerFlowGenerationProperties().select().count()
         if number_properties_entries > 1:

@@ -6,6 +6,8 @@ from conflowgen.application.models.container_flow_generation_properties import C
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.container_length_distribution import ContainerLengthDistribution
 from conflowgen.domain_models.distribution_models.container_weight_distribution import ContainerWeightDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
@@ -37,7 +39,8 @@ def create_tables(sql_db_connection: peewee.Database) -> peewee.Database:
         TruckArrivalDistribution,
         TruckArrivalInformationForPickup,
         TruckArrivalInformationForDelivery,
-        StorageRequirementDistribution
+        StorageRequirementDistribution,
+        ContainerDwellTimeDistribution
     ])
     for table_with_index in (
         Destination,

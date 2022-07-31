@@ -11,7 +11,9 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
 
     def test_validating_completely_empty_distribution_raises_exception(self):
         with self.assertRaises(DistributionHasNoElementsException) as cm:
-            validate_distribution_with_one_dependent_variable({}, ContainerLength, StorageRequirement)
+            validate_distribution_with_one_dependent_variable(
+                {}, ContainerLength, StorageRequirement, values_are_frequencies=True
+            )
         expected_message = "The distribution does not have any elements to draw from."
         self.assertEqual(expected_message, str(cm.exception))
 
@@ -28,7 +30,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: {}  # here is the culprit
-            }, ContainerLength, StorageRequirement)
+            }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = (
             'The distribution does not have any elements to draw from. This is error '
@@ -54,7 +56,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: variation_of_distribution
-            }, ContainerLength, StorageRequirement)
+            }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = (
             "The distribution {'reefer': 0.25000, 'empty': 0.25000, 'dangerous_goods': "
@@ -83,7 +85,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: variation_of_distribution
-            }, ContainerLength, StorageRequirement)
+            }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = (
             'The probability of an element to be drawn must range between 0 and 1 but for '
@@ -112,7 +114,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: variation_of_distribution
-            }, ContainerLength, StorageRequirement)
+            }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = "Element '40 feet' could not be casted to type '<enum 'StorageRequirement'>'"
         self.assertEqual(expected_message, str(cm.exception))
@@ -136,7 +138,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: variation_of_distribution
-            }, ContainerLength, StorageRequirement)
+            }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = (
             'The probability of an element to be drawn must range between 0 and 1 but for '
@@ -165,7 +167,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_five_feet: default_distribution_without_dependent_variable,
                 ContainerLength.other: variation_of_distribution
-            }, ContainerLength, ContainerLength)
+            }, ContainerLength, ContainerLength, values_are_frequencies=True)
 
         expected_message = (
             'The sum of all probabilities should sum to 1 but for the '
@@ -200,7 +202,8 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
         sanitized_distribution = validate_distribution_with_one_dependent_variable(
             distribution_with_int_keys,
             ContainerLength,
-            int
+            int,
+            True
         )
 
         self.assertDictEqual(distribution_with_int_keys, sanitized_distribution)
@@ -210,7 +213,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
 
     def test_validating_completely_empty_distribution_raises_exception(self):
         with self.assertRaises(DistributionHasNoElementsException) as cm:
-            validate_distribution_with_no_dependent_variables({}, ContainerLength)
+            validate_distribution_with_no_dependent_variables({}, ContainerLength, values_are_frequencies=True)
         expected_message = 'The distribution does not have any elements to draw from.'
         self.assertEqual(expected_message, str(cm.exception))
 
@@ -222,7 +225,9 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.other: 0.25
         }
         with self.assertRaises(DistributionElementIsMissingException) as cm:
-            validate_distribution_with_no_dependent_variables(variation_of_distribution, ContainerLength)
+            validate_distribution_with_no_dependent_variables(
+                variation_of_distribution, ContainerLength, values_are_frequencies=True
+            )
 
         expected_message = (
             "The distribution {'20 feet': 0.25000, '45 feet': 0.25000, 'other': "
@@ -240,7 +245,9 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.other: 0.25
         }
         with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
-            validate_distribution_with_no_dependent_variables(variation_of_distribution, ContainerLength)
+            validate_distribution_with_no_dependent_variables(
+                variation_of_distribution, ContainerLength, values_are_frequencies=True
+            )
 
         expected_message = (
             'The probability of an element to be drawn must range between 0 and 1 but for '
@@ -258,7 +265,9 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.other: 0.25
         }
         with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
-            validate_distribution_with_no_dependent_variables(variation_of_distribution, ContainerLength)
+            validate_distribution_with_no_dependent_variables(
+                variation_of_distribution, ContainerLength, values_are_frequencies=True
+            )
 
         expected_message = (
             'The probability of an element to be drawn must range between 0 and 1 but for '
@@ -274,7 +283,9 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.other: 0.25
         }
         with self.assertRaises(DistributionProbabilitiesUnequalOne) as cm:
-            validate_distribution_with_no_dependent_variables(variation_of_distribution, ContainerLength)
+            validate_distribution_with_no_dependent_variables(
+                variation_of_distribution, ContainerLength, values_are_frequencies=True
+            )
 
         expected_message = (
             'The sum of all probabilities should sum to 1 but for the '
@@ -296,7 +307,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.other: 0.25
         }
         sanitized_distribution = validate_distribution_with_no_dependent_variables(
-            dirty_distribution, ContainerLength
+            dirty_distribution, ContainerLength, values_are_frequencies=True
         )
         self.assertDictEqual(clean_distribution, sanitized_distribution)
 
@@ -308,7 +319,8 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
         }
         sanitized_distribution = validate_distribution_with_no_dependent_variables(
             distribution_with_int_keys,
-            int
+            int,
+            values_are_frequencies=True
         )
 
         self.assertDictEqual(distribution_with_int_keys, sanitized_distribution)

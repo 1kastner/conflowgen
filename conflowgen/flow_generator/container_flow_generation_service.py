@@ -42,56 +42,17 @@ class ContainerFlowGenerationService:
         self.container_flow_end_date: datetime.date = container_flow_generation_properties.end_date
         assert self.container_flow_start_date < self.container_flow_end_date
 
-        self.minimum_dwell_time_of_import_containers_in_hours: int = container_flow_generation_properties \
-            .minimum_dwell_time_of_import_containers_in_hours
-        self.maximum_dwell_time_of_import_containers_in_hours: int = container_flow_generation_properties \
-            .maximum_dwell_time_of_import_containers_in_hours
-        assert (self.minimum_dwell_time_of_import_containers_in_hours
-                < self.maximum_dwell_time_of_import_containers_in_hours)
-
-        self.minimum_dwell_time_of_export_containers_in_hours: int = container_flow_generation_properties \
-            .minimum_dwell_time_of_export_containers_in_hours
-        self.maximum_dwell_time_of_export_containers_in_hours: int = container_flow_generation_properties \
-            .maximum_dwell_time_of_export_containers_in_hours
-        assert (self.minimum_dwell_time_of_export_containers_in_hours
-                < self.maximum_dwell_time_of_export_containers_in_hours)
-
-        self.minimum_dwell_time_of_transshipment_containers_in_hours: int = container_flow_generation_properties \
-            .minimum_dwell_time_of_transshipment_containers_in_hours
-        self.maximum_dwell_time_of_transshipment_containers_in_hours: int = container_flow_generation_properties \
-            .maximum_dwell_time_of_transshipment_containers_in_hours
-        assert (self.minimum_dwell_time_of_transshipment_containers_in_hours
-                < self.maximum_dwell_time_of_transshipment_containers_in_hours)
-
         self.transportation_buffer: float = container_flow_generation_properties.transportation_buffer
         assert -1 < self.transportation_buffer
 
         self.large_scheduled_vehicle_for_onward_transportation_manager.reload_properties(
-            minimum_dwell_time_of_import_containers_in_hours=
-            self.minimum_dwell_time_of_import_containers_in_hours,
-            minimum_dwell_time_of_export_containers_in_hours=
-            self.minimum_dwell_time_of_export_containers_in_hours,
-            minimum_dwell_time_of_transshipment_containers_in_hours=
-            self.minimum_dwell_time_of_transshipment_containers_in_hours,
-            maximum_dwell_time_of_import_containers_in_hours=
-            self.maximum_dwell_time_of_import_containers_in_hours,
-            maximum_dwell_time_of_export_containers_in_hours=
-            self.maximum_dwell_time_of_export_containers_in_hours,
-            maximum_dwell_time_of_transshipment_containers_in_hours=
-            self.maximum_dwell_time_of_transshipment_containers_in_hours,
             transportation_buffer=self.transportation_buffer
         )
         self.allocate_space_for_containers_delivered_by_truck_service.reload_distribution(
             transportation_buffer=self.transportation_buffer
         )
-        self.truck_for_import_containers_manager.reload_distribution(
-            minimum_dwell_time_in_hours=self.minimum_dwell_time_of_import_containers_in_hours,
-            maximum_dwell_time_in_hours=self.maximum_dwell_time_of_import_containers_in_hours
-        )
-        self.truck_for_export_containers_manager.reload_distribution(
-            minimum_dwell_time_in_hours=self.minimum_dwell_time_of_export_containers_in_hours,
-            maximum_dwell_time_in_hours=self.maximum_dwell_time_of_export_containers_in_hours
-        )
+        self.truck_for_import_containers_manager.reload_distribution()
+        self.truck_for_export_containers_manager.reload_distribution()
         self.large_scheduled_vehicle_creation_service.reload_properties(
             container_flow_start_date=self.container_flow_start_date,
             container_flow_end_date=self.container_flow_end_date

@@ -1,77 +1,59 @@
 from __future__ import annotations
 import datetime
-import logging
 import random
-from typing import List, Tuple, Union, Optional
 
-from conflowgen.tools.weekly_distribution import WeeklyDistribution
+from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
+from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
 from ..domain_models.container import Container
-from ..domain_models.distribution_repositories.truck_arrival_distribution_repository import \
-    TruckArrivalDistributionRepository
-from ..domain_models.factories.vehicle_factory import VehicleFactory
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.vehicle import LargeScheduledVehicle
+from ..tools.theoretical_distribution import TheoreticalDistribution
 
 
-class TruckForExportContainersManager:
+class TruckForExportContainersManager(AbstractTruckForContainersManager):
     """
-    Manages all trucks.
+    This determines when the trucks deliver the container which is later picked up from the terminal by vessel, either
+    feeder or deep sea vessel.
     """
 
-    def __init__(self, ):
-        self.logger = logging.getLogger("conflowgen")
-        self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
-        self.distribution: WeeklyDistribution | None = None
-        self.vehicle_factory = VehicleFactory()
-        self.minimum_dwell_time_in_hours: Optional[float] = None
-        self.maximum_dwell_time_in_hours: Optional[float] = None
-        self.time_window_length_in_hours: Optional[float] = None
-
-    def reload_distribution(
+    def _get_container_dwell_time_distribution(
             self,
-            minimum_dwell_time_in_hours: float,
-            maximum_dwell_time_in_hours: float
-    ):
-        # noinspection PyTypeChecker
-        hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]] = \
-            list(self.truck_arrival_distribution_repository.get_distribution().items())
-        self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
-        self.maximum_dwell_time_in_hours = maximum_dwell_time_in_hours
-        self.distribution = WeeklyDistribution(
-            hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-            considered_time_window_in_hours=self.maximum_dwell_time_in_hours - 1,  # because the latest slot is reset
-            minimum_dwell_time_in_hours=self.minimum_dwell_time_in_hours
-        )
-        self.time_window_length_in_hours = self.distribution.time_window_length_in_hours
+            vehicle: ModeOfTransport,
+            storage_requirement: StorageRequirement
+    ) -> TheoreticalDistribution:
+        return self.container_dwell_time_distributions[ModeOfTransport.truck][vehicle][storage_requirement]
 
     def _get_container_delivery_time(
             self,
+            container: Container,
             container_departure_time: datetime.datetime
     ) -> datetime.datetime:
-        latest_slot = container_departure_time.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
-        earliest_slot = (
-            latest_slot
-            - datetime.timedelta(hours=self.maximum_dwell_time_in_hours - 1)  # because the latest slot is reset
-        )
-        distribution_slice = self.distribution.get_distribution_slice(earliest_slot)
 
-        time_windows_for_truck_arrival = list(distribution_slice.keys())
-        delivery_time_window_start = random.choices(
-            population=time_windows_for_truck_arrival,
-            weights=list(distribution_slice.values())
-        )[0]
+        container_dwell_time_distribution, truck_arrival_distribution = self._get_distributions(container)
+        maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
+        latest_slot = container_departure_time.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
+
+        earliest_slot = (
+                latest_slot
+                - datetime.timedelta(hours=maximum_dwell_time_in_hours - 1)  # because the latest slot is reset
+        )
+        truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
+
+        delivery_time_window_start = self._get_time_window_of_truck_arrival(
+            container_dwell_time_distribution, truck_arrival_distribution_slice
+        )
 
         # arrival within the last time slot
         random_time_component = random.uniform(0, self.time_window_length_in_hours - (1 / 60))
         assert 0 <= random_time_component < self.time_window_length_in_hours, \
-            "The random time component be less than the time slot"
+            "The random time component must be shorter than the length of the time slot"
 
         # go back to the earliest possible day
         truck_arrival_time = (
-            earliest_slot
-            + datetime.timedelta(hours=delivery_time_window_start)
-            + datetime.timedelta(hours=random_time_component)
+                earliest_slot
+                + datetime.timedelta(hours=delivery_time_window_start)
+                + datetime.timedelta(hours=random_time_component)
         )
         return truck_arrival_time
 
@@ -94,19 +76,17 @@ class TruckForExportContainersManager:
             # a container for that vessel drop off the container too early
             container_pickup_time: datetime.datetime = picked_up_with.scheduled_arrival
 
-            truck_arrival_time = self._get_container_delivery_time(container_pickup_time)
+            truck_arrival_time = self._get_container_delivery_time(container, container_pickup_time)
             truck_arrival_information_for_delivery = TruckArrivalInformationForDelivery.create(
                 planned_container_delivery_time_at_window_start=truck_arrival_time,
                 realized_container_delivery_time=truck_arrival_time
             )
-            truck_arrival_information_for_delivery.save()
             truck = self.vehicle_factory.create_truck(
                 delivers_container=True,
                 picks_up_container=False,
                 truck_arrival_information_for_delivery=truck_arrival_information_for_delivery,
                 truck_arrival_information_for_pickup=None
             )
-            truck.save()
             container.delivered_by_truck = truck
             container.save()
         self.logger.info("All trucks that deliver a container are created now.")

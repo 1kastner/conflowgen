@@ -37,6 +37,7 @@ class ContainerWeightDistributionManager(AbstractDistributionManager):
         sanitized_distribution = self._normalize_and_validate_distribution_with_one_dependent_variable(
             container_weights,
             ContainerLength,
-            int
+            int,
+            values_are_frequencies=True
         )
         self.container_weight_repository.set_distribution(sanitized_distribution)
