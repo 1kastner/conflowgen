@@ -1,6 +1,7 @@
 from __future__ import annotations
 import abc
 import logging
+import math
 import random
 from typing import List, Tuple, Union, Optional, Dict
 
@@ -36,7 +37,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             }
 
         self.vehicle_factory = VehicleFactory()
-        self.time_window_length_in_hours: Optional[float] = None
+        self.time_window_length_in_hours: Optional[int] = None
 
     @abc.abstractmethod
     def _get_container_dwell_time_distribution(
@@ -46,7 +47,7 @@ class AbstractTruckForContainersManager(abc.ABC):
     ) -> TheoreticalDistribution:
         pass
 
-    def reload_distribution(
+    def reload_distributions(
             self
     ) -> None:
         # noinspection PyTypeChecker
@@ -55,16 +56,35 @@ class AbstractTruckForContainersManager(abc.ABC):
         self.time_window_length_in_hours = hour_of_the_week_fraction_pairs[1][0] - hour_of_the_week_fraction_pairs[0][0]
 
         self.container_dwell_time_distributions = self.container_dwell_time_distribution_repository.get_distributions()
+        self._update_truck_arrival_distributions(hour_of_the_week_fraction_pairs)
+
+    def _update_truck_arrival_distributions(
+            self,
+            hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]]
+    ) -> None:
         for vehicle in ModeOfTransport:
             for storage_requirement in StorageRequirement:
                 container_dwell_time_distribution = self._get_container_dwell_time_distribution(
                     vehicle, storage_requirement
                 )
+
+                # only work with full hours
+                container_dwell_time_distribution.minimum = int(math.ceil(container_dwell_time_distribution.minimum))
+                container_dwell_time_distribution.maximum = int(math.floor(container_dwell_time_distribution.maximum))
+
+                earliest_possible_truck_slot_in_hours_after_arrival = container_dwell_time_distribution.minimum
+                last_possible_truck_slot_in_hours_after_arrival = \
+                    container_dwell_time_distribution.maximum - 1  # because the latest slot is reset
+                number_of_feasible_truck_slots = (
+                        last_possible_truck_slot_in_hours_after_arrival
+                        - earliest_possible_truck_slot_in_hours_after_arrival
+                )
+
                 self.truck_arrival_distributions[vehicle][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    considered_time_window_in_hours=container_dwell_time_distribution.maximum - 1,
-                    # because the latest slot is reset
-                    minimum_dwell_time_in_hours=container_dwell_time_distribution.minimum
+                    considered_time_window_in_hours=number_of_feasible_truck_slots,
+                    minimum_dwell_time_in_hours=earliest_possible_truck_slot_in_hours_after_arrival,
+                    context=f"{self.__class__.__name__} : {vehicle} : {storage_requirement}"
                 )
 
     def _get_distributions(
@@ -73,12 +93,16 @@ class AbstractTruckForContainersManager(abc.ABC):
     ) -> tuple[TheoreticalDistribution, WeeklyDistribution | None]:
 
         container_dwell_time_distribution = self.container_dwell_time_distributions[
-            ModeOfTransport.truck][container.picked_up_by][container.storage_requirement]
+            container.delivered_by][container.picked_up_by][container.storage_requirement]
 
-        truck_arrival_distribution = self.truck_arrival_distributions[
-            container.picked_up_by][container.storage_requirement]
+        truck_arrival_distributions = self._get_truck_arrival_distributions(container)
+        truck_arrival_distribution = truck_arrival_distributions[container.storage_requirement]
 
         return container_dwell_time_distribution, truck_arrival_distribution
+
+    @abc.abstractmethod
+    def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
+        pass
 
     @staticmethod
     def _get_time_window_of_truck_arrival(

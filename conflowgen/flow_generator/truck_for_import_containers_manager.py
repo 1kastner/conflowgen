@@ -1,5 +1,6 @@
 import datetime
 import random
+from typing import Dict
 
 from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
 from ..domain_models.data_types.storage_requirement import StorageRequirement
@@ -8,6 +9,7 @@ from ..domain_models.container import Container
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.vehicle import LargeScheduledVehicle
 from ..tools.theoretical_distribution import TheoreticalDistribution
+from ..tools.weekly_distribution import WeeklyDistribution
 
 
 class TruckForImportContainersManager(AbstractTruckForContainersManager):
@@ -18,6 +20,9 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             storage_requirement: StorageRequirement
     ) -> TheoreticalDistribution:
         return self.container_dwell_time_distributions[vehicle][ModeOfTransport.truck][storage_requirement]
+
+    def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
+        return self.truck_arrival_distributions[container.delivered_by]
 
     def _get_container_pickup_time(
             self,

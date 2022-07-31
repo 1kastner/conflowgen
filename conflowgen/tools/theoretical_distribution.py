@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import abc
 import math
-from typing import Collection, Sequence
+from typing import Collection, Sequence, Optional
 
 import numpy as np
 import scipy.stats
@@ -19,33 +21,31 @@ class TheoreticalDistribution(abc.ABC):
         self.maximum = maximum
 
     @abc.abstractmethod
-    def _get_probability_based_on_distribution(self, x: float) -> float:
+    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
         pass
 
-    def get_probability(self, x: float) -> float:
+    def get_probabilities(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
         """
 
         Args:
-            x: The element, on the same scale as average, variance, minimum, and maximum
+            xs: Elements that are on the same scale as average, variance, minimum, and maximum
 
         Returns:
-            The probability that element x is drawn from this distribution
-
+            The respective probability that element x as an element of xs is drawn from this distribution
         """
-        if not (self.minimum < x < self.maximum):
-            return 0
-        else:
-            return self._get_probability_based_on_distribution(x)
-
-    def get_probabilities(self, xs: Collection[float]) -> Collection[float]:
-        return [self.get_probability(x) for x in xs]
+        xs = np.array(xs)
+        densities = self._get_probabilities_based_on_distribution(xs)
+        densities[xs <= self.minimum] = 0
+        densities[xs >= self.maximum] = 0
+        densities = densities / densities.sum()
+        return densities
 
 
 class ClippedLogNormal(TheoreticalDistribution):
 
     variance: float
 
-    def __init__(self, average: float, variance: float, minimum: float, maximum: float):
+    def __init__(self, average: float, variance: float, minimum: float, maximum: float, unit: Optional[str] = None):
         super().__init__(
             average=average,
             minimum=minimum,
@@ -53,6 +53,11 @@ class ClippedLogNormal(TheoreticalDistribution):
         )
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
+
+        self.unit_repr, self.unit_repr_square = "", ""
+        if unit:
+            self.unit_repr = unit
+            self.unit_repr_square = unit + "²"
 
     def _get_scipy_lognorm(self) -> "scipy.stats.rv_frozen":
         # See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
@@ -66,8 +71,18 @@ class ClippedLogNormal(TheoreticalDistribution):
 
         return frozen_lognorm
 
-    def _get_probability_based_on_distribution(self, x) -> float:
-        return self._lognorm.pdf(x)
+    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+        return self._lognorm.pdf(xs)
+
+    def __repr__(self):
+
+        return (
+            f"<{self.__class__.__name__}: "
+            f"avg={self.average:.1f}{self.unit_repr}, "
+            f"min={self.minimum:.1f}{self.unit_repr}, "
+            f"max={self.maximum:.1f}{self.unit_repr}, "
+            f"var={self.variance:.1f}{self.unit_repr_square}>"
+        )
 
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:

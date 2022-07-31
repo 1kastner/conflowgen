@@ -14,11 +14,14 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: float,
-            minimum_dwell_time_in_hours: float
+            considered_time_window_in_hours: int,
+            minimum_dwell_time_in_hours: int,
+            context: str = ""
     ):
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
+        self.context = context
+
         self.hour_of_the_week_fraction_pairs = []
         number_of_weeks_to_consider = 2 + int(considered_time_window_in_hours / 24 / 7)
         for week in range(number_of_weeks_to_consider):
@@ -89,3 +92,13 @@ class WeeklyDistribution:
             for (hour_after_start, hour_fraction) in not_normalized_distribution_slice
         }
         return distribution_slice
+
+    def __repr__(self):
+        maximum = self.minimum_dwell_time_in_hours + self.considered_time_window_in_hours
+        return (
+            f"<{self.__class__.__name__}: "
+            f"min={self.minimum_dwell_time_in_hours:.1f}h, "
+            f"max={maximum:.1f}h={maximum / 24:.1f}d, "
+            f"context='{self.context}'"
+            f">"
+        )

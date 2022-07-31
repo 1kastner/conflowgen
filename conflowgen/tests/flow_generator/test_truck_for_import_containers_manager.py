@@ -35,6 +35,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         container_dwell_time_distribution_seeder.seed()
 
         self.manager = TruckForImportContainersManager()
+        self.manager.reload_distributions()
 
         # Enables visualisation, helpful for visualizing the probability distributions.
         # However, this blocks the execution of tests.
@@ -50,8 +51,33 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         plt.axvline(x=container_arrival_time + container_dwell_time_distribution.maximum)
         plt.show(block=True)
 
+    def test_container_dwell_time_and_truck_arrival_distributions_match(self):
+        container = Container.create(
+            weight=20,
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+
+        self.assertEqual(3, int(container_dwell_time_distribution.minimum))
+        self.assertEqual(3, int(truck_arrival_distribution.minimum_dwell_time_in_hours))
+
+        self.assertEqual(216, container_dwell_time_distribution.maximum)
+
+        possible_hours_for_truck_arrival = truck_arrival_distribution.considered_time_window_in_hours
+        self.assertEqual(
+            216 - 3 - 1,
+            possible_hours_for_truck_arrival,
+            "The truck might arrive 216h after the arrival of the container, but not within the first three hours. "
+            "Furthermore, the last hour is subtracted because up to 59 minutes are later added again and the maximum "
+            "should not be surpassed."
+        )
+
     def test_pickup_time_in_required_time_range_weekday(self):
-        self.manager.reload_distribution()
+
         _datetime = datetime.datetime(
             year=2021, month=8, day=1
         )
@@ -73,7 +99,6 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             self.visualize_probabilities(container, pickup_times)
 
     def test_pickup_time_in_required_time_range_with_sunday_starting_from_a_full_hour(self):
-        self.manager.reload_distribution()
         _datetime = datetime.datetime(
             year=2021, month=8, day=6  # a Monday
         )
@@ -105,7 +130,6 @@ class TestTruckForImportContainersManager(unittest.TestCase):
                                                  "At least once a Monday was counted (02.08.2021)")
 
     def test_pickup_time_in_required_time_range_with_sunday_starting_within_an_hour(self):
-        self.manager.reload_distribution()
         _datetime = datetime.datetime(
             year=2021, month=8, day=6, hour=12, minute=13  # a Monday
         )

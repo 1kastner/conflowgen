@@ -11,7 +11,7 @@ from conflowgen.tools.theoretical_distribution import TheoreticalDistribution, C
 class ContainerDwellTimeDistributionRepository:
 
     @staticmethod
-    def _get_fraction(
+    def _get_distribution_entry(
             delivered_by: ModeOfTransport,
             picked_up_by: ModeOfTransport,
             storage_requirement: StorageRequirement
@@ -29,6 +29,7 @@ class ContainerDwellTimeDistributionRepository:
                 variance=entry.variance,
                 minimum=entry.minimum_number_of_hours,
                 maximum=entry.maximum_number_of_hours,
+                unit="h"
             )
         else:
             if entry.distribution_name:
@@ -45,7 +46,7 @@ class ContainerDwellTimeDistributionRepository:
         distributions = {
             mode_of_transport_i: {
                 mode_of_transport_j: {
-                    storage_requirement: cls._get_fraction(
+                    storage_requirement: cls._get_distribution_entry(
                         mode_of_transport_i, mode_of_transport_j, storage_requirement
                     )
                     for storage_requirement in StorageRequirement
