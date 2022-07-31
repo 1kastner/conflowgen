@@ -21,4 +21,4 @@ class TestRunAllPosthocAnalyses(unittest.TestCase):
     def test_with_no_data(self):
         with self.assertLogs('conflowgen', level='INFO') as cm:
             run_all_analyses()
-        self.assertEqual(len(cm.output), 29)
+        self.assertEqual(len(cm.output), 32)

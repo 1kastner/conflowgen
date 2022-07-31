@@ -1,6 +1,7 @@
 import logging
 from typing import Optional, Union, Callable, Iterable, Type
 
+from .container_dwell_time_analysis_report import ContainerDwellTimeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
@@ -25,6 +26,7 @@ reports: Iterable[Type[AbstractReport]] = [
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport,
     ModalSplitAnalysisReport,
+    ContainerDwellTimeAnalysisReport,
     QuaySideThroughputAnalysisReport,
     TruckGateThroughputAnalysisReport,
     YardCapacityAnalysisReport,
