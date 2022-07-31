@@ -26,7 +26,6 @@ def setup_feeder_data():
         average_moved_capacity=250,
         vehicle_arrives_every_k_days=-1
     )
-    schedule.save()
     feeder_lsv = LargeScheduledVehicle.create(
         vehicle_name="TestFeeder1",
         capacity_in_teu=schedule.average_vehicle_capacity,
@@ -35,10 +34,9 @@ def setup_feeder_data():
         schedule=schedule
     )
     feeder_lsv.save()
-    feeder = Feeder.create(
+    Feeder.create(
         large_scheduled_vehicle=feeder_lsv
     )
-    feeder.save()
     Container.create(
         weight=20,
         length=ContainerLength.twenty_feet,
@@ -73,7 +71,6 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(unittest.TestCase):
 
     def test_with_no_data(self):
         actual_report = self.analysis.get_report_as_text()
-        print(actual_report)
         expected_report = """
 vehicle type = all
 vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)
@@ -84,7 +81,6 @@ vehicle identifier                                 inbound capacity (in TEU) out
     def test_inbound_with_single_feeder(self):
         setup_feeder_data()
         actual_report = self.analysis.get_report_as_text()
-        print(actual_report)
         expected_report = """
 vehicle type = all
 vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)

@@ -34,12 +34,10 @@ def setup_feeder_data():
         scheduled_arrival=datetime.datetime.now(),
         schedule=schedule
     )
-    feeder_lsv.save()
-    feeder = Feeder.create(
+    Feeder.create(
         large_scheduled_vehicle=feeder_lsv
     )
-    feeder.save()
-    container = Container.create(
+    Container.create(
         weight=20,
         length=ContainerLength.twenty_feet,
         storage_requirement=StorageRequirement.standard,
@@ -48,7 +46,6 @@ def setup_feeder_data():
         picked_up_by=ModeOfTransport.truck,
         picked_up_by_initial=ModeOfTransport.truck
     )
-    container.save()
 
 
 class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
