@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import math
 import statistics
 from typing import Any
 from collections.abc import Iterable
