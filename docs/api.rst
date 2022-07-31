@@ -58,6 +58,9 @@ These are all required for generating the synthetic data.
 .. autoclass:: conflowgen.ModeOfTransportDistributionManager
     :members:
 
+.. autoclass:: conflowgen.ContainerDwellTimeDistributionManager
+    :members:
+
 .. autoclass:: conflowgen.PortCallManager
     :members:
 

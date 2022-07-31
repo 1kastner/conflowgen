@@ -90,5 +90,5 @@ def multiply_discretized_probability_densities(*probabilities: Collection[float]
     np_probs = [np.array(probs) for probs in probabilities]
     multiplied_probabilities = np.multiply(*np_probs)
     normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()
-    assert abs(sum(normalized_probabilities) - 1) < 0.001
+    assert abs(sum(normalized_probabilities) - 1) < 0.1
     return normalized_probabilities
