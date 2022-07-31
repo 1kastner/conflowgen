@@ -124,18 +124,21 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         if len(container_dwell_times) == 0:
             return no_data_graph()
 
-        series = pd.Series(list(container_dwell_times))
-        ax = series.plot()
+        container_dwell_times_in_hours = [
+            int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
+        ]
+        series = pd.Series(list(container_dwell_times_in_hours))
+        ax = series.plot.hist()
 
-        x_label = ""
-        x_label += "container is delivered by vehicle type = " + self._get_vehicle_representation(
+        title = ""
+        title += "container is delivered by vehicle type = " + self._get_vehicle_representation(
             container_delivered_by_vehicle_type) + "\n"
-        x_label += "container picked up by vehicle type = " + self._get_vehicle_representation(
+        title += "container picked up by vehicle type = " + self._get_vehicle_representation(
             container_picked_up_by_vehicle_type) + "\n"
-        x_label += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
+        title += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
 
-        ax.set_xlabel(x_label)
-        ax.set_title("Container Dwell Time")
+        ax.set_xlabel("Container Dwell Time (h)")
+        ax.set_title(title)
         return ax
 
     @staticmethod

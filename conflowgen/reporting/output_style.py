@@ -75,7 +75,7 @@ class DisplayAsMarkdown(DisplayAsMarkupLanguage):
     def __init__(self, display_markdown_func: Callable):
         self.display_markdown_func = display_markdown_func
 
-    def display_headline(self, text: str, level: int = 3):
+    def display_headline(self, text: str, level: int = 4):
         self.display_markdown_func("#" * level + " " + text + "\n")
 
     def display_verbatim(self, text: str):

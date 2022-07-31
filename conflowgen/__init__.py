@@ -1,4 +1,4 @@
-# List of classes
+# Distribution managers
 from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.api.container_weight_distribution_manager import ContainerWeightDistributionManager
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
@@ -11,6 +11,7 @@ from conflowgen.api.truck_arrival_distribution_manager import TruckArrivalDistri
 from conflowgen.api.container_storage_requirement_distribution_manager import \
     ContainerStorageRequirementDistributionManager
 
+# Previews and their reports
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview_report import \
     InboundAndOutboundVehicleCapacityPreviewReport
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
@@ -25,6 +26,7 @@ from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.previews.modal_split_preview_report import ModalSplitPreviewReport
 
+# Analyses and their reports
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.posthoc_analyses.inbound_and_outbound_vehicle_capacity_analysis_report import \
@@ -52,7 +54,10 @@ from conflowgen.posthoc_analyses.quay_side_throughput_analysis import QuaySideTh
 from conflowgen.posthoc_analyses.quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
 from conflowgen.posthoc_analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.posthoc_analyses.truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
+from conflowgen.posthoc_analyses.container_dwell_time_analysis import ContainerDwellTimeAnalysis
+from conflowgen.posthoc_analyses.container_dwell_time_analysis_report import ContainerDwellTimeAnalysisReport
 
+# Specific classes for reports
 from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
 
 # List of enums
