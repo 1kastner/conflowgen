@@ -96,4 +96,8 @@ class TestContainer(unittest.TestCase):
             storage_requirement=StorageRequirement.standard
         )
         representation = repr(container)
-        self.assertEqual(representation, "")
+        self.assertEqual(
+            representation,
+            "<Container weight: 10; length: 40 feet; delivered_by_large_scheduled_vehicle: None; "
+            "delivered_by_truck: None; picked_up_by_large_scheduled_vehicle: None; picked_up_by_truck: None>"
+        )

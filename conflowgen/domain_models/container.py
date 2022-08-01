@@ -84,9 +84,9 @@ class Container(BaseModel):
     def __repr__(self):
         return "<Container " \
                f"weight: {self.weight}; " \
-               f"length: {self.length}" \
-               f"delivered_by_large_scheduled_vehicle: {self.delivered_by_large_scheduled_vehicle} " \
-               f"delivered_by_truck: {self.delivered_by_truck} " \
-               f"picked_up_by_large_scheduled_vehicle: {self.picked_up_by_large_scheduled_vehicle} " \
-               f"picked_up_by_truck: {self.picked_up_by_truck} " \
+               f"length: {self.length}; " \
+               f"delivered_by_large_scheduled_vehicle: {self.delivered_by_large_scheduled_vehicle}; " \
+               f"delivered_by_truck: {self.delivered_by_truck}; " \
+               f"picked_up_by_large_scheduled_vehicle: {self.picked_up_by_large_scheduled_vehicle}; " \
+               f"picked_up_by_truck: {self.picked_up_by_truck}" \
                ">"
