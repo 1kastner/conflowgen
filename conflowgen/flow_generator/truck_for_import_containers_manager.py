@@ -14,6 +14,9 @@ from ..tools.weekly_distribution import WeeklyDistribution
 
 class TruckForImportContainersManager(AbstractTruckForContainersManager):
 
+    def is_reversed(self) -> bool:
+        return False
+
     def _get_container_dwell_time_distribution(
             self,
             vehicle: ModeOfTransport,

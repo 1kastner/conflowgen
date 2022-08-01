@@ -75,6 +75,18 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             "should not be surpassed."
         )
 
+    def test_not_reversed_distribution_is_used(self):
+        container = Container.create(
+            weight=20,
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+        self.assertFalse(container_dwell_time_distribution.reversed_distribution)
+
     def test_pickup_time_in_required_time_range_weekday(self):
 
         container_arrival_time = datetime.datetime(

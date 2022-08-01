@@ -47,6 +47,10 @@ class AbstractTruckForContainersManager(abc.ABC):
     ) -> TheoreticalDistribution:
         pass
 
+    @abc.abstractmethod
+    def is_reversed(self) -> bool:
+        pass
+
     def reload_distributions(
             self
     ) -> None:
@@ -72,18 +76,19 @@ class AbstractTruckForContainersManager(abc.ABC):
                 container_dwell_time_distribution.minimum = int(math.ceil(container_dwell_time_distribution.minimum))
                 container_dwell_time_distribution.maximum = int(math.floor(container_dwell_time_distribution.maximum))
 
-                earliest_possible_truck_slot_in_hours_after_arrival = container_dwell_time_distribution.minimum
+                earliest_possible_truck_slot_in_hours = container_dwell_time_distribution.minimum
                 last_possible_truck_slot_in_hours_after_arrival = \
                     container_dwell_time_distribution.maximum - 1  # because the latest slot is reset
                 number_of_feasible_truck_slots = (
                         last_possible_truck_slot_in_hours_after_arrival
-                        - earliest_possible_truck_slot_in_hours_after_arrival
+                        - earliest_possible_truck_slot_in_hours
                 )
 
                 self.truck_arrival_distributions[vehicle][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
                     considered_time_window_in_hours=number_of_feasible_truck_slots,
-                    minimum_dwell_time_in_hours=earliest_possible_truck_slot_in_hours_after_arrival,
+                    minimum_dwell_time_in_hours=earliest_possible_truck_slot_in_hours,
+                    is_reversed=self.is_reversed(),
                     context=f"{self.__class__.__name__} : {vehicle} : {storage_requirement}"
                 )
 
@@ -110,7 +115,8 @@ class AbstractTruckForContainersManager(abc.ABC):
             truck_arrival_distribution_slice: Dict[int, float]
     ) -> int:
         """
-        Returns: hour of the week when the time window starts
+        Returns:
+            Number of hours after the earliest possible slot
         """
         time_windows_for_truck_arrival = list(truck_arrival_distribution_slice.keys())
         truck_arrival_probabilities = list(truck_arrival_distribution_slice.values())

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import math
-from typing import Collection, Sequence, Optional
+from typing import Collection, Sequence, Optional, Type
 
 import numpy as np
 import scipy.stats
@@ -14,11 +14,25 @@ class TheoreticalDistribution(abc.ABC):
     minimum: float
     maximum: float
 
-    def __init__(self, average: float, minimum: float, maximum: float):
+    def __init__(
+            self,
+            average: float,
+            minimum: float,
+            maximum: float,
+            unit: Optional[str] = None,
+            reversed_distribution: bool = False
+    ):
         assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
         self.average = average
         self.minimum = minimum
         self.maximum = maximum
+        self.reversed_distribution = reversed_distribution
+
+        self.unit = unit
+        self.unit_repr, self.unit_repr_square = "", ""
+        if unit:
+            self.unit_repr = unit
+            self.unit_repr_square = unit + "²"
 
     @abc.abstractmethod
     def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
@@ -38,26 +52,37 @@ class TheoreticalDistribution(abc.ABC):
         densities[xs <= self.minimum] = 0
         densities[xs >= self.maximum] = 0
         densities = densities / densities.sum()
+        if self.reversed_distribution:
+            densities = np.flip(densities)
         return densities
+
+    @abc.abstractmethod
+    def reversed(self) -> Type[TheoreticalDistribution]:
+        pass
 
 
 class ClippedLogNormal(TheoreticalDistribution):
 
     variance: float
 
-    def __init__(self, average: float, variance: float, minimum: float, maximum: float, unit: Optional[str] = None):
+    def __init__(
+            self,
+            average: float,
+            variance: float,
+            minimum: float,
+            maximum: float,
+            unit: Optional[str] = None,
+            reversed_distribution: bool = False
+    ):
         super().__init__(
             average=average,
             minimum=minimum,
-            maximum=maximum
+            maximum=maximum,
+            unit=unit,
+            reversed_distribution=reversed_distribution
         )
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
-
-        self.unit_repr, self.unit_repr_square = "", ""
-        if unit:
-            self.unit_repr = unit
-            self.unit_repr_square = unit + "²"
 
     def _get_scipy_lognorm(self) -> "scipy.stats.rv_frozen":
         # See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
@@ -75,13 +100,24 @@ class ClippedLogNormal(TheoreticalDistribution):
         return self._lognorm.pdf(xs)
 
     def __repr__(self):
-
         return (
             f"<{self.__class__.__name__}: "
             f"avg={self.average:.1f}{self.unit_repr}, "
             f"min={self.minimum:.1f}{self.unit_repr}, "
             f"max={self.maximum:.1f}{self.unit_repr}, "
-            f"var={self.variance:.1f}{self.unit_repr_square}>"
+            f"var={self.variance:.1f}{self.unit_repr_square}, "
+            f"rev={self.reversed_distribution}"
+            f">"
+        )
+
+    def reversed(self) -> ClippedLogNormal:
+        return self.__class__(
+            average=self.average,
+            minimum=self.minimum,
+            maximum=self.maximum,
+            variance=self.variance,
+            unit=self.unit,
+            reversed_distribution=(not self.reversed_distribution)
         )
 
 

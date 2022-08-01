@@ -19,12 +19,16 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
     feeder or deep sea vessel.
     """
 
+    def is_reversed(self) -> bool:
+        return True
+
     def _get_container_dwell_time_distribution(
             self,
             vehicle: ModeOfTransport,
             storage_requirement: StorageRequirement
     ) -> TheoreticalDistribution:
-        return self.container_dwell_time_distributions[ModeOfTransport.truck][vehicle][storage_requirement]
+        distribution = self.container_dwell_time_distributions[ModeOfTransport.truck][vehicle][storage_requirement]
+        return distribution.reversed()
 
     def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
         return self.truck_arrival_distributions[container.picked_up_by]
@@ -36,13 +40,20 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
     ) -> datetime.datetime:
 
         container_dwell_time_distribution, truck_arrival_distribution = self._get_distributions(container)
+        minimum_dwell_time_in_hours = container_dwell_time_distribution.minimum
         maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
-        latest_slot = container_departure_time.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=1)
 
+        # as we add up to 59 minutes later, we need to subtract one hour from any time at this stage
+        latest_slot = (
+                container_departure_time.replace(minute=0, second=0, microsecond=0)
+                - datetime.timedelta(hours=1)
+                - datetime.timedelta(hours=minimum_dwell_time_in_hours)
+        )
         earliest_slot = (
                 latest_slot
-                - datetime.timedelta(hours=maximum_dwell_time_in_hours - 1)  # because the latest slot is reset
+                - datetime.timedelta(hours=maximum_dwell_time_in_hours)
         )
+
         truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
 
         delivery_time_window_start = self._get_time_window_of_truck_arrival(
