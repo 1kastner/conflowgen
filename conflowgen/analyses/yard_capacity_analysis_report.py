@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import statistics
 from typing import Tuple, Any, Dict
-from collections.abc import Iterable
 import pandas as pd
 import seaborn as sns
 
@@ -117,15 +116,8 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         ax.set_title("Used yard capacity analysis")
         return ax
 
-    @staticmethod
-    def _get_storage_requirement_representation(storage_requirement: Any) -> str:
-        if storage_requirement is None:
-            return "all"
-        if isinstance(storage_requirement, StorageRequirement):
-            return str(storage_requirement)
-        if isinstance(storage_requirement, Iterable):
-            return " & ".join([str(element) for element in storage_requirement])
-        return str(storage_requirement)
+    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
+        return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
 
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs

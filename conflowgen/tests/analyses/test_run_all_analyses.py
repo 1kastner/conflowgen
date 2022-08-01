@@ -8,7 +8,7 @@ from conflowgen.analyses import run_all_analyses
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestRunAllPosthocAnalyses(unittest.TestCase):
+class TestRunAllAnalyses(unittest.TestCase):
     def setUp(self) -> None:
         self.sqlite_db = setup_sqlite_in_memory_db()
         create_tables(self.sqlite_db)

@@ -47,21 +47,19 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
         """
         capacities: Dict[CompleteVehicleIdentifier, (float, float)] = {}
 
-        base_selection = LargeScheduledVehicle.select().join(Schedule)
-        if vehicle_type == "all":
-            selected_large_scheduled_vehicles = base_selection
-        else:
+        selected_vehicles = LargeScheduledVehicle.select().join(Schedule)
+        if vehicle_type != "all":
             if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
-                selected_large_scheduled_vehicles = base_selection.where(
+                selected_vehicles = selected_vehicles.where(
                     LargeScheduledVehicle.schedule.vehicle_type == vehicle_type
                 )
             else:  # assume it is some kind of collection (list, set, ...)
-                selected_large_scheduled_vehicles = base_selection.where(
+                selected_vehicles = selected_vehicles.where(
                     LargeScheduledVehicle.schedule.vehicle_type << vehicle_type
                 )
 
         vehicle: LargeScheduledVehicle
-        for vehicle in selected_large_scheduled_vehicles:
+        for vehicle in selected_vehicles:
             vehicle_schedule: Schedule = vehicle.schedule
             mode_of_transport = vehicle_schedule.vehicle_type
             service_name = vehicle_schedule.service_name

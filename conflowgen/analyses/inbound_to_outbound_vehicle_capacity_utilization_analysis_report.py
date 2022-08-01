@@ -58,9 +58,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         Returns:
              The report in text format (possibly spanning over several lines).
         """
-        vehicle_type, capacities = self._get_capacities_depending_on_vehicle_type(kwargs)
+        vehicle_type_any = kwargs.pop("vehicle_type", "all")
+
+        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(vehicle_type_any)
+
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+
         report = "\n"
-        report += "vehicle type = " + vehicle_type + "\n"
+        report += "vehicle type = " + vehicle_type_description + "\n"
         report += "vehicle identifier                                 "
         report += "inbound capacity (in TEU) "
         report += "outbound capacity (in TEU)"
@@ -91,9 +96,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         Returns:
              The matplotlib figure
         """
-        plot_type = kwargs.get("plot_type", "both")
+        plot_type = kwargs.pop("plot_type", "both")
 
-        vehicle_type, capacities = self._get_capacities_depending_on_vehicle_type(kwargs)
+        vehicle_type_any = kwargs.pop("vehicle_type", "all")
+
+        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(vehicle_type_any)
+
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+
         if len(capacities) == 0:
             return no_data_graph()
 
@@ -101,14 +111,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
         if plot_type == "absolute":
             fig, ax = plt.subplots(1, 1)
-            self._plot_absolute_values(df, vehicle_type, ax=ax)
+            self._plot_absolute_values(df, vehicle_type_description, ax=ax)
         elif plot_type == "relative":
             fig, ax = plt.subplots(1, 1)
-            self._plot_relative_values(df, vehicle_type, ax=ax)
+            self._plot_relative_values(df, vehicle_type_description, ax=ax)
         elif plot_type == "both":
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-            self._plot_absolute_values(df, vehicle_type, ax=ax1)
-            self._plot_relative_values(df, vehicle_type, ax=ax2)
+            self._plot_absolute_values(df, vehicle_type_description, ax=ax1)
+            self._plot_relative_values(df, vehicle_type_description, ax=ax2)
             plt.subplots_adjust(wspace=0.4)
         else:
             raise Exception(f"Plot type '{plot_type}' is not supported.")
@@ -137,7 +147,10 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         return ax
 
     def _plot_relative_values(
-            self, df: pd.DataFrame, vehicle_type: str, ax: Optional[matplotlib.pyplot.axis] = None
+            self,
+            df: pd.DataFrame,
+            vehicle_type: str,
+            ax: Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
         ax = df.plot.scatter(x="inbound capacity (fixed)", y="ratio", ax=ax)
         ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='Maximum outbound capacity')
@@ -160,14 +173,10 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         return df
 
     def _get_capacities_depending_on_vehicle_type(
-            self, kwargs
+            self,
+            vehicle_type_any: Any
     ) -> Tuple[str, Dict[CompleteVehicleIdentifier, Tuple[float, float]]]:
-        if "vehicle_type" in kwargs:
-            vehicle_type = kwargs["vehicle_type"]
-            capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
-                vehicle_type=vehicle_type
-            )
-        else:
-            vehicle_type = None
-            capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle()
-        return self._get_enum_or_enum_set_representation(vehicle_type, ModeOfTransport), capacities
+        capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
+            vehicle_type=vehicle_type_any
+        )
+        return self._get_enum_or_enum_set_representation(vehicle_type_any, ModeOfTransport), capacities

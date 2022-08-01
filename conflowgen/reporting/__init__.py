@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import abc
 import datetime
+import enum
 import tempfile
-from typing import cast
+from typing import cast, Any, Iterable
 
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
@@ -71,6 +72,16 @@ class AbstractReport(abc.ABC):
             **kwargs: The additional keyword arguments are passed to the analysis instance.
         """
         raise NotImplementedError("No show method has yet been defined.")
+
+    @staticmethod
+    def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: enum.Enum) -> str:
+        if enum_or_enum_set is None or enum_or_enum_set == "all":
+            return "all"
+        if isinstance(enum_or_enum_set, enum_type):  # a
+            return str(enum_or_enum_set)
+        if isinstance(enum_or_enum_set, Iterable):  # a & b & c
+            return " & ".join([str(element) for element in enum_or_enum_set])
+        return str(enum_or_enum_set)  # just give it a try
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):

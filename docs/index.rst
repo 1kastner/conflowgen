@@ -14,7 +14,7 @@ Its source code hosted
    notebooks/input_distributions.ipynb
    notebooks/previews.ipynb
    notebooks/analyses.ipynb
-   notebooks/in_focus.ipynb
+   notebooks/in_spotlight.ipynb
    examples
    api
    contributing
