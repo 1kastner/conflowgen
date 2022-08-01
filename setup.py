@@ -51,7 +51,7 @@ setup(
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
-            'sphinx',  # build the documentation
+            'sphinx <=4',  # build the documentation
             'sphinx-rtd-theme',  # adding the nice sphinx theme
             'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
