@@ -93,7 +93,7 @@ START "" ./docs/_build/html/index.html
 
 REM check the links in the docs
 CALL python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkcheck || (
-    ECHO.At least one link in the docs is broken!
+    ECHO.The linkcheck has spotted an issue, please check!
     EXIT /B
 )
 
