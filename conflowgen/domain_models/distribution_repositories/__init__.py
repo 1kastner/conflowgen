@@ -31,8 +31,7 @@ def normalize_distribution_with_no_dependent_variable(
             distribution,
             context
         )
-    else:
-        return distribution
+    return distribution
 
 
 def normalize_distribution_with_one_dependent_variable(

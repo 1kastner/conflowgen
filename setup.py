@@ -68,7 +68,7 @@ setup(
             # checking code quality
             'pylint',  # lint Python code
             'flake8',  # lint Python code
-            'flake8_nb',  # lint Jupyter Notebooks
+            'flake8_nb >=0.4',  # lint Jupyter Notebooks
 
             # publish at PyPI
             'twine'
