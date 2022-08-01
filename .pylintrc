@@ -4,7 +4,8 @@
 fail-under=8.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=.git
+ignore=.git,
+        tests
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
@@ -193,7 +194,8 @@ good-names=i,
            df,
            ax,
            x,
-           xs
+           xs,
+           mu
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted

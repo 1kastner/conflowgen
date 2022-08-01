@@ -33,8 +33,7 @@ class ContainerDwellTimeDistributionRepository:
             )
         if entry.distribution_name:
             raise RuntimeError(f"Distribution '{entry.distribution_name}' currently not supported")
-        else:
-            raise RuntimeError(f"Distribution is not valid: {repr(entry.distribution_name)}")
+        raise RuntimeError(f"Distribution is not valid: {repr(entry.distribution_name)}")
 
     @classmethod
     def get_distributions(

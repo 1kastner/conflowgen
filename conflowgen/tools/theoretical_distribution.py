@@ -122,7 +122,7 @@ class ClippedLogNormal(TheoreticalDistribution):
 
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
-    assert len(set([len(p) for p in probabilities])) == 1, "All probability vectors have the same length"
+    assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length"
     np_probs = [np.array(probs) for probs in probabilities]
     multiplied_probabilities = np.multiply(*np_probs)
     normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()

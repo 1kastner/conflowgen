@@ -78,6 +78,11 @@ pylint setup.py || (
     EXIT /B
 )
 
+pylint conflowgen.tests || (
+    ECHO.While linting the conflowgen tests, pylint failed!
+    EXIT /B
+)
+
 REM build docs
 CALL docs/make clean || (
     ECHO.Cleaning up the last built of the documentation failed!
