@@ -33,7 +33,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             self.assertAlmostEqual(sum_of_all_proportions, 1)
 
     def test_set_with_missing_keys_first_level(self) -> None:
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
@@ -51,10 +51,10 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             "The distribution {'feeder': {...}} was expected to have the following "
             "elements: ['truck', 'train', 'feeder', 'deep_sea_vessel', 'barge'] but it "
             "provided the following elements: ['feeder'].")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_set_with_missing_keys_second_level(self) -> None:
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
@@ -85,7 +85,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             "provided the following elements: ['train']. This is error occurred while "
             "examining the dependent variable 'feeder'."
         )
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_happy_path(self) -> None:
         self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
