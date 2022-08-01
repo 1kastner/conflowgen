@@ -177,7 +177,7 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
         )
 
         # due to the existing import container, one export container must be generated
-        self.assertEqual(self.service._get_number_containers_to_allocate(), 1)
+        self.assertEqual(self.service._get_number_containers_to_allocate(), 1)  # pylint: disable=protected-access
 
         # that export container is generated now
         self.assertIsNone(self.service.allocate())

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import unittest
 from collections import Counter
@@ -16,6 +18,8 @@ from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
+from conflowgen.tools.theoretical_distribution import TheoreticalDistribution
+from conflowgen.tools.weekly_distribution import WeeklyDistribution
 
 
 class TestTruckForImportContainersManager(unittest.TestCase):
@@ -44,11 +48,19 @@ class TestTruckForImportContainersManager(unittest.TestCase):
     def visualize_probabilities(self, container, drawn_times, container_arrival_time):
         import inspect  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
-        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+        container_dwell_time_distribution, _ = self._get_distribution(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
         plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.minimum))
         plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.maximum))
         plt.show(block=True)
+
+    def _get_distribution(self, container: Container) -> tuple[TheoreticalDistribution, WeeklyDistribution | None]:
+
+        # pylint: disable=protected-access
+        container_dwell_time_distribution,  truck_arrival_distribution = self.manager._get_distributions(
+            container)
+
+        return container_dwell_time_distribution, truck_arrival_distribution
 
     def test_container_dwell_time_and_truck_arrival_distributions_match(self):
         container = Container.create(
@@ -59,7 +71,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard
         )
-        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+        container_dwell_time_distribution, truck_arrival_distribution = self._get_distribution(container)
 
         self.assertEqual(3, int(container_dwell_time_distribution.minimum))
         self.assertEqual(3, int(truck_arrival_distribution.minimum_dwell_time_in_hours))
@@ -84,7 +96,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard
         )
-        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+        container_dwell_time_distribution, _ = self._get_distribution(container)
         self.assertFalse(container_dwell_time_distribution.reversed_distribution)
 
     def test_pickup_time_in_required_time_range_weekday(self):
@@ -102,7 +114,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         )
         pickup_times = []
         for _ in range(1000):
-            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
+            pickup_time = self.get_pickup_time(container, container_arrival_time)
             self.assertGreaterEqual(pickup_time, container_arrival_time)
             pickup_times.append(pickup_time)
 
@@ -123,7 +135,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         )
         pickup_times = []
         for _ in range(1000):
-            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
+            pickup_time = self.get_pickup_time(container, container_arrival_time)
             pickup_times.append(pickup_time)
             self.assertGreaterEqual(pickup_time, container_arrival_time,
                                     "Container is picked up after it has arrived in the yard")
@@ -141,6 +153,15 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         self.assertIn(0, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
                                                  "At least once a Monday was counted (02.08.2021)")
 
+    def get_pickup_time(self, container, container_arrival_time):
+
+        # pylint: disable=protected-access
+        pickup_time = self.manager._get_container_pickup_time(
+            container, container_arrival_time
+        )
+
+        return pickup_time
+
     def test_pickup_time_in_required_time_range_with_sunday_starting_within_an_hour(self):
         container_arrival_time = datetime.datetime(
             year=2021, month=8, day=6, hour=12, minute=13  # a Monday
@@ -155,7 +176,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         )
         pickup_times = []
         for _ in range(1000):
-            pickup_time = self.manager._get_container_pickup_time(container, container_arrival_time)
+            pickup_time = self.get_pickup_time(container, container_arrival_time)
             pickup_times.append(pickup_time)
             self.assertGreaterEqual(pickup_time, container_arrival_time,
                                     "Container is picked up after it has arrived in the yard")

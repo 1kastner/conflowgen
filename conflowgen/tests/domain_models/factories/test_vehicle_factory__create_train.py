@@ -11,7 +11,7 @@ from conflowgen.domain_models.vehicle import Train, LargeScheduledVehicle, Sched
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleFactory__create_train(unittest.TestCase):
+class TestVehicleFactory__create_train(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""

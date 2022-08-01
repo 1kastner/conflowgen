@@ -11,7 +11,7 @@ from conflowgen.domain_models.vehicle import Feeder, LargeScheduledVehicle, Sche
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleFactory__create_feeder(unittest.TestCase):
+class TestVehicleFactory__create_feeder(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -24,7 +24,7 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
         self.fleet_factory = FleetFactory()
 
     def test_create_feeder_fleet(self) -> None:
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.date(2021, 7, 9),
@@ -33,7 +33,7 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
             average_moved_capacity=50
         )
         feeders = self.fleet_factory.create_feeder_fleet(
-            schedule=s,
+            schedule=schedule,
             first_at=datetime.date(2021, 7, 7),
             latest_at=datetime.date(2021, 7, 18)
         )

@@ -10,12 +10,12 @@ from conflowgen.domain_models.distribution_validators import DistributionHasNoEl
 class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
 
     def test_validating_completely_empty_distribution_raises_exception(self):
-        with self.assertRaises(DistributionHasNoElementsException) as cm:
+        with self.assertRaises(DistributionHasNoElementsException) as context:
             validate_distribution_with_one_dependent_variable(
                 {}, ContainerLength, StorageRequirement, values_are_frequencies=True
             )
         expected_message = "The distribution does not have any elements to draw from."
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_validating_empty_distribution_for_one_dependent_variable_raises_exception(self):
         default_distribution_without_dependent_variable = {
@@ -24,7 +24,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             StorageRequirement.empty: 0.25,
             StorageRequirement.dangerous_goods: 0.25
         }
-        with self.assertRaises(DistributionHasNoElementsException) as cm:
+        with self.assertRaises(DistributionHasNoElementsException) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -35,7 +35,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
         expected_message = (
             'The distribution does not have any elements to draw from. This is error '
             "occurred while examining the dependent variable 'other'.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_missing_element_on_second_level(self):
         default_distribution_without_dependent_variable = {
@@ -50,7 +50,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             StorageRequirement.empty: 0.25,
             StorageRequirement.dangerous_goods: 0.25
         }
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -64,7 +64,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             "'reefer', 'dangerous_goods'] but it provided the following elements: "
             "['reefer', 'empty', 'dangerous_goods']. This is error occurred while "
             "examining the dependent variable 'other'.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_one_frequency_is_out_of_range_because_it_is_negative(self):
         default_distribution_without_dependent_variable = {
@@ -79,7 +79,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             StorageRequirement.empty: 0.25,
             StorageRequirement.dangerous_goods: 0.25
         }
-        with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
+        with self.assertRaises(DistributionProbabilityOutOfRange) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -93,7 +93,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             "{'reefer': 0.25000, 'standard': -0.25000, 'empty': 0.25000, "
             "'dangerous_goods': 0.25000}. This is error occurred while examining the "
             "dependent variable 'other'.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_element_is_invalid(self):
         default_distribution_without_dependent_variable = {
@@ -108,7 +108,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             StorageRequirement.empty: 0.25,
             StorageRequirement.dangerous_goods: 0.25
         }
-        with self.assertRaises(DistributionElementIsInvalidException) as cm:
+        with self.assertRaises(DistributionElementIsInvalidException) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -117,7 +117,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             }, ContainerLength, StorageRequirement, values_are_frequencies=True)
 
         expected_message = "Element '40 feet' could not be casted to type '<enum 'StorageRequirement'>'"
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_one_frequency_is_out_of_range_because_it_is_larger_than_one(self):
         default_distribution_without_dependent_variable = {
@@ -132,7 +132,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             StorageRequirement.empty: 0.25,
             StorageRequirement.dangerous_goods: 0.25
         }
-        with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
+        with self.assertRaises(DistributionProbabilityOutOfRange) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -146,7 +146,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             "{'reefer': 0.25000, 'standard': 1.10000, 'empty': 0.25000, "
             "'dangerous_goods': 0.25000}. This is error occurred while examining the "
             "dependent variable 'other'.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_sum_of_frequencies_is_unequal_one(self):
         default_distribution_without_dependent_variable = {
@@ -161,7 +161,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             ContainerLength.forty_five_feet: 0.25,
             ContainerLength.other: 0.25
         }
-        with self.assertRaises(DistributionProbabilitiesUnequalOne) as cm:
+        with self.assertRaises(DistributionProbabilitiesUnequalOne) as context:
             validate_distribution_with_one_dependent_variable({
                 ContainerLength.twenty_feet: default_distribution_without_dependent_variable,
                 ContainerLength.forty_feet: default_distribution_without_dependent_variable,
@@ -174,7 +174,7 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
             "distribution {'20 feet': 0.25000, '40 feet': 1.00000, '45 feet': "
             "0.25000, 'other': 0.25000} the sum was 1.75000. This is error occurred "
             "while examining the dependent variable 'other'.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_distribution_with_ints_on_second_level(self):
         distribution_with_int_keys = {
@@ -212,10 +212,10 @@ class TestDistributionValidatorWithOneDependentVariable(unittest.TestCase):
 class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
 
     def test_validating_completely_empty_distribution_raises_exception(self):
-        with self.assertRaises(DistributionHasNoElementsException) as cm:
+        with self.assertRaises(DistributionHasNoElementsException) as context:
             validate_distribution_with_no_dependent_variables({}, ContainerLength, values_are_frequencies=True)
         expected_message = 'The distribution does not have any elements to draw from.'
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_missing_element(self):
         variation_of_distribution = {
@@ -224,7 +224,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.forty_five_feet: 0.25,
             ContainerLength.other: 0.25
         }
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             validate_distribution_with_no_dependent_variables(
                 variation_of_distribution, ContainerLength, values_are_frequencies=True
             )
@@ -235,7 +235,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             "feet', '45 feet', 'other'] but it provided the following elements: ['20 "
             "feet', '45 feet', 'other']."
         )
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_one_frequency_is_out_of_range_because_it_is_negative(self):
         variation_of_distribution = {
@@ -244,7 +244,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.forty_five_feet: 0.25,
             ContainerLength.other: 0.25
         }
-        with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
+        with self.assertRaises(DistributionProbabilityOutOfRange) as context:
             validate_distribution_with_no_dependent_variables(
                 variation_of_distribution, ContainerLength, values_are_frequencies=True
             )
@@ -255,7 +255,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             "feet': 0.25000, '40 feet': -0.25000, '45 feet': 0.25000, 'other': "
             "0.25000}."
         )
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_one_frequency_is_out_of_range_because_it_is_larger_than_one(self):
         variation_of_distribution = {
@@ -264,7 +264,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.forty_five_feet: 0.25,
             ContainerLength.other: 0.25
         }
-        with self.assertRaises(DistributionProbabilityOutOfRange) as cm:
+        with self.assertRaises(DistributionProbabilityOutOfRange) as context:
             validate_distribution_with_no_dependent_variables(
                 variation_of_distribution, ContainerLength, values_are_frequencies=True
             )
@@ -273,7 +273,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             'The probability of an element to be drawn must range between 0 and 1 but for '
             "the element '40 feet' the probability was 1.1 in the distribution {'20 feet': "
             "0.25000, '40 feet': 1.10000, '45 feet': 0.25000, 'other': 0.25000}.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_sum_of_frequencies_is_unequal_one(self):
         variation_of_distribution = {
@@ -282,7 +282,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             ContainerLength.forty_five_feet: 0.25,
             ContainerLength.other: 0.25
         }
-        with self.assertRaises(DistributionProbabilitiesUnequalOne) as cm:
+        with self.assertRaises(DistributionProbabilitiesUnequalOne) as context:
             validate_distribution_with_no_dependent_variables(
                 variation_of_distribution, ContainerLength, values_are_frequencies=True
             )
@@ -291,7 +291,7 @@ class TestDistributionValidatorWithNoDependentVariables(unittest.TestCase):
             'The sum of all probabilities should sum to 1 but for the '
             "distribution {'20 feet': 0.25000, '40 feet': 1.00000, '45 feet': "
             "0.25000, 'other': 0.25000} the sum was 1.75000.")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_auto_cast(self):
         dirty_distribution = {

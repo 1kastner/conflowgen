@@ -129,7 +129,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
         )
 
     def test_set_distribution_with_wrongly_typed_distribution(self) -> None:
-        with self.assertRaises(DistributionElementIsInvalidException) as cm:
+        with self.assertRaises(DistributionElementIsInvalidException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ContainerLength.twenty_feet: {  # the culprit
@@ -169,7 +169,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
                     }
                 })
         expected_message = "Element '20 feet' could not be casted to type '<enum 'ModeOfTransport'>'"
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_set_distribution_with_dirty_distribution(self) -> None:
         clean_distribution = {

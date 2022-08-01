@@ -32,7 +32,7 @@ class TestContainer(unittest.TestCase):
 
     def test_save_to_database(self) -> None:
         """Check if container can be saved"""
-        Container.create(
+        container = Container.create(
             weight=20,
             delivered_by=ModeOfTransport.truck,
             picked_up_by=ModeOfTransport.deep_sea_vessel,
@@ -40,6 +40,7 @@ class TestContainer(unittest.TestCase):
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard
         )
+        self.assertIsNotNone(container)
 
     def test_missing_delivered(self) -> None:
         with self.assertRaises(IntegrityError):
@@ -94,4 +95,5 @@ class TestContainer(unittest.TestCase):
             length=ContainerLength.forty_feet,
             storage_requirement=StorageRequirement.standard
         )
-        repr(container)
+        representation = repr(container)
+        self.assertEqual(representation, "")

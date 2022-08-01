@@ -29,7 +29,7 @@ class TestTruck(unittest.TestCase):
             delivers_container=True,
             picks_up_container=False
         )
-        truck.save()
+        self.assertIsNotNone(truck)
 
     def test_save_truck_picking_up_a_container_to_database(self) -> None:
         ati = TruckArrivalInformationForPickup.create(
@@ -42,7 +42,7 @@ class TestTruck(unittest.TestCase):
             picks_up_container=True,
             truck_arrival_information_for_pickup=ati
         )
-        truck.save()
+        self.assertIsNotNone(truck)
 
 
 class TestFeeder(unittest.TestCase):
@@ -58,7 +58,7 @@ class TestFeeder(unittest.TestCase):
 
     def test_save_feeder_to_database(self) -> None:
         """Check if feeder can be saved"""
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="MyTestFeederLine",
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.datetime.now(),
@@ -70,9 +70,8 @@ class TestFeeder(unittest.TestCase):
             capacity_in_teu=1000,
             moved_capacity=200,
             scheduled_arrival=datetime.datetime.now(),
-            schedule=s
+            schedule=schedule
         )
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=lsv
         )
-        feeder.save()

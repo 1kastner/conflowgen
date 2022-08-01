@@ -13,7 +13,7 @@ from conflowgen.domain_models.vehicle import Truck
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleFactory__create_truck(unittest.TestCase):
+class TestVehicleFactory__create_truck(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""

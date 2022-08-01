@@ -22,7 +22,7 @@ DEFAULT_CONTAINER_LENGTH_FREQUENCIES = {
 }
 
 
-def seed():
+def seed() -> None:
     ContainerLengthDistributionRepository().set_distribution(
         DEFAULT_CONTAINER_LENGTH_FREQUENCIES
     )

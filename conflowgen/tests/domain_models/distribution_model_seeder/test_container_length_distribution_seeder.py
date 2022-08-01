@@ -23,4 +23,4 @@ class TestContainerLengthDistributionSeeder(unittest.TestCase):
 
     def test_seeding(self):
         """This should just not throw any exception"""
-        container_length_distribution_seeder.seed()
+        self.assertIsNone(container_length_distribution_seeder.seed())

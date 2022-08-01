@@ -188,7 +188,7 @@ Stddev:  0.00
         feeder.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
         container = self._create_container_delivered_by_truck(truck)
-        container.picked_up_by_large_scheduled_vehicle = feeder.id
+        container.picked_up_by_large_scheduled_vehicle = feeder.id  # pylint: disable=no-member
         container.picked_up_by = feeder.get_mode_of_transport()
         container.save()
 
@@ -218,7 +218,7 @@ Stddev:  0.00
         feeder.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
         container = self._create_container_delivered_by_truck(truck)
-        container.picked_up_by_large_scheduled_vehicle = feeder.id
+        container.picked_up_by_large_scheduled_vehicle = feeder.id  # pylint: disable=no-member
         container.picked_up_by = feeder.get_mode_of_transport()
         container.save()
 
@@ -285,7 +285,7 @@ Stddev:  0.00
         truck = self._create_truck(arrival=now)
 
         container = self._create_container_delivered_by_truck(truck)
-        container.picked_up_by_large_scheduled_vehicle = feeder_1.id
+        container.picked_up_by_large_scheduled_vehicle = feeder_1.id  # pylint: disable=no-member
         container.picked_up_by = feeder_1.get_mode_of_transport()
         container.save()
 

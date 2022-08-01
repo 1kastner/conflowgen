@@ -19,6 +19,6 @@ class TestRunAllAnalyses(unittest.TestCase):
         )
 
     def test_with_no_data(self):
-        with self.assertLogs('conflowgen', level='INFO') as cm:
+        with self.assertLogs('conflowgen', level='INFO') as context:
             run_all_analyses()
-        self.assertEqual(len(cm.output), 32)
+        self.assertEqual(len(context.output), 32)

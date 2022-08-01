@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import datetime
 import unittest
 from collections import Counter
 
 import matplotlib.pyplot as plt
 
-from conflowgen import ModeOfTransport, StorageRequirement, ContainerLength
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
+from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
@@ -16,6 +20,8 @@ from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
+from conflowgen.tools.theoretical_distribution import TheoreticalDistribution
+from conflowgen.tools.weekly_distribution import WeeklyDistribution
 
 
 class TestTruckForExportContainersManager(unittest.TestCase):
@@ -44,11 +50,18 @@ class TestTruckForExportContainersManager(unittest.TestCase):
     def visualize_probabilities(self, container: Container, drawn_times, container_departure_time):
         import inspect  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
-        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+        container_dwell_time_distribution, _ = self._get_distributions(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
         plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.minimum))
         plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.maximum))
         plt.show(block=True)
+
+    def _get_distributions(self, container: Container) -> tuple[TheoreticalDistribution, WeeklyDistribution | None]:
+
+        # pylint: disable=protected-access
+        container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)
+
+        return container_dwell_time_distribution, truck_arrival_distribution
 
     def test_delivery_time_in_required_time_range_weekday(self):
 
@@ -65,7 +78,9 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         )
         delivery_times = []
         for i in range(1000):
+            # pylint: disable=protected-access
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
+
             self.assertLessEqual(delivery_time, container_departure_time,
                                  "container must not arrive later than their departure time "
                                  f"but here we had {delivery_time} in round {i + 1}")
@@ -90,7 +105,9 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         )
         delivery_times = []
         for i in range(1000):
+            # pylint: disable=protected-access
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
+
             delivery_times.append(delivery_time)
             self.assertLessEqual(delivery_time, container_departure_time,
                                  "container must not arrive later than their departure time "
@@ -123,7 +140,9 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         )
         delivery_times = []
         for i in range(1000):
+            # pylint: disable=protected-access
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
+
             delivery_times.append(delivery_time)
             self.assertLessEqual(delivery_time, container_departure_time,
                                  "container must not arrive later than their departure time "
