@@ -45,11 +45,11 @@ class AbstractReport(abc.ABC):
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
         self.start_date = properties.start_date
         self.end_date = properties.end_date
-        assert self.start_date is not None
-        assert self.end_date is not None
-        assert self.start_date < self.end_date
+        assert self.start_date is not None, "A start date needs to be set."
+        assert self.end_date is not None, "An end date needs to be set."
+        assert self.start_date < self.end_date, "The start date needs to be before the end date."
         self.transportation_buffer = properties.transportation_buffer
-        assert -1 < self.transportation_buffer
+        assert -1 < self.transportation_buffer, "The transportation buffer needs to be larger than -100%."
 
     @abc.abstractmethod
     def get_report_as_text(self) -> str:

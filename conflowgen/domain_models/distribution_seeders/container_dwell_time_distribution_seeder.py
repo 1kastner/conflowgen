@@ -31,18 +31,17 @@ DEFAULT_MINIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS = 3
 """
 The minimum dwell time for transshipment is the minimum time difference of arrival between two vessels.
 This means that one vessel can request a container from another vessel if and only if the previous vessel has arrived
-these k hours before the first one.
+these *k* hours before the first one.
 For short transshipment dwell times, it might result in a direct transfer from one vessel to the other without any
 storage if the user decides to support such activities in their model (such as a simulation model or optimization
 model).
 """
 
 
-#: This container dwell time distribution is based on
+#: The container dwell time distribution is based on
 #: :cite:p:`cto2021interview`.
-#: The average container dwell times are taken from a report but of course only reflect the reality at a given time for
-#: a specific container terminal operator.
-#: The variance of the distribution just serves as an approximation.
+#: The average container dwell times are taken from a report and reflect the reality at a given time for a specific
+#: container terminal operator.
 DEFAULT_AVERAGE_CONTAINER_DWELL_TIMES = {
 
     ModeOfTransport.truck: {

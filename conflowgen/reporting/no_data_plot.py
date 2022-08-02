@@ -8,4 +8,4 @@ def no_data_graph() -> plt.Axes:
 
 
 def no_data_text(ax: plt.Axes) -> None:
-    ax.text(0.35, 0.1, 'No data available for plotting')
+    ax.text(0.1, 0.1, 'No data')

@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+import numpy as np
+
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -50,7 +52,7 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
                 self.assertEqual(capacity_in_teu, 0, f"capacity of {mode_of_transport} is unequal 0")
 
         self.assertEqual(empty_capacity[ModeOfTransport.truck], 0)
-        self.assertEqual(empty_max_capacity[ModeOfTransport.truck], -1)
+        self.assertTrue(np.isnan(empty_max_capacity[ModeOfTransport.truck]))
 
     def test_inbound_with_single_feeder(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
@@ -110,7 +112,6 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
@@ -118,12 +119,10 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
-        feeder_lsv.save()
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
-        container = Container.create(
+        Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard,
@@ -132,7 +131,6 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
             picked_up_by=ModeOfTransport.truck,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container.save()
 
         capacity_actual, capacity_maximum = self.analysis.get_outbound_capacity_of_vehicles()
         self.assertSetEqual(set(ModeOfTransport), set(capacity_actual.keys()))
@@ -150,4 +148,4 @@ class TestInboundAndOutboundVehicleCapacityAnalysis(unittest.TestCase):
         outbound_max_capacity_of_feeder_in_teu = capacity_maximum[ModeOfTransport.feeder]
         self.assertEqual(outbound_max_capacity_of_feeder_in_teu, 300)
         outbound_max_capacity_of_trucks_in_teu = capacity_maximum[ModeOfTransport.truck]
-        self.assertEqual(outbound_max_capacity_of_trucks_in_teu, -1)
+        self.assertTrue(np.isnan(outbound_max_capacity_of_trucks_in_teu))

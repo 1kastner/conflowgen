@@ -12,5 +12,6 @@ ignore =
     F821  # Variables such as 'In' or 'display' are not detected and variables of imported Jupyter Notebook cannot be detected
     E501  # Allow long lines
     W503  # Long lines need to be broken somewhere and otherwise W504 is violated
+    E402  # Module level imports are decided on by developers
 
 show_source = True

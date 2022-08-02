@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import logging
 
 import plotly.graph_objects as go
 
@@ -18,6 +19,8 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
     Analyze how many containers were delivered by which vehicle type and how their journey continued. The analysis pairs
     the inbound and outbound journey for each container.
     """
+
+    logger = logging.getLogger("conflowgen")
 
     def __init__(self):
         super().__init__()
@@ -77,6 +80,10 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
             for outbound_vehicle_type in inbound_to_outbound_flow[inbound_vehicle_type].keys()
         ]
+
+        if sum(value) == 0:
+            self.logger.warning("No data available for plotting")
+
         inbound_labels = [
             str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
                 round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))

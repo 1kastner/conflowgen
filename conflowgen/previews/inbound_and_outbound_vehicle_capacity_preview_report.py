@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
@@ -52,10 +53,13 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         report += "\n"
         for vehicle_type in self.order_of_vehicle_types_in_report:
             vehicle_type_as_text = str(vehicle_type).replace("_", " ")
+            max_capacities_repr = -1 if np.isnan(outbound_maximum_capacities[vehicle_type]) \
+                else outbound_maximum_capacities[vehicle_type]
+
             report += f"{vehicle_type_as_text:<15} "
             report += f"{inbound_capacities[vehicle_type]:>25.1f} "
             report += f"{outbound_average_capacities[vehicle_type]:>30.1f} "
-            report += f"{outbound_maximum_capacities[vehicle_type]:>30.1f}"
+            report += f"{max_capacities_repr:>30.1f}"
             report += "\n"
         report += "(rounding errors might exist)\n"
         return report

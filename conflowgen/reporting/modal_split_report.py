@@ -71,4 +71,6 @@ def plot_modal_splits(
     for modal_split in modal_splits:
         _plt_modal_split_instance(**modal_split)
 
+    plt.tight_layout()
+
     return axes

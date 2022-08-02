@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -41,10 +43,12 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         report += "\n"
         for vehicle_type in self.order_of_vehicle_types_in_report:
             vehicle_type_as_text = str(vehicle_type).replace("_", " ")
+            max_capacities_repr = -1 if np.isnan(outbound_maximum_capacities[vehicle_type]) \
+                else outbound_maximum_capacities[vehicle_type]
             report += f"{vehicle_type_as_text:<15} "
             report += f"{inbound_capacities[vehicle_type]:>16.1f} "
             report += f"{outbound_actual_capacities[vehicle_type]:>24.1f} "
-            report += f"{outbound_maximum_capacities[vehicle_type]:>21.1f}"
+            report += f"{max_capacities_repr:>21.1f}"
             report += "\n"
         report += "(rounding errors might exist)\n"
         return report

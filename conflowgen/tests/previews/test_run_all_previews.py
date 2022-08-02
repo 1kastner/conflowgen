@@ -45,4 +45,4 @@ class TestRunAllPreviews(unittest.TestCase):
         with unittest.mock.patch('matplotlib.pyplot.show'):
             with self.assertLogs('conflowgen', level='INFO') as context:
                 run_all_previews(as_text=False, as_graph=True, static_graphs=True)
-        self.assertEqual(len(context.output), 10)
+        self.assertEqual(len(context.output), 11)

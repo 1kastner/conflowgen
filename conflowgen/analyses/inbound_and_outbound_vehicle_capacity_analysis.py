@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Dict
+import numpy as np
 
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity
@@ -73,7 +74,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
             vehicle_type: ModeOfTransport = large_scheduled_vehicle.schedule.vehicle_type
             outbound_maximum_capacity[vehicle_type] += maximum_capacity_of_vehicle
 
-        outbound_maximum_capacity[ModeOfTransport.truck] = -1  # Not meaningful, trucks can always be added as required
+        outbound_maximum_capacity[ModeOfTransport.truck] = np.nan  # Trucks can always be added as required
 
         return OutboundUsedAndMaximumCapacity(
             used=outbound_actual_capacity,

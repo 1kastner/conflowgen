@@ -24,7 +24,7 @@ Domain datatypes
 .. autoenum:: conflowgen.StorageRequirement
     :members:
 
-.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
+.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandSplit
 
 .. autonamedtuple:: conflowgen.CompleteVehicleIdentifier
 

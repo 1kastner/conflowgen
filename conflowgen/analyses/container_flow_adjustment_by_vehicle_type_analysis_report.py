@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+import logging
 
 import plotly.graph_objects as go
 
@@ -23,6 +24,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
     randomly for a container at the time of generation. The adjusted vehicle type is the vehicle type that is drawn
     in case no vehicle of the initial outbound vehicle type is left within the maximum dwell time.
     """
+
+    logger = logging.getLogger("conflowgen")
 
     def __init__(self):
         super().__init__()
@@ -94,6 +97,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
             for vehicle_type_adjusted in initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].keys()
         ]
+
+        if sum(value) == 0:
+            self.logger.warning("No data available for plotting")
+
         initial_labels = [
             str(vehicle_type_initial).replace("_", " ").capitalize() + ":<br>Initial: " + str(
                 round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2))
@@ -133,7 +140,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
 
         fig.update_layout(
             title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
-                       "containers the initially intended vehicle type was not available due to constraints "
+                       "containers<br>the initially intended vehicle type was not available due to constraints "
                        "(schedules, dwell times, etc.).",
             font_size=10,
             width=900,

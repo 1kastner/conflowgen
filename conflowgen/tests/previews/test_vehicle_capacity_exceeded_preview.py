@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+import numpy as np
+
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
 from conflowgen.previews.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
@@ -85,7 +87,7 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
             ) = no_excess_comparison[mode_of_transport_from]
 
             self.assertEqual(container_capacity_to_pick_up, 0, msg=f"mode_of_transport_from: {mode_of_transport_from}")
-            self.assertEqual(maximum_capacity, -1, msg=f"mode_of_transport_from: {mode_of_transport_from}")
+            self.assertTrue(np.isnan(maximum_capacity), msg=f"mode_of_transport_from: {mode_of_transport_from}")
             self.assertFalse(vehicle_type_capacity_is_exceeded, msg=f"mode_of_transport_from: {mode_of_transport_from}")
 
     def test_with_single_arrival_schedules(self):
@@ -128,5 +130,5 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
         ) = with_excess_comparison[mode_of_transport_from]
 
         self.assertAlmostEqual(container_capacity_to_pick_up, 60, msg="20% of 300 is 60")
-        self.assertEqual(maximum_capacity, -1, msg=f"mode_of_transport_from: {mode_of_transport_from}")
+        self.assertTrue(np.isnan(maximum_capacity), msg=f"mode_of_transport_from: {mode_of_transport_from}")
         self.assertFalse(vehicle_type_capacity_is_exceeded, msg=f"mode_of_transport_from: {mode_of_transport_from}")
