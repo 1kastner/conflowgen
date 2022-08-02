@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Dict
 
-import numpy as np
-
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.reporting import AbstractReportWithMatplotlib, modal_split_report
