@@ -30,7 +30,7 @@ class TestModalSplitAnalysis(unittest.TestCase):
         self.analysis = ModalSplitAnalysis()
 
     def test_transshipment_share_with_no_data(self):
-        both_zero = self.analysis.get_transshipment_and_hinterland_fraction()
+        both_zero = self.analysis.get_transshipment_and_hinterland_split()
         self.assertSetEqual(set(both_zero), {0})
 
     def test_hinterland_split_with_no_data(self):
@@ -72,7 +72,7 @@ class TestModalSplitAnalysis(unittest.TestCase):
         )
         container.save()
 
-        fractions = self.analysis.get_transshipment_and_hinterland_fraction()
+        fractions = self.analysis.get_transshipment_and_hinterland_split()
         self.assertEqual(fractions.transshipment_capacity, 0)
         self.assertEqual(fractions.hinterland_capacity, 1)
 

@@ -64,14 +64,14 @@ class TestModalSplitPreview__get_transshipment(unittest.TestCase):  # pylint: di
 
     def test_with_no_schedules(self):
         """If no schedules are provided, this should not fail"""
-        empty_split = self.preview.get_transshipment_and_hinterland_share()
+        empty_split = self.preview.get_transshipment_and_hinterland_split()
         self.assertEqual(empty_split.hinterland_capacity, 0)
         self.assertEqual(empty_split.transshipment_capacity, 0)
 
     def test_with_single_arrival_schedules(self):
         """transshipment is 300 TEU inbound and 300TEU * (15% + 15%) = 90TEU outbound"""
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=one_week_later.date(),
@@ -80,7 +80,6 @@ class TestModalSplitPreview__get_transshipment(unittest.TestCase):  # pylint: di
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
-        actual_split = self.preview.get_transshipment_and_hinterland_share()
+        actual_split = self.preview.get_transshipment_and_hinterland_split()
         self.assertAlmostEqual(actual_split.hinterland_capacity, 270)
         self.assertAlmostEqual(actual_split.transshipment_capacity, 90)

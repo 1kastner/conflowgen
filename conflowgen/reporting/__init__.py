@@ -60,13 +60,16 @@ class AbstractReport(abc.ABC):
         """
         return ""
 
+    @abc.abstractmethod
     def get_report_as_graph(self) -> object:
         raise NotImplementedError("No graph representation of this report has yet been defined.")
 
+    @abc.abstractmethod
     def show_report_as_graph(self, **kwargs) -> None:
         """
-        This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g. by invoking
-        ``plt.show()`` or ``fig.show``. This depends on the visualisation library.
+        This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g., by invoking
+        ``plt.show()`` or ``fig.show()``.
+        This depends on the visualisation library.
 
         Args:
             **kwargs: The additional keyword arguments are passed to the analysis instance.
@@ -85,13 +88,13 @@ class AbstractReport(abc.ABC):
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
+    def show_report_as_graph(self, **kwargs) -> None:
         self.get_report_as_graph()
         plt.show()
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
+    def show_report_as_graph(self, **kwargs) -> None:
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
         if "static" in kwargs and kwargs["static"]:
             png_format_image = fig.to_image(format="png", width=800)

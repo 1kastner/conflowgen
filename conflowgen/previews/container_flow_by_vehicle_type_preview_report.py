@@ -52,15 +52,16 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         for vehicle_type_from, vehicle_type_to in itertools.product(self.order_of_vehicle_types_in_report, repeat=2):
             vehicle_type_from_as_text = str(vehicle_type_from).replace("_", " ")
             vehicle_type_to_as_text = str(vehicle_type_to).replace("_", " ")
+            required_capacity = inbound_to_outbound_flow[vehicle_type_from][vehicle_type_to]
             report += f"{vehicle_type_from_as_text:<19} "
             report += f"{vehicle_type_to_as_text:<18} "
-            report += f"{inbound_to_outbound_flow[vehicle_type_from][vehicle_type_to]:>25.1f}"
+            report += f"{required_capacity:>25.1f}"
             report += "\n"
 
         report += "(rounding errors might exist)\n"
         return report
 
-    def _get_inbound_to_outbound_flow(self):
+    def _get_inbound_to_outbound_flow(self) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         assert self.start_date is not None
         assert self.end_date is not None
         assert self.transportation_buffer is not None

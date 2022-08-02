@@ -6,7 +6,7 @@ from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
+from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 
 
@@ -66,7 +66,7 @@ class ModalSplitPreview(AbstractPreview):
             mode_of_transport_distribution
         )
 
-    def get_transshipment_and_hinterland_share(self) -> TransshipmentAndHinterlandComparison:
+    def get_transshipment_and_hinterland_split(self) -> TransshipmentAndHinterlandSplit:
         """
         Returns:
              The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of
@@ -85,7 +85,7 @@ class ModalSplitPreview(AbstractPreview):
                 else:
                     hinterland_capacity += capacity
 
-        return TransshipmentAndHinterlandComparison(
+        return TransshipmentAndHinterlandSplit(
             transshipment_capacity=transshipment_capacity,
             hinterland_capacity=hinterland_capacity
         )

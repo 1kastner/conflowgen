@@ -77,7 +77,7 @@ from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import Ou
 from conflowgen.analyses.abstract_analysis import ContainersAndTEUContainerFlowPair
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustedToVehicleType
-from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
+from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
     CompleteVehicleIdentifier

@@ -1,5 +1,6 @@
 import datetime
 import unittest
+import unittest.mock
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.database_connection.create_tables import create_tables
@@ -22,3 +23,9 @@ class TestRunAllAnalyses(unittest.TestCase):
         with self.assertLogs('conflowgen', level='INFO') as context:
             run_all_analyses()
         self.assertEqual(len(context.output), 32)
+
+    def test_with_no_data_as_graph(self):
+        with unittest.mock.patch('matplotlib.pyplot.show'):
+            with self.assertLogs('conflowgen', level='INFO') as context:
+                run_all_analyses(as_text=False, as_graph=True, static_graphs=True)
+        self.assertEqual(len(context.output), 22)

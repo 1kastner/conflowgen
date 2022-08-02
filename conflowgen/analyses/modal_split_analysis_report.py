@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
 
 from conflowgen.analyses.modal_split_analysis import ModalSplitAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
-from conflowgen.reporting.no_data_plot import no_data_text
+from conflowgen.reporting.modal_split_report import plot_modal_splits
 
 sns.set_palette(sns.color_palette())
 
@@ -35,7 +33,7 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         """
 
         # gather data
-        transshipment = self.analysis.get_transshipment_and_hinterland_fraction()
+        transshipment = self.analysis.get_transshipment_and_hinterland_split()
         transshipment_as_fraction = np.nan
         if sum(transshipment) > 0:
             transshipment_as_fraction = (
@@ -107,7 +105,7 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         """
 
         # gather data
-        transshipment = self.analysis.get_transshipment_and_hinterland_fraction()
+        transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split()
         modal_split_for_hinterland_inbound = self.analysis.get_modal_split_for_hinterland(
             inbound=True, outbound=False
         )
@@ -118,73 +116,11 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
             inbound=True, outbound=True
         )
 
-        # Start plotting
-        fig, axes = plt.subplots(2, 2)
-        series_hinterland_and_transshipment = pd.Series({
-            "hinterland capacity": transshipment.hinterland_capacity,
-            "transshipment capacity": transshipment.transshipment_capacity
-        }, name="Transshipment share")
-
-        if sum(series_hinterland_and_transshipment) == 0:
-            axes[0, 0] = no_data_text()
-        else:
-            series_hinterland_and_transshipment.plot.pie(
-                legend=False,
-                autopct='%1.1f%%',
-                label="",
-                title="Transshipment share",
-                ax=axes[0, 0]
-            )
-
-        series_modal_split_inbound = pd.Series({
-            "train": modal_split_for_hinterland_inbound.train_capacity,
-            "truck": modal_split_for_hinterland_inbound.truck_capacity,
-            "barge": modal_split_for_hinterland_inbound.barge_capacity
-        }, name="Modal split for hinterland (inbound)")
-
-        if sum(series_modal_split_inbound) == 0:
-            axes[0, 1] = no_data_text()
-        else:
-            series_modal_split_inbound.plot.pie(
-                legend=False,
-                autopct='%1.1f%%',
-                label="",
-                title="Modal split for hinterland\n(inbound)",
-                ax=axes[0, 1]
-            )
-
-        series_modal_split_outbound = pd.Series({
-            "train": modal_split_for_hinterland_outbound.train_capacity,
-            "truck": modal_split_for_hinterland_outbound.truck_capacity,
-            "barge": modal_split_for_hinterland_outbound.barge_capacity
-        }, name="Modal split for hinterland (outbound)")
-
-        if sum(series_modal_split_outbound) == 0:
-            axes[1, 0] = no_data_text()
-        else:
-            series_modal_split_outbound.plot.pie(
-                legend=False,
-                autopct='%1.1f%%',
-                label="",
-                title="Modal split for hinterland\n(outbound)",
-                ax=axes[1, 0]
-            )
-
-        series_modal_split_both = pd.Series({
-            "train": modal_split_for_hinterland_both.train_capacity,
-            "truck": modal_split_for_hinterland_both.truck_capacity,
-            "barge": modal_split_for_hinterland_both.barge_capacity
-        }, name="Modal split for hinterland (inbound and outbound)")
-
-        if sum(series_modal_split_both) == 0:
-            axes[1, 1] = no_data_text()
-        else:
-            series_modal_split_both.plot.pie(
-                legend=False,
-                autopct='%1.1f%%',
-                label="",
-                title="Modal split for hinterland\n(inbound and outbound)",
-                ax=axes[1, 1]
-            )
+        axes = plot_modal_splits(
+            transshipment_and_hinterland_split=transshipment_and_hinterland_split,
+            modal_split_for_hinterland_both=modal_split_for_hinterland_both,
+            modal_split_for_hinterland_inbound=modal_split_for_hinterland_inbound,
+            modal_split_for_hinterland_outbound=modal_split_for_hinterland_outbound,
+        )
 
         return axes

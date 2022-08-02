@@ -3,13 +3,11 @@ from __future__ import annotations
 from typing import Dict
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting.modal_split_report import plot_modal_splits
 
 
 class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
@@ -49,7 +47,7 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         preview = self._get_updated_preview()
 
         # gather data
-        transshipment = preview.get_transshipment_and_hinterland_share()
+        transshipment = preview.get_transshipment_and_hinterland_split()
         transshipment_as_fraction = np.nan
         if sum(transshipment) > 0:
             transshipment_as_fraction = (
@@ -128,16 +126,12 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a set of pie charts using pandas.
 
         Returns:
-             The matplotlib axis of the last bar chart.
-
-        .. todo:: All pie charts should be plotted in a single plot using subplots.
+             The matplotlib axes
         """
         preview = self._get_updated_preview()
 
-        sns.set_palette(sns.color_palette())
-
         # gather data
-        transshipment = preview.get_transshipment_and_hinterland_share()
+        transshipment_and_hinterland_split = preview.get_transshipment_and_hinterland_split()
         modal_split_for_hinterland_inbound = preview.get_modal_split_for_hinterland(
             inbound=True, outbound=False
         )
@@ -148,56 +142,11 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
             inbound=True, outbound=True
         )
 
-        # Start plotting
-        series_hinterland_and_transshipment = pd.Series({
-            "hinterland capacity": transshipment.hinterland_capacity,
-            "transshipment capacity": transshipment.transshipment_capacity
-        }, name="Transshipment share")
-        series_hinterland_and_transshipment.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Transshipment share"
+        axes = plot_modal_splits(
+            transshipment_and_hinterland_split=transshipment_and_hinterland_split,
+            modal_split_for_hinterland_both=modal_split_for_hinterland_both,
+            modal_split_for_hinterland_inbound=modal_split_for_hinterland_inbound,
+            modal_split_for_hinterland_outbound=modal_split_for_hinterland_outbound,
         )
-        plt.show()
 
-        series_modal_split_inbound = pd.Series({
-            "train": modal_split_for_hinterland_inbound.train_capacity,
-            "truck": modal_split_for_hinterland_inbound.truck_capacity,
-            "barge": modal_split_for_hinterland_inbound.barge_capacity
-        }, name="Modal split for hinterland (inbound)")
-        series_modal_split_inbound.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Modal split for hinterland (inbound)"
-        )
-        plt.show()
-
-        series_modal_split_outbound = pd.Series({
-            "train": modal_split_for_hinterland_outbound.train_capacity,
-            "truck": modal_split_for_hinterland_outbound.truck_capacity,
-            "barge": modal_split_for_hinterland_outbound.barge_capacity
-        }, name="Modal split for hinterland (outbound)")
-        series_modal_split_outbound.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Modal split for hinterland (outbound)"
-        )
-        plt.show()
-
-        series_modal_split_both = pd.Series({
-            "train": modal_split_for_hinterland_both.train_capacity,
-            "truck": modal_split_for_hinterland_both.truck_capacity,
-            "barge": modal_split_for_hinterland_both.barge_capacity
-        }, name="Modal split for hinterland (inbound and outbound)")
-        ax = series_modal_split_both.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Modal split for hinterland (inbound and outbound)"
-        )
-        plt.show()
-
-        return ax
+        return axes

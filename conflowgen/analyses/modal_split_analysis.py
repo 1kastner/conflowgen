@@ -4,7 +4,7 @@ from typing import Dict
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
-from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandComparison
+from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 
 
@@ -30,7 +30,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
         super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
-    def get_transshipment_and_hinterland_fraction(self) -> TransshipmentAndHinterlandComparison:
+    def get_transshipment_and_hinterland_split(self) -> TransshipmentAndHinterlandSplit:
         """
         Returns:
             The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of containers
@@ -49,7 +49,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
                 else:
                     hinterland_capacity += capacity
 
-        return TransshipmentAndHinterlandComparison(
+        return TransshipmentAndHinterlandSplit(
             transshipment_capacity=transshipment_capacity,
             hinterland_capacity=hinterland_capacity
         )

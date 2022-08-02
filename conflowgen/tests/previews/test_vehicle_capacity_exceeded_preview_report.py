@@ -84,7 +84,7 @@ truck                                 -1.0                       0.0        no  
         """A feeder delivers containers for every vehicle type. For the types truck and feeder it is fine, deep sea
         vessels, barges and trains do not exist und thus their capacity is exceeded."""
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=one_week_later.date(),
@@ -93,7 +93,6 @@ truck                                 -1.0                       0.0        no  
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
 vehicle type     maximum capacity (in TEU) required capacity (in TEU) exceeded difference (in TEU)
@@ -105,3 +104,23 @@ truck                                 -1.0                      60.0        no  
 (rounding errors might exist)
 """
         self.assertEqual(expected_report, actual_report)
+
+    def test_report_with_no_schedules_as_graph(self):
+        """Not throwing an exception is sufficient"""
+        fig = self.preview_report.get_report_as_graph()
+        self.assertIsNotNone(fig)
+
+    def test_report_with_schedules_as_graph(self):
+        """Not throwing an exception is sufficient for now"""
+        one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
+        Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=one_week_later.date(),
+            vehicle_arrives_at_time=one_week_later.time(),
+            average_vehicle_capacity=400,
+            average_moved_capacity=300,
+            vehicle_arrives_every_k_days=-1
+        )
+        fig = self.preview_report.get_report_as_graph()
+        self.assertIsNotNone(fig)

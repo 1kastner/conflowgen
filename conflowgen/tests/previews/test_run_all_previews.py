@@ -1,4 +1,5 @@
 import unittest
+import unittest.mock
 import datetime
 
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
@@ -21,9 +22,9 @@ class TestRunAllPreviews(unittest.TestCase):
             end_date=datetime.datetime.now().date() + datetime.timedelta(days=21)
         )
 
-    def test_with_no_data(self):
+    def test_with_no_data_as_text(self):
         with self.assertLogs('conflowgen', level='INFO') as context:
-            run_all_previews()
+            run_all_previews(as_text=True)
         self.assertEqual(len(context.output), 14)
 
         # Test only some entries. The detailed tests should be done in the unit test of the respective report.
@@ -39,3 +40,9 @@ class TestRunAllPreviews(unittest.TestCase):
             context.output[-1],
             'INFO:conflowgen:All previews have been presented.'
         )
+
+    def test_with_no_data_as_graph(self):
+        with unittest.mock.patch('matplotlib.pyplot.show'):
+            with self.assertLogs('conflowgen', level='INFO') as context:
+                run_all_previews(as_text=False, as_graph=True, static_graphs=True)
+        self.assertEqual(len(context.output), 10)
