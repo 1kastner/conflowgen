@@ -11,6 +11,12 @@ class DisplayAsMarkupLanguage(abc.ABC):
     """
     This is the abstract class new markup language definitions can derive from.
     """
+    def __init__(self, display_func: Callable):
+        """
+        Args:
+            display_func: The function that is invoked to display the text
+        """
+        self.display_func = display_func
 
     @abc.abstractmethod
     def display_headline(self, text: str, level: int) -> None:
@@ -48,23 +54,20 @@ class DisplayAsPlainText(DisplayAsMarkupLanguage):
 
     DESIRED_LINE_LENGTH = 80  # doc: The console width used for wrapping output to new lines. This is not mandatory.
 
-    def __init__(self, display_text_func: Callable):
-        self.display_text_func = display_text_func
-
-    def display_headline(self, text: str, level: int = -1):
+    def display_headline(self, text: str, level: int = -1) -> None:
         """
         Args:
             text: The text of the headline.
             level: The level of the headline is not supported for the plaintext mode.
         """
-        self.display_text_func("\n" + text + "\n")
+        self.display_func("\n" + text + "\n")
 
-    def display_verbatim(self, text: str):
-        self.display_text_func(text)
+    def display_verbatim(self, text: str) -> None:
+        self.display_func(text)
 
-    def display_explanation(self, text: str):
+    def display_explanation(self, text: str) -> None:
         text = fill(_remove_unnecessary_spaces(text), width=self.DESIRED_LINE_LENGTH)
-        self.display_text_func(text)
+        self.display_func(text)
 
 
 class DisplayAsMarkdown(DisplayAsMarkupLanguage):
@@ -72,14 +75,12 @@ class DisplayAsMarkdown(DisplayAsMarkupLanguage):
     With this style, the output is set in Markdown.
     This is, e.g., helpful when showing the output in Jupyter Notebooks.
     """
-    def __init__(self, display_markdown_func: Callable):
-        self.display_markdown_func = display_markdown_func
 
-    def display_headline(self, text: str, level: int = 4):
-        self.display_markdown_func("#" * level + " " + text + "\n")
+    def display_headline(self, text: str, level: int = 4) -> None:
+        self.display_func("#" * level + " " + text + "\n")
 
-    def display_verbatim(self, text: str):
-        self.display_markdown_func("\n```\n" + text + "\n```\n")
+    def display_verbatim(self, text: str) -> None:
+        self.display_func("\n```\n" + text + "\n```\n")
 
-    def display_explanation(self, text: str):
-        self.display_markdown_func(_remove_unnecessary_spaces(text))
+    def display_explanation(self, text: str) -> None:
+        self.display_func(_remove_unnecessary_spaces(text))

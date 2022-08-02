@@ -52,6 +52,7 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
     'sphinx.ext.autosectionlabel',  # create reference for each section
+    'sphinx.ext.viewcode',  # create html page for each source file and link between it and and the docs
 
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text
@@ -75,7 +76,19 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
+autodoc_typehints = 'both'
+
 autodoc_typehints_format = 'short'
+
+
+def rework_annotations(app, obj, bound_method):
+    if "return" in obj.__annotations__ and obj.__annotations__["return"] is None:
+        del obj.__annotations__["return"]  # drop return none
+
+
+def setup(app):
+    app.connect("autodoc-before-process-signature", rework_annotations)
+
 
 # -- Options for HTML output -------------------------------------------------
 

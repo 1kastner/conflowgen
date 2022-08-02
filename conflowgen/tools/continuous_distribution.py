@@ -5,6 +5,7 @@ import math
 from typing import Collection, Sequence, Optional
 
 import numpy
+import numpy as np
 import scipy.stats
 
 
@@ -22,6 +23,14 @@ class ContinuousDistribution(abc.ABC):
             unit: Optional[str] = None,
             reversed_distribution: bool = False
     ):
+        """
+        Args:
+            average: The expected mean of the distribution.
+            minimum: The minimum of the distribution. Smaller values are automatically set to zero.
+            maximum: The maximum of the distribution. Larger values are automatically set to zero.
+            unit: The unit for the average, minimum, and maximum. It is used for the __repr__ implementation.
+            reversed_distribution: Whether the distribution is mirrored at the y-axis.
+        """
         assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
         self.average = average
         self.minimum = minimum
@@ -35,25 +44,24 @@ class ContinuousDistribution(abc.ABC):
             self.unit_repr_square = unit + "²"
 
     @abc.abstractmethod
-    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
         pass
 
     def get_probabilities(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
         """
-
         Args:
             xs: Elements that are on the same scale as average, variance, minimum, and maximum
 
         Returns:
-            The respective probability that element x as an element of xs is drawn from this distribution
+            The respective probability that element x of xs is drawn from this distribution.
         """
-        xs = numpy.array(xs)
+        xs = np.array(xs)
         densities = self._get_probabilities_based_on_distribution(xs)
         densities[xs <= self.minimum] = 0
         densities[xs >= self.maximum] = 0
         densities = densities / densities.sum()
         if self.reversed_distribution:
-            densities = numpy.flip(densities)
+            densities = np.flip(densities)
         return densities
 
     @abc.abstractmethod
@@ -96,7 +104,7 @@ class ClippedLogNormal(ContinuousDistribution):
 
         return frozen_lognorm
 
-    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
         return self._lognorm.pdf(xs)
 
     def __repr__(self):
@@ -123,7 +131,7 @@ class ClippedLogNormal(ContinuousDistribution):
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
     assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length"
-    np_probs = [numpy.array(probs, dtype=numpy.double) for probs in probabilities]
-    multiplied_probabilities = numpy.multiply(*np_probs)
+    np_probs = [np.array(probs, dtype=np.double) for probs in probabilities]
+    multiplied_probabilities = np.multiply(*np_probs)
     normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()
     return normalized_probabilities
