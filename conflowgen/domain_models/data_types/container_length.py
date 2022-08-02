@@ -41,6 +41,7 @@ class ContainerLength(enum.Enum):
         The textual representation is e.g. '20 feet' instead of '<ContainerLength.twenty_feet>' so it is easier to read
         in the logs.
         """
+        # noinspection PyTypeChecker
         if self.value > 0:
             return f"{self.value} feet"
         return "other"

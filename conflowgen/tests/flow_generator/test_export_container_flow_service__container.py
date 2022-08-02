@@ -12,7 +12,7 @@ from conflowgen.application.services.export_container_flow_service import \
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestExportContainerFlowService__Container(unittest.TestCase):
+class TestExportContainerFlowService__Container(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         self.service = ExportContainerFlowService()
@@ -24,7 +24,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             Schedule,
             Destination
         ])
-        df_container = self.service._convert_table_to_pandas_dataframe(Container)
+        df_container = self.service._convert_table_to_pandas_dataframe(Container)  # pylint: disable=protected-access
         self.assertEqual(len(df_container), 0)
 
     def test_convert_table_to_pandas_dataframe_with_container_without_destination(self):
@@ -45,7 +45,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             storage_requirement=StorageRequirement.standard
         )
         container.save()
-        df_container = self.service._convert_table_to_pandas_dataframe(Container)
+        df_container = self.service._convert_table_to_pandas_dataframe(Container)  # pylint: disable=protected-access
         self.assertEqual(len(df_container), 1)
         self.assertSetEqual(
             set(df_container.columns),
@@ -131,7 +131,7 @@ class TestExportContainerFlowService__Container(unittest.TestCase):
             storage_requirement=StorageRequirement.standard,
             destination=destination
         )
-        df_container = self.service._convert_table_to_pandas_dataframe(Container)
+        df_container = self.service._convert_table_to_pandas_dataframe(Container)   # pylint: disable=protected-access
         self.assertEqual(len(df_container), 1)
         self.assertSetEqual(
             set(df_container.columns),

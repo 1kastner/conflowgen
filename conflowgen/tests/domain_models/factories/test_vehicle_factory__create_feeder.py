@@ -11,7 +11,7 @@ from conflowgen.domain_models.vehicle import Feeder, LargeScheduledVehicle, Sche
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleFactory__create_feeder(unittest.TestCase):
+class TestVehicleFactory__create_feeder(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -24,7 +24,7 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
         self.vehicle_factory = VehicleFactory()
 
     def test_create_normal_feeder(self) -> None:
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.datetime.now(),
@@ -35,11 +35,11 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
             capacity_in_teu=800,
             moved_capacity=50,
             scheduled_arrival=datetime.datetime.now(),
-            schedule=s
+            schedule=schedule
         )
 
     def test_create_unrealistic_feeder(self) -> None:
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.datetime.now(),
@@ -51,7 +51,7 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
                 capacity_in_teu=-1,
                 moved_capacity=1,
                 scheduled_arrival=datetime.datetime.now(),
-                schedule=s
+                schedule=schedule
             )
 
         with self.assertRaises(UnrealisticValuesException):
@@ -59,5 +59,5 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):
                 capacity_in_teu=1,
                 moved_capacity=-1,
                 scheduled_arrival=datetime.datetime.now(),
-                schedule=s
+                schedule=schedule
             )

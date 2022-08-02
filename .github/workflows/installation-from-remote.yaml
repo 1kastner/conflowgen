@@ -22,10 +22,6 @@ jobs:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v3.4.1
 
-    - uses: actions/checkout@v2
-      with:
-        lfs: false
-
     - uses: conda-incubator/setup-miniconda@v2
       with:
         auto-update-conda: true
@@ -49,10 +45,6 @@ jobs:
 
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v3.4.1
-
-    - uses: actions/checkout@v2
-      with:
-        lfs: false
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -86,10 +78,6 @@ jobs:
 
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v3.4.1
-
-    - uses: actions/checkout@v2
-      with:
-        lfs: false
 
     - uses: actions/setup-python@v4
       with:

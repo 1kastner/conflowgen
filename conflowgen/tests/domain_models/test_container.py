@@ -32,7 +32,7 @@ class TestContainer(unittest.TestCase):
 
     def test_save_to_database(self) -> None:
         """Check if container can be saved"""
-        container_1 = Container.create(
+        container = Container.create(
             weight=20,
             delivered_by=ModeOfTransport.truck,
             picked_up_by=ModeOfTransport.deep_sea_vessel,
@@ -40,7 +40,7 @@ class TestContainer(unittest.TestCase):
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard
         )
-        container_1.save()
+        self.assertIsNotNone(container)
 
     def test_missing_delivered(self) -> None:
         with self.assertRaises(IntegrityError):
@@ -48,19 +48,21 @@ class TestContainer(unittest.TestCase):
                 weight=20,
                 delivered_by=None,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=ContainerLength.twenty_feet,
                 storage_requirement=StorageRequirement.standard
-            ).save()
+            )
 
     def test_missing_picked_up(self) -> None:
         with self.assertRaises(IntegrityError):
             Container.create(
                 weight=20,
                 delivered_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 picked_up_by=None,
                 length=ContainerLength.twenty_feet,
                 storage_requirement=StorageRequirement.standard
-            ).save()
+            )
 
     def test_missing_length(self) -> None:
         with self.assertRaises(IntegrityError):
@@ -68,9 +70,10 @@ class TestContainer(unittest.TestCase):
                 weight=10,
                 delivered_by=ModeOfTransport.barge,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=None,
                 storage_requirement=StorageRequirement.dangerous_goods
-            ).save()
+            )
 
     def test_missing_storage_requirement(self) -> None:
         with self.assertRaises(IntegrityError):
@@ -78,6 +81,23 @@ class TestContainer(unittest.TestCase):
                 weight=10,
                 delivered_by=ModeOfTransport.barge,
                 picked_up_by=ModeOfTransport.deep_sea_vessel,
+                picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
                 length=ContainerLength.forty_feet,
                 storage_requirement=None
-            ).save()
+            )
+
+    def test_container_repr(self) -> None:
+        container = Container.create(
+            weight=10,
+            delivered_by=ModeOfTransport.barge,
+            picked_up_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        representation = repr(container)
+        self.assertEqual(
+            representation,
+            "<Container weight: 10; length: 40 feet; delivered_by_large_scheduled_vehicle: None; "
+            "delivered_by_truck: None; picked_up_by_large_scheduled_vehicle: None; picked_up_by_truck: None>"
+        )

@@ -33,7 +33,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             self.assertAlmostEqual(sum_of_all_proportions, 1)
 
     def test_set_with_missing_keys_first_level(self) -> None:
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
@@ -51,10 +51,10 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             "The distribution {'feeder': {...}} was expected to have the following "
             "elements: ['truck', 'train', 'feeder', 'deep_sea_vessel', 'barge'] but it "
             "provided the following elements: ['feeder'].")
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_set_with_missing_keys_second_level(self) -> None:
-        with self.assertRaises(DistributionElementIsMissingException) as cm:
+        with self.assertRaises(DistributionElementIsMissingException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ModeOfTransport.feeder: {
@@ -85,7 +85,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             "provided the following elements: ['train']. This is error occurred while "
             "examining the dependent variable 'feeder'."
         )
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_happy_path(self) -> None:
         self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
@@ -129,7 +129,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
         )
 
     def test_set_distribution_with_wrongly_typed_distribution(self) -> None:
-        with self.assertRaises(DistributionElementIsInvalidException) as cm:
+        with self.assertRaises(DistributionElementIsInvalidException) as context:
             self.mode_of_transport_distribution_manager.set_mode_of_transport_distribution(
                 {
                     ContainerLength.twenty_feet: {  # the culprit
@@ -169,7 +169,7 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
                     }
                 })
         expected_message = "Element '20 feet' could not be casted to type '<enum 'ModeOfTransport'>'"
-        self.assertEqual(expected_message, str(cm.exception))
+        self.assertEqual(expected_message, str(context.exception))
 
     def test_set_distribution_with_dirty_distribution(self) -> None:
         clean_distribution = {
@@ -248,5 +248,6 @@ class TestModeOfTransportDistributionManager(unittest.TestCase):
             }
         }
         sanitized_distribution = validate_distribution_with_one_dependent_variable(
-            dirty_distribution, ModeOfTransport, ModeOfTransport)
+            dirty_distribution, ModeOfTransport, ModeOfTransport, values_are_frequencies=True
+        )
         self.assertDictEqual(sanitized_distribution, clean_distribution)

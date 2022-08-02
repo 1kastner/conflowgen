@@ -7,7 +7,7 @@ import unittest
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository, InvalidTimeRangeException, \
-    DuplicatedContainerFlowGenerationPropertiesEntryException, MinimumNotStrictlySmallerThanMaximumException
+    DuplicatedContainerFlowGenerationPropertiesEntryException
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -138,29 +138,3 @@ class TestContainerFlowGenerationProperties(unittest.TestCase):
         self.assertEqual(loaded_properties.name, name_new)
         self.assertEqual(loaded_properties.start_date, start_date_new)
         self.assertEqual(loaded_properties.end_date, end_date_new)
-
-    def test_set_invalid_minimum_maximum_pair_for_import_containers(self):
-        properties = self.repository.get_container_flow_generation_properties()
-        name = "Test"
-        properties.name = name
-        start_date = datetime.datetime.now()
-        properties.start_date = start_date
-        end_date = datetime.datetime.now() + datetime.timedelta(days=5)
-        properties.end_date = end_date
-        properties.minimum_dwell_time_of_import_containers_in_hours = 10
-        properties.maximum_dwell_time_of_import_containers_in_hours = 9
-        with self.assertRaises(MinimumNotStrictlySmallerThanMaximumException):
-            self.repository.set_container_flow_generation_properties(properties)
-
-    def test_set_invalid_minimum_maximum_pair_for_export_containers(self):
-        properties = self.repository.get_container_flow_generation_properties()
-        name = "Test"
-        properties.name = name
-        start_date = datetime.datetime.now()
-        properties.start_date = start_date
-        end_date = datetime.datetime.now() + datetime.timedelta(days=5)
-        properties.end_date = end_date
-        properties.minimum_dwell_time_of_export_containers_in_hours = 10
-        properties.maximum_dwell_time_of_export_containers_in_hours = 9
-        with self.assertRaises(MinimumNotStrictlySmallerThanMaximumException):
-            self.repository.set_container_flow_generation_properties(properties)

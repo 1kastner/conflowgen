@@ -11,7 +11,7 @@ from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicl
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):
+class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -24,7 +24,7 @@ class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):
         self.vehicle_factory = VehicleFactory()
 
     def test_create_normal_deep_sea_vessel(self) -> None:
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             vehicle_arrives_at=datetime.datetime.now(),
@@ -35,11 +35,11 @@ class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):
             capacity_in_teu=800,
             moved_capacity=50,
             scheduled_arrival=datetime.datetime.now(),
-            schedule=s
+            schedule=schedule
         )
 
     def test_create_unrealistic_deep_sea_vessel(self) -> None:
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             vehicle_arrives_at=datetime.datetime.now(),
@@ -51,19 +51,19 @@ class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):
                 capacity_in_teu=-1,
                 moved_capacity=1,
                 scheduled_arrival=datetime.datetime.now(),
-                schedule=s
+                schedule=schedule
             )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_deep_sea_vessel(
                 capacity_in_teu=1,
                 moved_capacity=-1,
                 scheduled_arrival=datetime.datetime.now(),
-                schedule=s
+                schedule=schedule
             )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_deep_sea_vessel(
                 capacity_in_teu=50,
                 moved_capacity=100,
                 scheduled_arrival=datetime.datetime.now(),
-                schedule=s
+                schedule=schedule
             )

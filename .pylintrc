@@ -4,7 +4,8 @@
 fail-under=8.0
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=.git
+ignore=.git,
+        tests
 
 # Add files or directories matching the regex patterns to the ignore-list. The
 # regex matches against paths.
@@ -57,6 +58,7 @@ disable=
     R1710, # inconsistent-return-statements -- leave it up to the programmers to decide this
     W0511, # fixme - allow todos in the code -- this should be eventually changed but it is not top priority
     W0122, # exec-used -- as this module only works locally (no networking), executing arbitrary code bears no threats
+    R0201, # no-self-use -- leave it up to the programmers to decide this
 
 [MESSAGES CONTROL]
 
@@ -191,7 +193,10 @@ good-names=i,
            Run,
            _,
            df,
-           ax
+           ax,
+           x,
+           xs,
+           mu
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted

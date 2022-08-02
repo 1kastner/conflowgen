@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+import numpy as np
+
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
@@ -162,7 +164,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
     def test_outbound_maximum_capacity_with_several_arrivals_schedules(self):
         """`_, capacity_with_one_feeder = self.preview.get_outbound_capacity_of_vehicles()` is the key difference!"""
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=two_days_later.date(),
@@ -170,7 +172,6 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             average_vehicle_capacity=400,
             average_moved_capacity=300
         )
-        schedule.save()
         _, capacity_with_one_feeder = self.preview.get_outbound_capacity_of_vehicles()
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
 
@@ -187,5 +188,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
         # based on the seeded ModeOfTransportDistribution, this value might vary if not properly set
         truck_capacity_in_teu = capacity_with_one_feeder[ModeOfTransport.truck]
-        self.assertEqual(truck_capacity_in_teu, -1, "There is no maximum capacity for trucks, they are generated "
-                                                    "as they are needed.")
+        self.assertTrue(
+            np.isnan(truck_capacity_in_teu),
+            "There is no maximum capacity for trucks, they are generated as they are needed."
+        )

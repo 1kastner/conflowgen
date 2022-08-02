@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Dict
 
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -70,8 +71,10 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
             else:
                 difference = container_capacity_to_pick_up - maximum_capacity
 
+            max_capacity_repr = -1 if np.isnan(maximum_capacity) else maximum_capacity
+
             vehicle_type_capacity_is_exceeded_as_text = "yes" if vehicle_type_capacity_is_exceeded else "no"
-            report += f"{maximum_capacity:>24.1f} "
+            report += f"{max_capacity_repr:>24.1f} "
             report += f"{container_capacity_to_pick_up:>25.1f} "
             report += f"{vehicle_type_capacity_is_exceeded_as_text:>9}"
             report += f"{difference:>20.1f}"

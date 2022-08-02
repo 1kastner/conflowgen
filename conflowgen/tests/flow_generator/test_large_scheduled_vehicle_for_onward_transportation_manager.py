@@ -1,11 +1,15 @@
 import datetime
 import unittest
+from typing import Iterable
 
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
-from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
+from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, \
+    container_dwell_time_distribution_seeder
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -34,19 +38,15 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             TruckArrivalInformationForDelivery,
             TruckArrivalInformationForPickup,
             Destination,
-            ModeOfTransportDistribution
+            ModeOfTransportDistribution,
+            ContainerDwellTimeDistribution,
         ])
 
         mode_of_transport_distribution_seeder.seed()
+        container_dwell_time_distribution_seeder.seed()
 
         self.manager = LargeScheduledVehicleForOnwardTransportationManager()
         self.manager.reload_properties(
-            minimum_dwell_time_of_import_containers_in_hours=3,
-            minimum_dwell_time_of_transshipment_containers_in_hours=3,
-            minimum_dwell_time_of_export_containers_in_hours=3,
-            maximum_dwell_time_of_import_containers_in_hours=3 * 24,
-            maximum_dwell_time_of_transshipment_containers_in_hours=5 * 24,
-            maximum_dwell_time_of_export_containers_in_hours=5 * 24,
             transportation_buffer=0
         )
 
@@ -129,7 +129,6 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             picked_up_by=ModeOfTransport.feeder,
             picked_up_by_initial=ModeOfTransport.feeder
         )
-        container.save()
         return container
 
     @staticmethod
@@ -145,7 +144,6 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             picked_up_by=ModeOfTransport.feeder,
             picked_up_by_initial=ModeOfTransport.feeder
         )
-        container.save()
         return container
 
     def test_no_exception_for_empty_database(self):
@@ -183,7 +181,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
                                                                             "containers")
         teu_loaded = 0
-        for container in containers_reloaded:
+        for container in containers_reloaded:  # pylint: disable=E1133
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 10, "Feeder must not be loaded with more than 10 TEU")
@@ -205,13 +203,13 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
 
         self.manager.choose_departing_vehicle_for_containers()
 
-        containers_reloaded = Container.select().where(
+        containers_reloaded: Iterable[Container] = Container.select().where(
             Container.picked_up_by_large_scheduled_vehicle == feeder
         )
         self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
                                                                             "containers")
         teu_loaded = 0
-        for container in containers_reloaded:
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
@@ -239,13 +237,13 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
 
         self.manager.choose_departing_vehicle_for_containers()
 
-        containers_reloaded = Container.select().where(
+        containers_reloaded: Iterable[Container] = Container.select().where(
             Container.picked_up_by_large_scheduled_vehicle == feeder
         )
         self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
                                                                             "containers")
         teu_loaded = 0
-        for container in containers_reloaded:
+        for container in containers_reloaded:   # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
@@ -276,13 +274,13 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
 
         self.manager.choose_departing_vehicle_for_containers()
 
-        containers_reloaded = Container.select().where(
+        containers_reloaded: Iterable[Container] = Container.select().where(
             Container.picked_up_by_large_scheduled_vehicle == feeder
         )
         self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
                                                                             "containers")
         teu_loaded = 0
-        for container in containers_reloaded:
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")

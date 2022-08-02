@@ -12,7 +12,7 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destinatio
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestContainerFlowGeneratorService__generate(unittest.TestCase):
+class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint: disable=invalid-name
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -26,10 +26,10 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):
             LargeScheduledVehicle
         ])
         mode_of_transport_distribution_seeder.seed()
-        self.container_Flow_generator_service = ContainerFlowGenerationService()
+        self.container_flow_generator_service = ContainerFlowGenerationService()
 
     def test_container_flow_data_exists_with_no_data(self):
-        container_flow_data_exists = self.container_Flow_generator_service.container_flow_data_exists()
+        container_flow_data_exists = self.container_flow_generator_service.container_flow_data_exists()
         self.assertFalse(container_flow_data_exists)
 
     def test_container_flow_data_exists_with_some_data(self):
@@ -41,5 +41,5 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):
             picked_up_by=ModeOfTransport.truck,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container_flow_data_exists = self.container_Flow_generator_service.container_flow_data_exists()
+        container_flow_data_exists = self.container_flow_generator_service.container_flow_data_exists()
         self.assertTrue(container_flow_data_exists)

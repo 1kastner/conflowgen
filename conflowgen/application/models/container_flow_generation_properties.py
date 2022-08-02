@@ -1,13 +1,8 @@
 import datetime
 
-from peewee import AutoField, CharField, DateField, TimestampField, DateTimeField, IntegerField, FloatField
+from peewee import AutoField, CharField, DateField, TimestampField, DateTimeField, FloatField
 
-from conflowgen.domain_models.seeders import DEFAULT_MAXIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS, \
-    DEFAULT_MINIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS, \
-    DEFAULT_MAXIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS, \
-    DEFAULT_MINIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS, \
-    DEFAULT_MAXIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS, \
-    DEFAULT_MINIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS, DEFAULT_TRANSPORTATION_BUFFER
+from conflowgen.domain_models.seeders import DEFAULT_TRANSPORTATION_BUFFER
 from conflowgen.domain_models.base_model import BaseModel
 
 
@@ -41,25 +36,6 @@ class ContainerFlowGenerationProperties(BaseModel):
         help_text="The date these properties has been last updated"
     )
 
-    maximum_dwell_time_of_import_containers_in_hours = IntegerField(
-        default=DEFAULT_MAXIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS
-    )
-
-    minimum_dwell_time_of_import_containers_in_hours = IntegerField(
-        default=DEFAULT_MINIMUM_DWELL_TIME_OF_IMPORT_CONTAINERS_IN_HOURS
-    )
-    maximum_dwell_time_of_export_containers_in_hours = IntegerField(
-        default=DEFAULT_MAXIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS,
-    )
-    minimum_dwell_time_of_export_containers_in_hours = IntegerField(
-        default=DEFAULT_MINIMUM_DWELL_TIME_OF_EXPORT_CONTAINERS_IN_HOURS,
-    )
-    maximum_dwell_time_of_transshipment_containers_in_hours = IntegerField(
-        default=DEFAULT_MAXIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS,
-    )
-    minimum_dwell_time_of_transshipment_containers_in_hours = IntegerField(
-        default=DEFAULT_MINIMUM_DWELL_TIME_OF_TRANSSHIPMENT_CONTAINERS_IN_HOURS,
-    )
     transportation_buffer = FloatField(
         default=DEFAULT_TRANSPORTATION_BUFFER,
     )

@@ -1,5 +1,6 @@
 from __future__ import annotations
 import itertools
+import logging
 from typing import Dict
 
 import plotly.graph_objects as go
@@ -23,6 +24,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
     report_description = """
     This report previews the container flow between vehicle types as defined by schedules and input distributions.
     """
+
+    logger = logging.getLogger("conflowgen")
 
     def __init__(self):
         super().__init__()
@@ -52,15 +55,16 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         for vehicle_type_from, vehicle_type_to in itertools.product(self.order_of_vehicle_types_in_report, repeat=2):
             vehicle_type_from_as_text = str(vehicle_type_from).replace("_", " ")
             vehicle_type_to_as_text = str(vehicle_type_to).replace("_", " ")
+            required_capacity = inbound_to_outbound_flow[vehicle_type_from][vehicle_type_to]
             report += f"{vehicle_type_from_as_text:<19} "
             report += f"{vehicle_type_to_as_text:<18} "
-            report += f"{inbound_to_outbound_flow[vehicle_type_from][vehicle_type_to]:>25.1f}"
+            report += f"{required_capacity:>25.1f}"
             report += "\n"
 
         report += "(rounding errors might exist)\n"
         return report
 
-    def _get_inbound_to_outbound_flow(self):
+    def _get_inbound_to_outbound_flow(self) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         assert self.start_date is not None
         assert self.end_date is not None
         assert self.transportation_buffer is not None
@@ -104,6 +108,10 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
             for outbound_vehicle_type in inbound_to_outbound_flow[inbound_vehicle_type].keys()
         ]
+
+        if sum(value) == 0:
+            self.logger.warning("No data available for plotting")
+
         inbound_labels = [
             str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
                 round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))

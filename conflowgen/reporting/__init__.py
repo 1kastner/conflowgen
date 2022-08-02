@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import abc
 import datetime
+import enum
 import tempfile
-from typing import cast
+from typing import cast, Any, Type
+from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
@@ -43,11 +45,11 @@ class AbstractReport(abc.ABC):
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
         self.start_date = properties.start_date
         self.end_date = properties.end_date
-        assert self.start_date is not None
-        assert self.end_date is not None
-        assert self.start_date < self.end_date
+        assert self.start_date is not None, "A start date needs to be set."
+        assert self.end_date is not None, "An end date needs to be set."
+        assert self.start_date < self.end_date, "The start date needs to be before the end date."
         self.transportation_buffer = properties.transportation_buffer
-        assert -1 < self.transportation_buffer
+        assert -1 < self.transportation_buffer, "The transportation buffer needs to be larger than -100%."
 
     @abc.abstractmethod
     def get_report_as_text(self) -> str:
@@ -59,28 +61,41 @@ class AbstractReport(abc.ABC):
         """
         return ""
 
+    @abc.abstractmethod
     def get_report_as_graph(self) -> object:
         raise NotImplementedError("No graph representation of this report has yet been defined.")
 
+    @abc.abstractmethod
     def show_report_as_graph(self, **kwargs) -> None:
         """
-        This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g. by invoking
-        ``plt.show()`` or ``fig.show``. This depends on the visualisation library.
+        This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g., by invoking
+        ``plt.show()`` or ``fig.show()``.
+        This depends on the visualisation library.
 
         Args:
             **kwargs: The additional keyword arguments are passed to the analysis instance.
         """
         raise NotImplementedError("No show method has yet been defined.")
 
+    @staticmethod
+    def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: Type[enum.Enum]) -> str:
+        if enum_or_enum_set is None or enum_or_enum_set == "all":
+            return "all"
+        if isinstance(enum_or_enum_set, enum_type):  # a
+            return str(enum_or_enum_set)
+        if isinstance(enum_or_enum_set, Iterable):  # a & b & c
+            return " & ".join([str(element) for element in enum_or_enum_set])
+        return str(enum_or_enum_set)  # just give it a try
+
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
+    def show_report_as_graph(self, **kwargs) -> None:
         self.get_report_as_graph()
         plt.show()
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
-    def show_report_as_graph(self, **kwargs) -> None:  # pragma: no cover
+    def show_report_as_graph(self, **kwargs) -> None:
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
         if "static" in kwargs and kwargs["static"]:
             png_format_image = fig.to_image(format="png", width=800)

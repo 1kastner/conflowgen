@@ -50,7 +50,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
             self.assertLessEqual(proportion, 1)
 
     def test_happy_path(self) -> None:
-        ContainerLengthDistributionRepository.set_distribution(
+        no_return = ContainerLengthDistributionRepository.set_distribution(
             {
                 ContainerLength.twenty_feet: 0.5,
                 ContainerLength.forty_feet: 0.5,
@@ -58,6 +58,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
                 ContainerLength.other: 0
             }
         )
+        self.assertIsNone(no_return)
 
     def test_set_twice(self) -> None:
         ContainerLengthDistributionRepository.set_distribution(
@@ -68,7 +69,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
                 ContainerLength.other: 0
             }
         )
-        ContainerLengthDistributionRepository.set_distribution(
+        no_return = ContainerLengthDistributionRepository.set_distribution(
             {
                 ContainerLength.twenty_feet: 0.5,
                 ContainerLength.forty_feet: 0.5,
@@ -76,6 +77,7 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
                 ContainerLength.other: 0
             }
         )
+        self.assertIsNone(no_return)
 
     def test_set_container_lengths_with_missing_lengths(self) -> None:
         with self.assertRaises(ContainerLengthMissing):

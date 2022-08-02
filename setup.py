@@ -23,6 +23,9 @@ setup(
     url='https://github.com/1kastner/conflowgen',
     python_requires='>=3.8',
     install_requires=[
+        # working with distributions and statistics
+        'scipy',  # used for, e.g., the lognorm distribution
+
         # data export
         'numpy',  # used in combination with pandas for column types
         'pandas >=1',  # CSV/Excel import and export
@@ -36,8 +39,9 @@ setup(
 
         # for creating the visuals
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
-        'plotly',  # useful for e.g. Sankey diagrams
         'seaborn',  # exchanges matplotlib color palletes
+        'plotly',  # useful for, e.g., Sankey diagrams
+        'kaleido',  # plotly depends on this package for exporting its figures, we got this as a present
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -48,7 +52,7 @@ setup(
             'pytest-github-actions-annotate-failures',  # turns pytest failures into action annotations
 
             # build documentation
-            'sphinx',  # build the documentation
+            'sphinx <5',  # build the documentation
             'sphinx-rtd-theme',  # adding the nice sphinx theme
             'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
@@ -59,13 +63,10 @@ setup(
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
             'jupyterlab',  # develop the Jupyter Notebooks
 
-            # usually optional dependencies that are used in the documentation
-            'kaleido',  # plotly depends on this package for SVG export, we got this as a present
-
             # checking code quality
             'pylint',  # lint Python code
             'flake8',  # lint Python code
-            'flake8_nb',  # lint Jupyter Notebooks
+            'flake8_nb >=0.4',  # lint Jupyter Notebooks
 
             # publish at PyPI
             'twine'

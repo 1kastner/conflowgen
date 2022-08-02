@@ -16,8 +16,11 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
                 "f": 16
             }
         }
-        with self.assertLogs('conflowgen', level='DEBUG') as cm:
-            normalized_distribution = normalize_distribution_with_one_dependent_variable(distributions)
+        with self.assertLogs('conflowgen', level='DEBUG') as context:
+            normalized_distribution = normalize_distribution_with_one_dependent_variable(
+                distributions,
+                values_are_frequencies=True
+            )
         self.assertDictEqual(
             normalized_distribution, {
                 "a": {
@@ -30,13 +33,13 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
                 }
             }
         )
-        self.assertEqual(len(cm.output), 2)
+        self.assertEqual(len(context.output), 2)
         self.assertEqual(
-            cm.output[0],
+            context.output[0],
             "DEBUG:conflowgen:Sum of fractions was not 1 for 'a' and was automatically normalized."
         )
         self.assertEqual(
-            cm.output[1],
+            context.output[1],
             "DEBUG:conflowgen:Sum of fractions was not 1 for 'd' and was automatically normalized."
         )
 
@@ -51,8 +54,11 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
                 "f": 16
             }
         }
-        with self.assertLogs('conflowgen', level='DEBUG') as cm:
-            normalized_distribution = normalize_distribution_with_one_dependent_variable(distributions)
+        with self.assertLogs('conflowgen', level='DEBUG') as context:
+            normalized_distribution = normalize_distribution_with_one_dependent_variable(
+                distributions,
+                values_are_frequencies=True
+            )
         self.assertDictEqual(
             normalized_distribution, {
                 "a": {
@@ -65,8 +71,8 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
                 }
             }
         )
-        self.assertEqual(len(cm.output), 1)
+        self.assertEqual(len(context.output), 1)
         self.assertEqual(
-            cm.output[0],
+            context.output[0],
             "DEBUG:conflowgen:Sum of fractions was not 1 for 'd' and was automatically normalized."
         )

@@ -39,7 +39,8 @@ class ModeOfTransportDistributionManager(AbstractDistributionManager):
         sanitized_distribution = self._normalize_and_validate_distribution_with_one_dependent_variable(
             distribution,
             ModeOfTransport,
-            ModeOfTransport
+            ModeOfTransport,
+            values_are_frequencies=True
         )
         self.mode_of_transport_distribution_repository.set_mode_of_transport_distributions(
             sanitized_distribution

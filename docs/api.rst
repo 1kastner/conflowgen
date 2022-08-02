@@ -24,7 +24,7 @@ Domain datatypes
 .. autoenum:: conflowgen.StorageRequirement
     :members:
 
-.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandComparison
+.. autonamedtuple:: conflowgen.TransshipmentAndHinterlandSplit
 
 .. autonamedtuple:: conflowgen.CompleteVehicleIdentifier
 
@@ -58,6 +58,9 @@ These are all required for generating the synthetic data.
 .. autoclass:: conflowgen.ModeOfTransportDistributionManager
     :members:
 
+.. autoclass:: conflowgen.ContainerDwellTimeDistributionManager
+    :members:
+
 .. autoclass:: conflowgen.PortCallManager
     :members:
 
@@ -65,8 +68,8 @@ These are all required for generating the synthetic data.
     :members:
 
 
-Getting previews
-================
+Generating previews
+===================
 
 .. autoclass:: conflowgen.ContainerFlowByVehicleTypePreview
     :members:
@@ -94,8 +97,14 @@ Getting previews
 .. autoclass:: conflowgen.VehicleCapacityExceededPreviewReport
     :members:
 
-Getting analyses
+Running analyses
 ================
+
+.. autoclass:: conflowgen.ContainerDwellTimeAnalysis
+    :members:
+
+.. autoclass:: conflowgen.ContainerDwellTimeAnalysisReport
+    :members:
 
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysis
     :members:
@@ -151,6 +160,16 @@ Getting analyses
     :members:
 
 .. autoclass:: conflowgen.YardCapacityAnalysisReport
+    :members:
+
+Using distributions
+===================
+
+Most of the distributions in ConFlowGen are discrete distributions and are just reflected by classic Python
+dictionaries where the key refers to the element to be drawn and the value is the probability.
+In some cases, such as container dwell times, continuous distributions are required.
+
+.. autoclass:: conflowgen.ContinuousDistribution
     :members:
 
 Working with reports

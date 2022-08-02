@@ -167,7 +167,7 @@ def _check_all_required_keys_are_set_in_distribution(
 
 
 def _check_value_range_of_frequencies_in_distribution(
-        distribution: Dict[enum.Enum, float],
+        distribution: Dict[enum.Enum, Any],
         context: Optional[str] = None
 ) -> None:
     sum_of_probabilities = 0
@@ -193,19 +193,22 @@ def _check_value_range_of_frequencies_in_distribution(
 
 
 def validate_distribution_with_no_dependent_variables(
-        distribution: Dict[enum.Enum | int, float],
-        key_type: Type[enum.Enum] | Type[int]
+        distribution: Dict[enum.Enum | int, Any],
+        key_type: Type[enum.Enum] | Type[int],
+        values_are_frequencies: bool
 ) -> Dict[enum.Enum | int, float]:
     sanitized_distribution = _check_all_required_keys_are_set_in_distribution(distribution, key_type)
-    _check_value_range_of_frequencies_in_distribution(sanitized_distribution)
+    if values_are_frequencies:
+        _check_value_range_of_frequencies_in_distribution(sanitized_distribution)
     return sanitized_distribution
 
 
 def validate_distribution_with_one_dependent_variable(
-        distribution: Dict[enum.Enum, Dict[enum.Enum | int, float]],
+        distribution: Dict[enum.Enum, Dict[enum.Enum | int, Any]],
         key_type_of_independent_variable: Type[enum.Enum],
-        key_type_of_dependent_variable: Type[enum.Enum] | Type[int]
-) -> Dict[enum.Enum, Dict[enum.Enum | int, float]]:
+        key_type_of_dependent_variable: Type[enum.Enum] | Type[int],
+        values_are_frequencies: bool
+) -> Dict[enum.Enum, Dict[enum.Enum | int, Any]]:
     sanitized_distribution = _check_all_required_keys_are_set_in_distribution(
         distribution, key_type_of_independent_variable
     )
@@ -215,9 +218,46 @@ def validate_distribution_with_one_dependent_variable(
             key_type_of_dependent_variable,
             context=_format_dependent_variable(dependent_variable)
         )
-        _check_value_range_of_frequencies_in_distribution(
-            sanitized_distribution_of_dependent_variable,
-            context=_format_dependent_variable(dependent_variable)
-        )
+        if values_are_frequencies:
+            _check_value_range_of_frequencies_in_distribution(
+                sanitized_distribution_of_dependent_variable,
+                context=_format_dependent_variable(dependent_variable)
+            )
         sanitized_distribution[dependent_variable] = sanitized_distribution_of_dependent_variable
     return sanitized_distribution
+
+
+def validate_distribution_with_two_dependent_variables(
+        distribution: Dict[enum.Enum, Dict[enum.Enum, Dict[enum.Enum | int, Any]]],
+        key_type_of_independent_variable: Type[enum.Enum],
+        key_type_of_first_dependent_variable: Type[enum.Enum] | Type[int],
+        key_type_of_second_dependent_variable: Type[enum.Enum] | Type[int],
+        values_are_frequencies: bool
+) -> Dict[enum.Enum, Dict[enum.Enum, Dict[enum.Enum | int, Any]]]:
+    sanitized_top_level_distribution = _check_all_required_keys_are_set_in_distribution(
+        distribution, key_type_of_independent_variable
+    )
+    for first_dependent_variable, distribution_of_first_dependent_variable in sanitized_top_level_distribution.items():
+        sanitized_distribution_of_first_dependent_variable = _check_all_required_keys_are_set_in_distribution(
+            distribution_of_first_dependent_variable,
+            key_type_of_first_dependent_variable,
+            context=_format_dependent_variable(first_dependent_variable)
+        )
+        sanitized_top_level_distribution[first_dependent_variable] = sanitized_distribution_of_first_dependent_variable
+
+        for second_dependent_variable, distribution_of_second_dependent_variable in \
+                sanitized_distribution_of_first_dependent_variable.items():
+            sanitized_distribution_of_second_dependent_variable = _check_all_required_keys_are_set_in_distribution(
+                distribution_of_second_dependent_variable,
+                key_type_of_second_dependent_variable,
+                context=_format_dependent_variable(second_dependent_variable)
+            )
+            if values_are_frequencies:
+                _check_value_range_of_frequencies_in_distribution(
+                    sanitized_distribution_of_second_dependent_variable,
+                    context=_format_dependent_variable(second_dependent_variable)
+                )
+            sanitized_top_level_distribution[first_dependent_variable][second_dependent_variable] = \
+                sanitized_distribution_of_second_dependent_variable
+
+    return sanitized_top_level_distribution

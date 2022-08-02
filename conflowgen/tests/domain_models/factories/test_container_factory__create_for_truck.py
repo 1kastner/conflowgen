@@ -49,7 +49,7 @@ class TestContainerFactory(unittest.TestCase):
         container_length_distribution_seeder.seed()
         container_storage_requirement_distribution_seeder.seed()
 
-        s = Schedule.create(
+        schedule = Schedule.create(
             service_name="LX050",
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.date(2021, 7, 9),
@@ -58,7 +58,7 @@ class TestContainerFactory(unittest.TestCase):
             average_moved_capacity=1
         )
         feeders = FleetFactory().create_feeder_fleet(
-            schedule=s,
+            schedule=schedule,
             first_at=datetime.date(2021, 7, 7),
             latest_at=datetime.date(2021, 7, 10)
         )

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Dict
 
+import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
@@ -53,10 +53,13 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         report += "\n"
         for vehicle_type in self.order_of_vehicle_types_in_report:
             vehicle_type_as_text = str(vehicle_type).replace("_", " ")
+            max_capacities_repr = -1 if np.isnan(outbound_maximum_capacities[vehicle_type]) \
+                else outbound_maximum_capacities[vehicle_type]
+
             report += f"{vehicle_type_as_text:<15} "
             report += f"{inbound_capacities[vehicle_type]:>25.1f} "
             report += f"{outbound_average_capacities[vehicle_type]:>30.1f} "
-            report += f"{outbound_maximum_capacities[vehicle_type]:>30.1f}"
+            report += f"{max_capacities_repr:>30.1f}"
             report += "\n"
         report += "(rounding errors might exist)\n"
         return report
@@ -68,9 +71,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         Returns:
              The matplotlib axis of the bar chart.
         """
-        sns.set_palette(sns.color_palette())
-
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
+
         df = pd.DataFrame({
             "inbound capacities": inbound_capacities,
             "outbound average capacities": outbound_average_capacities,

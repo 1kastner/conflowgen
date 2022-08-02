@@ -50,7 +50,7 @@ DEFAULT_CONTAINER_WEIGHT_DISTRIBUTION = {
 }
 
 
-def seed():
+def seed() -> None:
     for container_length, distribution in DEFAULT_CONTAINER_WEIGHT_DISTRIBUTION.items():
         for container_weight_category, fraction in distribution.items():
             ContainerWeightDistribution.create(

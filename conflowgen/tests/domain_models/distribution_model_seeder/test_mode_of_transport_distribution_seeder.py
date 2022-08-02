@@ -23,4 +23,4 @@ class TestModeOfTransportationDistributionSeeder(unittest.TestCase):
 
     def test_seeding(self):
         """The seed method includes a verification at the end and throws an error in case of a problem."""
-        mode_of_transport_distribution_seeder.seed()
+        self.assertIsNone(mode_of_transport_distribution_seeder.seed())

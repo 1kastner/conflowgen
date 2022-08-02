@@ -9,11 +9,14 @@ class StorageRequirement(enum.Enum):
     A container is stored in different areas of the yard depending on its requirements.
     """
 
-    empty = "empty"  # doc: An empty container is stored in an empty container yard.
+    empty = "empty"
+    """An empty container is stored in an empty container yard.
+    """
 
     standard = "standard"
     """A standard container is stored in the full container yard and makes up most of the containers passing through a
-    container terminal."""
+    container terminal.
+    """
 
     reefer = "reefer"
     """A reefer container requires electricity (i.e., a reefer plug) to keep the inner temperature on a low level.
@@ -21,7 +24,15 @@ class StorageRequirement(enum.Enum):
 
     dangerous_goods = "dangerous_goods"
     """A dangerous goods container needs a specially prepared storage area so they do not constitute a major hazard to
-    health and environment. These are also sometimes referred to as IMO containers."""
+    health and environment.
+    These are also sometimes referred to as IMO containers.
+    """
+
+    @classmethod
+    def get_full_containers(cls):
+        """All containers that are not empty containers are also referred to as full containers.
+        """
+        return {cls.standard, cls.reefer, cls.dangerous_goods}
 
     def __str__(self):
         """

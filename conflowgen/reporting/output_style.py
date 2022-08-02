@@ -35,7 +35,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
         """
         Args:
             text: The text of an explanatory text (shown in normal font, wrapped if required).
-                Different paragraphs are separated by repeated invocations of this method.
+                  Different paragraphs are separated by repeated invocations of this method.
         """
         ...
 
@@ -70,12 +70,12 @@ class DisplayAsPlainText(DisplayAsMarkupLanguage):
 class DisplayAsMarkdown(DisplayAsMarkupLanguage):
     """
     With this style, the output is set in Markdown.
-    This is e.g. helpful when showing the output in Jupyter Notebooks.
+    This is, e.g., helpful when showing the output in Jupyter Notebooks.
     """
     def __init__(self, display_markdown_func: Callable):
         self.display_markdown_func = display_markdown_func
 
-    def display_headline(self, text: str, level: int = 3):
+    def display_headline(self, text: str, level: int = 4):
         self.display_markdown_func("#" * level + " " + text + "\n")
 
     def display_verbatim(self, text: str):

@@ -8,7 +8,7 @@ import unittest
 from conflowgen.domain_models.factories.fleet_factory import create_arrivals_within_time_range
 
 
-class TestVehicleFactory__create_arrivals_within_time_range(unittest.TestCase):
+class TestVehicleFactory__create_arrivals_within_time_range(unittest.TestCase):  # pylint: disable=invalid-name
 
     def test_create_time_range_happy_path(self) -> None:
         """This is the happy path"""

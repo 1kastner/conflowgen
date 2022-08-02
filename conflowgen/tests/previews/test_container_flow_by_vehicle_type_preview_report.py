@@ -102,7 +102,7 @@ truck               truck                                    0.0
 
     def test_inbound_with_single_arrival_schedules(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=one_week_later.date(),
@@ -111,7 +111,6 @@ truck               truck                                    0.0
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
 vehicle type (from) vehicle type (to) required capacity (in TEU)
@@ -143,3 +142,23 @@ truck               truck                                    0.0
 (rounding errors might exist)
 """
         self.assertEqual(expected_report, actual_report)
+
+    def test_report_with_no_schedules_as_graph(self):
+        """Not throwing an exception is sufficient"""
+        fig = self.preview_report.get_report_as_graph()
+        self.assertIsNotNone(fig)
+
+    def test_report_with_schedules_as_graph(self):
+        """Not throwing an exception is sufficient for now"""
+        one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
+        Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=one_week_later.date(),
+            vehicle_arrives_at_time=one_week_later.time(),
+            average_vehicle_capacity=400,
+            average_moved_capacity=300,
+            vehicle_arrives_every_k_days=-1
+        )
+        fig = self.preview_report.get_report_as_graph()
+        self.assertIsNotNone(fig)

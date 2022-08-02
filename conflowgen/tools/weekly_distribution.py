@@ -14,11 +14,16 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: float,
-            minimum_dwell_time_in_hours: float
+            considered_time_window_in_hours: int,
+            minimum_dwell_time_in_hours: int,
+            is_reversed: bool = False,
+            context: str = ""
     ):
+        self.is_reversed = is_reversed
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
+        self.context = context
+
         self.hour_of_the_week_fraction_pairs = []
         number_of_weeks_to_consider = 2 + int(considered_time_window_in_hours / 24 / 7)
         for week in range(number_of_weeks_to_consider):
@@ -30,10 +35,6 @@ class WeeklyDistribution:
                         fraction
                     )
                 )
-        self.time_window_length_in_hours = (
-                self.hour_of_the_week_fraction_pairs[1][0]
-                - self.hour_of_the_week_fraction_pairs[0][0]
-        )
 
     @classmethod
     def _get_hour_of_the_week_from_datetime(cls, point_in_time: datetime.datetime) -> int:
@@ -50,9 +51,13 @@ class WeeklyDistribution:
             f"Time since Monday in completed hours: {completed_hours_since_monday}"
         return completed_hours_since_monday
 
-    def get_distribution_slice(self, _datetime: datetime.datetime) -> Dict[int, float]:
-        start_hour = self._get_hour_of_the_week_from_datetime(_datetime)
+    def get_distribution_slice(self, start_as_datetime: datetime.datetime) -> Dict[int, float]:
+        start_hour = self._get_hour_of_the_week_from_datetime(start_as_datetime)
         end_hour = start_hour + self.considered_time_window_in_hours
+
+        if self.is_reversed:
+            end_hour -= self.minimum_dwell_time_in_hours
+
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"
         assert start_hour < end_hour, "Start hour must be before end hour"
 
@@ -72,14 +77,17 @@ class WeeklyDistribution:
         need_to_modify_first_entry = False
         previous_fraction = None
         for i, (hour_after_start, fraction) in enumerate(not_normalized_distribution_slice):
-            if hour_after_start > self.minimum_dwell_time_in_hours:
-                if need_to_modify_first_entry:
-                    del not_normalized_distribution_slice[:i]
-                    not_normalized_distribution_slice.insert(
-                        0,
-                        (self.minimum_dwell_time_in_hours, previous_fraction)
-                    )
-                break
+
+            # drop first entries if in forward mode
+            if not self.is_reversed:
+                if hour_after_start > self.minimum_dwell_time_in_hours:
+                    if need_to_modify_first_entry:
+                        del not_normalized_distribution_slice[:i]
+                        not_normalized_distribution_slice.insert(
+                            0,
+                            (self.minimum_dwell_time_in_hours, previous_fraction)
+                        )
+                    break
             need_to_modify_first_entry = True
             previous_fraction = fraction
 
@@ -93,3 +101,14 @@ class WeeklyDistribution:
             for (hour_after_start, hour_fraction) in not_normalized_distribution_slice
         }
         return distribution_slice
+
+    def __repr__(self):
+        maximum = self.minimum_dwell_time_in_hours + self.considered_time_window_in_hours
+        return (
+            f"<{self.__class__.__name__}: "
+            f"min={self.minimum_dwell_time_in_hours:.1f}h, "
+            f"max={maximum:.1f}h={maximum / 24:.1f}d, "
+            f"rev={self.is_reversed}, "
+            f"context='{self.context}'"
+            f">"
+        )

@@ -1,6 +1,7 @@
 from __future__ import annotations
 import datetime
 from typing import Dict
+import numpy as np
 
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
@@ -73,7 +74,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
     ):
         validate_distribution_with_one_dependent_variable(
-            mode_of_transport_distribution, ModeOfTransport, ModeOfTransport
+            mode_of_transport_distribution, ModeOfTransport, ModeOfTransport, values_are_frequencies=True
         )
         self.mode_of_transport_distribution = mode_of_transport_distribution
 
@@ -119,6 +120,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             for vehicle_type in ModeOfTransport
         }
 
+        schedule: Schedule
         for schedule in Schedule.select():
 
             assert schedule.average_moved_capacity <= schedule.average_vehicle_capacity, \
@@ -151,7 +153,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         outbound_used_capacity[ModeOfTransport.truck] = self._get_truck_capacity_for_export_containers(
             inbound_capacity
         )
-        outbound_maximum_capacity[ModeOfTransport.truck] = -1  # Not meaningful, trucks can always be added as required
+        outbound_maximum_capacity[ModeOfTransport.truck] = np.nan  # Trucks can always be added as required
 
         return OutboundUsedAndMaximumCapacity(
             used=outbound_used_capacity,
