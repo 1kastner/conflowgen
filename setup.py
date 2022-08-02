@@ -39,8 +39,9 @@ setup(
 
         # for creating the visuals
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
-        'plotly',  # useful for, e.g., Sankey diagrams
         'seaborn',  # exchanges matplotlib color palletes
+        'plotly',  # useful for, e.g., Sankey diagrams
+        'kaleido',  # plotly depends on this package for SVG export, we got this as a present
     ],
     extras_require={
         # Only needed to run the unittests and generate the documentation
@@ -61,9 +62,6 @@ setup(
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
             'jupyterlab',  # develop the Jupyter Notebooks
-
-            # usually optional dependencies that are used in the documentation
-            'kaleido',  # plotly depends on this package for SVG export, we got this as a present
 
             # checking code quality
             'pylint',  # lint Python code
