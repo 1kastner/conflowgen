@@ -4,7 +4,8 @@ import abc
 import datetime
 import enum
 import tempfile
-from typing import cast, Any, Iterable
+from typing import cast, Any
+from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
 from matplotlib import image as mpimg
