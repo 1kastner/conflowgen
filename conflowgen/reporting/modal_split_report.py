@@ -36,34 +36,35 @@ def plot_modal_splits(
     fig, axes = plt.subplots(2, 2)
 
     series_hinterland_and_transshipment = pd.Series({
-        "hinterland capacity": transshipment_and_hinterland_split.hinterland_capacity,
-        "transshipment capacity": transshipment_and_hinterland_split.transshipment_capacity
-    }, name="Transshipment share")
-    if sum(series_hinterland_and_transshipment) == 0:
+        "Inland gateway traffic": transshipment_and_hinterland_split.hinterland_capacity,
+        "Transshipment traffic": transshipment_and_hinterland_split.transshipment_capacity
+    }, name="Role in network")
+
+    if series_hinterland_and_transshipment.sum() == 0:
         no_data_text(axes[0, 0])
     else:
         series_hinterland_and_transshipment.plot.pie(
             legend=False,
             autopct='%1.1f%%',
             label="",
-            title="Transshipment share",
+            title=series_hinterland_and_transshipment.name,
             ax=axes[0, 0]
         )
 
     modal_splits = [
         {
             "modal_split": modal_split_for_hinterland_both,
-            "name": "Modal split for hinterland (inbound and outbound)",
+            "name": "Modal split in hinterland traffic\n(both inbound and outbound traffic)",
             "ax": axes[1, 0]
         },
         {
             "modal_split": modal_split_for_hinterland_inbound,
-            "name": "Modal split for hinterland (inbound)",
+            "name": "Modal split in hinterland traffic\n(only inbound traffic)",
             "ax": axes[0, 1]
         },
         {
             "modal_split": modal_split_for_hinterland_outbound,
-            "name": "Modal split for hinterland (outbound)",
+            "name": "Modal split in hinterland traffic\n(only outbound traffic)",
             "ax": axes[1, 1]
         },
     ]

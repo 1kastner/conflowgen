@@ -40,18 +40,21 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
                     transshipment.transshipment_capacity /
                     (transshipment.transshipment_capacity + transshipment.hinterland_capacity)
             )
+
         modal_split_for_hinterland_inbound = self.analysis.get_modal_split_for_hinterland(
             inbound=True, outbound=False
         )
         inbound_total = sum(modal_split_for_hinterland_inbound)
         if inbound_total == 0:
             inbound_total = np.nan
+
         modal_split_for_hinterland_outbound = self.analysis.get_modal_split_for_hinterland(
             inbound=False, outbound=True
         )
         outbound_total = sum(modal_split_for_hinterland_outbound)
         if outbound_total == 0:
             outbound_total = np.nan
+
         modal_split_for_hinterland_both = self.analysis.get_modal_split_for_hinterland(
             inbound=True, outbound=True
         )
@@ -60,35 +63,35 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
             inbound_and_outbound_total = np.nan
 
         # create string representation
-        report = "\nTransshipment share\n"
-        report += f"transshipment proportion (in TEU): {transshipment.transshipment_capacity:>10.2f} "
+        report = "\nRole in network\n"
+        report += f"transshipment traffic (in TEU):  {transshipment.transshipment_capacity:>10.2f} "
         report += f"({transshipment_as_fraction * 100:.2f}%)\n"
-        report += f"hinterland proportion (in TEU):    {transshipment.hinterland_capacity:>10.2f} "
+        report += f"inland gateway traffic (in TEU): {transshipment.hinterland_capacity:>10.2f} "
         report += f"({(1 - transshipment_as_fraction) * 100:.2f}%)\n"
         report += "\n"
 
-        report += "Inbound modal split\n"
-        report += f"truck proportion (in TEU): {modal_split_for_hinterland_inbound.truck_capacity:>10.1f} "
+        report += "Modal split in hinterland traffic (only inbound traffic)\n"
+        report += f"trucks (in TEU): {modal_split_for_hinterland_inbound.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_inbound.truck_capacity / inbound_total * 100:.2f}%)\n"
-        report += f"barge proportion (in TEU): {modal_split_for_hinterland_inbound.barge_capacity:>10.1f} "
+        report += f"barges (in TEU): {modal_split_for_hinterland_inbound.barge_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_inbound.barge_capacity / inbound_total * 100:.2f}%)\n"
-        report += f"train proportion (in TEU): {modal_split_for_hinterland_inbound.train_capacity:>10.1f} "
+        report += f"trains (in TEU): {modal_split_for_hinterland_inbound.train_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_inbound.train_capacity / inbound_total * 100:.2f}%)\n\n"
 
-        report += "Outbound modal split\n"
-        report += f"truck proportion (in TEU): {modal_split_for_hinterland_outbound.truck_capacity:>10.1f} "
+        report += "Modal split in hinterland traffic (only outbound traffic)\n"
+        report += f"trucks (in TEU): {modal_split_for_hinterland_outbound.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_outbound.truck_capacity / outbound_total * 100:.2f}%)\n"
-        report += f"barge proportion (in TEU): {modal_split_for_hinterland_outbound.barge_capacity:>10.1f} "
+        report += f"barges (in TEU): {modal_split_for_hinterland_outbound.barge_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_outbound.barge_capacity / outbound_total * 100:.2f}%)\n"
-        report += f"train proportion (in TEU): {modal_split_for_hinterland_outbound.train_capacity:>10.1f} "
+        report += f"trains (in TEU): {modal_split_for_hinterland_outbound.train_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_outbound.train_capacity / outbound_total * 100:.2f}%)\n\n"
 
-        report += "Absolute modal split (both inbound and outbound)\n"
-        report += f"truck proportion (in TEU): {modal_split_for_hinterland_both.truck_capacity:>10.1f} "
+        report += "Modal split in hinterland traffic (both inbound and outbound traffic)\n"
+        report += f"trucks (in TEU): {modal_split_for_hinterland_both.truck_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_both.truck_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
-        report += f"barge proportion (in TEU): {modal_split_for_hinterland_both.barge_capacity:>10.1f} "
+        report += f"barges (in TEU): {modal_split_for_hinterland_both.barge_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_both.barge_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
-        report += f"train proportion (in TEU): {modal_split_for_hinterland_both.train_capacity:>10.1f} "
+        report += f"trains (in TEU): {modal_split_for_hinterland_both.train_capacity:>10.1f} "
         report += f"({modal_split_for_hinterland_both.train_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
 
         report = report.replace("(nan%)", "(-%)")
