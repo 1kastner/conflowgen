@@ -111,7 +111,7 @@ mathjax3_config = {
 version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
 intersphinx_mapping = {
     'python': (f'https://docs.python.org/{version_link}', None),  # link to used Python version
-    'numpy': ('https://numpy.org/doc/stable/objects.inv', None),
+    'numpy': ('https://numpy.org/doc/stable/', None),  # link to numpy
 }
 
 # -- Options for Included Jupyter Notebooks ----------------------------------
