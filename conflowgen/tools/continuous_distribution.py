@@ -4,7 +4,7 @@ import abc
 import math
 from typing import Collection, Sequence, Optional
 
-import numpy as np
+import numpy
 import scipy.stats
 
 
@@ -35,10 +35,10 @@ class ContinuousDistribution(abc.ABC):
             self.unit_repr_square = unit + "²"
 
     @abc.abstractmethod
-    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
         pass
 
-    def get_probabilities(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+    def get_probabilities(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
         """
 
         Args:
@@ -47,13 +47,13 @@ class ContinuousDistribution(abc.ABC):
         Returns:
             The respective probability that element x as an element of xs is drawn from this distribution
         """
-        xs = np.array(xs)
+        xs = numpy.array(xs)
         densities = self._get_probabilities_based_on_distribution(xs)
         densities[xs <= self.minimum] = 0
         densities[xs >= self.maximum] = 0
         densities = densities / densities.sum()
         if self.reversed_distribution:
-            densities = np.flip(densities)
+            densities = numpy.flip(densities)
         return densities
 
     @abc.abstractmethod
@@ -96,7 +96,7 @@ class ClippedLogNormal(ContinuousDistribution):
 
         return frozen_lognorm
 
-    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
         return self._lognorm.pdf(xs)
 
     def __repr__(self):
@@ -123,7 +123,7 @@ class ClippedLogNormal(ContinuousDistribution):
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
     assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length"
-    np_probs = [np.array(probs) for probs in probabilities]
-    multiplied_probabilities = np.multiply(*np_probs)
+    np_probs = [numpy.array(probs, dtype=numpy.double) for probs in probabilities]
+    multiplied_probabilities = numpy.multiply(*np_probs)
     normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()
     return normalized_probabilities
