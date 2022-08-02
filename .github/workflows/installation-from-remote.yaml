@@ -31,7 +31,6 @@ jobs:
     - name: Install ConFlowGen
       run: |
         conda install -c conda-forge conflowgen pytest
-        conda install -c conda-forge python-kaleido
 
     - name: Run tests
       run: |
