@@ -169,7 +169,7 @@ Most of the distributions in ConFlowGen are discrete distributions and are just 
 dictionaries where the key refers to the element to be drawn and the value is the probability.
 In some cases, such as container dwell times, continuous distributions are required.
 
-.. autoclass:: conflowgen:: ContinuousDistribution
+.. autoclass:: conflowgen.ContinuousDistribution
     :members:
 
 Working with reports
