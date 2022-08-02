@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import numpy as np
 import seaborn as sns
 
 from conflowgen.analyses.modal_split_analysis import ModalSplitAnalysis
-from conflowgen.reporting import AbstractReportWithMatplotlib
+from conflowgen.reporting import AbstractReportWithMatplotlib, modal_split_report
 from conflowgen.reporting.modal_split_report import plot_modal_splits
 
 sns.set_palette(sns.color_palette())
@@ -31,72 +30,28 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
         """
-
         # gather data
-        transshipment = self.analysis.get_transshipment_and_hinterland_split()
-        transshipment_as_fraction = np.nan
-        if sum(transshipment) > 0:
-            transshipment_as_fraction = (
-                    transshipment.transshipment_capacity /
-                    (transshipment.transshipment_capacity + transshipment.hinterland_capacity)
-            )
+        transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split()
 
-        modal_split_for_hinterland_inbound = self.analysis.get_modal_split_for_hinterland(
+        modal_split_in_hinterland_inbound_traffic = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=True, outbound=False
         )
-        inbound_total = sum(modal_split_for_hinterland_inbound)
-        if inbound_total == 0:
-            inbound_total = np.nan
 
-        modal_split_for_hinterland_outbound = self.analysis.get_modal_split_for_hinterland(
+        modal_split_in_hinterland_outbound_traffic = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=False, outbound=True
         )
-        outbound_total = sum(modal_split_for_hinterland_outbound)
-        if outbound_total == 0:
-            outbound_total = np.nan
 
-        modal_split_for_hinterland_both = self.analysis.get_modal_split_for_hinterland(
+        modal_split_in_hinterland_traffic_both_directions = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=True, outbound=True
         )
-        inbound_and_outbound_total = sum(modal_split_for_hinterland_both)
-        if inbound_and_outbound_total == 0:
-            inbound_and_outbound_total = np.nan
 
-        # create string representation
-        report = "\nRole in network\n"
-        report += f"transshipment traffic (in TEU):  {transshipment.transshipment_capacity:>10.2f} "
-        report += f"({transshipment_as_fraction * 100:.2f}%)\n"
-        report += f"inland gateway traffic (in TEU): {transshipment.hinterland_capacity:>10.2f} "
-        report += f"({(1 - transshipment_as_fraction) * 100:.2f}%)\n"
-        report += "\n"
+        report = modal_split_report.insert_values_in_template(
+            transshipment_and_hinterland_split=transshipment_and_hinterland_split,
+            modal_split_in_hinterland_inbound_traffic=modal_split_in_hinterland_inbound_traffic,
+            modal_split_in_hinterland_outbound_traffic=modal_split_in_hinterland_outbound_traffic,
+            modal_split_in_hinterland_traffic_both_directions=modal_split_in_hinterland_traffic_both_directions
+        )
 
-        report += "Modal split in hinterland traffic (only inbound traffic)\n"
-        report += f"trucks (in TEU): {modal_split_for_hinterland_inbound.truck_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_inbound.truck_capacity / inbound_total * 100:.2f}%)\n"
-        report += f"barges (in TEU): {modal_split_for_hinterland_inbound.barge_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_inbound.barge_capacity / inbound_total * 100:.2f}%)\n"
-        report += f"trains (in TEU): {modal_split_for_hinterland_inbound.train_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_inbound.train_capacity / inbound_total * 100:.2f}%)\n\n"
-
-        report += "Modal split in hinterland traffic (only outbound traffic)\n"
-        report += f"trucks (in TEU): {modal_split_for_hinterland_outbound.truck_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_outbound.truck_capacity / outbound_total * 100:.2f}%)\n"
-        report += f"barges (in TEU): {modal_split_for_hinterland_outbound.barge_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_outbound.barge_capacity / outbound_total * 100:.2f}%)\n"
-        report += f"trains (in TEU): {modal_split_for_hinterland_outbound.train_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_outbound.train_capacity / outbound_total * 100:.2f}%)\n\n"
-
-        report += "Modal split in hinterland traffic (both inbound and outbound traffic)\n"
-        report += f"trucks (in TEU): {modal_split_for_hinterland_both.truck_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_both.truck_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
-        report += f"barges (in TEU): {modal_split_for_hinterland_both.barge_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_both.barge_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
-        report += f"trains (in TEU): {modal_split_for_hinterland_both.train_capacity:>10.1f} "
-        report += f"({modal_split_for_hinterland_both.train_capacity / inbound_and_outbound_total * 100:.2f}%)\n"
-
-        report = report.replace("(nan%)", "(-%)")
-
-        report += "(rounding errors might exist)\n"
         return report
 
     def get_report_as_graph(self) -> object:
@@ -109,21 +64,21 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
 
         # gather data
         transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split()
-        modal_split_for_hinterland_inbound = self.analysis.get_modal_split_for_hinterland(
+        modal_split_for_hinterland_inbound = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=True, outbound=False
         )
-        modal_split_for_hinterland_outbound = self.analysis.get_modal_split_for_hinterland(
+        modal_split_for_hinterland_outbound = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=False, outbound=True
         )
-        modal_split_for_hinterland_both = self.analysis.get_modal_split_for_hinterland(
+        modal_split_for_hinterland_both = self.analysis.get_modal_split_for_hinterland_traffic(
             inbound=True, outbound=True
         )
 
         axes = plot_modal_splits(
             transshipment_and_hinterland_split=transshipment_and_hinterland_split,
-            modal_split_for_hinterland_both=modal_split_for_hinterland_both,
-            modal_split_for_hinterland_inbound=modal_split_for_hinterland_inbound,
-            modal_split_for_hinterland_outbound=modal_split_for_hinterland_outbound,
+            modal_split_in_hinterland_both_directions=modal_split_for_hinterland_both,
+            modal_split_in_hinterland_inbound_traffic=modal_split_for_hinterland_inbound,
+            modal_split_in_hinterland_outbound_traffic=modal_split_for_hinterland_outbound,
         )
 
         return axes

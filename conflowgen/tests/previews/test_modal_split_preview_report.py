@@ -68,24 +68,24 @@ class TestModalSplitPreviewReport(unittest.TestCase):
         """If no schedules are provided, no flows exist"""
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-Transshipment share
-transshipment proportion (in TEU):       0.00 (-%)
-hinterland proportion (in TEU):          0.00 (-%)
+Role in network
+transshipment traffic (in TEU):        0.00 (-%)
+inland gateway traffic (in TEU):       0.00 (-%)
 
-Inbound modal split
-truck proportion (in TEU):        0.0 (-%)
-barge proportion (in TEU):        0.0 (-%)
-train proportion (in TEU):        0.0 (-%)
+Modal split in hinterland traffic (only inbound traffic)
+trucks (in TEU):        0.0 (-%)
+barges (in TEU):        0.0 (-%)
+trains (in TEU):        0.0 (-%)
 
-Outbound modal split
-truck proportion (in TEU):        0.0 (-%)
-barge proportion (in TEU):        0.0 (-%)
-train proportion (in TEU):        0.0 (-%)
+Modal split in hinterland traffic (only outbound traffic)
+trucks (in TEU):        0.0 (-%)
+barges (in TEU):        0.0 (-%)
+trains (in TEU):        0.0 (-%)
 
-Absolute modal split (both inbound and outbound)
-truck proportion (in TEU):        0.0 (-%)
-barge proportion (in TEU):        0.0 (-%)
-train proportion (in TEU):        0.0 (-%)
+Modal split in hinterland traffic (both inbound and outbound traffic)
+trucks (in TEU):        0.0 (-%)
+barges (in TEU):        0.0 (-%)
+trains (in TEU):        0.0 (-%)
 (rounding errors might exist)
 """
         self.assertEqual(expected_report, actual_report)
@@ -103,27 +103,27 @@ train proportion (in TEU):        0.0 (-%)
         )
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-Transshipment share
-transshipment proportion (in TEU):      90.00 (25.00%)
-hinterland proportion (in TEU):        270.00 (75.00%)
+Role in network
+transshipment traffic (in TEU):       90.00 (25.00%)
+inland gateway traffic (in TEU):     270.00 (75.00%)
 
-Inbound modal split
-truck proportion (in TEU):       60.0 (100.00%)
-barge proportion (in TEU):        0.0 (0.00%)
-train proportion (in TEU):        0.0 (0.00%)
+Modal split in hinterland traffic (only inbound traffic)
+trucks (in TEU):       60.0 (100.00%)
+barges (in TEU):        0.0 (0.00%)
+trains (in TEU):        0.0 (0.00%)
 
-Outbound modal split
-truck proportion (in TEU):       60.0 (28.57%)
-barge proportion (in TEU):       30.0 (14.29%)
-train proportion (in TEU):      120.0 (57.14%)
+Modal split in hinterland traffic (only outbound traffic)
+trucks (in TEU):       60.0 (28.57%)
+barges (in TEU):       30.0 (14.29%)
+trains (in TEU):      120.0 (57.14%)
 
-Absolute modal split (both inbound and outbound)
-truck proportion (in TEU):      120.0 (44.44%)
-barge proportion (in TEU):       30.0 (11.11%)
-train proportion (in TEU):      120.0 (44.44%)
+Modal split in hinterland traffic (both inbound and outbound traffic)
+trucks (in TEU):      120.0 (44.44%)
+barges (in TEU):       30.0 (11.11%)
+trains (in TEU):      120.0 (44.44%)
 (rounding errors might exist)
 """
-        self.assertEqual(expected_report, actual_report)
+        self.assertEqual(actual_report, expected_report)
 
     def test_report_with_no_schedules_as_graph(self):
         """Not throwing an exception is sufficient"""

@@ -54,7 +54,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
             hinterland_capacity=hinterland_capacity
         )
 
-    def get_modal_split_for_hinterland(
+    def get_modal_split_for_hinterland_traffic(
             self,
             inbound: bool,
             outbound: bool

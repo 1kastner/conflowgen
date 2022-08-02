@@ -34,7 +34,7 @@ class TestModalSplitAnalysis(unittest.TestCase):
         self.assertSetEqual(set(both_zero), {0})
 
     def test_hinterland_split_with_no_data(self):
-        all_three_zero = self.analysis.get_modal_split_for_hinterland(True, True)
+        all_three_zero = self.analysis.get_modal_split_for_hinterland_traffic(True, True)
         self.assertSetEqual(set(all_three_zero), {0})
 
     def test_transshipment_share_with_single_feeder(self):
@@ -111,7 +111,7 @@ class TestModalSplitAnalysis(unittest.TestCase):
         )
         container.save()
 
-        fractions = self.analysis.get_modal_split_for_hinterland(True, True)
+        fractions = self.analysis.get_modal_split_for_hinterland_traffic(True, True)
         self.assertEqual(fractions.truck_capacity, 1)
         self.assertEqual(fractions.barge_capacity, 0)
         self.assertEqual(fractions.train_capacity, 0)
