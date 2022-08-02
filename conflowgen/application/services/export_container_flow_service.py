@@ -280,10 +280,11 @@ class ExportContainerFlowService:
             self.logger.info(f"Creating folder at {path_to_target_folder}")
             os.mkdir(path_to_target_folder)
 
-        self.logger.info(f"Converting SQL database into file format '.{file_format.value}'")
+        file_format_str_repr = str(file_format.value)
+        self.logger.info(f"Converting SQL database into file format '.{file_format_str_repr}'")
         dfs = self._convert_sql_database_to_pandas_dataframe()
         for file_name, df in dfs.items():
-            full_file_name = file_name + "." + file_format.value
+            full_file_name = file_name + "." + file_format_str_repr
             path_to_file = os.path.join(
                 path_to_target_folder,
                 full_file_name

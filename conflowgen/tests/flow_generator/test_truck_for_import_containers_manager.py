@@ -18,7 +18,7 @@ from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
-from conflowgen.tools.theoretical_distribution import TheoreticalDistribution
+from conflowgen.tools.continuous_distribution import ContinuousDistribution
 from conflowgen.tools.weekly_distribution import WeeklyDistribution
 
 
@@ -54,7 +54,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.maximum))
         plt.show(block=True)
 
-    def _get_distribution(self, container: Container) -> tuple[TheoreticalDistribution, WeeklyDistribution | None]:
+    def _get_distribution(self, container: Container) -> tuple[ContinuousDistribution, WeeklyDistribution | None]:
 
         # pylint: disable=protected-access
         container_dwell_time_distribution,  truck_arrival_distribution = self.manager._get_distributions(

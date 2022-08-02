@@ -5,7 +5,7 @@ from conflowgen.domain_models.distribution_models.container_dwell_time_distribut
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_two_dependent_variables
-from conflowgen.tools.theoretical_distribution import TheoreticalDistribution, ClippedLogNormal
+from conflowgen.tools.continuous_distribution import ContinuousDistribution, ClippedLogNormal
 
 
 class ContainerDwellTimeDistributionRepository:
@@ -15,7 +15,7 @@ class ContainerDwellTimeDistributionRepository:
             delivered_by: ModeOfTransport,
             picked_up_by: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> TheoreticalDistribution:
+    ) -> ContinuousDistribution:
         """Loads the distribution for the given transport direction and container type."""
 
         entry: ContainerDwellTimeDistribution = ContainerDwellTimeDistribution.get(
@@ -38,7 +38,7 @@ class ContainerDwellTimeDistributionRepository:
     @classmethod
     def get_distributions(
             cls
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]]:
+    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]]:
         """Loads a distribution for which all fractions are normalized to sum up to 1 for each mode of transportation.
         """
         distributions = {

@@ -14,7 +14,7 @@ from ..domain_models.distribution_repositories.truck_arrival_distribution_reposi
     TruckArrivalDistributionRepository
 from ..domain_models.factories.vehicle_factory import VehicleFactory
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
-from ..tools.theoretical_distribution import TheoreticalDistribution, multiply_discretized_probability_densities
+from ..tools.continuous_distribution import ContinuousDistribution, multiply_discretized_probability_densities
 
 
 class AbstractTruckForContainersManager(abc.ABC):
@@ -23,7 +23,7 @@ class AbstractTruckForContainersManager(abc.ABC):
 
         self.container_dwell_time_distribution_repository = ContainerDwellTimeDistributionRepository()
         self.container_dwell_time_distributions: \
-            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]] | None \
+            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]] | None \
             = None
 
         self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
@@ -44,7 +44,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             self,
             vehicle: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> TheoreticalDistribution:
+    ) -> ContinuousDistribution:
         pass
 
     @abc.abstractmethod
@@ -95,7 +95,7 @@ class AbstractTruckForContainersManager(abc.ABC):
     def _get_distributions(
             self,
             container: Container
-    ) -> tuple[TheoreticalDistribution, WeeklyDistribution | None]:
+    ) -> tuple[ContinuousDistribution, WeeklyDistribution | None]:
 
         container_dwell_time_distribution = self.container_dwell_time_distributions[
             container.delivered_by][container.picked_up_by][container.storage_requirement]
@@ -111,7 +111,7 @@ class AbstractTruckForContainersManager(abc.ABC):
 
     @staticmethod
     def _get_time_window_of_truck_arrival(
-            container_dwell_time_distribution: TheoreticalDistribution,
+            container_dwell_time_distribution: ContinuousDistribution,
             truck_arrival_distribution_slice: Dict[int, float]
     ) -> int:
         """

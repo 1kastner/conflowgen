@@ -1,6 +1,6 @@
 import unittest
 
-from conflowgen.tools.theoretical_distribution import ClippedLogNormal
+from conflowgen.tools.continuous_distribution import ClippedLogNormal
 
 
 class TestClippedLogNormal(unittest.TestCase):

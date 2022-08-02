@@ -60,6 +60,9 @@ from conflowgen.analyses.container_dwell_time_analysis_report import ContainerDw
 # Specific classes for reports
 from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
 
+# Specific classes for distributions
+from conflowgen.tools.continuous_distribution import ContinuousDistribution
+
 # List of enums
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport

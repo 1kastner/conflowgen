@@ -4,7 +4,7 @@ import abc
 import datetime
 import enum
 import tempfile
-from typing import cast, Any
+from typing import cast, Any, Type
 from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
@@ -78,7 +78,7 @@ class AbstractReport(abc.ABC):
         raise NotImplementedError("No show method has yet been defined.")
 
     @staticmethod
-    def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: enum.Enum) -> str:
+    def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: Type[enum.Enum]) -> str:
         if enum_or_enum_set is None or enum_or_enum_set == "all":
             return "all"
         if isinstance(enum_or_enum_set, enum_type):  # a

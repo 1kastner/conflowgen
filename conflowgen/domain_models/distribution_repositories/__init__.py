@@ -54,9 +54,9 @@ def normalize_distribution_with_one_dependent_variable(
 
 
 def normalize_distribution_with_two_dependent_variables(
-        distributions: Dict[Any, Dict[Any, float]],
+        distributions: Dict[Any, Dict[Any, Dict[Any, float]]],
         values_are_frequencies: bool
-) -> Dict[Any, Dict[Any, float]]:
+) -> Dict[Any, Dict[Any, Dict[Any, float]]]:
     normalized_distributions = {}
     for first_level_key, second_level_distribution in distributions.items():
         normalized_second_level_distribution = normalize_distribution_with_one_dependent_variable(

@@ -9,7 +9,7 @@ from ..domain_models.arrival_information import TruckArrivalInformationForDelive
 from ..domain_models.container import Container
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.vehicle import LargeScheduledVehicle
-from ..tools.theoretical_distribution import TheoreticalDistribution
+from ..tools.continuous_distribution import ContinuousDistribution
 from ..tools.weekly_distribution import WeeklyDistribution
 
 
@@ -26,7 +26,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             self,
             vehicle: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> TheoreticalDistribution:
+    ) -> ContinuousDistribution:
         distribution = self.container_dwell_time_distributions[ModeOfTransport.truck][vehicle][storage_requirement]
         return distribution.reversed()
 

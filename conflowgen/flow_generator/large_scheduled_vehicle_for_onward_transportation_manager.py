@@ -17,7 +17,7 @@ from ..domain_models.distribution_repositories.mode_of_transport_distribution_re
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.repositories.schedule_repository import ScheduleRepository
 from ..domain_models.vehicle import AbstractLargeScheduledVehicle, LargeScheduledVehicle, Truck
-from ..tools.theoretical_distribution import TheoreticalDistribution, multiply_discretized_probability_densities
+from ..tools.continuous_distribution import ContinuousDistribution, multiply_discretized_probability_densities
 
 
 class LargeScheduledVehicleForOnwardTransportationManager:
@@ -33,7 +33,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         self.container_dwell_time_distribution_repository = ContainerDwellTimeDistributionRepository()
         self.container_dwell_time_distributions: \
-            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]] | None \
+            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]] | None \
             = None
 
     def reload_properties(
@@ -259,5 +259,5 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             inbound_vehicle: ModeOfTransport,
             outbound_vehicle: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> TheoreticalDistribution:
+    ) -> ContinuousDistribution:
         return self.container_dwell_time_distributions[inbound_vehicle][outbound_vehicle][storage_requirement]

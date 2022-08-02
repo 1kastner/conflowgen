@@ -7,7 +7,7 @@ from conflowgen.domain_models.distribution_models.container_dwell_time_distribut
 from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
     ContainerDwellTimeDistributionRepository
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
-from conflowgen.tools.theoretical_distribution import TheoreticalDistribution, ClippedLogNormal
+from conflowgen.tools.continuous_distribution import ContinuousDistribution, ClippedLogNormal
 from .example_container_dwell_time_distribution import example_container_dwell_time_distribution
 
 
@@ -38,7 +38,7 @@ class TestContainerDwellTimeDistributionRepository(unittest.TestCase):
 
                     distribution_data = self.default_data[mode_of_transport_i][mode_of_transport_j][storage_requirement]
 
-                    self.assertIsInstance(distribution, TheoreticalDistribution)
+                    self.assertIsInstance(distribution, ContinuousDistribution)
                     self.assertEqual(distribution.average, distribution_data["average_number_of_hours"])
                     self.assertEqual(distribution.minimum, distribution_data["minimum_number_of_hours"])
                     self.assertEqual(distribution.maximum, distribution_data["maximum_number_of_hours"])

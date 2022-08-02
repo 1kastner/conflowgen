@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import abc
 import math
-from typing import Collection, Sequence, Optional, Type
+from typing import Collection, Sequence, Optional
 
 import numpy as np
 import scipy.stats
 
 
-class TheoreticalDistribution(abc.ABC):
+class ContinuousDistribution(abc.ABC):
 
     average: float
     minimum: float
@@ -57,11 +57,11 @@ class TheoreticalDistribution(abc.ABC):
         return densities
 
     @abc.abstractmethod
-    def reversed(self) -> Type[TheoreticalDistribution]:
+    def reversed(self) -> ContinuousDistribution:
         pass
 
 
-class ClippedLogNormal(TheoreticalDistribution):
+class ClippedLogNormal(ContinuousDistribution):
 
     variance: float
 

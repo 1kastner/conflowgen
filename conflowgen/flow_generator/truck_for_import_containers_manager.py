@@ -8,7 +8,7 @@ from ..domain_models.arrival_information import TruckArrivalInformationForPickup
 from ..domain_models.container import Container
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..domain_models.vehicle import LargeScheduledVehicle
-from ..tools.theoretical_distribution import TheoreticalDistribution
+from ..tools.continuous_distribution import ContinuousDistribution
 from ..tools.weekly_distribution import WeeklyDistribution
 
 
@@ -21,7 +21,7 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             self,
             vehicle: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> TheoreticalDistribution:
+    ) -> ContinuousDistribution:
         return self.container_dwell_time_distributions[vehicle][ModeOfTransport.truck][storage_requirement]
 
     def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:

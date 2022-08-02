@@ -1,6 +1,6 @@
 import unittest
 
-from conflowgen.tools.theoretical_distribution import multiply_discretized_probability_densities
+from conflowgen.tools.continuous_distribution import multiply_discretized_probability_densities
 
 
 class TestMultiplyDiscretizedProbabilityDensities(unittest.TestCase):

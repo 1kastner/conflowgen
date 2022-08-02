@@ -53,7 +53,7 @@ class AbstractDistributionManager(abc.ABC):
 
     @staticmethod
     def _normalize_and_validate_distribution_with_two_dependent_variables(
-            distribution: Dict[Any, Dict[Any, float]],
+            distribution: Dict[Any, Dict[Any, Dict[Any, Any]]],
             key_type_first_level: Type[KeyEnumFirstLevel],
             key_type_second_level: Type[KeyEnumSecondLevel],
             key_type_third_level: Type[KeyEnumThirdLevel],

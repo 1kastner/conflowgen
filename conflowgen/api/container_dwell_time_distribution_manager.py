@@ -5,7 +5,7 @@ from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
     ContainerDwellTimeDistributionRepository
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.tools.theoretical_distribution import TheoreticalDistribution
+from conflowgen.tools.continuous_distribution import ContinuousDistribution
 
 
 class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
@@ -19,9 +19,8 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
 
     def get_container_dwell_time_distribution(
             self
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, TheoreticalDistribution]]]:
+    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]]:
         """
-        TODO: Convert TheoreticalDistribution to Dict[str, Any] description
 
         Returns:
             The container dwell time distribution depends on the vehicle the container is delivered by, picked up by,
