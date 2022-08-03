@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import abc
 import math
-from typing import Collection, Sequence, Optional
+from typing import Collection, Sequence, Optional, Type, Dict
 
-import numpy
+import numpy as np
 import scipy.stats
+
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistributionInterface
 
 
 class ContinuousDistribution(abc.ABC):
@@ -13,6 +16,8 @@ class ContinuousDistribution(abc.ABC):
     average: float
     minimum: float
     maximum: float
+
+    distribution_types: Dict[str, Type[ContinuousDistribution]] = {}
 
     def __init__(
             self,
@@ -22,6 +27,14 @@ class ContinuousDistribution(abc.ABC):
             unit: Optional[str] = None,
             reversed_distribution: bool = False
     ):
+        """
+        Args:
+            average: The expected mean of the distribution.
+            minimum: The minimum of the distribution. Smaller values are automatically set to zero.
+            maximum: The maximum of the distribution. Larger values are automatically set to zero.
+            unit: The unit for the average, minimum, and maximum. It is used for the __repr__ implementation.
+            reversed_distribution: Whether the distribution is mirrored at the y-axis.
+        """
         assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
         self.average = average
         self.minimum = minimum
@@ -34,34 +47,58 @@ class ContinuousDistribution(abc.ABC):
             self.unit_repr = unit
             self.unit_repr_square = unit + "²"
 
+    # noinspection PyMethodOverriding
+    def __init_subclass__(cls, /, short_name: str) -> None:
+        """
+        Args:
+            short_name: Provide a short name for the distribution. This is, e.g., used in the database.
+        """
+        super().__init_subclass__()
+        cls.distribution_types[short_name] = cls
+
     @abc.abstractmethod
-    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
         pass
 
-    def get_probabilities(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    @classmethod
+    @abc.abstractmethod
+    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Type[ContinuousDistribution]:
         """
+        Args:
+            entry: The database entry describing a continuous distribution.
 
+        Returns:
+            The loaded distribution instance.
+        """
+        pass
+
+    def get_probabilities(self, xs: Sequence[float]) -> np.ndarray:
+        """
         Args:
             xs: Elements that are on the same scale as average, variance, minimum, and maximum
 
         Returns:
-            The respective probability that element x as an element of xs is drawn from this distribution
+            The respective probability that element x of xs is drawn from this distribution.
         """
-        xs = numpy.array(xs)
+        xs = np.array(xs)
         densities = self._get_probabilities_based_on_distribution(xs)
         densities[xs <= self.minimum] = 0
         densities[xs >= self.maximum] = 0
         densities = densities / densities.sum()
         if self.reversed_distribution:
-            densities = numpy.flip(densities)
+            densities = np.flip(densities)
         return densities
 
     @abc.abstractmethod
     def reversed(self) -> ContinuousDistribution:
+        """
+        Returns:
+            A new instance of the distribution that reverses the x-axis.
+        """
         pass
 
 
-class ClippedLogNormal(ContinuousDistribution):
+class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
 
     variance: float
 
@@ -84,8 +121,10 @@ class ClippedLogNormal(ContinuousDistribution):
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
 
-    def _get_scipy_lognorm(self) -> "scipy.stats.rv_frozen":
-        # See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
+    def _get_scipy_lognorm(self) -> scipy.stats.rv_frozen:
+        """
+        See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
+        """
         sigma2 = math.log(self.variance / self.average ** 2 + 1)
         mu = math.log(self.average) - sigma2 / 2
 
@@ -96,10 +135,20 @@ class ClippedLogNormal(ContinuousDistribution):
 
         return frozen_lognorm
 
-    def _get_probabilities_based_on_distribution(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
         return self._lognorm.pdf(xs)
 
-    def __repr__(self):
+    @classmethod
+    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> ClippedLogNormal:
+        return cls(
+            average=entry.average_number_of_hours,
+            variance=entry.variance,
+            minimum=entry.minimum_number_of_hours,
+            maximum=entry.maximum_number_of_hours,
+            unit="h"
+        )
+
+    def __repr__(self) -> str:
         return (
             f"<{self.__class__.__name__}: "
             f"avg={self.average:.1f}{self.unit_repr}, "
@@ -123,7 +172,7 @@ class ClippedLogNormal(ContinuousDistribution):
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
     assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length"
-    np_probs = [numpy.array(probs, dtype=numpy.double) for probs in probabilities]
-    multiplied_probabilities = numpy.multiply(*np_probs)
+    np_probs = [np.array(probs, dtype=np.double) for probs in probabilities]
+    multiplied_probabilities = np.multiply(*np_probs)
     normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()
     return normalized_probabilities

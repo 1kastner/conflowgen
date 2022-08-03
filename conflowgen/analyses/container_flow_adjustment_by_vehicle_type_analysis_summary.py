@@ -8,14 +8,29 @@ from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis impo
 
 class ContainerFlowAdjustedToVehicleType(NamedTuple):
     """
-    This is a mapping of all existing vehicle types and the additional entry 'unchanged' to the capacity that has
-    been redirected to the respective type.
+    During the automatic assignment of containers to outbound journeys, sometimes a container cannot be assigned to the
+    previously randomly selected vehicle.
+    This happens, e.g., during the ramp-down phase when no vessels arrive and thus transshipment is impossible.
+    However, in the end trucks can still be generated to empty the container yard.
+    This data structure holds how much volume had to be re-assigned.
     """
+
+    #: The container volume (e.g., counted in boxes or TEU) that was assigned a vehicle of the pre-defined vehicle type
     unchanged: float
+
+    #: The container volume (e.g., counted in boxes or TEU) that was re-assigned to be transported by train
     train: float
+
+    #: The container volume (e.g., counted in boxes or TEU) that was re-assigned to be transported by barge
     barge: float
+
+    #: The container volume (e.g., counted in boxes or TEU) that was re-assigned to be transported by truck
     truck: float
+
+    #: The container volume (e.g., counted in boxes or TEU) that was re-assigned to be transported by deep sea vessel
     deep_sea_vessel: float
+
+    #: The container volume (e.g., counted in boxes or TEU) that was re-assigned to be transported by feeder
     feeder: float
 
 

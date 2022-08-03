@@ -57,11 +57,10 @@ setup(
             'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
             'sphinxcontrib-bibtex',  # a good help for citing
-            'sphinx-math-dollar',  # allow writing LaTeX code in math mode using dollar symbols
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
-            'jupyterlab',  # develop the Jupyter Notebooks
+            'jupyterlab',  # continue development on the Jupyter Notebooks included in this repository
 
             # checking code quality
             'pylint',  # lint Python code
@@ -70,6 +69,12 @@ setup(
 
             # publish at PyPI
             'twine'
+        ],
+        'jupyterlab': [  # a collection of nice-to-haves for working on Jupyter Notebooks
+            "jupyterlab-spellchecker",
+            "jupyterlab-lsp",
+            "python-lsp-server",
+            "pyls-flake8"
         ]
     },
     license=metadata['__license__'],

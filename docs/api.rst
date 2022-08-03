@@ -9,7 +9,7 @@ Domain datatypes
 .. autoenum:: conflowgen.ContainerLength
     :members:
 
-.. autonamedtuple:: conflowgen.ContainersAndTEUContainerFlowPair
+.. autonamedtuple:: conflowgen.ContainerVolume
 
 .. autonamedtuple:: conflowgen.HinterlandModalSplit
 
@@ -170,6 +170,9 @@ dictionaries where the key refers to the element to be drawn and the value is th
 In some cases, such as container dwell times, continuous distributions are required.
 
 .. autoclass:: conflowgen.ContinuousDistribution
+    :members:
+
+.. autoclass:: conflowgen.ContainerDwellTimeDistributionInterface
     :members:
 
 Working with reports

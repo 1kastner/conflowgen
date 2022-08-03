@@ -1,11 +1,13 @@
-from typing import Dict, Any
+from __future__ import annotations
+
+from typing import Dict, Any, Type
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_two_dependent_variables
-from conflowgen.tools.continuous_distribution import ContinuousDistribution, ClippedLogNormal
+from conflowgen.tools.continuous_distribution import ContinuousDistribution
 
 
 class ContainerDwellTimeDistributionRepository:
@@ -15,7 +17,7 @@ class ContainerDwellTimeDistributionRepository:
             delivered_by: ModeOfTransport,
             picked_up_by: ModeOfTransport,
             storage_requirement: StorageRequirement
-    ) -> ContinuousDistribution:
+    ) -> Type[ContinuousDistribution]:
         """Loads the distribution for the given transport direction and container type."""
 
         entry: ContainerDwellTimeDistribution = ContainerDwellTimeDistribution.get(
@@ -23,17 +25,12 @@ class ContainerDwellTimeDistributionRepository:
             & (ContainerDwellTimeDistribution.picked_up_by == picked_up_by)
             & (ContainerDwellTimeDistribution.storage_requirement == storage_requirement)
         )
-        if entry.distribution_name == "lognormal":
-            return ClippedLogNormal(
-                average=entry.average_number_of_hours,
-                variance=entry.variance,
-                minimum=entry.minimum_number_of_hours,
-                maximum=entry.maximum_number_of_hours,
-                unit="h"
-            )
-        if entry.distribution_name:
-            raise RuntimeError(f"Distribution '{entry.distribution_name}' currently not supported")
-        raise RuntimeError(f"Distribution is not valid: {repr(entry.distribution_name)}")
+
+        distribution_class: Type[ContinuousDistribution] | None = \
+            ContinuousDistribution.distribution_types.get(entry.distribution_name, None)
+        if distribution_class is None:
+            raise NotImplementedError(f"No implementation found for '{entry.distribution_name}'")
+        return distribution_class.from_entry(entry)
 
     @classmethod
     def get_distributions(

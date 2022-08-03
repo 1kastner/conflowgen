@@ -52,10 +52,10 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
     'sphinx.ext.autosectionlabel',  # create reference for each section
+    'sphinx.ext.viewcode',  # create html page for each source file and link between it and and the docs
 
     'sphinxcontrib.bibtex',  # allow bib style citation
-    'myst_parser',  # allow Markdown text
-    'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
+    'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
@@ -75,7 +75,21 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
+autodoc_typehints = 'signature'
+
 autodoc_typehints_format = 'short'
+
+python_use_unqualified_type_names = True  # workaround, see https://github.com/sphinx-doc/sphinx/issues/10290
+
+
+def rework_annotations(app, obj, bound_method):
+    if "return" in obj.__annotations__ and obj.__annotations__["return"] is None:
+        del obj.__annotations__["return"]  # drop return none
+
+
+def setup(app):
+    app.connect("autodoc-before-process-signature", rework_annotations)
+
 
 # -- Options for HTML output -------------------------------------------------
 

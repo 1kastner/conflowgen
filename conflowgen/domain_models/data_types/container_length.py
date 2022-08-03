@@ -23,7 +23,7 @@ class ContainerLength(enum.Enum):
     def get_factor(cls, container_length: ContainerLength) -> float:
         """
         Each container occupies a certain amount of space when stored.
-         This required space is measured in TEU.
+        This required space is measured in TEU.
 
         .. note::
             .. autodata:: conflowgen.domain_models.data_types.container_length.CONTAINER_LENGTH_TO_OCCUPIED_TEU

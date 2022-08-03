@@ -62,6 +62,8 @@ from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAs
 
 # Specific classes for distributions
 from conflowgen.tools.continuous_distribution import ContinuousDistribution
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistributionInterface
 
 # List of enums
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
@@ -77,7 +79,7 @@ from conflowgen.previews import run_all_previews
 # List of named tuples
 from conflowgen.previews.vehicle_capacity_exceeded_preview import RequiredAndMaximumCapacityComparison
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import OutboundUsedAndMaximumCapacity
-from conflowgen.analyses.abstract_analysis import ContainersAndTEUContainerFlowPair
+from conflowgen.analyses.abstract_analysis import ContainerVolume
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustedToVehicleType
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
