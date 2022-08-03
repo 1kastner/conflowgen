@@ -90,7 +90,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             * Sorting the labels on either the left or right side without recalculating the height of each bar is not
               possible, see https://github.com/plotly/plotly.py/issues/1732.
             * Empty nodes require special handling, see https://github.com/plotly/plotly.py/issues/3003 and the
-              coordinates need to be $0 < x,y < 1$ (no equals!), see https://github.com/plotly/plotly.py/issues/3002.
+              coordinates need to be :math:`0 < x,y < 1` (no equals!), see https://github.com/plotly/plotly.py/issues/3002.
 
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.

@@ -55,8 +55,7 @@ extensions = [
     'sphinx.ext.viewcode',  # create html page for each source file and link between it and and the docs
 
     'sphinxcontrib.bibtex',  # allow bib style citation
-    'myst_parser',  # allow Markdown text
-    'sphinx_math_dollar',  # allow inline LaTeX-style formula starting and ending with dollars
+    'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
