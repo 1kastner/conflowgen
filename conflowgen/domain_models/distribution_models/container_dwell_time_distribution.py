@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from peewee import FloatField, CompositeKey, TextField
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -32,7 +34,7 @@ class ContainerDwellTimeDistributionInterface:
 
     #: The variance is a distribution-specific parameter and helps to instantiate, e.g., normal or lognormal
     #: distributions.
-    variance: float
+    variance: float | None
 
 
 class ContainerDwellTimeDistribution(BaseModel, ContainerDwellTimeDistributionInterface):

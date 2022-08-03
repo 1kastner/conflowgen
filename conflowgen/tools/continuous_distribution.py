@@ -4,7 +4,6 @@ import abc
 import math
 from typing import Collection, Sequence, Optional, Type, Dict
 
-import numpy
 import numpy as np
 import scipy.stats
 
@@ -58,7 +57,7 @@ class ContinuousDistribution(abc.ABC):
         cls.distribution_types[short_name] = cls
 
     @abc.abstractmethod
-    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
         pass
 
     @classmethod
@@ -73,7 +72,7 @@ class ContinuousDistribution(abc.ABC):
         """
         pass
 
-    def get_probabilities(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
+    def get_probabilities(self, xs: Sequence[float]) -> np.ndarray:
         """
         Args:
             xs: Elements that are on the same scale as average, variance, minimum, and maximum
@@ -136,7 +135,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
 
         return frozen_lognorm
 
-    def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
         return self._lognorm.pdf(xs)
 
     @classmethod
