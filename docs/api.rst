@@ -172,6 +172,9 @@ In some cases, such as container dwell times, continuous distributions are requi
 .. autoclass:: conflowgen.ContinuousDistribution
     :members:
 
+.. autoclass:: conflowgen.ContainerDwellTimeDistributionInterface
+    :members:
+
 Working with reports
 ====================
 

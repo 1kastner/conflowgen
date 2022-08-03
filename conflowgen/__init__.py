@@ -62,6 +62,8 @@ from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAs
 
 # Specific classes for distributions
 from conflowgen.tools.continuous_distribution import ContinuousDistribution
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistributionInterface
 
 # List of enums
 from conflowgen.application.data_types.export_file_format import ExportFileFormat

@@ -79,6 +79,8 @@ autodoc_typehints = 'both'
 
 autodoc_typehints_format = 'short'
 
+python_use_unqualified_type_names = True  # workaround, see https://github.com/sphinx-doc/sphinx/issues/10290
+
 
 def rework_annotations(app, obj, bound_method):
     if "return" in obj.__annotations__ and obj.__annotations__["return"] is None:

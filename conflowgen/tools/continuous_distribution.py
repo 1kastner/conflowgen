@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import abc
 import math
-from typing import Collection, Sequence, Optional
+from typing import Collection, Sequence, Optional, Type, Dict
 
 import numpy
 import numpy as np
 import scipy.stats
+
+from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
+    ContainerDwellTimeDistributionInterface
 
 
 class ContinuousDistribution(abc.ABC):
@@ -14,6 +17,8 @@ class ContinuousDistribution(abc.ABC):
     average: float
     minimum: float
     maximum: float
+
+    distribution_types: Dict[str, Type[ContinuousDistribution]] = {}
 
     def __init__(
             self,
@@ -43,8 +48,29 @@ class ContinuousDistribution(abc.ABC):
             self.unit_repr = unit
             self.unit_repr_square = unit + "²"
 
+    # noinspection PyMethodOverriding
+    def __init_subclass__(cls, /, short_name: str) -> None:
+        """
+        Args:
+            short_name: Provide a short name for the distribution. This is, e.g., used in the database.
+        """
+        super().__init_subclass__()
+        cls.distribution_types[short_name] = cls
+
     @abc.abstractmethod
     def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
+        pass
+
+    @classmethod
+    @abc.abstractmethod
+    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Type[ContinuousDistribution]:
+        """
+        Args:
+            entry: The database entry describing a continuous distribution.
+
+        Returns:
+            The loaded distribution instance.
+        """
         pass
 
     def get_probabilities(self, xs: numpy.typing.ArrayLike) -> numpy.typing.ArrayLike:
@@ -66,10 +92,14 @@ class ContinuousDistribution(abc.ABC):
 
     @abc.abstractmethod
     def reversed(self) -> ContinuousDistribution:
+        """
+        Returns:
+            A new instance of the distribution that reverses the x-axis.
+        """
         pass
 
 
-class ClippedLogNormal(ContinuousDistribution):
+class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
 
     variance: float
 
@@ -92,8 +122,10 @@ class ClippedLogNormal(ContinuousDistribution):
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
 
-    def _get_scipy_lognorm(self) -> "scipy.stats.rv_frozen":
-        # See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
+    def _get_scipy_lognorm(self) -> scipy.stats.rv_frozen:
+        """
+        See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
+        """
         sigma2 = math.log(self.variance / self.average ** 2 + 1)
         mu = math.log(self.average) - sigma2 / 2
 
@@ -107,7 +139,17 @@ class ClippedLogNormal(ContinuousDistribution):
     def _get_probabilities_based_on_distribution(self, xs: np.typing.ArrayLike) -> np.typing.ArrayLike:
         return self._lognorm.pdf(xs)
 
-    def __repr__(self):
+    @classmethod
+    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> ClippedLogNormal:
+        return cls(
+            average=entry.average_number_of_hours,
+            variance=entry.variance,
+            minimum=entry.minimum_number_of_hours,
+            maximum=entry.maximum_number_of_hours,
+            unit="h"
+        )
+
+    def __repr__(self) -> str:
         return (
             f"<{self.__class__.__name__}: "
             f"avg={self.average:.1f}{self.unit_repr}, "
