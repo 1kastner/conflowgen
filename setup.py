@@ -69,6 +69,12 @@ setup(
 
             # publish at PyPI
             'twine'
+        ],
+        'jupyterlab': [  # a collection of nice-to-haves for working on Jupyter Notebooks
+            "jupyterlab-spellchecker",
+            "jupyterlab-lsp",
+            "python-lsp-server",
+            "pyls-flake8"
         ]
     },
     license=metadata['__license__'],
