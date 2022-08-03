@@ -4,7 +4,7 @@ from typing import Dict
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.analyses.abstract_analysis import AbstractAnalysis, ContainersAndTEUContainerFlowPair
+from conflowgen.analyses.abstract_analysis import AbstractAnalysis, ContainerVolume
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
@@ -15,7 +15,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
     """
 
     @staticmethod
-    def get_initial_to_adjusted_outbound_flow() -> ContainersAndTEUContainerFlowPair:
+    def get_initial_to_adjusted_outbound_flow() -> ContainerVolume:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
         onward transportation might change. The initial outbound vehicle type is the vehicle type that is drawn
@@ -55,7 +55,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
             initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial][vehicle_type_adjusted] += \
                 teu_factor_of_container
 
-        return ContainersAndTEUContainerFlowPair(
+        return ContainerVolume(
             containers=initial_to_adjusted_outbound_flow_in_containers,
             TEU=initial_to_adjusted_outbound_flow_in_teu
         )

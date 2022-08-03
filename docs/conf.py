@@ -75,7 +75,7 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
-autodoc_typehints = 'both'
+autodoc_typehints = 'signature'
 
 autodoc_typehints_format = 'short'
 

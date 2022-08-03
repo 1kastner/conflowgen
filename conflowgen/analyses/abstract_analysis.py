@@ -7,14 +7,16 @@ from typing import NamedTuple, Dict, List, Optional
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
-class ContainersAndTEUContainerFlowPair(NamedTuple):
+class ContainerVolume(NamedTuple):
     """
-    This is a pair of two container flows, i.e. the number of containers moving from A to B within a given time window.
-    First, it is reported in containers which is important for reporting the efficiency at the interfaces,
-    e.g. moves per hour for the ship-to-shore gantry cranes.
-    Second, it is reported in TEU which is important for the yard capacity.
+    Several KPIs at container terminals can be both expressed in boxes per hour and TEU per hour (or a different time
+    range).
     """
+
+    #: The container volume expressed in number of boxes
     containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
+
+    #: The container volume expressed in TEU
     TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
 
 
