@@ -1,8 +1,7 @@
 [flake8]
 exclude =
     .git,
-    venv,
-    conflowgen-venv,
+    .venv,
     __pycache__,
     build,
     docs,
