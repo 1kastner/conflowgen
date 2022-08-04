@@ -90,8 +90,9 @@ class AbstractReport(abc.ABC):
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
-        self.get_report_as_graph()
-        plt.show()
+        with plt.style.context('seaborn-colorblind'):
+            self.get_report_as_graph()
+            plt.show()
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
