@@ -74,7 +74,10 @@ setup(
             "jupyterlab-spellchecker",
             "jupyterlab-lsp",
             "python-lsp-server",
-            "pyls-flake8"
+            "pyls-flake8",
+            "autopep8",
+            "rope",
+            "yapf",
         ]
     },
     license=metadata['__license__'],
