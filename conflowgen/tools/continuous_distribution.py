@@ -131,7 +131,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
         scipy_shape = sigma2 ** 0.5
         scipy_scale = math.exp(mu)
 
-        frozen_lognorm = scipy.stats.lognorm(s=scipy_shape, scale=scipy_scale)
+        frozen_lognorm = scipy.stats.lognorm(s=scipy_shape, scale=scipy_scale, loc=self.minimum)
 
         return frozen_lognorm
 
