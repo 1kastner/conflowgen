@@ -2,13 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
-
-sns.set_palette(sns.color_palette())
 
 
 class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotlib):
@@ -31,7 +28,9 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
             transportation_buffer=self.transportation_buffer
         )
 
-    def get_report_as_text(self) -> str:
+    def get_report_as_text(self, **kwargs) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
 
         # create string representation
@@ -53,13 +52,14 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a bar chart using pandas.
 
         Returns:
              The matplotlib axis of the bar chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
 

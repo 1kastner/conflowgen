@@ -6,10 +6,11 @@ from conflowgen.application.models.container_flow_generation_properties import C
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 from conflowgen.analyses import run_all_analyses
+from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestRunAllAnalyses(unittest.TestCase):
+class TestRunAllAnalyses(unittest.TestCase, UnitTestWithMatplotlib):
     def setUp(self) -> None:
         self.sqlite_db = setup_sqlite_in_memory_db()
         create_tables(self.sqlite_db)

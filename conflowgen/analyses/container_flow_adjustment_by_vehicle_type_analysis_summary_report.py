@@ -25,8 +25,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
         self.analysis_summary = ContainerFlowAdjustmentByVehicleTypeAnalysisSummary()
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         adjusted_to = self.analysis_summary.get_summary()
         total_capacity = sum(adjusted_to)
 
@@ -59,13 +61,14 @@ changed to truck:            0.0        (-%)
 """
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a pie chart.
 
         Returns:
              The matplotlib axis of the pie chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         adjusted_to = self.analysis_summary.get_summary()
         if sum(adjusted_to) == 0:

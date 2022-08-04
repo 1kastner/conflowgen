@@ -1,12 +1,8 @@
 from __future__ import annotations
 
-import seaborn as sns
-
 from conflowgen.analyses.modal_split_analysis import ModalSplitAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib, modal_split_report
 from conflowgen.reporting.modal_split_report import plot_modal_splits
-
-sns.set_palette(sns.color_palette())
 
 
 class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
@@ -25,11 +21,14 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         self.analysis = ModalSplitAnalysis()
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
         """
+
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         # gather data
         transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split()
 
@@ -54,13 +53,14 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a set of pie charts using pandas.
 
         Returns:
              The matplotlib axis of the last bar chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         # gather data
         transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split()

@@ -42,8 +42,10 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         self.preview.hypothesize_with_mode_of_transport_distribution(mode_of_transport_distribution)
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_to_outbound_flow = self._get_inbound_to_outbound_flow()
 
         # create string representation
@@ -77,7 +79,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         inbound_to_outbound_flow = self.preview.get_inbound_to_outbound_flow()
         return inbound_to_outbound_flow
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The container flow is represented by a Sankey diagram.
 
@@ -96,6 +98,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_to_outbound_flow = self._get_inbound_to_outbound_flow()
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]

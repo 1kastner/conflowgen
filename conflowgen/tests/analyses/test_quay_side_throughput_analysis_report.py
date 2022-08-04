@@ -13,6 +13,7 @@ from conflowgen.domain_models.distribution_seeders import mode_of_transport_dist
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder, Train
 from conflowgen.analyses.quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -77,7 +78,7 @@ def setup_feeder_data():
     )
 
 
-class TestQuaySideThroughputAnalysisReport(unittest.TestCase):
+class TestQuaySideThroughputAnalysisReport(unittest.TestCase, UnitTestWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

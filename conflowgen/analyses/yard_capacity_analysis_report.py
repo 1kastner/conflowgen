@@ -4,14 +4,11 @@ import datetime
 import statistics
 from typing import Tuple, Any, Dict
 import pandas as pd
-import seaborn as sns
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.analyses.yard_capacity_analysis import YardCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
-
-sns.set_palette(sns.color_palette())
 
 
 class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
@@ -110,10 +107,10 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
 
         series = pd.Series(yard_capacity_over_time)
         ax = series.plot()
-        x_label = "Used capacity (in TEU)  - storage requirement = "
-        x_label += self._get_storage_requirement_representation(storage_requirement)
+        x_label = f"storage requirement = {self._get_storage_requirement_representation(storage_requirement)}"
         ax.set_xlabel(x_label)
-        ax.set_title("Used yard capacity analysis")
+        ax.set_ylabel("Used yard capacity (in TEU)")
+        ax.set_title("Yard capacity analysis")
         return ax
 
     def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:

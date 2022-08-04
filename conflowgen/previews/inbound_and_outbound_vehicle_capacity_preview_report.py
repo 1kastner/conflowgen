@@ -41,7 +41,9 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
     ):
         self.preview.hypothesize_with_mode_of_transport_distribution(mode_of_transport_distribution)
 
-    def get_report_as_text(self) -> str:
+    def get_report_as_text(self, **kwargs) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
 
         # create string representation
@@ -64,13 +66,15 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a bar chart using pandas.
 
         Returns:
              The matplotlib axis of the bar chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
 
         df = pd.DataFrame({

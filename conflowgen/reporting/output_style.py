@@ -26,7 +26,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
             level: The level of the headline, 1 being the upmost headline. The number of levels depends on the markup
                 language.
         """
-        ...
+        pass
 
     @abc.abstractmethod
     def display_verbatim(self, text: str) -> None:
@@ -34,7 +34,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
         Args:
             text: The text of the verbatim block (shown as-is)
         """
-        ...
+        pass
 
     @abc.abstractmethod
     def display_explanation(self, text: str) -> None:
@@ -43,7 +43,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
             text: The text of an explanatory text (shown in normal font, wrapped if required).
                   Different paragraphs are separated by repeated invocations of this method.
         """
-        ...
+        pass
 
 
 class DisplayAsPlainText(DisplayAsMarkupLanguage):

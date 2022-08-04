@@ -32,8 +32,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         self.analysis = ContainerFlowAdjustmentByVehicleTypeAnalysis()
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
@@ -62,7 +64,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The container flow is represented by a Sankey diagram.
 
@@ -81,6 +83,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         Returns:
             The plotly figure of the Sankey diagram.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
 

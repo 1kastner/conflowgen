@@ -12,6 +12,7 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destinatio
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -36,7 +37,7 @@ def setup_feeder_data():
     )
 
 
-class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(unittest.TestCase):
+class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(unittest.TestCase, UnitTestWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

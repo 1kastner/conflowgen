@@ -12,6 +12,7 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destinatio
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
     InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -48,7 +49,7 @@ def setup_feeder_data():
     )
 
 
-class TestInboundToOutboundCapacityUtilizationAnalysisReport(unittest.TestCase):
+class TestInboundToOutboundCapacityUtilizationAnalysisReport(unittest.TestCase, UnitTestWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

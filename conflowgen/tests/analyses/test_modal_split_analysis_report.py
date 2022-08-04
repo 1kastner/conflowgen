@@ -11,6 +11,7 @@ from conflowgen.domain_models.distribution_seeders import mode_of_transport_dist
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
 from conflowgen.analyses.modal_split_analysis_report import ModalSplitAnalysisReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -50,7 +51,7 @@ def setup_feeder_data():
     container.save()
 
 
-class TestModalSplitAnalysisReport(unittest.TestCase):
+class TestModalSplitAnalysisReport(unittest.TestCase, UnitTestWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()
