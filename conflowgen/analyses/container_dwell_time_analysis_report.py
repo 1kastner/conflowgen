@@ -4,15 +4,12 @@ import datetime
 import statistics
 from typing import Any
 import pandas as pd
-import seaborn as sns
 
 from conflowgen .domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.analyses.container_dwell_time_analysis import ContainerDwellTimeAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
-
-sns.set_palette(sns.color_palette())
 
 
 class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
@@ -109,9 +106,11 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
              The matplotlib axis of the bar chart.
         """
 
-        container_delivered_by_vehicle_type = kwargs.get("container_delivered_by_vehicle_type", "all")
-        container_picked_up_by_vehicle_type = kwargs.get("container_picked_up_by_vehicle_type", "all")
-        storage_requirement = kwargs.get("storage_requirement", "all")
+        container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
+        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
+        storage_requirement = kwargs.pop("storage_requirement", "all")
+
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
             container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,

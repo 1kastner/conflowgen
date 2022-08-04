@@ -1,6 +1,6 @@
 import datetime
-import unittest
 
+from conflowgen.analyses.modal_split_analysis_report import ModalSplitAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -10,7 +10,7 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.analyses.modal_split_analysis_report import ModalSplitAnalysisReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestCaseWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -50,7 +50,7 @@ def setup_feeder_data():
     container.save()
 
 
-class TestModalSplitAnalysisReport(unittest.TestCase):
+class TestModalSplitAnalysisReport(UnitTestCaseWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

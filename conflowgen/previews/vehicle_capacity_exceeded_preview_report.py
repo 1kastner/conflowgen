@@ -4,7 +4,6 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.previews.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
@@ -44,8 +43,10 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
         self.preview.hypothesize_with_mode_of_transport_distribution(mode_of_transport_distribution)
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         comparison = self._get_comparison()
 
         # create string representation
@@ -83,14 +84,14 @@ class VehicleCapacityExceededPreviewReport(AbstractReportWithMatplotlib):
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
-
         Returns:
              The matplotlib axis of the bar chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         comparison = self._get_comparison()
-        sns.set_palette(sns.color_palette())
         df = pd.DataFrame.from_dict(comparison).T
         df.columns = ["currently planned", "maximum", "exceeded"]
         df.index = [str(i).replace("_", " ") for i in df.index]

@@ -3,7 +3,7 @@ A collection of tools for which no nicer name has been found yet.
 """
 from typing import Callable, Any, TypeVar
 
-DecoratedType = TypeVar('DecoratedType')
+DecoratedType = TypeVar('DecoratedType')  # pylint: disable=invalid-name
 
 
 def docstring_parameter(*args, **kwargs) -> Callable:

@@ -169,7 +169,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.large_scheduled_vehicle.moved_capacity = 10  # in TEU
         containers = [self._create_container_for_truck(truck) for _ in range(10)]
         self.assertEqual(Container.select().count(), 10)
-        teu_generated = sum([ContainerLength.get_factor(container.length) for container in containers])
+        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
         self.assertGreaterEqual(teu_generated, 10, "Generating 10 containers with each at least 1 TEU must result in a "
                                                    "total TEU of more than 10 TEU")
 
@@ -198,7 +198,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 90)
-        teu_generated = sum([ContainerLength.get_factor(container.length) for container in containers])
+        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 90)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -232,7 +232,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)
-        teu_generated = sum([ContainerLength.get_factor(container.length) for container in containers])
+        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 180)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -269,7 +269,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)
-        teu_generated = sum([ContainerLength.get_factor(container.length) for container in containers])
+        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 270)
 
         self.manager.choose_departing_vehicle_for_containers()

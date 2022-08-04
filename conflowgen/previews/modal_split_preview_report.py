@@ -40,8 +40,10 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         self.preview.hypothesize_with_mode_of_transport_distribution(mode_of_transport_distribution)
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         preview = self._get_updated_preview()
 
         # gather data
@@ -79,13 +81,15 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         )
         return self.preview
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a set of pie charts using pandas.
 
         Returns:
              The matplotlib axes
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         preview = self._get_updated_preview()
 
         # gather data

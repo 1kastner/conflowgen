@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_report import \
+    ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -10,8 +12,6 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_report import \
-    ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 

@@ -3,13 +3,13 @@ import unittest
 
 import numpy as np
 
-from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
-    ModeOfTransportDistributionRepository
-from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
-    InboundAndOutboundVehicleCapacityPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
+from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
+    ModeOfTransportDistributionRepository
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
+from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
+    InboundAndOutboundVehicleCapacityPreview
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 

@@ -2,14 +2,11 @@ from __future__ import annotations
 
 import statistics
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
-
-sns.set_palette(sns.color_palette())
 
 
 class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
@@ -29,7 +26,8 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         super().__init__()
         self.analysis = TruckGateThroughputAnalysis()
 
-    def get_report_as_text(self) -> str:
+    def get_report_as_text(self, **kwargs) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         truck_gate_throughput = self.analysis.get_throughput_over_time()
         if truck_gate_throughput:
@@ -51,13 +49,14 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a line graph using pandas.
 
         Returns:
              The matplotlib axis of the bar chart.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         truck_gate_throughput = self.analysis.get_throughput_over_time()
         if len(truck_gate_throughput) == 0:

@@ -95,7 +95,7 @@ class WeeklyDistribution:
         if not_normalized_distribution_slice[-1][0] <= self.minimum_dwell_time_in_hours:
             not_normalized_distribution_slice = [(self.minimum_dwell_time_in_hours, 1)]
 
-        total_fraction_sum = sum([fraction for _, fraction in not_normalized_distribution_slice])
+        total_fraction_sum = sum((fraction for _, fraction in not_normalized_distribution_slice))
         distribution_slice = {
             hour_after_start: (hour_fraction / total_fraction_sum)
             for (hour_after_start, hour_fraction) in not_normalized_distribution_slice

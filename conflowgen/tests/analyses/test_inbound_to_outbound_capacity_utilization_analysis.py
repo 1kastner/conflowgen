@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
+    InboundToOutboundVehicleCapacityUtilizationAnalysis
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -9,8 +11,6 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysis
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 

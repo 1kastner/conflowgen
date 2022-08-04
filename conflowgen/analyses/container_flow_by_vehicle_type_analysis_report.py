@@ -27,8 +27,10 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         self.analysis = ContainerFlowByVehicleTypeAnalysis()
 
     def get_report_as_text(
-            self
+            self, **kwargs
     ) -> str:
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
 
         # create string representation
@@ -48,7 +50,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self) -> object:
+    def get_report_as_graph(self, **kwargs) -> object:
         """
         The container flow is represented by a Sankey diagram.
 
@@ -67,6 +69,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
+        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
 

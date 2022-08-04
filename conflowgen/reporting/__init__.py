@@ -52,18 +52,31 @@ class AbstractReport(abc.ABC):
         assert -1 < self.transportation_buffer, "The transportation buffer needs to be larger than -100%."
 
     @abc.abstractmethod
-    def get_report_as_text(self) -> str:
+    def get_report_as_text(self, **kwargs) -> str:
         """
-        The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
+        The report as a text is represented as a table suitable for logging.
+        It uses a human-readable formatting style.
+
+        Args:
+            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
 
         Returns:
              The report in text format (possibly spanning over several lines).
         """
-        return ""
+        pass
 
     @abc.abstractmethod
-    def get_report_as_graph(self) -> object:
-        raise NotImplementedError("No graph representation of this report has yet been defined.")
+    def get_report_as_graph(self, **kwargs) -> object:
+        """
+        The report as a graph is represented in a figure.
+
+        Args:
+            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
+
+        Returns:
+             A reference to the figure. The actual type depends on the plotting library.
+        """
+        pass
 
     @abc.abstractmethod
     def show_report_as_graph(self, **kwargs) -> None:
@@ -73,9 +86,9 @@ class AbstractReport(abc.ABC):
         This depends on the visualisation library.
 
         Args:
-            **kwargs: The additional keyword arguments are passed to the analysis instance.
+            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
         """
-        raise NotImplementedError("No show method has yet been defined.")
+        pass
 
     @staticmethod
     def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: Type[enum.Enum]) -> str:
@@ -90,8 +103,9 @@ class AbstractReport(abc.ABC):
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
-        self.get_report_as_graph()
-        plt.show()
+        with plt.style.context('seaborn-colorblind'):
+            self.get_report_as_graph()
+            plt.show()
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):

@@ -3,7 +3,7 @@
 **/.virtual_documents/
 **/__pycache__/
 **/.pytest_cache/
-conflowgen-venv
+.venv
 ConFlowGen.egg-info
 
 # Editors
@@ -14,7 +14,7 @@ ConFlowGen.egg-info
 *.sqlite-shm
 *.sqlite-wal
 
-# Microsoft Office Products
+# Microsoft Office products
 **/~$*
 
 # Batch script helper files
