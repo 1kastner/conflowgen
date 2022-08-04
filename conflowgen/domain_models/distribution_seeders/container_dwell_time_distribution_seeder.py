@@ -272,7 +272,7 @@ DEFAULT_CONTAINER_DWELL_TIME_DISTRIBUTIONS = {
                 "average_number_of_hours":
                     DEFAULT_AVERAGE_CONTAINER_DWELL_TIMES[from_vehicle][to_vehicle][requirement] * 24,
                 "variance":
-                    DEFAULT_AVERAGE_CONTAINER_DWELL_TIMES[from_vehicle][to_vehicle][requirement] * 24 * 25,
+                    DEFAULT_AVERAGE_CONTAINER_DWELL_TIMES[from_vehicle][to_vehicle][requirement] * 24 * 50,
                 "maximum_number_of_hours":
                     DEFAULT_AVERAGE_CONTAINER_DWELL_TIMES[from_vehicle][to_vehicle][requirement] * 24 * 3,
                 "minimum_number_of_hours":

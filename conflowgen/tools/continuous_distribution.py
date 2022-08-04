@@ -125,13 +125,15 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
         """
         See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
         """
-        sigma2 = math.log(self.variance / self.average ** 2 + 1)
-        mu = math.log(self.average) - sigma2 / 2
+        shifted_average = self.average - self.minimum
+
+        sigma2 = math.log(self.variance / shifted_average ** 2 + 1)
+        mu = math.log(shifted_average) - sigma2 / 2
 
         scipy_shape = sigma2 ** 0.5
         scipy_scale = math.exp(mu)
 
-        frozen_lognorm = scipy.stats.lognorm(s=scipy_shape, scale=scipy_scale)
+        frozen_lognorm = scipy.stats.lognorm(s=scipy_shape, scale=scipy_scale, loc=self.minimum)
 
         return frozen_lognorm
 

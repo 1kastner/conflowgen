@@ -36,8 +36,6 @@ class ContainerDwellTimeDistributionRepository:
     def get_distributions(
             cls
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]]:
-        """Loads a distribution for which all fractions are normalized to sum up to 1 for each mode of transportation.
-        """
         distributions = {
             mode_of_transport_i: {
                 mode_of_transport_j: {
