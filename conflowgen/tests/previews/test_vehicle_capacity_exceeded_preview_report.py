@@ -1,19 +1,18 @@
 import datetime
-import unittest
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
-from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
-    ModeOfTransportDistributionRepository
-from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
-    VehicleCapacityExceededPreviewReport
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
+from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
+    ModeOfTransportDistributionRepository
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
-from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
+from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
+    VehicleCapacityExceededPreviewReport
+from conflowgen.tests.autoclose_matplotlib import UnitTestCaseWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestVehicleCapacityExceededPreviewReport(unittest.TestCase, UnitTestWithMatplotlib):
+class TestVehicleCapacityExceededPreviewReport(UnitTestCaseWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

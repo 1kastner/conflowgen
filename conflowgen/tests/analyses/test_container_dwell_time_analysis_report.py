@@ -1,6 +1,6 @@
 import datetime
-import unittest
 
+from conflowgen.analyses import ContainerDwellTimeAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
@@ -15,8 +15,7 @@ from conflowgen.domain_models.distribution_seeders import mode_of_transport_dist
     container_dwell_time_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.analyses import ContainerDwellTimeAnalysisReport
-from conflowgen.tests.autoclose_matplotlib import UnitTestWithMatplotlib
+from conflowgen.tests.autoclose_matplotlib import UnitTestCaseWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -80,7 +79,7 @@ def setup_feeder_data():
     )
 
 
-class TestContainerDwellTimeAnalysisReport(unittest.TestCase, UnitTestWithMatplotlib):
+class TestContainerDwellTimeAnalysisReport(UnitTestCaseWithMatplotlib):
     def setUp(self) -> None:
         """Create container database in memory"""
         self.sqlite_db = setup_sqlite_in_memory_db()

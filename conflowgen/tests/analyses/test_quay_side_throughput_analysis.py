@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from conflowgen.analyses.quay_side_throughput_analysis import QuaySideThroughputAnalysis
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container
@@ -11,7 +12,6 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck, Feeder
-from conflowgen.analyses.quay_side_throughput_analysis import QuaySideThroughputAnalysis
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 

@@ -27,7 +27,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         self.analysis = ContainerFlowByVehicleTypeAnalysis()
 
     def get_report_as_text(
-            self, *kwargs
+            self, **kwargs
     ) -> str:
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
