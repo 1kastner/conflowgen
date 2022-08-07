@@ -183,7 +183,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        _ = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederServiceIgnored",
             vehicle_arrives_at=one_week_later.date(),
@@ -192,19 +192,16 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         destination_1 = Destination.create(
             belongs_to_schedule=schedule,
             sequence_id=1,
             destination_name="TestDestination1"
         )
-        destination_1.save()
         destination_2 = Destination.create(
             belongs_to_schedule=schedule,
-            sequence_id=1,
+            sequence_id=2,
             destination_name="TestDestination2"
         )
-        destination_2.save()
 
         distribution = {
             schedule: {

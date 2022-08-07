@@ -4,6 +4,7 @@ or picks up containers from a container terminal.
 """
 from __future__ import annotations
 
+import uuid
 from typing import Type
 
 from peewee import AutoField, BooleanField, CharField, ForeignKeyField, DateTimeField
@@ -52,15 +53,18 @@ class LargeScheduledVehicle(BaseModel):
     """
     id = AutoField()
     vehicle_name = CharField(
-        null=False
+        null=False,
+        default=lambda: "no-name-" + str(uuid.uuid4()),
     )
     capacity_in_teu = IntegerField(
         null=False,
-        help_text="This is the vehicle capacity that determines how many cranes can serve it"
+        help_text="This is the vehicle capacity. It can be used, e.g., to determine how many cranes can serve it in "
+                  "the subsequent model that reads in this data."
     )
     moved_capacity = IntegerField(
         null=False,
-        help_text="This is the actually moved capacity for a single terminal visit"
+        help_text="This is the actually moved container volume in TEU for a single terminal visit on the inbound "
+                  "journey."
     )
     scheduled_arrival = DateTimeField(
         null=False,
@@ -81,7 +85,7 @@ class LargeScheduledVehicle(BaseModel):
         Schedule,
         unique=False,
         null=False,
-        help_text="The schedule the vehicle adheres to"
+        help_text="The schedule the vehicle adheres to."
     )
     capacity_exhausted_while_determining_onward_transportation = BooleanField(
         null=False,
@@ -106,7 +110,7 @@ class LargeScheduledVehicle(BaseModel):
 
 class AbstractLargeScheduledVehicle(BaseModel):
     @property
-    def large_scheduled_vehicle(self):
+    def large_scheduled_vehicle(self) -> LargeScheduledVehicle:
         raise Exception("You must pick one of the concrete subclasses, this is the common parent class.")
 
     @staticmethod

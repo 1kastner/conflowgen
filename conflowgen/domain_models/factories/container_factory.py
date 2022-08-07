@@ -28,7 +28,10 @@ class ContainerFactory:
 
     ignored_capacity = ContainerLength.get_factor(ContainerLength.other)
 
+    random_seed = 1
+
     def __init__(self):
+        self.seeded_random = random.Random(x=self.random_seed)
         self.mode_of_transportation_distribution = None
         self.container_length_distribution = None
         self.container_weight_distribution = None
@@ -130,13 +133,13 @@ class ContainerFactory:
             delivered_by_large_scheduled_vehicle_as_subtype.large_scheduled_vehicle
 
         length = self.distribution_approximators["length"].sample()
-        weight = random.choices(
+        weight = self.seeded_random.choices(
             population=list(self.container_weight_distribution[length].keys()),
             weights=list(self.container_weight_distribution[length].values()),
             k=1
         )[0]
         picked_up_by = self.distribution_approximators["picked_up_by"].sample()
-        storage_requirement = random.choices(
+        storage_requirement = self.seeded_random.choices(
             population=list(self.storage_requirement_distribution[length].keys()),
             weights=list(self.storage_requirement_distribution[length].values()),
             k=1
@@ -174,12 +177,12 @@ class ContainerFactory:
         )
 
         length = self.distribution_approximators["length"].sample()
-        weight = random.choices(
+        weight = self.seeded_random.choices(
             population=list(self.container_weight_distribution[length].keys()),
             weights=list(self.container_weight_distribution[length].values()),
             k=1
         )[0]
-        storage_requirement = random.choices(
+        storage_requirement = self.seeded_random.choices(
             population=list(self.storage_requirement_distribution[length].keys()),
             weights=list(self.storage_requirement_distribution[length].values()),
             k=1
@@ -201,5 +204,4 @@ class ContainerFactory:
             picked_up_by_large_scheduled_vehicle=picked_up_by_large_scheduled_vehicle,
             picked_up_by_truck=None  # This container is not picked up by a truck
         )
-        container.save()
         return container

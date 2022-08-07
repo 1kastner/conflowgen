@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Type
 import logging
 
 from conflowgen.domain_models.container import Container
@@ -24,7 +24,7 @@ class ScheduleRepository:
             end: datetime.datetime,
             vehicle_type: ModeOfTransport,
             required_capacity: ContainerLength
-    ) -> List[AbstractLargeScheduledVehicle]:
+    ) -> List[Type[AbstractLargeScheduledVehicle]]:
         """Gets the available vehicles for the required capacity of the required type and within the time range.
         """
         assert start <= end
@@ -43,7 +43,7 @@ class ScheduleRepository:
         # Check for each of the vehicles how much it has already loaded
         required_capacity_in_teu = ContainerLength.get_factor(required_capacity)
         vehicles_with_sufficient_capacity = []
-        vehicle: AbstractLargeScheduledVehicle
+        vehicle: Type[AbstractLargeScheduledVehicle]
         for vehicle in vehicles:
             free_capacity_in_teu = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
                 vehicle
@@ -59,7 +59,7 @@ class ScheduleRepository:
 
     def block_capacity_for_outbound_journey(
             self,
-            vehicle: AbstractLargeScheduledVehicle,
+            vehicle: Type[AbstractLargeScheduledVehicle],
             container: Container
     ) -> bool:
         """Updates the cache for faster execution

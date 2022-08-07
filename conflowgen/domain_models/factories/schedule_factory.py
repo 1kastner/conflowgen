@@ -62,7 +62,7 @@ class ScheduleFactory:
                 if destination:
                     cls.logger.debug(
                         f"Updating destination '{destination_name}' for schedule '{schedule.service_name}' at "
-                        f"the position {sequence_id} with a frequency of {100*fraction:.2f}%"
+                        f"the position {sequence_id} with a frequency of {fraction:.2%}"
                     )
                     # these values might differ
                     destination.fraction = fraction
@@ -71,7 +71,7 @@ class ScheduleFactory:
                 else:
                     cls.logger.debug(
                         f"Adding destination '{destination_name}' for schedule '{schedule.service_name}' at "
-                        f"the position {sequence_id} with a frequency of {100 * fraction:.2f}%"
+                        f"the position {sequence_id} with a frequency of {fraction:.2%}"
                     )
                     Destination.create(
                         destination_name=destination_name,

@@ -6,6 +6,10 @@ from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
+class ScheduleIsNotUniqueException(Exception):
+    pass
+
+
 class PortCallManager:
     """
     This manager provides the interface to create schedules for services that periodically call the container terminal,
@@ -81,6 +85,12 @@ class PortCallManager:
         """
         assert vehicle_type in ModeOfTransport.get_scheduled_vehicles(), f"Vehicle of type {vehicle_type} is not " \
                                                                          f"suitable as is does not periodically arrive."
+
+        if self.has_schedule(service_name=service_name, vehicle_type=vehicle_type):
+            raise ScheduleIsNotUniqueException(
+                f"A service {service_name} for vehicle type {vehicle_type} already exists, please use another name."
+            )
+
         self.schedule_factory.add_schedule(
             vehicle_type=vehicle_type,
             service_name=service_name,

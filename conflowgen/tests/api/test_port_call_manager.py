@@ -24,17 +24,25 @@ class TestPortCallManager(unittest.TestCase):
         with unittest.mock.patch.object(
                 self.port_call_manager.schedule_factory,
                 'add_schedule',
-                return_value=None) as mock_method:
-            self.port_call_manager.add_large_scheduled_vehicle(
-                vehicle_type=ModeOfTransport.feeder,
-                service_name=feeder_service_name,
-                vehicle_arrives_at=arrives_at,
-                vehicle_arrives_at_time=time_of_the_day,
-                average_vehicle_capacity=total_capacity,
-                average_moved_capacity=moved_capacity,
-                next_destinations=next_destinations
-            )
-        mock_method.assert_called_once_with(
+                return_value=None) as mock_add_schedule:
+            with unittest.mock.patch.object(
+                    self.port_call_manager,
+                    'has_schedule',
+                    return_value=False) as mock_has_schedule:
+                self.port_call_manager.add_large_scheduled_vehicle(
+                    vehicle_type=ModeOfTransport.feeder,
+                    service_name=feeder_service_name,
+                    vehicle_arrives_at=arrives_at,
+                    vehicle_arrives_at_time=time_of_the_day,
+                    average_vehicle_capacity=total_capacity,
+                    average_moved_capacity=moved_capacity,
+                    next_destinations=next_destinations
+                )
+        mock_has_schedule.assert_called_once_with(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name=feeder_service_name,
+        )
+        mock_add_schedule.assert_called_once_with(
             vehicle_type=ModeOfTransport.feeder,
             service_name=feeder_service_name,
             vehicle_arrives_at=arrives_at,

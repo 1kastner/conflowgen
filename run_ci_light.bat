@@ -102,5 +102,10 @@ CALL python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkch
     EXIT /B
 )
 
+CALL python ./examples/Python_Script/demo_poc.py || (
+    ECHO.The proof-of-concept demo did not work, please check!
+    EXIT /B
+)
+
 ECHO.All steps were executed successfully. Please consider also checking the skipped CI steps manually if you changed
-ECHO.related files.
+ECHO.related files. Please also consider running ./examples/Python_Script/demo_DEHAM_CTA.py after major changes.

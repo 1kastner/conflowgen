@@ -127,6 +127,9 @@ class AbstractTruckForContainersManager(abc.ABC):
             truck_arrival_probabilities,
             container_dwell_time_probabilities
         )
+        if sum(total_probabilities) == 0:  # bad circumstances, no slot available
+            raise Exception(f"No slots available! {truck_arrival_probabilities} and {total_probabilities} just do not"
+                            f"match, there is no truck available!")
         selected_time_window = random.choices(
             population=time_windows_for_truck_arrival,
             weights=total_probabilities
