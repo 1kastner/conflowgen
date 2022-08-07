@@ -307,8 +307,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                     # as zero.
                     del vehicle_types_and_their_fraction[vehicle_type]
                     continue
-                else:
-                    return
+                # If the vehicle is not None, that means everything has worked out, and we are done here.
+                return
 
             # There is no vehicles of this type are left either, so it should also be excluded from the random
             # selection procedure to reduce the noise (weights of zero).
