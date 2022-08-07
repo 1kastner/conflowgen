@@ -1,8 +1,9 @@
 """
 Here, timetables are defined
 """
+import uuid
 
-from peewee import AutoField, CharField, DateField, ForeignKeyField, IntegerField, TimeField, FloatField
+from peewee import CharField, DateField, ForeignKeyField, IntegerField, TimeField, FloatField, AutoField
 
 from .base_model import BaseModel
 from .field_types.mode_of_transport import ModeOfTransportField
@@ -11,7 +12,8 @@ from .field_types.mode_of_transport import ModeOfTransportField
 class Schedule(BaseModel):
     id = AutoField()
     service_name = CharField(
-        null=True,
+        null=False,
+        default=lambda: "no-name-" + str(uuid.uuid4()),
         help_text="The name of the service. This supports the debugging process."
     )
     vehicle_type = ModeOfTransportField(
@@ -46,11 +48,15 @@ class Schedule(BaseModel):
     )
 
     def __str__(self) -> str:
-        return f"<Schedule: #{self.id} '{self.service_name}' by {self.vehicle_type}>"
+        return f"<Schedule: '{self.service_name}' by {self.vehicle_type}>"
+
+    class Meta:
+        indexes = (
+            (('service_name', 'vehicle_type'), True),  # ensure uniqueness
+        )
 
 
 class Destination(BaseModel):
-    id = AutoField()
     belongs_to_schedule = ForeignKeyField(
         Schedule,
         null=False,
@@ -63,18 +69,24 @@ class Destination(BaseModel):
                   "simplified stowage representation of a vessel."
     )
     destination_name = CharField(
-        null=False,
+        null=True,
+        default=lambda: "no-name-" + str(uuid.uuid4()),
         help_text="A human-readable name of the destination. While a distinguishable ID is also sufficient, human-"
                   "readable destination names make it easier to make sense of the generated data."
     )
     fraction = FloatField(
         null=True,
         help_text="The frequency of the given destination. All fractions for the destinations of the same schedule "
-                  "should add up to 1. The fractions can be set later, thus it can be null at creation."
+                  "need to add up to 1. The fractions can be set later, thus it can be null at creation."
     )
 
     def __str__(self) -> str:
         return f"<Destination '{self.destination_name}'>"
+
+    class Meta:
+        indexes = (
+            (('belongs_to_schedule', 'sequence_id'), True),  # ensure uniqueness
+        )
 
     @classmethod
     def initialize_index(cls):

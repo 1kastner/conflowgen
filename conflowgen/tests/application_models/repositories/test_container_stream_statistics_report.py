@@ -39,10 +39,10 @@ class TestContainerFlowStatisticsReport(unittest.TestCase):
         self.report.set_transportation_buffer(0.2)
 
     @staticmethod
-    def _create_feeder(scheduled_arrival: datetime.datetime) -> Feeder:
+    def _create_feeder(scheduled_arrival: datetime.datetime, service_name_suffix: str = "") -> Feeder:
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
-            service_name="TestFeederService",
+            service_name="TestFeederService" + service_name_suffix,
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=300,
@@ -111,7 +111,7 @@ class TestContainerFlowStatisticsReport(unittest.TestCase):
 
     def test_empty_ship_using_capacity_as_maximum(self):
         now = datetime.datetime.now()
-        self._create_feeder(scheduled_arrival=now)
+        self._create_feeder(service_name_suffix="", scheduled_arrival=now)
         truck = self._create_truck(arrival=now)
         self._create_container_delivered_by_truck(truck)
         self.report.generate()
@@ -242,11 +242,11 @@ Stddev:  0.00
 
     def test_two_ships_one_with_inbound_traffic(self):
         now = datetime.datetime.now()
-        feeder_1 = self._create_feeder(scheduled_arrival=now)
+        feeder_1 = self._create_feeder(scheduled_arrival=now, service_name_suffix="1")
         feeder_1.large_scheduled_vehicle.capacity_in_teu = 20
         feeder_1.large_scheduled_vehicle.moved_capacity = 20
         feeder_1.large_scheduled_vehicle.save()
-        feeder_2 = self._create_feeder(scheduled_arrival=now)
+        feeder_2 = self._create_feeder(scheduled_arrival=now, service_name_suffix="2")
         feeder_2.large_scheduled_vehicle.capacity_in_teu = 20
         feeder_2.large_scheduled_vehicle.moved_capacity = 20
         feeder_2.large_scheduled_vehicle.save()
@@ -274,11 +274,11 @@ Stddev:  0.00
 
     def test_two_loaded_ships_one_with_outbound_traffic(self):
         now = datetime.datetime.now()
-        feeder_1 = self._create_feeder(scheduled_arrival=now)
+        feeder_1 = self._create_feeder(scheduled_arrival=now, service_name_suffix="1")
         feeder_1.large_scheduled_vehicle.capacity_in_teu = 20
         feeder_1.large_scheduled_vehicle.moved_capacity = 20
         feeder_1.large_scheduled_vehicle.save()
-        feeder_2 = self._create_feeder(scheduled_arrival=now)
+        feeder_2 = self._create_feeder(scheduled_arrival=now, service_name_suffix="2")
         feeder_2.large_scheduled_vehicle.capacity_in_teu = 20
         feeder_2.large_scheduled_vehicle.moved_capacity = 20
         feeder_2.large_scheduled_vehicle.save()

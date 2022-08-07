@@ -80,16 +80,15 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         return feeder
 
     @staticmethod
-    def _create_train(scheduled_arrival: datetime.datetime) -> Train:
+    def _create_train(scheduled_arrival: datetime.datetime, service_suffix: str = "") -> Train:
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.train,
-            service_name="TestTrainService",
+            service_name="TestTrainService" + service_suffix,
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=90,
             average_moved_capacity=90,
         )
-        schedule.save()
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=96,
@@ -97,11 +96,9 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        train_lsv.save()
         train = Train.create(
             large_scheduled_vehicle=train_lsv
         )
-        train.save()
         return train
 
     @staticmethod
@@ -214,9 +211,31 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
 
+    def test_do_not_load_if_the_time_span_is_too_long(self):
+        train = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
+        containers = [
+            self._create_container_for_large_scheduled_vehicle(train)
+            for _ in range(train.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+        ]
+
+        feeder = self._create_feeder(datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15))
+        feeder.large_scheduled_vehicle.moved_capacity = 80  # in TEU
+        feeder.save()
+
+        self.assertEqual(Container.select().count(), 90)
+        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        self.assertEqual(teu_generated, 90)
+
+        self.manager.choose_departing_vehicle_for_containers()
+
+        containers_reloaded: Iterable[Container] = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == feeder
+        )
+        self.assertEqual(0, len(set(containers_reloaded)), "Feeder must not load these containers")
+
     def test_do_not_overload_feeder_with_train_traffic_of_two_vehicles(self):
-        train_1 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
-        train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0))
+        train_1 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0), "1")
+        train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0), "2")
         containers_1 = [
             self._create_container_for_large_scheduled_vehicle(train_1)
             for _ in range(train_1.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
@@ -249,8 +268,8 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
 
     def test_do_not_overload_feeder_with_train_traffic_of_two_vehicles_and_changing_container_lengths(self):
-        train_1 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
-        train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0))
+        train_1 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0), "1")
+        train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0), "2")
         containers_1 = [
             self._create_container_for_large_scheduled_vehicle(train_1)
             for _ in range(train_1.large_scheduled_vehicle.moved_capacity)  # here only 20' containers

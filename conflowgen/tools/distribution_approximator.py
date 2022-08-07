@@ -14,11 +14,14 @@ class SamplerExhaustedException(Exception):
 
 class DistributionApproximator:
 
+    random_seed = 1
+
     def __init__(self, number_instances_per_category: Dict[any, int]) -> None:
         """
         Args:
             number_instances_per_category: For each key (category) the number of instances to draw is given
         """
+        self.seeded_random = random.Random(x=self.random_seed)
         self.target_distribution = np.array(
             list(number_instances_per_category.values()),
             dtype=np.int64
@@ -27,8 +30,9 @@ class DistributionApproximator:
         self.already_sampled = np.array([0 for _ in range(self.number_categories)])
         self.categories = list(number_instances_per_category.keys())
 
-    @staticmethod
+    @classmethod
     def from_distribution(
+            cls,
             distribution: Dict[any, float],
             number_items: int
     ) -> DistributionApproximator:
@@ -45,8 +49,9 @@ class DistributionApproximator:
         # Thus, we need to fill the missing items by randomly drawing some of them.
         number_items_in_category_estimation = sum(probability_based_instance_estimation.values())
         if number_items_in_category_estimation < number_items:
+            seeded_random = random.Random(x=cls.random_seed)
             items_lost_to_rounding = number_items - number_items_in_category_estimation
-            randomly_chosen_categories = random.choices(
+            randomly_chosen_categories = seeded_random.choices(
                 population=list(distribution.keys()),
                 weights=list(distribution.values()),
                 k=items_lost_to_rounding
@@ -67,7 +72,7 @@ class DistributionApproximator:
                 f"Only {self.target_distribution.sum()} draws are possible, "
                 "you invoked `.sample()` too often")
         current_gap = self.target_distribution - self.already_sampled
-        selected_category = random.choices(
+        selected_category = self.seeded_random.choices(
             population=self.categories,
             weights=current_gap,
             k=1

@@ -1,6 +1,8 @@
 import datetime
 import unittest
 
+from peewee import IntegrityError
+
 from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.large_vehicle_schedule import Schedule, Destination
@@ -58,23 +60,19 @@ class TestScheduleFactory(unittest.TestCase):
                 ("CNSHG", 0.4)
             ]
         )
-        self.schedule_factory.add_schedule(
-            service_name=test_service_name,
-            vehicle_type=ModeOfTransport.feeder,
-            vehicle_arrives_at=datetime.date(2021, 7, 10),
-            vehicle_arrives_at_time=datetime.time(11),
-            average_vehicle_capacity=800,
-            average_moved_capacity=1,
-            next_destinations=[
-                ("DEBRV", 0.6),
-                ("CNSHG", 0.4)
-            ]
-        )
-        schedules = Schedule.select().where(Schedule.service_name == test_service_name)
-        self.assertEqual(len(schedules), 2)
-        schedule_1 = Schedule.get_or_none(Schedule.service_name == test_service_name)
-        self.assertIsNotNone(schedule_1)
-        # This does not throw an exception, but it might not be what the user expects
+        with self.assertRaises(IntegrityError):
+            self.schedule_factory.add_schedule(
+                service_name=test_service_name,
+                vehicle_type=ModeOfTransport.feeder,
+                vehicle_arrives_at=datetime.date(2021, 7, 10),
+                vehicle_arrives_at_time=datetime.time(11),
+                average_vehicle_capacity=800,
+                average_moved_capacity=1,
+                next_destinations=[
+                    ("DEBRV", 0.6),
+                    ("CNSHG", 0.4)
+                ]
+            )
 
     def test_get_schedule(self) -> None:
         test_service_name = "LX050"

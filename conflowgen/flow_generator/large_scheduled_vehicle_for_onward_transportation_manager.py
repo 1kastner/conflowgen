@@ -3,10 +3,11 @@ import datetime
 import logging
 import math
 import random
-from typing import Collection, Tuple, List, Dict, Any
+from typing import Collection, Tuple, List, Dict, Type, Sequence
 
 from peewee import fn
 
+from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
 from ..domain_models.container import Container
@@ -22,7 +23,10 @@ from ..tools.continuous_distribution import ContinuousDistribution, multiply_dis
 
 class LargeScheduledVehicleForOnwardTransportationManager:
 
+    random_seed = 1
+
     def __init__(self):
+        self.seeded_random = random.Random(x=self.random_seed)
         self.logger = logging.getLogger("conflowgen")
         self.schedule_repository = ScheduleRepository()
         self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository
@@ -71,7 +75,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         containers: Collection[Container] = Container.select(
         ).order_by(fn.Random()).where(
             Container.picked_up_by << ModeOfTransport.get_scheduled_vehicles()
-        )
+        )  # TODO: add joins here to avoid that many database look-ups later
 
         self.logger.info(f"In total {len(containers)} containers continue their journey on a vehicle that adhere to a "
                          f"schedule, assigning these containers to their respective vehicles...")
@@ -98,13 +102,22 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             )
 
             if len(available_vehicles) > 0:
-                # this is the case when there is a vehicle available, and we can assign the container to that vehicle
-                # which is the happy path
-                self.number_assigned_containers += 1
-                self._pick_vehicle_for_container(available_vehicles, container)
+                # this is the case when there is a vehicle available - let's hope everything else works out as well!
+                vehicle = self._pick_vehicle_for_container(available_vehicles, container)
+                if vehicle is not None:
+                    self.number_assigned_containers += 1
+                else:
+                    # Well, there was a vehicle available. However, it was not suitable for our container due to
+                    # some constraint. Maybe the container dwell time was unrealistic and thus not permissible?
+                    # This can happen if the distribution is just really, really close to zero, so it is approximated
+                    # as zero.
+                    self.number_not_assignable_containers += 1
+                    self._find_alternative_mode_of_transportation(
+                        container, container_arrival, minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
+                    )
             else:
-                # maybe no possible vehicles are left of the required vehicle type, then we need to switch if we want to
-                # get the container out of the container yard before storage fees apply
+                # Maybe no permissible vehicles of the required vehicle type are left, then we need to switch the type
+                # as to somehow move the container out of the container yard.
                 self.number_not_assignable_containers += 1
                 self._find_alternative_mode_of_transportation(
                     container, container_arrival, minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
@@ -115,41 +128,19 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
     def _pick_vehicle_for_container(
             self,
-            available_vehicles: List[AbstractLargeScheduledVehicle],
+            available_vehicles: List[Type[AbstractLargeScheduledVehicle]],
             container: Container
-    ) -> AbstractLargeScheduledVehicle:
-        """Pick vehicle with the probability of its free capacity
+    ) -> Type[AbstractLargeScheduledVehicle] | None:
+        """It is ensured that at least one vehicle is available
         """
-        vehicle_availability = {
-            vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
-            for vehicle in available_vehicles
-        }
-        available_vehicles = list(vehicle_availability.keys())
+        vehicle = self._draw_vehicle(available_vehicles, container)
+        if vehicle is not None:
+            self._save_chosen_vehicle(container, vehicle)
+        return vehicle
 
-        container_arrival = self._get_arrival_time_of_container(container)
-        associated_dwell_times = []
-        for vehicle in available_vehicles:
-            vehicle_departure_date: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
-            dwell_time_if_vehicle_is_chosen = vehicle_departure_date - container_arrival
-            dwell_time_if_vehicle_is_chosen_in_hours = dwell_time_if_vehicle_is_chosen.total_seconds() / 3600
-            associated_dwell_times.append(dwell_time_if_vehicle_is_chosen_in_hours)
-
-        container_dwell_time_distribution = self._get_container_dwell_time_distribution(
-            container.delivered_by, container.picked_up_by, container.storage_requirement
-        )
-        container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(associated_dwell_times)
-        total_probabilities = multiply_discretized_probability_densities(
-            associated_dwell_times,
-            container_dwell_time_probabilities
-        )
-
-        vehicle: AbstractLargeScheduledVehicle = random.choices(
-            population=available_vehicles,
-            weights=total_probabilities
-        )[0]
+    def _save_chosen_vehicle(self, container, vehicle):
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
         vehicle_type = vehicle.get_mode_of_transport()
-
         container.picked_up_by_large_scheduled_vehicle = large_scheduled_vehicle
         container.picked_up_by = vehicle_type
         container.save()
@@ -157,7 +148,55 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         if vehicle_capacity_is_exhausted:
             large_scheduled_vehicle.capacity_exhausted_while_determining_onward_transportation = True
             large_scheduled_vehicle.save()
-        return vehicle
+
+    def _draw_vehicle(
+            self,
+            available_vehicles: Sequence[Type[LargeScheduledVehicle]],
+            container: Container
+    ) -> Type[AbstractLargeScheduledVehicle] | None:
+        assert len(available_vehicles) > 0, "Some vehicle is available to take the container on its outbound journey " \
+                                            "within the assumed container dwell time (min < x < max)."
+        if len(available_vehicles) == 1:
+            return available_vehicles[0]
+
+        vehicles_and_their_respective_free_capacity = {}
+        for vehicle in available_vehicles:
+            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+            if free_capacity >= ContainerLength.get_factor(ContainerLength.other):
+                vehicles_and_their_respective_free_capacity[vehicle] = free_capacity
+
+        # drop those vehicles without free capacities, they are not really available
+        available_vehicles = list(vehicles_and_their_respective_free_capacity.keys())
+        free_capacities = list(vehicles_and_their_respective_free_capacity.values())
+
+        container_arrival = self._get_arrival_time_of_container(container)
+        associated_dwell_times = []
+        for vehicle in available_vehicles:
+            # noinspection PyUnresolvedReferences
+            vehicle_departure_date: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+            dwell_time_if_vehicle_is_chosen = vehicle_departure_date - container_arrival
+            dwell_time_if_vehicle_is_chosen_in_hours = dwell_time_if_vehicle_is_chosen.total_seconds() / 3600
+            associated_dwell_times.append(dwell_time_if_vehicle_is_chosen_in_hours)
+        container_dwell_time_distribution = self._get_container_dwell_time_distribution(
+            container.delivered_by, container.picked_up_by, container.storage_requirement
+        )
+        container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(associated_dwell_times)
+        total_probabilities = multiply_discretized_probability_densities(
+            free_capacities,
+            container_dwell_time_probabilities
+        )
+        vehicles_and_their_respective_probability = {
+            vehicle: probability
+            for vehicle, probability in zip(available_vehicles, total_probabilities)
+            if probability > 0
+        }
+        if len(vehicles_and_their_respective_probability):
+            vehicle: Type[AbstractLargeScheduledVehicle] = self.seeded_random.choices(
+                population=list(vehicles_and_their_respective_probability.keys()),
+                weights=list(vehicles_and_their_respective_probability.values())
+            )[0]
+            return vehicle
+        return None  # No suitable vehicle could be found
 
     def _get_dwell_times(self, container: Container) -> Tuple[int, int]:
         """get correct dwell time depending on transportation mode.
@@ -186,7 +225,9 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         return container_arrival
 
     @staticmethod
-    def _get_departure_time_of_vehicle(vehicle: Any) -> datetime.datetime:
+    def _get_departure_time_of_vehicle(
+            vehicle: Truck | Type[AbstractLargeScheduledVehicle]
+    ) -> datetime.datetime:
         """get container arrival from correct source
         """
         vehicle_departure: datetime.datetime
@@ -194,8 +235,10 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             truck_arrival_information: TruckArrivalInformationForDelivery = \
                 vehicle.truck_arrival_information_for_delivery
             vehicle_departure = truck_arrival_information.planned_container_delivery_time_at_window_start
-        else:
+        elif isinstance(vehicle, AbstractLargeScheduledVehicle):
             vehicle_departure = vehicle.scheduled_arrival
+        else:
+            raise Exception(f"Unknown type {type(vehicle)} of vehicle {vehicle}.")
         return vehicle_departure
 
     def _find_alternative_mode_of_transportation(
@@ -213,46 +256,63 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         container.save()
 
         # get alternative vehicles
-        vehicle_types_and_frequencies = self.mode_of_transport_distribution[container.delivered_by].copy()
+        vehicle_types_and_their_fraction = self.mode_of_transport_distribution[container.delivered_by].copy()
 
         # ignore the one vehicle type which has obviously failed, otherwise we wouldn't search for an alternative here
         previous_failed_vehicle_type: ModeOfTransport = container.picked_up_by
-        del vehicle_types_and_frequencies[previous_failed_vehicle_type]
+        del vehicle_types_and_their_fraction[previous_failed_vehicle_type]
 
         # try to pick a better vehicle for 5 times, otherwise the previously set default values are automatically used
         for _ in range(5):
-            if len(vehicle_types_and_frequencies.keys()) == 0:
-                # this default value has been pre-selected anyway, nothing else to do
+            if len(vehicle_types_and_their_fraction) == 0:
+                # All vehicles of the vehicle type(s) that are available for a given container type lack free capacity.
+                # A default value has been pre-selected anyway a bit earlier, nothing else to do.
                 return
 
-            all_frequencies = list(vehicle_types_and_frequencies.values())
-            if sum(all_frequencies) == 0:
-                # this default value has been pre-selected anyway, nothing else to do
+            fractions = list(vehicle_types_and_their_fraction.values())
+
+            if sum(fractions) == 0:
+                # Only those vehicle types are left that cannot pick up the container in question.
+                # A default value has been pre-selected anyway a bit earlier, nothing else to do.
                 return
 
-            vehicle_type = random.choices(
-                population=list(vehicle_types_and_frequencies.keys()),
-                weights=all_frequencies
+            # Drop fractions of 0 because the random module cannot digest them properly
+            updated_vehicle_types_and_frequencies = {
+                vehicle_type: fraction
+                for vehicle_type, fraction in vehicle_types_and_their_fraction.items()
+                if 0 < fraction
+            }
+
+            vehicle_type = self.seeded_random.choices(
+                population=list(updated_vehicle_types_and_frequencies.keys()),
+                weights=list(updated_vehicle_types_and_frequencies.values())
             )[0]
 
             if vehicle_type == ModeOfTransport.truck:
-                # this default value has been pre-selected anyway, nothing else to do
+                # This default value has been pre-selected anyway, nothing else to do.
                 return
 
-            if vehicle_type in ModeOfTransport.get_scheduled_vehicles():
-                available_vehicles = self.schedule_repository.get_departing_vehicles(
-                    start=(container_arrival + datetime.timedelta(hours=minimum_dwell_time_in_hours)),
-                    end=(container_arrival + datetime.timedelta(hours=maximum_dwell_time_in_hours)),
-                    vehicle_type=vehicle_type,
-                    required_capacity=container.length
-                )
-                if len(available_vehicles) > 0:  # There is a vehicle of a new type available, so it is picked
-                    self._pick_vehicle_for_container(available_vehicles, container)
-                    return
+            available_vehicles = self.schedule_repository.get_departing_vehicles(
+                start=(container_arrival + datetime.timedelta(hours=minimum_dwell_time_in_hours)),
+                end=(container_arrival + datetime.timedelta(hours=maximum_dwell_time_in_hours)),
+                vehicle_type=vehicle_type,
+                required_capacity=container.length
+            )
+            if len(available_vehicles) > 0:  # There is a vehicle of a new type available, so it is picked
+                vehicle = self._pick_vehicle_for_container(available_vehicles, container)
+                if vehicle is None:
+                    # Well, there was a vehicle available. However, it was not suitable for our container due to
+                    # some constraint. Maybe the container dwell time was unrealistic and thus forbidden?
+                    # This can happen if the distribution is just really, really close to zero, so it is approximated
+                    # as zero.
+                    del vehicle_types_and_their_fraction[vehicle_type]
+                    continue
+                # If the vehicle is not None, that means everything has worked out, and we are done here.
+                return
 
-                # obviously no vehicles of this type are left either, so it should also be excluded from the random
-                # selection procedure in the beginning
-                del vehicle_types_and_frequencies[vehicle_type]
+            # There is no vehicles of this type are left either, so it should also be excluded from the random
+            # selection procedure to reduce the noise (weights of zero).
+            del vehicle_types_and_their_fraction[vehicle_type]
 
     def _get_container_dwell_time_distribution(
             self,

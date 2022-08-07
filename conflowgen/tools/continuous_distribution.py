@@ -84,9 +84,13 @@ class ContinuousDistribution(abc.ABC):
         densities = self._get_probabilities_based_on_distribution(xs)
         densities[xs <= self.minimum] = 0
         densities[xs >= self.maximum] = 0
-        densities = densities / densities.sum()
-        if self.reversed_distribution:
-            densities = np.flip(densities)
+        sum_of_all_densities = densities.sum()
+        if not np.isnan(sum_of_all_densities) and sum_of_all_densities > 0:
+            densities = densities / sum_of_all_densities
+            if self.reversed_distribution:
+                densities = np.flip(densities)
+        else:
+            densities = np.zeros_like(xs)
         return densities
 
     @abc.abstractmethod
@@ -173,8 +177,17 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
 
 
 def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
-    assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length"
+    assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length, but found these:" \
+                                                      f"'{ [len(p) for p in probabilities] } "
+    for i, probability_vector in enumerate(probabilities):
+        assert not np.isnan(probability_vector).any(), \
+            f"All probability vector should contain only numbers, but found a NaN in vector {i}: {probability_vector}"
+
     np_probs = [np.array(probs, dtype=np.double) for probs in probabilities]
     multiplied_probabilities = np.multiply(*np_probs)
-    normalized_probabilities = multiplied_probabilities / multiplied_probabilities.sum()
+    sum_of_all_probabilities = multiplied_probabilities.sum()
+    if np.isnan(sum_of_all_probabilities).any() or sum_of_all_probabilities == 0:
+        normalized_probabilities = np.zeros_like(multiplied_probabilities)
+    else:
+        normalized_probabilities = multiplied_probabilities / sum_of_all_probabilities
     return normalized_probabilities
