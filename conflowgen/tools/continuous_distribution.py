@@ -72,10 +72,11 @@ class ContinuousDistribution(abc.ABC):
         """
         pass
 
-    def get_probabilities(self, xs: Sequence[float]) -> np.ndarray:
+    def get_probabilities(self, xs: Sequence[float], reversed_distribution: bool = False) -> np.ndarray:
         """
         Args:
             xs: Elements that are on the same scale as average, variance, minimum, and maximum
+            reversed_distribution: Whether to reverse the probabilities
 
         Returns:
             The respective probability that element x of xs is drawn from this distribution.
@@ -87,7 +88,7 @@ class ContinuousDistribution(abc.ABC):
         sum_of_all_densities = densities.sum()
         if not np.isnan(sum_of_all_densities) and sum_of_all_densities > 0:
             densities = densities / sum_of_all_densities
-            if self.reversed_distribution:
+            if reversed_distribution or self.reversed_distribution:
                 densities = np.flip(densities)
         else:
             densities = np.zeros_like(xs)

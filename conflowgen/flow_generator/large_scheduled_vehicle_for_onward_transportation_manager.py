@@ -6,6 +6,7 @@ import random
 from typing import Tuple, List, Dict, Type, Sequence
 
 # noinspection PyProtectedMember
+import numpy as np
 from peewee import fn, JOIN, ModelSelect
 
 from ..domain_models.data_types.container_length import ContainerLength
@@ -181,6 +182,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         assert len(available_vehicles) > 0, "Some vehicle is available to take the container on its outbound journey " \
                                             "within the assumed container dwell time (min < x < max)."
         if len(available_vehicles) == 1:
+            # There is only one vehicle available, no need to do all the calculations.
             return available_vehicles[0]
 
         vehicles_and_their_respective_free_capacity = {}
@@ -189,7 +191,15 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             if free_capacity >= ContainerLength.get_factor(ContainerLength.other):
                 vehicles_and_their_respective_free_capacity[vehicle] = free_capacity
 
-        # drop those vehicles without free capacities, they are not really available
+        if len(available_vehicles) == 0:
+            # After filtering, there are no vehicles left, so nothing can be done.
+            return None
+
+        if len(available_vehicles) == 1:
+            # There is only one vehicle available, no need to do all the calculations.
+            return available_vehicles[0]
+
+        # overwrite variables to drop those vehicles without free capacities - they are not really available anyway
         available_vehicles = list(vehicles_and_their_respective_free_capacity.keys())
         free_capacities = list(vehicles_and_their_respective_free_capacity.values())
 
@@ -205,8 +215,9 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             container.delivered_by, container.picked_up_by, container.storage_requirement
         )
         container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(associated_dwell_times)
+        free_capacities_as_array = np.array(free_capacities)
         total_probabilities = multiply_discretized_probability_densities(
-            free_capacities,
+            free_capacities_as_array / free_capacities_as_array.sum(),
             container_dwell_time_probabilities
         )
         vehicles_and_their_respective_probability = {

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import datetime
+import math
 import unittest
 from collections import Counter
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -13,6 +15,8 @@ from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.truck_arrival_distribution import TruckArrivalDistribution
+from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
+    ContainerDwellTimeDistributionRepository
 from conflowgen.domain_models.distribution_seeders import truck_arrival_distribution_seeder, \
     container_dwell_time_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Destination
@@ -40,9 +44,13 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         truck_arrival_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()
 
-        # Enables visualisation, helpful for probability distributions
+        container_dwell_time_distributions = ContainerDwellTimeDistributionRepository.get_distributions()
+        self.container_dwell_time_distributions_from_truck_to = container_dwell_time_distributions[
+            ModeOfTransport.truck]
+
+        # Enables visualisation, helpful for probability distributions.
         # However, this blocks the execution of tests.
-        self.debug = False
+        self.visual_debug = True
 
         self.manager = TruckForExportContainersManager()
         self.manager.reload_distributions()
@@ -52,8 +60,30 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         import seaborn as sns  # pylint: disable=import-outside-toplevel
         container_dwell_time_distribution, _ = self._get_distributions(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
+        plt.axvline(x=container_departure_time, color="k")
         plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.minimum))
         plt.axvline(x=container_departure_time - datetime.timedelta(hours=container_dwell_time_distribution.maximum))
+
+        x = np.linspace(
+            0,
+            int(container_dwell_time_distribution.maximum),
+            int(container_dwell_time_distribution.maximum)
+        )
+
+        x_in_range = x[np.where(
+            (container_dwell_time_distribution.minimum < x) & (x < container_dwell_time_distribution.maximum)
+        )]
+        ax2 = plt.gca().twinx()
+        probs = container_dwell_time_distribution.get_probabilities(x_in_range)
+
+        ax2.plot(
+            [container_departure_time - datetime.timedelta(hours=h) for h in x_in_range],
+            probs,
+            color='gray',
+            lw=5,
+            alpha=0.9,
+        )
+
         plt.show(block=True)
 
     def _get_distributions(self, container: Container) -> tuple[ContinuousDistribution, WeeklyDistribution | None]:
@@ -76,6 +106,10 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             weight=23,
             length=ContainerLength.twenty_feet
         )
+        dwell_time_distribution = self.container_dwell_time_distributions_from_truck_to[ModeOfTransport.deep_sea_vessel]
+        dwell_time_distribution_for_standard_container = dwell_time_distribution[StorageRequirement.standard]
+        minimum_dwell_time = dwell_time_distribution_for_standard_container.minimum
+        maximum_dwell_time = dwell_time_distribution_for_standard_container.maximum
         delivery_times = []
         for i in range(1000):
             # pylint: disable=protected-access
@@ -88,7 +122,11 @@ class TestTruckForExportContainersManager(unittest.TestCase):
                             f"containers do not arrive on Sundays, but here we had {delivery_time} in round {i + 1}")
             delivery_times.append(delivery_time)
 
-        if self.debug:
+            dwell_time = (container_departure_time - delivery_time).total_seconds() / 3600
+            self.assertGreaterEqual(dwell_time, minimum_dwell_time)
+            self.assertLessEqual(dwell_time, maximum_dwell_time)
+
+        if self.visual_debug:
             self.visualize_probabilities(container, delivery_times, container_departure_time)
 
     def test_delivery_time_in_required_time_range_with_sunday(self):
@@ -103,6 +141,11 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             weight=23,
             length=ContainerLength.twenty_feet
         )
+        dwell_time_distribution = self.container_dwell_time_distributions_from_truck_to[ModeOfTransport.deep_sea_vessel]
+        dwell_time_distribution_for_standard_container = dwell_time_distribution[StorageRequirement.standard]
+        minimum_dwell_time = dwell_time_distribution_for_standard_container.minimum
+        maximum_dwell_time = dwell_time_distribution_for_standard_container.maximum
+
         delivery_times = []
         for i in range(1000):
             # pylint: disable=protected-access
@@ -115,7 +158,11 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             self.assertTrue(delivery_time.weekday() != 6,
                             f"containers do not arrive on Sundays, but here we had {delivery_time} in round {i + 1}")
 
-        if self.debug:
+            dwell_time = (container_departure_time - delivery_time).total_seconds() / 3600
+            self.assertGreaterEqual(dwell_time, minimum_dwell_time)
+            self.assertLessEqual(dwell_time, maximum_dwell_time)
+
+        if self.visual_debug:
             self.visualize_probabilities(container, delivery_times, container_departure_time)
 
         weekday_counter = Counter([delivery_time.weekday() for delivery_time in delivery_times])
@@ -138,10 +185,20 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             weight=23,
             length=ContainerLength.twenty_feet
         )
+
+        dwell_time_distribution = self.container_dwell_time_distributions_from_truck_to[ModeOfTransport.deep_sea_vessel]
+        dwell_time_distribution_for_standard_container = dwell_time_distribution[StorageRequirement.standard]
+        minimum_dwell_time = dwell_time_distribution_for_standard_container.minimum
+        maximum_dwell_time = dwell_time_distribution_for_standard_container.maximum
+
         delivery_times = []
         for i in range(1000):
             # pylint: disable=protected-access
             delivery_time = self.manager._get_container_delivery_time(container, container_departure_time)
+
+            dwell_time = (container_departure_time - delivery_time).total_seconds() / 3600
+            self.assertGreaterEqual(dwell_time, minimum_dwell_time)
+            self.assertLessEqual(dwell_time, maximum_dwell_time)
 
             delivery_times.append(delivery_time)
             self.assertLessEqual(delivery_time, container_departure_time,
@@ -151,7 +208,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
                                 f"containers do not arrive on Sundays, "
                                 f"but here we had {delivery_time} in round {i + 1}")
 
-        if self.debug:
+        if self.visual_debug:
             self.visualize_probabilities(container, delivery_times, container_departure_time)
 
         weekday_counter = Counter([delivery_time.weekday() for delivery_time in delivery_times])
@@ -161,3 +218,17 @@ class TestTruckForExportContainersManager(unittest.TestCase):
                                                  "At least once a Saturday must be counted (31.07.2021)")
         self.assertIn(0, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
                                                  "At least once a Monday must be counted (02.08.2021)")
+
+    def test_distributions_match(self):
+        truck_arrival_distribution = self.manager.truck_arrival_distributions[ModeOfTransport.feeder][
+            StorageRequirement.standard]
+        dwell_time_distribution = self.container_dwell_time_distributions_from_truck_to[ModeOfTransport.feeder][
+            StorageRequirement.standard]
+        self.assertEqual(
+            truck_arrival_distribution.minimum_dwell_time_in_hours,
+            dwell_time_distribution.minimum
+        )
+        self.assertEqual(
+            truck_arrival_distribution.considered_time_window_in_hours,
+            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)) - 1
+        )

@@ -28,7 +28,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             storage_requirement: StorageRequirement
     ) -> ContinuousDistribution:
         distribution = self.container_dwell_time_distributions[ModeOfTransport.truck][vehicle][storage_requirement]
-        return distribution.reversed()
+        return distribution
 
     def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
         return self.truck_arrival_distributions[container.picked_up_by]
@@ -43,15 +43,10 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         minimum_dwell_time_in_hours = container_dwell_time_distribution.minimum
         maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
 
-        # as we add up to 59 minutes later, we need to subtract one hour from any time at this stage
-        latest_slot = (
-                container_departure_time.replace(minute=0, second=0, microsecond=0)
-                - datetime.timedelta(hours=1)
-                - datetime.timedelta(hours=minimum_dwell_time_in_hours)
-        )
         earliest_slot = (
-                latest_slot
-                - datetime.timedelta(hours=maximum_dwell_time_in_hours)
+            container_departure_time.replace(minute=0, second=0, microsecond=0)
+            - datetime.timedelta(hours=maximum_dwell_time_in_hours)
+            + datetime.timedelta(hours=1)
         )
 
         truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
@@ -69,8 +64,16 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         truck_arrival_time = (
                 earliest_slot
                 + datetime.timedelta(hours=delivery_time_window_start)
+                - datetime.timedelta(hours=1)
                 + datetime.timedelta(hours=random_time_component)
         )
+
+        dwell_time_in_seconds = (container_departure_time - truck_arrival_time).total_seconds()
+        assert dwell_time_in_seconds > 0, "Dwell time must be positive"
+        assert minimum_dwell_time_in_hours <= dwell_time_in_seconds / 3600 <= maximum_dwell_time_in_hours, \
+            f"{minimum_dwell_time_in_hours} <= {dwell_time_in_seconds / 3600} <= {maximum_dwell_time_in_hours} " \
+            f"harmed for container {container}."
+
         return truck_arrival_time
 
     def generate_trucks_for_delivering(self) -> None:

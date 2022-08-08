@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import math
 import unittest
 from collections import Counter
 
@@ -11,6 +12,8 @@ from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.truck_arrival_distribution import TruckArrivalDistribution
+from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
+    ContainerDwellTimeDistributionRepository
 from conflowgen.domain_models.distribution_seeders import truck_arrival_distribution_seeder, \
     container_dwell_time_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Destination
@@ -38,12 +41,18 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         truck_arrival_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()
 
+        container_dwell_time_distributions = ContainerDwellTimeDistributionRepository.get_distributions()
+        self.container_dwell_time_distributions_from_x_to_truck = {
+            vehicle_type: container_dwell_time_distributions[vehicle_type][ModeOfTransport.truck]
+            for vehicle_type in ModeOfTransport
+        }
+
         self.manager = TruckForImportContainersManager()
         self.manager.reload_distributions()
 
         # Enables visualisation, helpful for visualizing the probability distributions.
         # However, this blocks the execution of tests.
-        self.debug = False
+        self.visual_debug = False
 
     def visualize_probabilities(self, container, drawn_times, container_arrival_time):
         import inspect  # pylint: disable=import-outside-toplevel
@@ -118,7 +127,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             self.assertGreaterEqual(pickup_time, container_arrival_time)
             pickup_times.append(pickup_time)
 
-        if self.debug:
+        if self.visual_debug:
             self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
     def test_pickup_time_in_required_time_range_with_sunday_starting_from_a_full_hour(self):
@@ -142,7 +151,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             self.assertTrue(pickup_time.weekday() != 6,
                             f"containers are not picked up on Sundays but {pickup_time} was presented")
 
-        if self.debug:
+        if self.visual_debug:
             self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
         weekday_counter = Counter([pickup_time.weekday() for pickup_time in pickup_times])
@@ -183,7 +192,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             self.assertTrue(pickup_time.weekday() != 6,
                             f"containers are not picked up on Sundays but {pickup_time} was presented")
 
-        if self.debug:
+        if self.visual_debug:
             self.visualize_probabilities(container, pickup_times, container_arrival_time)
 
         weekday_counter = Counter([pickup_time.weekday() for pickup_time in pickup_times])
@@ -193,3 +202,18 @@ class TestTruckForImportContainersManager(unittest.TestCase):
                                                  "At least once a Saturday was counted (31.07.2021)")
         self.assertIn(0, weekday_counter.keys(), "Probability (out of 1000 repetitions): "
                                                  "At least once a Monday was counted (02.08.2021)")
+
+    def test_distributions_match(self):
+        truck_arrival_distribution = self.manager.truck_arrival_distributions[ModeOfTransport.feeder][
+            StorageRequirement.standard]
+        dwell_time_distribution = self.container_dwell_time_distributions_from_x_to_truck[ModeOfTransport.feeder][
+            StorageRequirement.standard]
+        self.assertEqual(
+            truck_arrival_distribution.minimum_dwell_time_in_hours,
+            dwell_time_distribution.minimum
+        )
+        self.assertEqual(
+            truck_arrival_distribution.considered_time_window_in_hours,
+            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)),
+            "Import movement means the truck can come later than minimum but must be earlier than maximum"
+        )

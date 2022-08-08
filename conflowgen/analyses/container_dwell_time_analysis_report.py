@@ -54,8 +54,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         """
 
         container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
-        container_picked_up_by_vehicle_type = kwargs.get("container_picked_up_by_vehicle_type", "all")
-        storage_requirement = kwargs.get("storage_requirement", "all")
+        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
+        storage_requirement = kwargs.pop("storage_requirement", "all")
         assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
 
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(

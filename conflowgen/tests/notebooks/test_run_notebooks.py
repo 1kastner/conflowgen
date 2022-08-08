@@ -12,7 +12,7 @@ class RunNotebooks(unittest.TestCase):
             os.path.dirname(os.path.abspath(__file__)),
             notebook_filename
         )
-        with open(path_to_notebook) as f:
+        with open(path_to_notebook, encoding="utf8") as f:
             nb = nbformat.read(f, as_version=4)
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
         out = ep.preprocess(nb)

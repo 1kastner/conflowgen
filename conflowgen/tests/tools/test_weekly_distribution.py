@@ -160,3 +160,30 @@ class TestWeeklyDistribution(unittest.TestCase):
                                    "Assert arrivals on other days")
         self.assertTrue(visited_sunday)
         self.assertTrue(visited_working_day)
+
+    def test_reversed(self):
+        weekly_distribution = WeeklyDistribution([
+            (0, .5),
+            (24, .2),
+            (48, .2),
+            (72, .1),
+            (96, 0),
+            (120, 0),
+            (144, 0)
+        ],
+            considered_time_window_in_hours=72,
+            minimum_dwell_time_in_hours=12,
+            is_reversed=True
+        )
+        _datetime = datetime.datetime(
+            year=2022, month=8, day=1
+        )
+        self.assertEqual(_datetime.weekday(), 0)  # assert is Monday
+        distribution_slice = weekly_distribution.get_distribution_slice(_datetime)
+        self.assertDictEqual(
+            distribution_slice, {
+                0: 0.5555555555555556,
+                24: 0.22222222222222227,
+                48: 0.22222222222222227
+            }
+        )
