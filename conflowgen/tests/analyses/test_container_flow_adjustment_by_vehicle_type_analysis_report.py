@@ -61,32 +61,32 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(unittest.TestCase):
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
-vehicle type (initial) vehicle type (adjusted) transported capacity (in TEU) transported capacity (in containers)
-deep sea vessel        deep sea vessel                                   0.0                                    0
-deep sea vessel        feeder                                            0.0                                    0
-deep sea vessel        barge                                             0.0                                    0
-deep sea vessel        train                                             0.0                                    0
-deep sea vessel        truck                                             0.0                                    0
-feeder                 deep sea vessel                                   0.0                                    0
-feeder                 feeder                                            0.0                                    0
-feeder                 barge                                             0.0                                    0
-feeder                 train                                             0.0                                    0
-feeder                 truck                                             0.0                                    0
-barge                  deep sea vessel                                   0.0                                    0
-barge                  feeder                                            0.0                                    0
-barge                  barge                                             0.0                                    0
-barge                  train                                             0.0                                    0
-barge                  truck                                             0.0                                    0
-train                  deep sea vessel                                   0.0                                    0
-train                  feeder                                            0.0                                    0
-train                  barge                                             0.0                                    0
-train                  train                                             0.0                                    0
-train                  truck                                             0.0                                    0
-truck                  deep sea vessel                                   0.0                                    0
-truck                  feeder                                            0.0                                    0
-truck                  barge                                             0.0                                    0
-truck                  train                                             0.0                                    0
-truck                  truck                                             0.0                                    0
+initial vehicle type  adjusted vehicle type  transported capacity (in TEU) transported capacity (in boxes)
+deep sea vessel       deep sea vessel                                  0.0                               0
+deep sea vessel       feeder                                           0.0                               0
+deep sea vessel       barge                                            0.0                               0
+deep sea vessel       train                                            0.0                               0
+deep sea vessel       truck                                            0.0                               0
+feeder                deep sea vessel                                  0.0                               0
+feeder                feeder                                           0.0                               0
+feeder                barge                                            0.0                               0
+feeder                train                                            0.0                               0
+feeder                truck                                            0.0                               0
+barge                 deep sea vessel                                  0.0                               0
+barge                 feeder                                           0.0                               0
+barge                 barge                                            0.0                               0
+barge                 train                                            0.0                               0
+barge                 truck                                            0.0                               0
+train                 deep sea vessel                                  0.0                               0
+train                 feeder                                           0.0                               0
+train                 barge                                            0.0                               0
+train                 train                                            0.0                               0
+train                 truck                                            0.0                               0
+truck                 deep sea vessel                                  0.0                               0
+truck                 feeder                                           0.0                               0
+truck                 barge                                            0.0                               0
+truck                 train                                            0.0                               0
+truck                 truck                                            0.0                               0
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
@@ -95,32 +95,32 @@ truck                  truck                                             0.0    
         setup_feeder_data()
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
-vehicle type (initial) vehicle type (adjusted) transported capacity (in TEU) transported capacity (in containers)
-deep sea vessel        deep sea vessel                                   0.0                                    0
-deep sea vessel        feeder                                            0.0                                    0
-deep sea vessel        barge                                             0.0                                    0
-deep sea vessel        train                                             0.0                                    0
-deep sea vessel        truck                                             0.0                                    0
-feeder                 deep sea vessel                                   0.0                                    0
-feeder                 feeder                                            0.0                                    0
-feeder                 barge                                             0.0                                    0
-feeder                 train                                             0.0                                    0
-feeder                 truck                                             2.0                                    1
-barge                  deep sea vessel                                   0.0                                    0
-barge                  feeder                                            0.0                                    0
-barge                  barge                                             0.0                                    0
-barge                  train                                             0.0                                    0
-barge                  truck                                             0.0                                    0
-train                  deep sea vessel                                   0.0                                    0
-train                  feeder                                            0.0                                    0
-train                  barge                                             0.0                                    0
-train                  train                                             0.0                                    0
-train                  truck                                             0.0                                    0
-truck                  deep sea vessel                                   0.0                                    0
-truck                  feeder                                            0.0                                    0
-truck                  barge                                             0.0                                    0
-truck                  train                                             0.0                                    0
-truck                  truck                                             1.0                                    1
+initial vehicle type  adjusted vehicle type  transported capacity (in TEU) transported capacity (in boxes)
+deep sea vessel       deep sea vessel                                  0.0                               0
+deep sea vessel       feeder                                           0.0                               0
+deep sea vessel       barge                                            0.0                               0
+deep sea vessel       train                                            0.0                               0
+deep sea vessel       truck                                            0.0                               0
+feeder                deep sea vessel                                  0.0                               0
+feeder                feeder                                           0.0                               0
+feeder                barge                                            0.0                               0
+feeder                train                                            0.0                               0
+feeder                truck                                            2.0                               1
+barge                 deep sea vessel                                  0.0                               0
+barge                 feeder                                           0.0                               0
+barge                 barge                                            0.0                               0
+barge                 train                                            0.0                               0
+barge                 truck                                            0.0                               0
+train                 deep sea vessel                                  0.0                               0
+train                 feeder                                           0.0                               0
+train                 barge                                            0.0                               0
+train                 train                                            0.0                               0
+train                 truck                                            0.0                               0
+truck                 deep sea vessel                                  0.0                               0
+truck                 feeder                                           0.0                               0
+truck                 barge                                            0.0                               0
+truck                 train                                            0.0                               0
+truck                 truck                                            1.0                               1
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)

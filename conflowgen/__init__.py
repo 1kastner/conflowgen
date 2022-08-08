@@ -79,13 +79,13 @@ from conflowgen.previews import run_all_previews
 # List of named tuples
 from conflowgen.previews.vehicle_capacity_exceeded_preview import RequiredAndMaximumCapacityComparison
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import OutboundUsedAndMaximumCapacity
-from conflowgen.analyses.abstract_analysis import ContainerVolume
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustedToVehicleType
-from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
+from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit, ContainerVolumeFromOriginToDestination
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
     CompleteVehicleIdentifier
+from conflowgen.descriptive_datatypes import ContainerVolumeByVehicleType
 
 # Add metadata constants
 from .metadata import __version__

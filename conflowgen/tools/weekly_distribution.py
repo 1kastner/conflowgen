@@ -16,10 +16,8 @@ class WeeklyDistribution:
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
             considered_time_window_in_hours: int,
             minimum_dwell_time_in_hours: int,
-            is_reversed: bool = False,
             context: str = ""
     ):
-        self.is_reversed = is_reversed
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
         self.context = context
@@ -35,6 +33,10 @@ class WeeklyDistribution:
                         fraction
                     )
                 )
+
+    @property
+    def maximum_dwell_time_in_hours(self):
+        return self.minimum_dwell_time_in_hours + self.considered_time_window_in_hours
 
     @classmethod
     def _get_hour_of_the_week_from_datetime(cls, point_in_time: datetime.datetime) -> int:
@@ -52,11 +54,12 @@ class WeeklyDistribution:
         return completed_hours_since_monday
 
     def get_distribution_slice(self, start_as_datetime: datetime.datetime) -> Dict[int, float]:
-        start_hour = self._get_hour_of_the_week_from_datetime(start_as_datetime)
-        end_hour = start_hour + self.considered_time_window_in_hours
 
-        if self.is_reversed:
-            end_hour -= self.minimum_dwell_time_in_hours
+        # Convert the datetime into the week hour. Hour 36 corresponds to a Tuesday at 12:00 noon.
+        start_hour = self._get_hour_of_the_week_from_datetime(start_as_datetime)
+
+        # Calculate the week hour of when to end the distribution slice
+        end_hour = start_hour + self.considered_time_window_in_hours
 
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"
         assert start_hour < end_hour, "Start hour must be before end hour"
@@ -67,33 +70,12 @@ class WeeklyDistribution:
                 f"minimum_dwell_time_in_hours: {self.minimum_dwell_time_in_hours}"
             )
 
+        # get the distribution slice starting from start_hour and ending with end_hour
         not_normalized_distribution_slice = [
             ((hour_of_the_week - start_hour), fraction)
             for (hour_of_the_week, fraction) in self.hour_of_the_week_fraction_pairs
             if start_hour <= hour_of_the_week <= end_hour
         ]
-
-        # Fix first entry because of minimum dwell time
-        need_to_modify_first_entry = False
-        previous_fraction = None
-        for i, (hour_after_start, fraction) in enumerate(not_normalized_distribution_slice):
-
-            # drop first entries if in forward mode
-            if not self.is_reversed:
-                if hour_after_start > self.minimum_dwell_time_in_hours:
-                    if need_to_modify_first_entry:
-                        del not_normalized_distribution_slice[:i]
-                        not_normalized_distribution_slice.insert(
-                            0,
-                            (self.minimum_dwell_time_in_hours, previous_fraction)
-                        )
-                    break
-            need_to_modify_first_entry = True
-            previous_fraction = fraction
-
-        # If first entry fix failed, this is the last rescue
-        if not_normalized_distribution_slice[-1][0] <= self.minimum_dwell_time_in_hours:
-            not_normalized_distribution_slice = [(self.minimum_dwell_time_in_hours, 1)]
 
         total_fraction_sum = sum((fraction for _, fraction in not_normalized_distribution_slice))
         distribution_slice = {
@@ -102,13 +84,11 @@ class WeeklyDistribution:
         }
         return distribution_slice
 
-    def __repr__(self):
-        maximum = self.minimum_dwell_time_in_hours + self.considered_time_window_in_hours
+    def __repr__(self) -> str:
         return (
             f"<{self.__class__.__name__}: "
             f"min={self.minimum_dwell_time_in_hours:.1f}h, "
-            f"max={maximum:.1f}h={maximum / 24:.1f}d, "
-            f"rev={self.is_reversed}, "
+            f"max={self.maximum_dwell_time_in_hours:.1f}h={self.maximum_dwell_time_in_hours / 24:.1f}d, "
             f"context='{self.context}'"
             f">"
         )

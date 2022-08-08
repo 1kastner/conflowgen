@@ -2,22 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import NamedTuple, Dict, List, Optional
-
-from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-
-
-class ContainerVolume(NamedTuple):
-    """
-    Several KPIs at container terminals can be both expressed in boxes per hour and TEU per hour (or a different time
-    range).
-    """
-
-    #: The container volume expressed in number of boxes
-    containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
-
-    #: The container volume expressed in TEU
-    TEU: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
+from typing import List, Optional
 
 
 def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:

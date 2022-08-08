@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import numpy as np
 import pandas as pd
 
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
@@ -31,35 +32,25 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
 
         adjusted_to = self.analysis_summary.get_summary()
         total_capacity = sum(adjusted_to)
+        total_capacity = total_capacity if total_capacity else np.nan
 
-        if total_capacity > 0:
-            report = "\n"
-            report += "                             Capacity in TEU\n"
-            report += f"vehicle type unchanged:      {adjusted_to.unchanged:<10.1f} " \
-                      f"({adjusted_to.unchanged * 100 / total_capacity:.2f}%)\n"
-            report += f"changed to deep sea vessel:  {adjusted_to.deep_sea_vessel:<10.1f} " \
-                      f"({adjusted_to.deep_sea_vessel * 100 / total_capacity:.2f}%)\n"
-            report += f"changed to feeder:           {adjusted_to.feeder:<10.1f} " \
-                      f"({adjusted_to.feeder * 100 / total_capacity:.2f}%)\n"
-            report += f"changed to barge:            {adjusted_to.barge:<10.1f} " \
-                      f"({adjusted_to.barge * 100 / total_capacity:.2f}%)\n"
-            report += f"changed to train:            {adjusted_to.train:<10.1f} " \
-                      f"({adjusted_to.train * 100 / total_capacity:.2f}%)\n"
-            report += f"changed to truck:            {adjusted_to.truck:<10.1f} " \
-                      f"({adjusted_to.truck * 100 / total_capacity:.2f}%)\n"
-            report += "(rounding errors might exist)\n"
-        else:
-            report = """
-                             Capacity in TEU
-vehicle type unchanged:      0.0        (-%)
-changed to deep sea vessel:  0.0        (-%)
-changed to feeder:           0.0        (-%)
-changed to barge:            0.0        (-%)
-changed to train:            0.0        (-%)
-changed to truck:            0.0        (-%)
-(rounding errors might exist)
-"""
-        return report
+        report = "\n"
+        report += "                                    Capacity in TEU\n"
+        report += f"vehicle type unchanged:      {adjusted_to.unchanged:>10.1f} " \
+                  f"({adjusted_to.unchanged / total_capacity:>5.2%})\n"
+        report += f"changed to deep sea vessel:  {adjusted_to.deep_sea_vessel:>10.1f} " \
+                  f"({adjusted_to.deep_sea_vessel / total_capacity:>5.2%})\n"
+        report += f"changed to feeder:           {adjusted_to.feeder:>10.1f} " \
+                  f"({adjusted_to.feeder / total_capacity:>5.2%})\n"
+        report += f"changed to barge:            {adjusted_to.barge:>10.1f} " \
+                  f"({adjusted_to.barge / total_capacity:>5.2%})\n"
+        report += f"changed to train:            {adjusted_to.train:>10.1f} " \
+                  f"({adjusted_to.train / total_capacity:>5.2%})\n"
+        report += f"changed to truck:            {adjusted_to.truck:>10.1f} " \
+                  f"({adjusted_to.truck / total_capacity:>5.2%})\n"
+        report += "(rounding errors might exist)\n"
+
+        return report.replace(" nan", "-")
 
     def get_report_as_graph(self, **kwargs) -> object:
         """
@@ -71,21 +62,25 @@ changed to truck:            0.0        (-%)
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         adjusted_to = self.analysis_summary.get_summary()
-        if sum(adjusted_to) == 0:
-            return no_data_graph()
 
-        data_series = pd.Series({
-            "unchanged": adjusted_to.unchanged,
-            "deep sea vessel": adjusted_to.deep_sea_vessel,
-            "feeder": adjusted_to.feeder,
-            "barge": adjusted_to.barge,
-            "train": adjusted_to.train,
-            "truck": adjusted_to.truck
-        }, name="Transshipment share")
-        ax = data_series.plot.pie(
-            legend=False,
-            autopct='%1.1f%%',
-            label="",
-            title="Adjusted vehicle type"
-        )
+        plot_title = "Adjusted vehicle type"
+
+        if sum(adjusted_to) == 0:
+            ax = no_data_graph()
+            ax.set_title(plot_title)
+        else:
+            data_series = pd.Series({
+                "unchanged": adjusted_to.unchanged,
+                "deep sea vessel": adjusted_to.deep_sea_vessel,
+                "feeder": adjusted_to.feeder,
+                "barge": adjusted_to.barge,
+                "train": adjusted_to.train,
+                "truck": adjusted_to.truck
+            }, name="Vehicle type adjustment")
+            ax = data_series.plot.pie(
+                legend=False,
+                autopct='%1.1f%%',
+                label="",
+                title=plot_title
+            )
         return ax

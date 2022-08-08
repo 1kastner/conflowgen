@@ -9,7 +9,9 @@ Domain datatypes
 .. autoenum:: conflowgen.ContainerLength
     :members:
 
-.. autonamedtuple:: conflowgen.ContainerVolume
+.. autonamedtuple:: conflowgen.ContainerVolumeByVehicleType
+
+.. autonamedtuple:: conflowgen.ContainerVolumeFromOriginToDestination
 
 .. autonamedtuple:: conflowgen.HinterlandModalSplit
 

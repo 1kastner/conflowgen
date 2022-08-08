@@ -120,6 +120,26 @@ standard deviation:                               -1.0
 """
         self.assertEqual(actual_report, expected_report)
 
+    def test_with_no_data_and_parameters(self):
+        """If no schedules are provided, no capacity is needed"""
+        actual_report = self.analysis_report.get_report_as_text(
+            container_delivered_by_vehicle_type=ModeOfTransport.truck,
+            container_picked_up_by_vehicle_type=ModeOfTransport.feeder,
+            storage_requirement="all"
+        )
+        expected_report = """
+container is delivered by vehicle type = truck
+container picked up by vehicle type = feeder
+storage requirement = all
+                                       (reported in h)
+minimum container dwell time:                      0.0
+average container dwell time:                      0.0
+maximum container dwell time:                      0.0
+standard deviation:                               -1.0
+(rounding errors might exist)
+"""
+        self.assertEqual(actual_report, expected_report)
+
     def test_inbound_with_single_feeder(self):
         setup_feeder_data()
         actual_report = self.analysis_report.get_report_as_text()

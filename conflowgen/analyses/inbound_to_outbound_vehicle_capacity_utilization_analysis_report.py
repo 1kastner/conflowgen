@@ -67,14 +67,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         report = "\n"
         report += "vehicle type = " + vehicle_type_description + "\n"
         report += "vehicle identifier                                 "
-        report += "inbound capacity (in TEU) "
-        report += "outbound capacity (in TEU)"
+        report += "inbound volume (in TEU) "
+        report += "outbound volume (in TEU)"
         report += "\n"
         for vehicle_identifier, (used_inbound_capacity, used_outbound_capacity) in capacities.items():
             vehicle_name = self._create_readable_name(vehicle_identifier)
             report += f"{vehicle_name:<50} "  # align this with cls.maximum_length_for_readable_name!
-            report += f"{used_inbound_capacity:>25.1f} "
-            report += f"{used_outbound_capacity:>26.1f}"
+            report += f"{used_inbound_capacity:>23.1f} "
+            report += f"{used_outbound_capacity:>24.1f}"
             report += "\n"
         if len(capacities) == 0:
             report += "--no vehicles exist--\n"
@@ -105,7 +105,9 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         if len(capacities) == 0:
-            return no_data_graph()
+            ax = no_data_graph()
+            ax.set_title(self.plot_title)
+            return ax
 
         df = self._convert_analysis_to_df(capacities)
 
@@ -131,16 +133,19 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         return fig
 
     def _plot_absolute_values(
-            self, df: pd.DataFrame, vehicle_type: str, ax: Optional[matplotlib.pyplot.axis] = None
+            self,
+            df: pd.DataFrame,
+            vehicle_type: str,
+            ax: Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound capacity (fixed)", y="used outbound capacity", ax=ax)
+        ax = df.plot.scatter(x="inbound volume", y="outbound volume", ax=ax)
         slope = 1 + self.transportation_buffer
-        ax.axline((0, 0), slope=slope, color='black', label='Maximum outbound capacity')
-        ax.axline((0, 0), slope=1, color='gray', label='Equilibrium')
+        ax.axline((0, 0), slope=slope, color='black', label='outbound capacity')
+        ax.axline((0, 0), slope=1, color='gray', label='equilibrium')
         ax.set_title(self.plot_title + " (absolute),\n vehicle type = " + vehicle_type)
         ax.set_aspect('equal', adjustable='box')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
-        maximum = df[["inbound capacity (fixed)", "used outbound capacity"]].max(axis=1).max(axis=0)
+        maximum = df[["inbound volume", "outbound volume"]].max(axis=1).max(axis=0)
         axis_limitation = maximum * 1.1  # add some white space to the top and left
         ax.set_xlim([0, axis_limitation])
         ax.set_ylim([0, axis_limitation])
@@ -152,24 +157,27 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_type: str,
             ax: Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound capacity (fixed)", y="ratio", ax=ax)
-        ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='Maximum outbound capacity')
-        ax.axline((0, 1), slope=0, color='gray', label='Equilibrium')
+        ax = df.plot.scatter(x="inbound volume", y="ratio", ax=ax)
+        ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='outbound capacity')
+        ax.axline((0, 1), slope=0, color='gray', label='equilibrium')
         ax.set_title(self.plot_title + " (relative),\n vehicle type = " + vehicle_type)
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         return ax
 
-    def _convert_analysis_to_df(self, capacities: Dict[CompleteVehicleIdentifier, Tuple[float, float]]) -> pd.DataFrame:
+    def _convert_analysis_to_df(
+            self,
+            capacities: Dict[CompleteVehicleIdentifier, Tuple[float, float]]
+    ) -> pd.DataFrame:
         rows = []
         for vehicle_identifier, (inbound_capacity, used_outbound_capacity) in capacities.items():
             vehicle_name = self._create_readable_name(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
-                "inbound capacity (fixed)": inbound_capacity,
-                "used outbound capacity": used_outbound_capacity
+                "inbound volume": inbound_capacity,
+                "outbound volume": used_outbound_capacity
             })
         df = pd.DataFrame(rows)
-        df["ratio"] = df["used outbound capacity"] / df["inbound capacity (fixed)"]
+        df["ratio"] = df["outbound volume"] / df["inbound volume"]
         return df
 
     def _get_capacities_depending_on_vehicle_type(

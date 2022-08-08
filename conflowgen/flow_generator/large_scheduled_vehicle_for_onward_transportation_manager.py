@@ -3,9 +3,11 @@ import datetime
 import logging
 import math
 import random
-from typing import Collection, Tuple, List, Dict, Type, Sequence
+from typing import Tuple, List, Dict, Type, Sequence
 
-from peewee import fn
+# noinspection PyProtectedMember
+import numpy as np
+from peewee import fn, JOIN, ModelSelect
 
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
@@ -72,14 +74,37 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         # Get all containers in a random order which are picked up by a LargeScheduledVehicle
         # This way no vehicle has an advantage over another by its earlier arrival (getting better slots etc.)
-        containers: Collection[Container] = Container.select(
-        ).order_by(fn.Random()).where(
+        containers: ModelSelect = Container.select(
+        ).order_by(
+            fn.Random()
+        ).where(
             Container.picked_up_by << ModeOfTransport.get_scheduled_vehicles()
-        )  # TODO: add joins here to avoid that many database look-ups later
+        )
 
-        self.logger.info(f"In total {len(containers)} containers continue their journey on a vehicle that adhere to a "
-                         f"schedule, assigning these containers to their respective vehicles...")
-        for i, container in enumerate(containers):
+        # all the joins just exist to speed up the process and avoid triggering too many database calls
+        preloaded_containers: ModelSelect = containers.join(
+            Truck,
+            join_type=JOIN.LEFT_OUTER,
+            on=(Container.delivered_by_truck == Truck.id)
+        ).join(
+            TruckArrivalInformationForDelivery,
+            join_type=JOIN.LEFT_OUTER,
+            on=(Truck.truck_arrival_information_for_delivery == TruckArrivalInformationForDelivery.id)
+        ).switch(
+            Container
+        ).join(
+            LargeScheduledVehicle,
+            join_type=JOIN.LEFT_OUTER,
+            on=(Container.delivered_by_large_scheduled_vehicle == LargeScheduledVehicle.id)
+        )
+
+        assert containers.count() == preloaded_containers.count(), \
+            f"No container should be lost due to the join operations but " \
+            f"{containers.count()} != {preloaded_containers.count()}"
+
+        self.logger.info(f"In total, {len(preloaded_containers)} containers continue their journey on a vehicle that "
+                         f"adhere to a schedule, assigning these containers to their respective vehicles...")
+        for i, container in enumerate(preloaded_containers):
             i += 1
             if i % 1000 == 0 and i > 0:
                 self.logger.info(f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) "
@@ -157,6 +182,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         assert len(available_vehicles) > 0, "Some vehicle is available to take the container on its outbound journey " \
                                             "within the assumed container dwell time (min < x < max)."
         if len(available_vehicles) == 1:
+            # There is only one vehicle available, no need to do all the calculations.
             return available_vehicles[0]
 
         vehicles_and_their_respective_free_capacity = {}
@@ -165,7 +191,15 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             if free_capacity >= ContainerLength.get_factor(ContainerLength.other):
                 vehicles_and_their_respective_free_capacity[vehicle] = free_capacity
 
-        # drop those vehicles without free capacities, they are not really available
+        if len(available_vehicles) == 0:
+            # After filtering, there are no vehicles left, so nothing can be done.
+            return None
+
+        if len(available_vehicles) == 1:
+            # There is only one vehicle available, no need to do all the calculations.
+            return available_vehicles[0]
+
+        # overwrite variables to drop those vehicles without free capacities - they are not really available anyway
         available_vehicles = list(vehicles_and_their_respective_free_capacity.keys())
         free_capacities = list(vehicles_and_their_respective_free_capacity.values())
 
@@ -181,8 +215,9 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             container.delivered_by, container.picked_up_by, container.storage_requirement
         )
         container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(associated_dwell_times)
+        free_capacities_as_array = np.array(free_capacities)
         total_probabilities = multiply_discretized_probability_densities(
-            free_capacities,
+            free_capacities_as_array / free_capacities_as_array.sum(),
             container_dwell_time_probabilities
         )
         vehicles_and_their_respective_probability = {
@@ -214,32 +249,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
     def _get_arrival_time_of_container(container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """
-        container_arrival: datetime.datetime
-        if container.delivered_by == ModeOfTransport.truck:
-            truck: Truck = container.delivered_by_truck
-            truck_arrival_information: TruckArrivalInformationForDelivery = truck.truck_arrival_information_for_delivery
-            container_arrival = truck_arrival_information.realized_container_delivery_time
-        else:
-            large_scheduled_vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
-            container_arrival = large_scheduled_vehicle.scheduled_arrival
-        return container_arrival
-
-    @staticmethod
-    def _get_departure_time_of_vehicle(
-            vehicle: Truck | Type[AbstractLargeScheduledVehicle]
-    ) -> datetime.datetime:
-        """get container arrival from correct source
-        """
-        vehicle_departure: datetime.datetime
-        if isinstance(vehicle, Truck):
-            truck_arrival_information: TruckArrivalInformationForDelivery = \
-                vehicle.truck_arrival_information_for_delivery
-            vehicle_departure = truck_arrival_information.planned_container_delivery_time_at_window_start
-        elif isinstance(vehicle, AbstractLargeScheduledVehicle):
-            vehicle_departure = vehicle.scheduled_arrival
-        else:
-            raise Exception(f"Unknown type {type(vehicle)} of vehicle {vehicle}.")
-        return vehicle_departure
+        return container.get_arrival_time_on_terminal()
 
     def _find_alternative_mode_of_transportation(
             self,

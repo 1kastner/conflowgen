@@ -24,12 +24,3 @@ class TestClippedLogNormal(unittest.TestCase):
     def test_lognorm_properties(self):
         self.assertAlmostEqual(self.cln._lognorm.mean(), 5)  # pylint: disable=protected-access
         self.assertAlmostEqual(self.cln._lognorm.var(), 2)  # pylint: disable=protected-access
-
-    def test_reversed(self):
-        reversed_cln = self.cln.reversed()
-        self.assertAlmostEqual(reversed_cln._lognorm.mean(), 5)  # pylint: disable=protected-access
-        self.assertAlmostEqual(reversed_cln._lognorm.var(), 2)  # pylint: disable=protected-access
-        xs = [0, 2, 4, 10, 12, 15, 20]
-        probs = self.cln.get_probabilities(xs)
-        reversed_probs = reversed_cln.get_probabilities(xs)
-        self.assertListEqual(list(probs), list(reversed(reversed_probs)))

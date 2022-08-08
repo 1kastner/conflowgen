@@ -54,8 +54,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         """
 
         container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
-        container_picked_up_by_vehicle_type = kwargs.get("container_picked_up_by_vehicle_type", "all")
-        storage_requirement = kwargs.get("storage_requirement", "all")
+        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
+        storage_requirement = kwargs.pop("storage_requirement", "all")
         assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
 
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
@@ -95,13 +95,22 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
     def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented as a line graph using pandas.
+        For the exact interpretation of the parameter, check
+        :meth:`.ContainerDwellTimeAnalysis.get_container_dwell_times`.
 
         Keyword Args:
-            storage_requirement: Either a single storage requirement of type :class:`.StorageRequirement` or a whole
-                collection of them e.g. passed as a :class:`list` or :class:`set`.
-                For the exact interpretation of the parameter, check
-                :meth:`.YardCapacityAnalysis.get_used_yard_capacity_over_time`.
-
+            container_delivered_by_vehicle_type: One of
+                ``"all"``,
+                a collection of :class:`ModeOfTransport` enum values (as a list, set, or similar), or
+                a single :class:`ModeOfTransport` enum value.
+            container_picked_up_by_vehicle_type: One of
+                ``"all"``,
+                a collection of :class:`ModeOfTransport` enum values (as a list, set, or similar), or
+                a single :class:`ModeOfTransport` enum value.
+            storage_requirement: One of
+                ``"all"``,
+                a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
+                a single :class:`StorageRequirement` enum value.
         Returns:
              The matplotlib axis of the bar chart.
         """
@@ -119,13 +128,13 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         )
 
         if len(container_dwell_times) == 0:
-            return no_data_graph()
-
-        container_dwell_times_in_hours = [
-            int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
-        ]
-        series = pd.Series(list(container_dwell_times_in_hours))
-        ax = series.plot.hist()
+            ax = no_data_graph()
+        else:
+            container_dwell_times_in_hours = [
+                int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
+            ]
+            series = pd.Series(list(container_dwell_times_in_hours))
+            ax = series.plot.hist()
 
         title = ""
         title += "container is delivered by vehicle type = " + self._get_vehicle_representation(

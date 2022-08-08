@@ -47,6 +47,7 @@ class AbstractTruckForContainersManager(abc.ABC):
     ) -> ContinuousDistribution:
         pass
 
+    @property
     @abc.abstractmethod
     def is_reversed(self) -> bool:
         pass
@@ -60,9 +61,9 @@ class AbstractTruckForContainersManager(abc.ABC):
         self.time_window_length_in_hours = hour_of_the_week_fraction_pairs[1][0] - hour_of_the_week_fraction_pairs[0][0]
 
         self.container_dwell_time_distributions = self.container_dwell_time_distribution_repository.get_distributions()
-        self._update_truck_arrival_distributions(hour_of_the_week_fraction_pairs)
+        self._update_truck_arrival_and_container_dwell_time_distributions(hour_of_the_week_fraction_pairs)
 
-    def _update_truck_arrival_distributions(
+    def _update_truck_arrival_and_container_dwell_time_distributions(
             self,
             hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]]
     ) -> None:
@@ -73,22 +74,26 @@ class AbstractTruckForContainersManager(abc.ABC):
                 )
 
                 # only work with full hours
-                container_dwell_time_distribution.minimum = int(math.ceil(container_dwell_time_distribution.minimum))
-                container_dwell_time_distribution.maximum = int(math.floor(container_dwell_time_distribution.maximum))
+                if self.is_reversed:
+                    container_dwell_time_distribution.minimum = int(math.floor(
+                        container_dwell_time_distribution.minimum))
+                    container_dwell_time_distribution.maximum = int(math.ceil(
+                        container_dwell_time_distribution.maximum))
+                else:
+                    container_dwell_time_distribution.minimum = int(math.ceil(
+                        container_dwell_time_distribution.minimum))
+                    container_dwell_time_distribution.maximum = int(math.floor(
+                        container_dwell_time_distribution.maximum))
 
-                earliest_possible_truck_slot_in_hours = container_dwell_time_distribution.minimum
-                last_possible_truck_slot_in_hours_after_arrival = \
-                    container_dwell_time_distribution.maximum - 1  # because the latest slot is reset
-                number_of_feasible_truck_slots = (
-                        last_possible_truck_slot_in_hours_after_arrival
-                        - earliest_possible_truck_slot_in_hours
+                considered_time_window_in_hours = (
+                    container_dwell_time_distribution.maximum
+                    - 2  # both the first and last time window are not an option
                 )
 
                 self.truck_arrival_distributions[vehicle][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    considered_time_window_in_hours=number_of_feasible_truck_slots,
-                    minimum_dwell_time_in_hours=earliest_possible_truck_slot_in_hours,
-                    is_reversed=self.is_reversed(),
+                    considered_time_window_in_hours=considered_time_window_in_hours,
+                    minimum_dwell_time_in_hours=container_dwell_time_distribution.minimum,
                     context=f"{self.__class__.__name__} : {vehicle} : {storage_requirement}"
                 )
 
@@ -109,8 +114,8 @@ class AbstractTruckForContainersManager(abc.ABC):
     def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
         pass
 
-    @staticmethod
     def _get_time_window_of_truck_arrival(
+            self,
             container_dwell_time_distribution: ContinuousDistribution,
             truck_arrival_distribution_slice: Dict[int, float]
     ) -> int:
@@ -121,7 +126,7 @@ class AbstractTruckForContainersManager(abc.ABC):
         time_windows_for_truck_arrival = list(truck_arrival_distribution_slice.keys())
         truck_arrival_probabilities = list(truck_arrival_distribution_slice.values())
         container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(
-            time_windows_for_truck_arrival
+            time_windows_for_truck_arrival, reversed_distribution=self.is_reversed
         )
         total_probabilities = multiply_discretized_probability_densities(
             truck_arrival_probabilities,

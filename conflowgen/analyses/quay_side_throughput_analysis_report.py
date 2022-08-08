@@ -24,6 +24,8 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
     The impact of this fact is mitigated by averaging the data over certain time ranges.
     """
 
+    plot_title = "Analysis of quay side throughput"
+
     def __init__(self):
         super().__init__()
         self.analysis = QuaySideThroughputAnalysis()
@@ -67,12 +69,12 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         quay_side_throughput = self.analysis.get_throughput_over_time()
         if len(quay_side_throughput) == 0:
-            return no_data_graph()
-
-        series = pd.Series(quay_side_throughput)
-        ax = series.plot()
-        plt.xticks(rotation=45)
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Number of boxes (weekly count)")
-        ax.set_title("Analysis of quay side throughput")
+            ax = no_data_graph()
+        else:
+            series = pd.Series(quay_side_throughput)
+            ax = series.plot()
+            plt.xticks(rotation=45)
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Number of boxes (weekly count)")
+        ax.set_title(self.plot_title)
         return ax

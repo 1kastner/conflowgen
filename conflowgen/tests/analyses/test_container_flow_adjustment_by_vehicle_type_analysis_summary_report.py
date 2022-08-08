@@ -61,13 +61,13 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysisReport(UnitTestCaseWithMat
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.report.get_report_as_text()
         expected_report = """
-                             Capacity in TEU
-vehicle type unchanged:      0.0        (-%)
-changed to deep sea vessel:  0.0        (-%)
-changed to feeder:           0.0        (-%)
-changed to barge:            0.0        (-%)
-changed to train:            0.0        (-%)
-changed to truck:            0.0        (-%)
+                                    Capacity in TEU
+vehicle type unchanged:             0.0 (-%)
+changed to deep sea vessel:         0.0 (-%)
+changed to feeder:                  0.0 (-%)
+changed to barge:                   0.0 (-%)
+changed to train:                   0.0 (-%)
+changed to truck:                   0.0 (-%)
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
@@ -76,13 +76,13 @@ changed to truck:            0.0        (-%)
         setup_feeder_data()
         actual_report = self.report.get_report_as_text()
         expected_report = """
-                             Capacity in TEU
-vehicle type unchanged:      1.0        (33.33%)
-changed to deep sea vessel:  0.0        (0.00%)
-changed to feeder:           0.0        (0.00%)
-changed to barge:            0.0        (0.00%)
-changed to train:            0.0        (0.00%)
-changed to truck:            2.0        (66.67%)
+                                    Capacity in TEU
+vehicle type unchanged:             1.0 (33.33%)
+changed to deep sea vessel:         0.0 (0.00%)
+changed to feeder:                  0.0 (0.00%)
+changed to barge:                   0.0 (0.00%)
+changed to train:                   0.0 (0.00%)
+changed to truck:                   2.0 (66.67%)
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)

@@ -94,7 +94,8 @@ class ContainerFlowGenerationService:
         number_not_assignable_containers = (self.large_scheduled_vehicle_for_onward_transportation_manager
                                             .number_not_assignable_containers)
         assigned_as_fraction = number_assigned_containers / (
-                    number_assigned_containers + number_not_assignable_containers)
+                    number_assigned_containers + number_not_assignable_containers
+        )
         self.logger.info(
             f"Containers for which no outgoing vehicle could be found: {assigned_as_fraction:.2%}")
 

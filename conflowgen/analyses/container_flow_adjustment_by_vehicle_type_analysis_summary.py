@@ -53,7 +53,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
         The capacity is expressed in TEU.
         """
         initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow()
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
         adjusted_to_dict = {
             "unchanged": 0,
             **{

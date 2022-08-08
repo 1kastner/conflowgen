@@ -22,9 +22,9 @@ class Schedule(BaseModel):
     )
     average_vehicle_capacity = IntegerField(
         null=False,
-        help_text="All vehicles moving according to this schedule have approx. this TEU capacity. "
+        help_text="All vehicles moving according to this schedule have approx. this capacity measured in TEU. "
                   "This determines the number of ship-to-shore gantry cranes that can serve the vessel "
-                  "or the length of the train that must be served by portal cranes."
+                  "or the length of the train that must be served by portal cranes in the subsequent model."
     )
     average_moved_capacity = IntegerField(
         null=False,

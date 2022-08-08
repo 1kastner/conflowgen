@@ -22,6 +22,8 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
     In the visual version of the report, the time series is plotted.
     """
 
+    plot_tile = "Analysis of truck gate throughput"
+
     def __init__(self):
         super().__init__()
         self.analysis = TruckGateThroughputAnalysis()
@@ -60,12 +62,12 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         truck_gate_throughput = self.analysis.get_throughput_over_time()
         if len(truck_gate_throughput) == 0:
-            return no_data_graph()
-
-        series = pd.Series(truck_gate_throughput)
-        ax = series.plot()
-        plt.xticks(rotation=45)
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Number of boxes (hourly count)")
-        ax.set_title("Analysis of truck gate throughput")
+            ax = no_data_graph()
+        else:
+            series = pd.Series(truck_gate_throughput)
+            ax = series.plot()
+            plt.xticks(rotation=45)
+            ax.set_xlabel("Date")
+            ax.set_ylabel("Number of boxes (hourly count)")
+        ax.set_title(self.plot_tile)
         return ax

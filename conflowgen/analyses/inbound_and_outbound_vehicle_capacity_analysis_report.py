@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from typing import Tuple, Dict
+
 import numpy as np
 import pandas as pd
 
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -15,11 +18,11 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
     """
 
     report_description = """
-    Analyze the vehicle capacity by vehicle type for the inbound and outbound journeys and check for the maximum
-    capacity of each vehicle type.
-    If e.g. for the vehicle type 'feeder' the maximum outbound capacity is used up, most likely there are more vehicles
-    that deliver containers destined for feeder vessels than there are feeder vessels planned during the period of data
-    generation (between `start_date` and `end_date`).
+    Analyze the container volumes transported by vehicle type for the inbound and outbound journeys and check for the
+    maximum capacity of each vehicle type on its outbound journey.
+    If, e.g., for the vehicle type 'feeder' the maximum capacity is reached, most likely there are more vehicles that
+    deliver containers destined for feeders but could not get a free spot.
+    You might consider adding more vehicles of that type or adjusting the modal split.
     """
 
     def __init__(self):
@@ -31,13 +34,14 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
     def get_report_as_text(self, **kwargs) -> str:
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
-        inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
+        inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
+            self._get_container_volumes_in_teu()
 
         # create string representation
-        report = "\n"
-        report += "vehicle type    "
-        report += "inbound capacity "
-        report += "outbound actual capacity "
+        report = "\n(all numbers are reported in TEU)\n"
+        report += "vehicle type      "
+        report += "inbound volume      "
+        report += "outbound volume     "
         report += "outbound max capacity"
         report += "\n"
         for vehicle_type in self.order_of_vehicle_types_in_report:
@@ -46,8 +50,8 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
                 else outbound_maximum_capacities[vehicle_type]
             report += f"{vehicle_type_as_text:<15} "
             report += f"{inbound_capacities[vehicle_type]:>16.1f} "
-            report += f"{outbound_actual_capacities[vehicle_type]:>24.1f} "
-            report += f"{max_capacities_repr:>21.1f}"
+            report += f"{outbound_actual_capacities[vehicle_type]:>20.1f} "
+            report += f"{max_capacities_repr:>25.1f}"
             report += "\n"
         report += "(rounding errors might exist)\n"
         return report
@@ -61,12 +65,13 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
-        inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = self._get_capacities()
+        inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
+            self._get_container_volumes_in_teu()
 
         df = pd.DataFrame({
-            "inbound capacities": inbound_capacities,
-            "outbound actual capacities": outbound_actual_capacities,
-            "outbound maximum capacities": outbound_maximum_capacities
+            "inbound volume": inbound_capacities,
+            "outbound volume": outbound_actual_capacities,
+            "outbound maximum capacity": outbound_maximum_capacities
         })
         df.index = [str(i).replace("_", " ") for i in df.index]
         ax = df.plot.barh()
@@ -74,12 +79,15 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         ax.set_title("Inbound and outbound vehicle capacity analysis")
         return ax
 
-    def _get_capacities(self):
+    def _get_container_volumes_in_teu(
+            self
+    ) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
         assert self.transportation_buffer is not None
         self.analysis.update(
             transportation_buffer=self.transportation_buffer
         )
         # gather data
-        inbound_capacities = self.analysis.get_inbound_capacity_of_vehicles()
-        outbound_actual_capacities, outbound_maximum_capacities = self.analysis.get_outbound_capacity_of_vehicles()
-        return inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities
+        inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type()
+        outbound_container_volume, outbound_maximum_container_volume = \
+            self.analysis.get_outbound_container_volume_by_vehicle_type()
+        return inbound_container_volume.teu, outbound_container_volume.teu, outbound_maximum_container_volume.teu
