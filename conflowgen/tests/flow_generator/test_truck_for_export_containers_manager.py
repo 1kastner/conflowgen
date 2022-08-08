@@ -50,7 +50,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
 
         # Enables visualisation, helpful for probability distributions.
         # However, this blocks the execution of tests.
-        self.visual_debug = True
+        self.visual_debug = False
 
         self.manager = TruckForExportContainersManager()
         self.manager.reload_distributions()
@@ -230,5 +230,5 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         )
         self.assertEqual(
             truck_arrival_distribution.considered_time_window_in_hours,
-            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)) - 1
+            int(math.floor(dwell_time_distribution.maximum)) - 1
         )

@@ -16,10 +16,8 @@ class WeeklyDistribution:
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
             considered_time_window_in_hours: int,
             minimum_dwell_time_in_hours: int,
-            is_reversed: bool = False,
             context: str = ""
     ):
-        self.is_reversed = is_reversed
         self.considered_time_window_in_hours = considered_time_window_in_hours
         self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
         self.context = context
@@ -63,13 +61,6 @@ class WeeklyDistribution:
         # Calculate the week hour of when to end the distribution slice
         end_hour = start_hour + self.considered_time_window_in_hours
 
-        if self.is_reversed:
-            # The start time is the real start time, no need to be patient.
-            minimum_dwell_time_in_hours = 0
-        else:
-            # The start time is slightly later because the minimum dwell time must be honored.
-            minimum_dwell_time_in_hours = self.minimum_dwell_time_in_hours
-
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"
         assert start_hour < end_hour, "Start hour must be before end hour"
 
@@ -86,29 +77,6 @@ class WeeklyDistribution:
             if start_hour <= hour_of_the_week <= end_hour
         ]
 
-        # Fix first entry because of minimum dwell time
-        need_to_modify_first_entry = False
-        previous_fraction = None
-        for i, (hour_after_start, fraction) in enumerate(not_normalized_distribution_slice):
-
-            # drop first entries if in forward mode because of the minimum dwell time constraint
-            if not self.is_reversed:
-                if hour_after_start > minimum_dwell_time_in_hours:
-                    if need_to_modify_first_entry:
-                        del not_normalized_distribution_slice[:i]
-                        not_normalized_distribution_slice.insert(
-                            0,
-                            (minimum_dwell_time_in_hours, previous_fraction)
-                        )
-                    break
-            need_to_modify_first_entry = True
-            previous_fraction = fraction
-
-        if not self.is_reversed:
-            # If first entry fix failed, this is the last rescue
-            if not_normalized_distribution_slice[-1][0] <= self.minimum_dwell_time_in_hours:
-                not_normalized_distribution_slice = [(self.minimum_dwell_time_in_hours, 1)]
-
         total_fraction_sum = sum((fraction for _, fraction in not_normalized_distribution_slice))
         distribution_slice = {
             hour_after_start: (hour_fraction / total_fraction_sum)
@@ -121,7 +89,6 @@ class WeeklyDistribution:
             f"<{self.__class__.__name__}: "
             f"min={self.minimum_dwell_time_in_hours:.1f}h, "
             f"max={self.maximum_dwell_time_in_hours:.1f}h={self.maximum_dwell_time_in_hours / 24:.1f}d, "
-            f"rev={self.is_reversed}, "
             f"context='{self.context}'"
             f">"
         )

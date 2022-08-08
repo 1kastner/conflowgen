@@ -14,6 +14,7 @@ from ..tools.weekly_distribution import WeeklyDistribution
 
 class TruckForImportContainersManager(AbstractTruckForContainersManager):
 
+    @property
     def is_reversed(self) -> bool:
         return False
 

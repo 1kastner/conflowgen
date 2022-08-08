@@ -19,6 +19,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
     feeder or deep sea vessel.
     """
 
+    @property
     def is_reversed(self) -> bool:
         return True
 
@@ -44,9 +45,9 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
 
         earliest_slot = (
-            container_departure_time.replace(minute=0, second=0, microsecond=0)
-            - datetime.timedelta(hours=maximum_dwell_time_in_hours)
-            + datetime.timedelta(hours=1)
+            container_departure_time.replace(minute=0, second=0, microsecond=0)  # reset to previous full hour
+            + datetime.timedelta(hours=1)  # go 1h in the future because previously we lost some minutes
+            - datetime.timedelta(hours=maximum_dwell_time_in_hours)  # go back x hours
         )
 
         truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
@@ -64,11 +65,16 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         truck_arrival_time = (
                 earliest_slot
                 + datetime.timedelta(hours=delivery_time_window_start)
-                - datetime.timedelta(hours=1)
                 + datetime.timedelta(hours=random_time_component)
+                - datetime.timedelta(hours=1)  # with the random time component a point close to one hour is added
         )
 
         dwell_time_in_seconds = (container_departure_time - truck_arrival_time).total_seconds()
+        if maximum_dwell_time_in_hours / 3600 > maximum_dwell_time_in_hours:
+            self.logger.debug("Maximum dwell time constraint harmed due to a rounding error, move back 1 hour")
+            truck_arrival_time -= datetime.timedelta(hours=0.5)
+            dwell_time_in_seconds = (container_departure_time - truck_arrival_time).total_seconds()
+
         assert dwell_time_in_seconds > 0, "Dwell time must be positive"
         assert minimum_dwell_time_in_hours <= dwell_time_in_seconds / 3600 <= maximum_dwell_time_in_hours, \
             f"{minimum_dwell_time_in_hours} <= {dwell_time_in_seconds / 3600} <= {maximum_dwell_time_in_hours} " \

@@ -87,7 +87,6 @@ class AbstractTruckForContainersManager(abc.ABC):
 
                 considered_time_window_in_hours = (
                     container_dwell_time_distribution.maximum
-                    - container_dwell_time_distribution.minimum
                     - 2  # both the first and last time window are not an option
                 )
 
@@ -95,7 +94,6 @@ class AbstractTruckForContainersManager(abc.ABC):
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
                     considered_time_window_in_hours=considered_time_window_in_hours,
                     minimum_dwell_time_in_hours=container_dwell_time_distribution.minimum,
-                    is_reversed=self.is_reversed,
                     context=f"{self.__class__.__name__} : {vehicle} : {storage_requirement}"
                 )
 

@@ -48,35 +48,8 @@ class TestWeeklyDistribution(unittest.TestCase):
         distribution_slice = weekly_distribution.get_distribution_slice(_datetime)
         self.assertDictEqual(
             distribution_slice, {
-                # Monday and Tuesday since time_window_in_days = 1
-                # Due to the minimum dwell time no timeslot on Monday is left
-                24: 1  # Tuesday
-            }
-        )
-
-    def test_slice_into_next_week(self):
-        weekly_distribution = WeeklyDistribution([
-            (0, .5),
-            (24, .2),
-            (48, .2),
-            (72, .1),
-            (96, 0),
-            (120, 0),
-            (144, 0)
-        ],
-            considered_time_window_in_hours=24,
-            minimum_dwell_time_in_hours=3
-        )
-        _datetime = datetime.datetime(
-            year=2021, month=8, day=1
-        )
-        self.assertEqual(_datetime.weekday(), 6)  # assert is Sunday
-        distribution_slice = weekly_distribution.get_distribution_slice(_datetime)
-        self.assertDictEqual(
-            distribution_slice, {
-                # Sunday and Monday since time_window_in_days = 1
-                3: 0,  # Sunday
-                24: 1  # Monday
+                0: 0.7142857142857143,
+                24: 0.28571428571428575
             }
         )
 
@@ -99,7 +72,7 @@ class TestWeeklyDistribution(unittest.TestCase):
         self.assertEqual(_datetime.weekday(), 6)  # assert is Sunday
         distribution_slice = weekly_distribution.get_distribution_slice(_datetime)
         assumed_slice = {
-            2: 0,
+            0: 0,
             24: .5,
             48: .2,
             72: .2,
@@ -143,7 +116,7 @@ class TestWeeklyDistribution(unittest.TestCase):
         earliest_slot = latest_slot - datetime.timedelta(hours=71)
         distribution_slice = weekly_distribution.get_distribution_slice(earliest_slot)
         hours = list(distribution_slice.keys())
-        self.assertEqual(70, len(hours))
+        self.assertEqual(73, len(hours))
         self.assertAlmostEqual(sum(list(distribution_slice.values())), 1, places=1,
                                msg="Severe rounding issues exist.")
         visited_sunday = False
@@ -160,30 +133,3 @@ class TestWeeklyDistribution(unittest.TestCase):
                                    "Assert arrivals on other days")
         self.assertTrue(visited_sunday)
         self.assertTrue(visited_working_day)
-
-    def test_reversed(self):
-        weekly_distribution = WeeklyDistribution([
-            (0, .5),
-            (24, .2),
-            (48, .2),
-            (72, .1),
-            (96, 0),
-            (120, 0),
-            (144, 0)
-        ],
-            considered_time_window_in_hours=72,
-            minimum_dwell_time_in_hours=12,
-            is_reversed=True
-        )
-        _datetime = datetime.datetime(
-            year=2022, month=8, day=1
-        )
-        self.assertEqual(_datetime.weekday(), 0)  # assert is Monday
-        distribution_slice = weekly_distribution.get_distribution_slice(_datetime)
-        self.assertDictEqual(
-            distribution_slice, {
-                0: 0.5555555555555556,
-                24: 0.22222222222222227,
-                48: 0.22222222222222227
-            }
-        )

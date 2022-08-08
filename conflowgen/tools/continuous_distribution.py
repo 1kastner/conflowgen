@@ -25,7 +25,6 @@ class ContinuousDistribution(abc.ABC):
             minimum: float,
             maximum: float,
             unit: Optional[str] = None,
-            reversed_distribution: bool = False
     ):
         """
         Args:
@@ -33,13 +32,11 @@ class ContinuousDistribution(abc.ABC):
             minimum: The minimum of the distribution. Smaller values are automatically set to zero.
             maximum: The maximum of the distribution. Larger values are automatically set to zero.
             unit: The unit for the average, minimum, and maximum. It is used for the __repr__ implementation.
-            reversed_distribution: Whether the distribution is mirrored at the y-axis.
         """
         assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
         self.average = average
         self.minimum = minimum
         self.maximum = maximum
-        self.reversed_distribution = reversed_distribution
 
         self.unit = unit
         self.unit_repr, self.unit_repr_square = "", ""
@@ -72,7 +69,11 @@ class ContinuousDistribution(abc.ABC):
         """
         pass
 
-    def get_probabilities(self, xs: Sequence[float], reversed_distribution: bool = False) -> np.ndarray:
+    def get_probabilities(
+            self,
+            xs: Sequence[float],
+            reversed_distribution: bool = False
+    ) -> np.ndarray:
         """
         Args:
             xs: Elements that are on the same scale as average, variance, minimum, and maximum
@@ -88,19 +89,11 @@ class ContinuousDistribution(abc.ABC):
         sum_of_all_densities = densities.sum()
         if not np.isnan(sum_of_all_densities) and sum_of_all_densities > 0:
             densities = densities / sum_of_all_densities
-            if reversed_distribution or self.reversed_distribution:
+            if reversed_distribution:
                 densities = np.flip(densities)
         else:
             densities = np.zeros_like(xs)
         return densities
-
-    @abc.abstractmethod
-    def reversed(self) -> ContinuousDistribution:
-        """
-        Returns:
-            A new instance of the distribution that reverses the x-axis.
-        """
-        pass
 
 
 class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
@@ -113,15 +106,13 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
             variance: float,
             minimum: float,
             maximum: float,
-            unit: Optional[str] = None,
-            reversed_distribution: bool = False
+            unit: Optional[str] = None
     ):
         super().__init__(
             average=average,
             minimum=minimum,
             maximum=maximum,
-            unit=unit,
-            reversed_distribution=reversed_distribution
+            unit=unit
         )
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
@@ -161,19 +152,8 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
             f"avg={self.average:.1f}{self.unit_repr}, "
             f"min={self.minimum:.1f}{self.unit_repr}, "
             f"max={self.maximum:.1f}{self.unit_repr}, "
-            f"var={self.variance:.1f}{self.unit_repr_square}, "
-            f"rev={self.reversed_distribution}"
+            f"var={self.variance:.1f}{self.unit_repr_square}"
             f">"
-        )
-
-    def reversed(self) -> ClippedLogNormal:
-        return self.__class__(
-            average=self.average,
-            minimum=self.minimum,
-            maximum=self.maximum,
-            variance=self.variance,
-            unit=self.unit,
-            reversed_distribution=(not self.reversed_distribution)
         )
 
 

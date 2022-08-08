@@ -6,6 +6,7 @@ import unittest
 from collections import Counter
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from conflowgen import ModeOfTransport, StorageRequirement, ContainerLength
 from conflowgen.domain_models.container import Container
@@ -54,13 +55,38 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         # However, this blocks the execution of tests.
         self.visual_debug = False
 
-    def visualize_probabilities(self, container, drawn_times, container_arrival_time):
+    def visualize_probabilities(self, container: Container, drawn_times, container_arrival_time: datetime.datetime):
         import inspect  # pylint: disable=import-outside-toplevel
         import seaborn as sns  # pylint: disable=import-outside-toplevel
         container_dwell_time_distribution, _ = self._get_distribution(container)
         sns.kdeplot(drawn_times, bw=0.01).set(title='Triggered from: ' + inspect.stack()[1].function)
-        plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.minimum))
-        plt.axvline(x=container_arrival_time + datetime.timedelta(hours=container_dwell_time_distribution.maximum))
+
+        start_date = container_arrival_time.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
+
+        plt.axvline(x=start_date + datetime.timedelta(hours=container_dwell_time_distribution.minimum))
+        plt.axvline(x=start_date + datetime.timedelta(hours=container_dwell_time_distribution.maximum))
+        plt.axvline(x=start_date, color="k")
+
+        x = np.linspace(
+            0,
+            int(container_dwell_time_distribution.maximum),
+            int(container_dwell_time_distribution.maximum)
+        )
+
+        x_in_range = x[np.where(
+            (container_dwell_time_distribution.minimum < x) & (x < container_dwell_time_distribution.maximum)
+        )]
+        ax2 = plt.gca().twinx()
+        probs = container_dwell_time_distribution.get_probabilities(x_in_range, reversed_distribution=True)
+
+        ax2.plot(
+            [container_arrival_time + datetime.timedelta(hours=h) for h in x_in_range],
+            probs,
+            color='gray',
+            lw=5,
+            alpha=0.9,
+        )
+
         plt.show(block=True)
 
     def _get_distribution(self, container: Container) -> tuple[ContinuousDistribution, WeeklyDistribution | None]:
@@ -89,24 +115,12 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
         possible_hours_for_truck_arrival = truck_arrival_distribution.considered_time_window_in_hours
         self.assertEqual(
-            216 - 3 - 1,
+            216 - 2,
             possible_hours_for_truck_arrival,
             "The truck might arrive 216h after the arrival of the container, but not within the first three hours. "
             "Furthermore, the last hour is subtracted because up to 59 minutes are later added again and the maximum "
             "should not be surpassed."
         )
-
-    def test_not_reversed_distribution_is_used(self):
-        container = Container.create(
-            weight=20,
-            delivered_by=ModeOfTransport.deep_sea_vessel,
-            picked_up_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.truck,
-            length=ContainerLength.twenty_feet,
-            storage_requirement=StorageRequirement.standard
-        )
-        container_dwell_time_distribution, _ = self._get_distribution(container)
-        self.assertFalse(container_dwell_time_distribution.reversed_distribution)
 
     def test_pickup_time_in_required_time_range_weekday(self):
 
@@ -214,6 +228,6 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         )
         self.assertEqual(
             truck_arrival_distribution.considered_time_window_in_hours,
-            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)),
+            int(math.floor(dwell_time_distribution.maximum)) - 2,
             "Import movement means the truck can come later than minimum but must be earlier than maximum"
         )
