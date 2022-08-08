@@ -71,7 +71,7 @@ class TestModalSplitPreview__get_modal_split_for_hinterland(unittest.TestCase): 
 
     def test_with_single_arrival_schedules(self):
         """inbound is 300 TEU by feeder and thus, outbound we have:
-        - 300TEU * 20% trucks -> 60 TEU, then 60 TEU are also generated to be delivered by truck to the vessels
+        - 300 TEU * 20% trucks -> 60 TEU, then 60 TEU are also generated to be delivered by truck to the vessels
         - 300 TEU * 10% barge -> 30 TEU
         - 300 TEU * 40% train -> 120 TEU
         """

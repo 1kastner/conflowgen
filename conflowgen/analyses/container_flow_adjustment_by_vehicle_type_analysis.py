@@ -4,7 +4,8 @@ from typing import Dict
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.analyses.abstract_analysis import AbstractAnalysis, ContainerVolume
+from conflowgen.analyses.abstract_analysis import AbstractAnalysis
+from conflowgen.descriptive_datatypes import ContainerVolumeFromOriginToDestination
 
 
 class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
@@ -15,7 +16,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
     """
 
     @staticmethod
-    def get_initial_to_adjusted_outbound_flow() -> ContainerVolume:
+    def get_initial_to_adjusted_outbound_flow() -> ContainerVolumeFromOriginToDestination:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
         onward transportation might change. The initial outbound vehicle type is the vehicle type that is drawn
@@ -45,7 +46,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
             for vehicle_type_initial in ModeOfTransport
         }
 
-        # Iterate over all containers and count number of containers / used TEU capacity
+        # Iterate over all containers and count number of containers / used teu capacity
         container: Container
         for container in Container.select():
             vehicle_type_initial = container.picked_up_by_initial
@@ -55,7 +56,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
             initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial][vehicle_type_adjusted] += \
                 teu_factor_of_container
 
-        return ContainerVolume(
+        return ContainerVolumeFromOriginToDestination(
             containers=initial_to_adjusted_outbound_flow_in_containers,
-            TEU=initial_to_adjusted_outbound_flow_in_teu
+            teu=initial_to_adjusted_outbound_flow_in_teu
         )

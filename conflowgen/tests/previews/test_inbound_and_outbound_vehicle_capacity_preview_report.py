@@ -70,7 +70,7 @@ class TestInboundAndOutboundVehicleCapacityPreviewReport(UnitTestCaseWithMatplot
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-vehicle type    inbound capacity (in TEU) outbound avg capacity (in TEU) outbound max capacity (in TEU)
+vehicle type      inbound volume (in TEU)   outbound avg volume (in TEU) outbound max capacity (in TEU)
 deep sea vessel                       0.0                            0.0                            0.0
 feeder                                0.0                            0.0                            0.0
 barge                                 0.0                            0.0                            0.0
@@ -93,7 +93,7 @@ truck                                 0.0                            0.0        
         )
         actual_report = self.preview_report.get_report_as_text()
         expected_report = """
-vehicle type    inbound capacity (in TEU) outbound avg capacity (in TEU) outbound max capacity (in TEU)
+vehicle type      inbound volume (in TEU)   outbound avg volume (in TEU) outbound max capacity (in TEU)
 deep sea vessel                       0.0                            0.0                            0.0
 feeder                              300.0                          300.0                          360.0
 barge                                 0.0                            0.0                            0.0

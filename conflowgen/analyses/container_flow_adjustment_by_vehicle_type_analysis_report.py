@@ -38,14 +38,14 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         # create string representation
         report = "\n"
-        report += "vehicle type (initial) "
-        report += "vehicle type (adjusted) "
+        report += "initial vehicle type  "
+        report += "adjusted vehicle type  "
         report += "transported capacity (in TEU) "
-        report += "transported capacity (in containers)"
+        report += "transported capacity (in boxes)"
         report += "\n"
         for vehicle_type_initial, vehicle_type_adjusted in itertools.product(
                 self.order_of_vehicle_types_in_report, repeat=2):
@@ -55,10 +55,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
                 vehicle_type_adjusted]
             transported_capacity_in_containers = initial_to_adjusted_outbound_flow_in_containers[vehicle_type_initial][
                 vehicle_type_adjusted]
-            report += f"{vehicle_type_from_as_text:<22} "
-            report += f"{vehicle_type_to_as_text:<24} "
+            report += f"{vehicle_type_from_as_text:<21} "
+            report += f"{vehicle_type_to_as_text:<23} "
             report += f"{transported_capacity_in_teu:>28.1f}"
-            report += f"{transported_capacity_in_containers:>37}"
+            report += f"{transported_capacity_in_containers:>32}"
             report += "\n"
 
         report += "(rounding errors might exist)\n"
@@ -86,7 +86,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         vehicle_types = [
             str(vehicle_type).replace("_", " ")
@@ -145,7 +145,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
 
         fig.update_layout(
             title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
-                       "containers<br>the initially intended vehicle type was not available due to constraints "
+                       "containers<br>"
+                       "the initially intended vehicle type was not available due to constraints "
                        "(schedules, dwell times, etc.).",
             font_size=10,
             width=900,

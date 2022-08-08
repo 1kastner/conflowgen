@@ -33,7 +33,6 @@ def setup_feeder_data():
         scheduled_arrival=datetime.datetime.now(),
         schedule=schedule
     )
-    feeder_lsv.save()
     Feeder.create(
         large_scheduled_vehicle=feeder_lsv
     )
@@ -73,7 +72,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(UnitTestCaseWithMat
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
 vehicle type = all
-vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)
+vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
 --no vehicles exist--
 """
         self.assertEqual(actual_report, expected_report)
@@ -83,8 +82,8 @@ vehicle identifier                                 inbound capacity (in TEU) out
         actual_report = self.analysis.get_report_as_text()
         expected_report = """
 vehicle type = all
-vehicle identifier                                 inbound capacity (in TEU) outbound capacity (in TEU)
-feeder-TestFeederService-TestFeeder1                                   250.0                        1.0
+vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
+feeder-TestFeederService-TestFeeder1                                 250.0                      1.0
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)

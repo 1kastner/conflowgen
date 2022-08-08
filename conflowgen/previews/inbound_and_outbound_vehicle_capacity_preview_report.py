@@ -48,9 +48,9 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
         # create string representation
         report = "\n"
-        report += "vehicle type    "
-        report += "inbound capacity (in TEU) "
-        report += "outbound avg capacity (in TEU) "
+        report += "vehicle type      "
+        report += "inbound volume (in TEU)   "
+        report += "outbound avg volume (in TEU) "
         report += "outbound max capacity (in TEU)"
         report += "\n"
         for vehicle_type in self.order_of_vehicle_types_in_report:
@@ -78,9 +78,9 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
 
         df = pd.DataFrame({
-            "inbound capacities": inbound_capacities,
-            "outbound average capacities": outbound_average_capacities,
-            "outbound maximum capacities": outbound_maximum_capacities
+            "inbound volume": inbound_capacities,
+            "outbound average volume": outbound_average_capacities,
+            "outbound maximum capacity": outbound_maximum_capacities
         })
         df.index = [str(i).replace("_", " ") for i in df.index]
         ax = df.plot.barh()

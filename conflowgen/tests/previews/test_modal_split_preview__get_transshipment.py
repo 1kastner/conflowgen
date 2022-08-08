@@ -69,7 +69,7 @@ class TestModalSplitPreview__get_transshipment(unittest.TestCase):  # pylint: di
         self.assertEqual(empty_split.transshipment_capacity, 0)
 
     def test_with_single_arrival_schedules(self):
-        """transshipment is 300 TEU inbound and 300TEU * (15% + 15%) = 90TEU outbound"""
+        """transshipment is 300 TEU inbound and 300 TEU * (15% + 15%) = 90 TEU outbound"""
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,

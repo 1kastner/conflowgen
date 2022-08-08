@@ -103,10 +103,10 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         storage_requirement, yard_capacity_over_time = self._get_used_yard_capacity_based_on_storage_requirement(kwargs)
 
         if len(yard_capacity_over_time) == 0:
-            return no_data_graph()
-
-        series = pd.Series(yard_capacity_over_time)
-        ax = series.plot()
+            ax = no_data_graph()
+        else:
+            series = pd.Series(yard_capacity_over_time)
+            ax = series.plot()
         x_label = f"storage requirement = {self._get_storage_requirement_representation(storage_requirement)}"
         ax.set_xlabel(x_label)
         ax.set_ylabel("Used yard capacity (in TEU)")

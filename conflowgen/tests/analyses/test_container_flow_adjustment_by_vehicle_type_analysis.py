@@ -33,7 +33,7 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysis(unittest.TestCase):
         """If no containers exist, everything is zero"""
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         self.assertSetEqual(set(ModeOfTransport), set(initial_to_adjusted_outbound_flow_in_containers.keys()))
         self.assertSetEqual(set(ModeOfTransport), set(initial_to_adjusted_outbound_flow_in_teu.keys()))
@@ -63,7 +63,7 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysis(unittest.TestCase):
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         self.assertSetEqual(set(ModeOfTransport), set(initial_to_adjusted_outbound_flow_in_containers.keys()))
         for adjustment_flow in initial_to_adjusted_outbound_flow_in_containers.values():
@@ -111,7 +111,7 @@ class TestContainerFlowAdjustmentByVehicleTypeAnalysis(unittest.TestCase):
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
-        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.TEU
+        initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         self.assertSetEqual(set(ModeOfTransport), set(initial_to_adjusted_outbound_flow_in_containers.keys()))
         for adjustment_flow in initial_to_adjusted_outbound_flow_in_containers.values():

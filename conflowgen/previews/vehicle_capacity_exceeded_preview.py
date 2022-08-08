@@ -17,8 +17,16 @@ class RequiredAndMaximumCapacityComparison(NamedTuple):
     is recorded. Second, the maximum capacity is noted. If more capacity is requested than available, the exceeded flag
     is true, otherwise false.
     """
+
+    #: The required vehicle capacity to transport all containers on their outbound journey based on the current modal
+    #: split.
     currently_planned: float
+
+    #: The total available vehicle capacity according to current schedules.
     maximum: float
+
+    #: This indicates whether more vehicles are required than currently available.
+    #: If so, the modal split or the schedules might need to be adjusted.
     exceeded: bool
 
 
