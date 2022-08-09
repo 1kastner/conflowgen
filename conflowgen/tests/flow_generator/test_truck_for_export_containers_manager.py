@@ -226,5 +226,5 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             StorageRequirement.standard]
         self.assertEqual(
             truck_arrival_distribution.considered_time_window_in_hours,
-            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum))
+            int(math.floor(dwell_time_distribution.maximum))
         )

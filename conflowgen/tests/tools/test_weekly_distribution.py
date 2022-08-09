@@ -152,7 +152,6 @@ class TestWeeklyDistribution(unittest.TestCase):
         earliest_slot_input = (
                 container_departure_time.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
         )
-        latest_slot_input = earliest_slot_input + datetime.timedelta(hours=71)
 
         distribution_slice = weekly_distribution.get_distribution_slice(earliest_slot_input)
         time_slots = list(distribution_slice.keys())
@@ -193,9 +192,13 @@ class TestWeeklyDistribution(unittest.TestCase):
         self.assertEqual(latest_time_slot, 71)
 
     def test_get_time_of_the_week_for_full_hour(self):
+        # pylint: disable=protected-access
         hour_of_the_week = WeeklyDistribution._get_hour_of_the_week_from_datetime(datetime.datetime(2022, 8, 9, 11))
+
         self.assertEqual(hour_of_the_week, 35)
 
     def test_get_time_of_the_week_for_started_hour(self):
+        # pylint: disable=protected-access
         hour_of_the_week = WeeklyDistribution._get_hour_of_the_week_from_datetime(datetime.datetime(2022, 8, 9, 11, 30))
+
         self.assertEqual(hour_of_the_week, 35)
