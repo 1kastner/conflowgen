@@ -80,6 +80,7 @@ setup(
             "autopep8",
             "rope",
             "yapf",
+            "pydocstyle"
         ]
     },
     license=metadata['__license__'],

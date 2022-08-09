@@ -35,6 +35,8 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
     ) -> datetime.datetime:
 
         container_dwell_time_distribution, truck_arrival_distribution = self._get_distributions(container)
+        minimum_dwell_time_in_hours = container_dwell_time_distribution.minimum
+        maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
 
         earliest_slot = container_arrival_time.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
         truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
@@ -43,12 +45,24 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             container_dwell_time_distribution, truck_arrival_distribution_slice
         )
 
-        random_time_component = random.uniform(0, self.time_window_length_in_hours)
+        # arrival within the last time slot
+        random_time_component = random.uniform(0, self.time_window_length_in_hours - (1 / 60))
+        assert 0 <= random_time_component < self.time_window_length_in_hours, \
+            "The random time component must be shorter than the length of the time slot"
+
         truck_arrival_time = (
             earliest_slot
             + datetime.timedelta(hours=pickup_time_window_start)  # these are several days, comparable to time slot
             + datetime.timedelta(hours=random_time_component)  # a small random component for the truck arrival time
         )
+
+        dwell_time_in_hours = (truck_arrival_time - container_arrival_time).total_seconds() / 3600
+
+        assert dwell_time_in_hours > 0, "Dwell time must be positive"
+        assert minimum_dwell_time_in_hours <= dwell_time_in_hours <= maximum_dwell_time_in_hours, \
+            f"{minimum_dwell_time_in_hours} <= {dwell_time_in_hours} <= {maximum_dwell_time_in_hours} " \
+            f"harmed for container {container}."
+
         return truck_arrival_time
 
     def generate_trucks_for_picking_up(self):
@@ -60,7 +74,7 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             i += 1
             if i % 1000 == 0 and i > 0:
                 self.logger.info(f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks "
-                                 f"generated for import containers")
+                                 f"generated to pick up containers at the terminal.")
             delivered_by: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
 
             # assume that the vessel arrival time changes are communicated early enough so that the trucks which pick

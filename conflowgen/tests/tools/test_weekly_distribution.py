@@ -16,8 +16,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=48,
-            minimum_dwell_time_in_hours=3
+            considered_time_window_in_hours=48
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=2, hour=3
@@ -38,8 +37,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=36,
-            minimum_dwell_time_in_hours=24
+            considered_time_window_in_hours=36
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=2
@@ -63,8 +61,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=(7 * 24),
-            minimum_dwell_time_in_hours=2
+            considered_time_window_in_hours=(7 * 24)
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=1, hour=0
@@ -78,8 +75,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             72: .2,
             96: .1,
             120: 0,
-            144: 0,
-            168: 0
+            144: 0
         }
         self.assertEqual(assumed_slice.keys(), distribution_slice.keys())
         for key in distribution_slice.keys():
@@ -105,7 +101,6 @@ class TestWeeklyDistribution(unittest.TestCase):
         weekly_distribution = WeeklyDistribution(
             list(distribution.items()),
             considered_time_window_in_hours=72,  # 3 days before delivery is allowed
-            minimum_dwell_time_in_hours=3  # latest 3 hours before vessel arrival
         )
         container_departure_time = datetime.datetime(
             year=2021, month=8, day=2, hour=11, minute=30
@@ -116,7 +111,7 @@ class TestWeeklyDistribution(unittest.TestCase):
         earliest_slot = latest_slot - datetime.timedelta(hours=71)
         distribution_slice = weekly_distribution.get_distribution_slice(earliest_slot)
         hours = list(distribution_slice.keys())
-        self.assertEqual(73, len(hours))
+        self.assertEqual(72, len(hours))
         self.assertAlmostEqual(sum(list(distribution_slice.values())), 1, places=1,
                                msg="Severe rounding issues exist.")
         visited_sunday = False
@@ -133,3 +128,74 @@ class TestWeeklyDistribution(unittest.TestCase):
                                    "Assert arrivals on other days")
         self.assertTrue(visited_sunday)
         self.assertTrue(visited_working_day)
+
+    # noinspection PyUnusedLocal
+    def test_correct_starting_and_end_hour_when_looking_forward(self):
+        distribution_monday_to_saturday = [
+            1 / (24 * 6)
+            for hour in range(24)
+            for day in range(6)  # Monday to Saturday
+        ]
+        distribution_sunday = [0 for hour in range(24)]
+        # noinspection PyTypeChecker
+        distribution = dict(list(enumerate(distribution_monday_to_saturday + distribution_sunday)))
+
+        weekly_distribution = WeeklyDistribution(
+            list(distribution.items()),
+            considered_time_window_in_hours=72,  # 3 days before delivery is allowed
+        )
+        container_departure_time = datetime.datetime(
+            year=2021, month=8, day=2, hour=11, minute=30
+        )
+        self.assertEqual(container_departure_time.weekday(), 0)  # assert is Monday
+
+        earliest_slot_input = (
+                container_departure_time.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
+        )
+        latest_slot_input = earliest_slot_input + datetime.timedelta(hours=71)
+
+        distribution_slice = weekly_distribution.get_distribution_slice(earliest_slot_input)
+        time_slots = list(distribution_slice.keys())
+        earliest_time_slot = min(time_slots)
+        self.assertEqual(earliest_time_slot, 0)
+        latest_time_slot = max(time_slots)
+        self.assertEqual(latest_time_slot, 71)
+
+    # noinspection PyUnusedLocal
+    def test_correct_starting_and_end_hour_when_looking_backward(self):
+        distribution_monday_to_saturday = [
+            1 / (24 * 6)
+            for hour in range(24)
+            for day in range(6)  # Monday to Saturday
+        ]
+        distribution_sunday = [0 for hour in range(24)]
+        # noinspection PyTypeChecker
+        distribution = dict(list(enumerate(distribution_monday_to_saturday + distribution_sunday)))
+
+        weekly_distribution = WeeklyDistribution(
+            list(distribution.items()),
+            considered_time_window_in_hours=72,  # 3 days before delivery is allowed
+        )
+        container_departure_time = datetime.datetime(
+            year=2021, month=8, day=2, hour=11, minute=30
+        )
+        self.assertEqual(container_departure_time.weekday(), 0)  # assert is Monday
+
+        earliest_slot_input = (
+                container_departure_time.replace(minute=0, second=0, microsecond=0) - datetime.timedelta(hours=72)
+        )
+
+        distribution_slice = weekly_distribution.get_distribution_slice(earliest_slot_input)
+        time_slots = list(distribution_slice.keys())
+        earliest_time_slot = min(time_slots)
+        self.assertEqual(earliest_time_slot, 0)
+        latest_time_slot = max(time_slots)
+        self.assertEqual(latest_time_slot, 71)
+
+    def test_get_time_of_the_week_for_full_hour(self):
+        hour_of_the_week = WeeklyDistribution._get_hour_of_the_week_from_datetime(datetime.datetime(2022, 8, 9, 11))
+        self.assertEqual(hour_of_the_week, 35)
+
+    def test_get_time_of_the_week_for_started_hour(self):
+        hour_of_the_week = WeeklyDistribution._get_hour_of_the_week_from_datetime(datetime.datetime(2022, 8, 9, 11, 30))
+        self.assertEqual(hour_of_the_week, 35)

@@ -109,13 +109,12 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         container_dwell_time_distribution, truck_arrival_distribution = self._get_distribution(container)
 
         self.assertEqual(3, int(container_dwell_time_distribution.minimum))
-        self.assertEqual(3, int(truck_arrival_distribution.minimum_dwell_time_in_hours))
 
         self.assertEqual(216, container_dwell_time_distribution.maximum)
 
         possible_hours_for_truck_arrival = truck_arrival_distribution.considered_time_window_in_hours
         self.assertEqual(
-            216 - 2,
+            216 - 3,
             possible_hours_for_truck_arrival,
             "The truck might arrive 216h after the arrival of the container, but not within the first three hours. "
             "Furthermore, the last hour is subtracted because up to 59 minutes are later added again and the maximum "
@@ -223,11 +222,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         dwell_time_distribution = self.container_dwell_time_distributions_from_x_to_truck[ModeOfTransport.feeder][
             StorageRequirement.standard]
         self.assertEqual(
-            truck_arrival_distribution.minimum_dwell_time_in_hours,
-            dwell_time_distribution.minimum
-        )
-        self.assertEqual(
             truck_arrival_distribution.considered_time_window_in_hours,
-            int(math.floor(dwell_time_distribution.maximum)) - 2,
+            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)),
             "Import movement means the truck can come later than minimum but must be earlier than maximum"
         )

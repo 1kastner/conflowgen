@@ -89,15 +89,6 @@ class ContainerFlowGenerationService:
         self.logger.info("Assign containers that are picked up from the terminal by a vehicle adhering a schedule to "
                          "their specific vehicle instance...")
         self.large_scheduled_vehicle_for_onward_transportation_manager.choose_departing_vehicle_for_containers()
-        number_assigned_containers = (self.large_scheduled_vehicle_for_onward_transportation_manager
-                                      .number_assigned_containers)
-        number_not_assignable_containers = (self.large_scheduled_vehicle_for_onward_transportation_manager
-                                            .number_not_assignable_containers)
-        assigned_as_fraction = number_assigned_containers / (
-                    number_assigned_containers + number_not_assignable_containers
-        )
-        self.logger.info(
-            f"Containers for which no outgoing vehicle could be found: {assigned_as_fraction:.2%}")
 
         self.logger.info("Loading status of vehicles adhering to a schedule:")
         report = ContainerFlowStatisticsReport(transportation_buffer=self.transportation_buffer)

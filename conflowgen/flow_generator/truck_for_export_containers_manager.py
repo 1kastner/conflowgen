@@ -39,18 +39,30 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             container: Container,
             container_departure_time: datetime.datetime
     ) -> datetime.datetime:
+        """
+        When was the container delivered to the terminal, given its departure time?
+
+        Args:
+            container: The container in question
+            container_departure_time: The container's departure time (fixed by a vessel or similar)
+
+        Returns:
+            The time a truck delivered the container to the terminal (some point before the vessel departs).
+        """
 
         container_dwell_time_distribution, truck_arrival_distribution = self._get_distributions(container)
         minimum_dwell_time_in_hours = container_dwell_time_distribution.minimum
         maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
 
-        earliest_slot = (
-            container_departure_time.replace(minute=0, second=0, microsecond=0)  # reset to previous full hour
-            + datetime.timedelta(hours=1)  # go 1h in the future because previously we lost some minutes
-            - datetime.timedelta(hours=maximum_dwell_time_in_hours)  # go back x hours
+        truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(
+            start_as_datetime=(
+                    container_departure_time
+                    - datetime.timedelta(hours=maximum_dwell_time_in_hours)
+            )
         )
-
-        truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
+        assert max(truck_arrival_distribution_slice) < maximum_dwell_time_in_hours, \
+            f"{max(truck_arrival_distribution_slice)} < {maximum_dwell_time_in_hours} was harmed for container " \
+            f"{container}."
 
         delivery_time_window_start = self._get_time_window_of_truck_arrival(
             container_dwell_time_distribution, truck_arrival_distribution_slice
@@ -63,21 +75,26 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
 
         # go back to the earliest possible day
         truck_arrival_time = (
-                earliest_slot
+                # go back to the earliest time window
+                container_departure_time
+                - datetime.timedelta(hours=(maximum_dwell_time_in_hours - 1))
+
+                # add the selected time window identifier
                 + datetime.timedelta(hours=delivery_time_window_start)
+
+                # spread the truck arrivals withing the time window.
                 + datetime.timedelta(hours=random_time_component)
-                - datetime.timedelta(hours=1)  # with the random time component a point close to one hour is added
+
+                # With the random time component, a point probably close to one hour is added which might harm the
+                # required minimum container dwell time.
+                - datetime.timedelta(hours=1)
         )
 
-        dwell_time_in_seconds = (container_departure_time - truck_arrival_time).total_seconds()
-        if maximum_dwell_time_in_hours / 3600 > maximum_dwell_time_in_hours:
-            self.logger.debug("Maximum dwell time constraint harmed due to a rounding error, move back 1 hour")
-            truck_arrival_time -= datetime.timedelta(hours=0.5)
-            dwell_time_in_seconds = (container_departure_time - truck_arrival_time).total_seconds()
+        dwell_time_in_hours = (container_departure_time - truck_arrival_time).total_seconds() / 3600
 
-        assert dwell_time_in_seconds > 0, "Dwell time must be positive"
-        assert minimum_dwell_time_in_hours <= dwell_time_in_seconds / 3600 <= maximum_dwell_time_in_hours, \
-            f"{minimum_dwell_time_in_hours} <= {dwell_time_in_seconds / 3600} <= {maximum_dwell_time_in_hours} " \
+        assert dwell_time_in_hours > 0, "Dwell time must be positive"
+        assert minimum_dwell_time_in_hours <= dwell_time_in_hours <= maximum_dwell_time_in_hours, \
+            f"{minimum_dwell_time_in_hours} <= {dwell_time_in_hours} <= {maximum_dwell_time_in_hours} " \
             f"harmed for container {container}."
 
         return truck_arrival_time
@@ -94,7 +111,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             if i % 1000 == 0 and i > 0:
                 self.logger.info(
                     f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks generated "
-                    f"for export containers")
+                    f"to deliver containers to the terminal.")
             picked_up_with: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
 
             # assume that the vessel arrival time changes are not communicated on time so that the trucks which deliver

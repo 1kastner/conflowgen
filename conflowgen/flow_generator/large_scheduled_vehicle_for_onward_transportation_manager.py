@@ -5,8 +5,8 @@ import math
 import random
 from typing import Tuple, List, Dict, Type, Sequence
 
-# noinspection PyProtectedMember
 import numpy as np
+# noinspection PyProtectedMember
 from peewee import fn, JOIN, ModelSelect
 
 from ..domain_models.data_types.container_length import ContainerLength
@@ -34,8 +34,6 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
         self.mode_of_transport_distribution = self.mode_of_transport_distribution_repository.get_distribution()
-        self.number_assigned_containers = 0
-        self.number_not_assignable_containers = 0
 
         self.container_dwell_time_distribution_repository = ContainerDwellTimeDistributionRepository()
         self.container_dwell_time_distributions: \
@@ -65,8 +63,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         This method might be quite time-consuming because it repeatedly checks how many containers are already placed
         on a vehicle to obey the load restriction (maximum capacity of the vehicle available for the terminal).
         """
-        self.number_assigned_containers = 0
-        self.number_not_assignable_containers = 0
+        number_assigned_containers = 0
+        number_not_assignable_containers = 0
 
         self.large_scheduled_vehicle_repository.reset_cache()
 
@@ -74,7 +72,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         # Get all containers in a random order which are picked up by a LargeScheduledVehicle
         # This way no vehicle has an advantage over another by its earlier arrival (getting better slots etc.)
-        containers: ModelSelect = Container.select(
+        selected_containers: ModelSelect = Container.select(
         ).order_by(
             fn.Random()
         ).where(
@@ -82,7 +80,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         )
 
         # all the joins just exist to speed up the process and avoid triggering too many database calls
-        preloaded_containers: ModelSelect = containers.join(
+        preloaded_containers: ModelSelect = selected_containers.join(
             Truck,
             join_type=JOIN.LEFT_OUTER,
             on=(Container.delivered_by_truck == Truck.id)
@@ -98,20 +96,22 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             on=(Container.delivered_by_large_scheduled_vehicle == LargeScheduledVehicle.id)
         )
 
-        assert containers.count() == preloaded_containers.count(), \
+        selected_containers_count = selected_containers.count()
+        assert selected_containers_count == preloaded_containers.count(), \
             f"No container should be lost due to the join operations but " \
-            f"{containers.count()} != {preloaded_containers.count()}"
+            f"{selected_containers.count()} != {preloaded_containers.count()}"
 
         self.logger.info(f"In total, {len(preloaded_containers)} containers continue their journey on a vehicle that "
                          f"adhere to a schedule, assigning these containers to their respective vehicles...")
         for i, container in enumerate(preloaded_containers):
             i += 1
             if i % 1000 == 0 and i > 0:
-                self.logger.info(f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) "
-                                 f"containers have been assigned to a scheduled vehicle to leave the terminal again.")
+                self.logger.info(
+                    f"Progress: {i} / {len(selected_containers)} ({100 * i / len(selected_containers):.2f}%) "
+                    f"containers have been assigned to a scheduled vehicle to leave the terminal again."
+                )
 
             container_arrival = self._get_arrival_time_of_container(container)
-
             minimum_dwell_time_in_hours, maximum_dwell_time_in_hours = self._get_dwell_times(container)
 
             # This value has been randomly drawn during container generation for the inbound traffic.
@@ -130,23 +130,25 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                 # this is the case when there is a vehicle available - let's hope everything else works out as well!
                 vehicle = self._pick_vehicle_for_container(available_vehicles, container)
                 if vehicle is not None:
-                    self.number_assigned_containers += 1
-                else:
-                    # Well, there was a vehicle available. However, it was not suitable for our container due to
-                    # some constraint. Maybe the container dwell time was unrealistic and thus not permissible?
-                    # This can happen if the distribution is just really, really close to zero, so it is approximated
-                    # as zero.
-                    self.number_not_assignable_containers += 1
-                    self._find_alternative_mode_of_transportation(
-                        container, container_arrival, minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
-                    )
-            else:
-                # Maybe no permissible vehicles of the required vehicle type are left, then we need to switch the type
-                # as to somehow move the container out of the container yard.
-                self.number_not_assignable_containers += 1
-                self._find_alternative_mode_of_transportation(
-                    container, container_arrival, minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
-                )
+                    # We are lucky and the vehicle has accepted the container for its outbound journey
+                    number_assigned_containers += 1
+                    continue
+            # No vehicle is available, either due to operational constraints or we really ran out of vehicles.
+            number_not_assignable_containers += 1
+            self._find_alternative_mode_of_transportation(
+                container, container_arrival, minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
+            )
+
+        number_containers = number_assigned_containers + number_not_assignable_containers
+        assert number_containers == selected_containers_count, \
+            f"All containers should have been treated but {number_containers} != {selected_containers.count()}"
+        if number_containers == 0:
+            self.logger.info("No containers are moved from one vehicle adhering to a schedule to another one.")
+        else:
+            assigned_as_fraction = number_assigned_containers / number_containers
+            self.logger.info("Containers for which no outgoing vehicle adhering to a schedule could be found: "
+                             f"{assigned_as_fraction:.2%}. These will be re-assigned to another vehicle type, "
+                             "such as a truck.")
 
         self.logger.info("All containers for which a departing vehicle that moves according to a schedule was "
                          "available have been assigned to one.")
