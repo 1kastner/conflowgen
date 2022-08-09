@@ -106,6 +106,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard
         )
+
         container_dwell_time_distribution, truck_arrival_distribution = self._get_distribution(container)
 
         self.assertEqual(3, int(container_dwell_time_distribution.minimum))
@@ -134,9 +135,18 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             weight=23,
             length=ContainerLength.twenty_feet
         )
+        dwell_time_distribution = self.container_dwell_time_distributions_from_x_to_truck[
+            ModeOfTransport.deep_sea_vessel]
+        dwell_time_distribution_for_standard_container = dwell_time_distribution[StorageRequirement.standard]
+        minimum_dwell_time = dwell_time_distribution_for_standard_container.minimum
+        maximum_dwell_time = dwell_time_distribution_for_standard_container.maximum
+
         pickup_times = []
         for _ in range(1000):
             pickup_time = self.get_pickup_time(container, container_arrival_time)
+            dwell_time = (pickup_time - container_arrival_time).total_seconds() / 3600
+            self.assertGreaterEqual(dwell_time, minimum_dwell_time)
+            self.assertLessEqual(dwell_time, maximum_dwell_time)
             self.assertGreaterEqual(pickup_time, container_arrival_time)
             pickup_times.append(pickup_time)
 
@@ -155,9 +165,19 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             weight=23,
             length=ContainerLength.twenty_feet
         )
+        dwell_time_distribution = self.container_dwell_time_distributions_from_x_to_truck[
+            ModeOfTransport.deep_sea_vessel]
+        dwell_time_distribution_for_standard_container = dwell_time_distribution[StorageRequirement.standard]
+        minimum_dwell_time = dwell_time_distribution_for_standard_container.minimum
+        maximum_dwell_time = dwell_time_distribution_for_standard_container.maximum
+
         pickup_times = []
         for _ in range(1000):
             pickup_time = self.get_pickup_time(container, container_arrival_time)
+            dwell_time = (pickup_time - container_arrival_time).total_seconds() / 3600
+            self.assertGreaterEqual(dwell_time, minimum_dwell_time)
+            self.assertLessEqual(dwell_time, maximum_dwell_time)
+
             pickup_times.append(pickup_time)
             self.assertGreaterEqual(pickup_time, container_arrival_time,
                                     "Container is picked up after it has arrived in the yard")
