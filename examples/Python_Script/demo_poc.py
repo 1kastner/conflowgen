@@ -13,10 +13,14 @@ The intention of this demo is further explained in the logs it generated.
 
 import datetime
 import sys
+import os
 
 try:
     import conflowgen
-    print(f"Importing ConFlowGen version {conflowgen.__version__}")
+    install_dir = os.path.abspath(
+        os.path.join(conflowgen.__file__, os.path.pardir)
+    )
+    print(f"Importing ConFlowGen version {conflowgen.__version__} installed at {install_dir}.")
 except ImportError:
     print("Please first install conflowgen as a library")
     sys.exit()

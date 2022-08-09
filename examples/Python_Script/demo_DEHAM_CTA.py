@@ -28,7 +28,10 @@ import pandas as pd
 
 try:
     import conflowgen
-    print(f"Importing ConFlowGen version {conflowgen.__version__}")
+    install_dir = os.path.abspath(
+        os.path.join(conflowgen.__file__, os.path.pardir)
+    )
+    print(f"Importing ConFlowGen version {conflowgen.__version__} installed at {install_dir}.")
 except ImportError:
     print("Please first install conflowgen as a library")
     sys.exit()
@@ -289,12 +292,12 @@ conflowgen.run_all_previews()
 logger.info("Generate all fleets with all vehicles. This is the core of the whole project.")
 container_flow_generation_manager.generate()
 
-logger.info("The container flow data have been generated, run post-hoc analyses on them")
+logger.info("The container flow data have been generated, run analyses on them.")
 
 conflowgen.run_all_analyses()
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
-            "post-hoc analysis results")
+            "analysis results.")
 
 logger.info("Start data export...")
 

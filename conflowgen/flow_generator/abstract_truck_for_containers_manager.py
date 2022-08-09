@@ -67,34 +67,38 @@ class AbstractTruckForContainersManager(abc.ABC):
             self,
             hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]]
     ) -> None:
-        for vehicle in ModeOfTransport:
+        for vehicle_type in ModeOfTransport:
             for storage_requirement in StorageRequirement:
                 container_dwell_time_distribution = self._get_container_dwell_time_distribution(
-                    vehicle, storage_requirement
+                    vehicle_type, storage_requirement
                 )
 
-                # only work with full hours
-                if self.is_reversed:
-                    container_dwell_time_distribution.minimum = int(math.floor(
-                        container_dwell_time_distribution.minimum))
-                    container_dwell_time_distribution.maximum = int(math.ceil(
-                        container_dwell_time_distribution.maximum))
+                # Adjust the minimum and maximum to harmonize with the truck slot units. While rounding, always take a
+                # conservative approach. The minimum and maximum values should not be exceeded!
+                container_dwell_time_distribution.minimum = int(math.ceil(
+                    container_dwell_time_distribution.minimum))
+                container_dwell_time_distribution.maximum = int(math.floor(
+                    container_dwell_time_distribution.maximum))
+
+                # When we talk about truck deliveries, they can come earliest at the maximum container dwell time
+                # and latest at the minimum. When, on the other hand, we talk about truck pickups, they can come
+                # earliest after container arrival and latest at the maximum dwell time.
+                # In both cases, less time windows are available.
+                if not self.is_reversed:
+                    considered_time_window_in_hours = (
+                        container_dwell_time_distribution.maximum
+                        - container_dwell_time_distribution.minimum
+                    )
                 else:
-                    container_dwell_time_distribution.minimum = int(math.ceil(
-                        container_dwell_time_distribution.minimum))
-                    container_dwell_time_distribution.maximum = int(math.floor(
-                        container_dwell_time_distribution.maximum))
+                    considered_time_window_in_hours = container_dwell_time_distribution.maximum
 
-                considered_time_window_in_hours = (
-                    container_dwell_time_distribution.maximum
-                    - 2  # both the first and last time window are not an option
-                )
-
-                self.truck_arrival_distributions[vehicle][storage_requirement] = WeeklyDistribution(
+                self.logger.info(f"For vehicle type {vehicle_type} and storage requirement {storage_requirement}, "
+                                 "the container dwell times need to range from "
+                                 f"{container_dwell_time_distribution.minimum} to "
+                                 f"{container_dwell_time_distribution.maximum}")
+                self.truck_arrival_distributions[vehicle_type][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    considered_time_window_in_hours=considered_time_window_in_hours,
-                    minimum_dwell_time_in_hours=container_dwell_time_distribution.minimum,
-                    context=f"{self.__class__.__name__} : {vehicle} : {storage_requirement}"
+                    considered_time_window_in_hours=considered_time_window_in_hours
                 )
 
     def _get_distributions(
@@ -124,6 +128,8 @@ class AbstractTruckForContainersManager(abc.ABC):
             Number of hours after the earliest possible slot
         """
         time_windows_for_truck_arrival = list(truck_arrival_distribution_slice.keys())
+        assert max(time_windows_for_truck_arrival) < container_dwell_time_distribution.maximum
+
         truck_arrival_probabilities = list(truck_arrival_distribution_slice.values())
         container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(
             time_windows_for_truck_arrival, reversed_distribution=self.is_reversed
@@ -133,10 +139,18 @@ class AbstractTruckForContainersManager(abc.ABC):
             container_dwell_time_probabilities
         )
         if sum(total_probabilities) == 0:  # bad circumstances, no slot available
-            raise Exception(f"No slots available! {truck_arrival_probabilities} and {total_probabilities} just do not"
-                            f"match, there is no truck available!")
+            raise Exception(f"No truck slots available! {truck_arrival_probabilities} and {total_probabilities} just "
+                            "do not match.")
         selected_time_window = random.choices(
             population=time_windows_for_truck_arrival,
             weights=total_probabilities
         )[0]
+        if not self.is_reversed:  # truck delivery of export container
+            assert container_dwell_time_distribution.minimum <= selected_time_window
+            assert selected_time_window < container_dwell_time_distribution.maximum
+        else:  # truck pick-up of import container
+            assert 0 <= selected_time_window
+            assert selected_time_window < (container_dwell_time_distribution.maximum
+                                           - container_dwell_time_distribution.minimum)
+
         return selected_time_window

@@ -14,13 +14,9 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: int,
-            minimum_dwell_time_in_hours: int,
-            context: str = ""
+            considered_time_window_in_hours: int
     ):
         self.considered_time_window_in_hours = considered_time_window_in_hours
-        self.minimum_dwell_time_in_hours = minimum_dwell_time_in_hours
-        self.context = context
 
         self.hour_of_the_week_fraction_pairs = []
         number_of_weeks_to_consider = 2 + int(considered_time_window_in_hours / 24 / 7)
@@ -33,10 +29,6 @@ class WeeklyDistribution:
                         fraction
                     )
                 )
-
-    @property
-    def maximum_dwell_time_in_hours(self):
-        return self.minimum_dwell_time_in_hours + self.considered_time_window_in_hours
 
     @classmethod
     def _get_hour_of_the_week_from_datetime(cls, point_in_time: datetime.datetime) -> int:
@@ -64,18 +56,16 @@ class WeeklyDistribution:
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"
         assert start_hour < end_hour, "Start hour must be before end hour"
 
-        if end_hour - start_hour < self.minimum_dwell_time_in_hours:
-            raise InvalidDistributionSliceException(
-                f"start_hour: {start_hour} and end_hour: {end_hour} are too close given "
-                f"minimum_dwell_time_in_hours: {self.minimum_dwell_time_in_hours}"
-            )
-
         # get the distribution slice starting from start_hour and ending with end_hour
-        not_normalized_distribution_slice = [
-            ((hour_of_the_week - start_hour), fraction)
-            for (hour_of_the_week, fraction) in self.hour_of_the_week_fraction_pairs
-            if start_hour <= hour_of_the_week <= end_hour
-        ]
+        not_normalized_distribution_slice = []
+        for (hour_of_the_week, fraction) in self.hour_of_the_week_fraction_pairs:
+            if start_hour > hour_of_the_week:
+                continue
+            if hour_of_the_week >= end_hour:
+                break
+            not_normalized_distribution_slice.append(
+                ((hour_of_the_week - start_hour), fraction)
+            )
 
         total_fraction_sum = sum((fraction for _, fraction in not_normalized_distribution_slice))
         distribution_slice = {
@@ -87,8 +77,5 @@ class WeeklyDistribution:
     def __repr__(self) -> str:
         return (
             f"<{self.__class__.__name__}: "
-            f"min={self.minimum_dwell_time_in_hours:.1f}h, "
-            f"max={self.maximum_dwell_time_in_hours:.1f}h={self.maximum_dwell_time_in_hours / 24:.1f}d, "
-            f"context='{self.context}'"
             f">"
         )
