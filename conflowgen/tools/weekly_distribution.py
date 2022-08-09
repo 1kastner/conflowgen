@@ -76,6 +76,8 @@ class WeeklyDistribution:
 
     def __repr__(self) -> str:
         return (
-            f"<{self.__class__.__name__}: "
-            f">"
+            "<"
+            f"{self.__class__.__name__}: "
+            f"considered_time_window_in_hours: {self.considered_time_window_in_hours}"
+            ">"
         )

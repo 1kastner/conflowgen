@@ -58,6 +58,11 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
 
         dwell_time_in_hours = (truck_arrival_time - container_arrival_time).total_seconds() / 3600
 
+        if dwell_time_in_hours > maximum_dwell_time_in_hours:
+            truck_arrival_time += datetime.timedelta(
+                hours=(dwell_time_in_hours - maximum_dwell_time_in_hours) + 0.5
+            )
+
         assert dwell_time_in_hours > 0, "Dwell time must be positive"
         assert minimum_dwell_time_in_hours <= dwell_time_in_hours <= maximum_dwell_time_in_hours, \
             f"{minimum_dwell_time_in_hours} <= {dwell_time_in_hours} <= {maximum_dwell_time_in_hours} " \
