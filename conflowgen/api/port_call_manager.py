@@ -21,7 +21,7 @@ class PortCallManager:
     def __init__(self):
         self.schedule_factory = ScheduleFactory()
 
-    def add_large_scheduled_vehicle(
+    def add_vehicle(
             self,
             vehicle_type: ModeOfTransport,
             service_name: str,

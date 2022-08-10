@@ -47,7 +47,7 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
         create_tables(self.sqlite_db)
         seed_all_distributions()
         port_call_manager = PortCallManager()
-        port_call_manager.add_large_scheduled_vehicle(
+        port_call_manager.add_vehicle(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeeder",
             vehicle_arrives_at=datetime.date(2021, 7, 9),
@@ -56,7 +56,7 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             average_moved_capacity=100,
             next_destinations=None
         )
-        port_call_manager.add_large_scheduled_vehicle(
+        port_call_manager.add_vehicle(
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             service_name="TestDeepSeaVessel",
             vehicle_arrives_at=datetime.date(2021, 7, 9),

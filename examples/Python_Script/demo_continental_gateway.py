@@ -154,7 +154,7 @@ for i, row in df_feeders.iterrows():
         ]
     ]
 
-    port_call_manager.add_large_scheduled_vehicle(
+    port_call_manager.add_vehicle(
         vehicle_type=conflowgen.ModeOfTransport.feeder,
         service_name=feeder_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),

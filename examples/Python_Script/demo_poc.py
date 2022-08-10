@@ -52,7 +52,7 @@ port_call_manager = conflowgen.PortCallManager()
 # Add vehicles that frequently visit the terminal.
 feeder_service_name = "LX050"
 logger.info(f"Add feeder service '{feeder_service_name}' to database")
-port_call_manager.add_large_scheduled_vehicle(
+port_call_manager.add_vehicle(
     vehicle_type=conflowgen.ModeOfTransport.feeder,
     service_name=feeder_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 9),
@@ -67,7 +67,7 @@ port_call_manager.add_large_scheduled_vehicle(
 
 train_service_name = "JR03A"
 logger.info(f"Add train service '{train_service_name}' to database")
-port_call_manager.add_large_scheduled_vehicle(
+port_call_manager.add_vehicle(
     vehicle_type=conflowgen.ModeOfTransport.train,
     service_name=train_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 12),
@@ -79,7 +79,7 @@ port_call_manager.add_large_scheduled_vehicle(
 
 deep_sea_service_name = "LX050"
 logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
-port_call_manager.add_large_scheduled_vehicle(
+port_call_manager.add_vehicle(
     vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
     service_name=deep_sea_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 10),
