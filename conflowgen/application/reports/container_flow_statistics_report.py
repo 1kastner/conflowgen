@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import logging
 import statistics
-from typing import List
+from typing import List, Type, Dict
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.repositories.large_scheduled_vehicle_repository import LargeScheduledVehicleRepository
@@ -16,11 +18,14 @@ class ContainerFlowStatisticsReport:
         if transportation_buffer:
             self.set_transportation_buffer(transportation_buffer=transportation_buffer)
 
-    def set_transportation_buffer(self, transportation_buffer: float):
+    def set_transportation_buffer(self, transportation_buffer: float) -> None:
         self.large_scheduled_vehicle_repository.set_transportation_buffer(transportation_buffer)
         self.logger.info(f"Use transportation buffer of {transportation_buffer} for reporting statistics.")
 
-    def generate(self):
+    def generate(self) -> None:
+        """
+        Calculate the statistics.
+        """
         vehicles_of_types = self.large_scheduled_vehicle_repository.load_all_vehicles()
         self._generate_free_capacity_statistics(vehicles_of_types)
 
@@ -29,10 +34,12 @@ class ContainerFlowStatisticsReport:
         free_capacities_inbound = {}
         free_capacities_outbound = {}
         vehicle_type: ModeOfTransport
-        vehicles: List[AbstractLargeScheduledVehicle]
+        vehicles: List[Type[AbstractLargeScheduledVehicle]]
         for vehicle_type, vehicles in vehicles_of_types.items():
             for vehicle in vehicles:
+                # noinspection PyTypeChecker
                 large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
+
                 free_capacity_inbound = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
                     vehicle
                 )
@@ -60,15 +67,28 @@ class ContainerFlowStatisticsReport:
 
                 free_capacities_inbound[vehicle] = free_capacity_inbound
                 free_capacities_outbound[vehicle] = free_capacity_outbound
-        self.free_capacity_inbound_statistics = self.descriptive_statistics(free_capacities_inbound.values())
-        self.free_capacity_outbound_statistics = self.descriptive_statistics(free_capacities_outbound.values())
+
+        self.free_capacity_inbound_statistics = self._get_descriptive_statistics(free_capacities_inbound.values())
+        self.free_capacity_outbound_statistics = self._get_descriptive_statistics(free_capacities_outbound.values())
 
     @staticmethod
-    def descriptive_statistics(list_of_values):
+    def _get_descriptive_statistics(list_of_values) -> Dict | None:
+        """
+        Args:
+            list_of_values: The values to calculate the descriptive statistics for.
+
+        Returns:
+            The descriptive statistics if there are any values, none otherwise.
+        """
+
+        if len(list_of_values) == 0:
+            return None
+
         mean = statistics.mean(list_of_values)
         minimum = min(list_of_values)
         maximum = max(list_of_values)
         stddev = statistics.stdev(list_of_values) if len(list_of_values) > 1 else 0
+
         return {
             "mean": mean,
             "minimum": minimum,
@@ -76,7 +96,16 @@ class ContainerFlowStatisticsReport:
             "stddev": stddev
         }
 
-    def get_text_representation(self):
+    def get_text_representation(self) -> str:
+        """
+        Returns:
+            The text representation of the report.
+        """
+
+        if None in (self.free_capacity_inbound_statistics, self.free_capacity_outbound_statistics):
+            report = "--No vehicles available to report capacity statistics on--"
+            return report
+
         report = f"""
 Free Inbound Capacity Statistics
 Minimum: {self.free_capacity_inbound_statistics["minimum"]:.2f}

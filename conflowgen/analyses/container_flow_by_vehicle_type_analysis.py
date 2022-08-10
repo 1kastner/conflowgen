@@ -15,7 +15,7 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
     """
     @staticmethod
     def get_inbound_to_outbound_flow(
-            as_teu: bool = True
+            in_teu: bool = True
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
         This is the overview of the generated inbound to outbound container flow by vehicle type.
@@ -35,7 +35,7 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
         for container in Container.select():
             inbound_vehicle_type = container.delivered_by
             outbound_vehicle_type = container.picked_up_by
-            if as_teu:  # in case it is counted as TEU, the TEU factor replaces the default constant '1'
+            if in_teu:  # in case it is counted as TEU, the TEU factor replaces the default constant '1'
                 unit_steps = ContainerLength.get_factor(container.length)
             inbound_to_outbound_flow[inbound_vehicle_type][outbound_vehicle_type] += unit_steps
 

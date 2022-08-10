@@ -41,16 +41,19 @@ class ContainerDwellTimeDistribution(BaseModel, ContainerDwellTimeDistributionIn
     """
     The container dwell time distribution describes how long the container remains in the yard.
     """
+    # The key - when to apply the distribution
     delivered_by = ModeOfTransportField(null=False)
     picked_up_by = ModeOfTransportField(null=False)
     storage_requirement = StorageRequirementField(null=False)
 
+    # short name of the distribution class
     distribution_name = TextField(null=False)
-    minimum_number_of_hours = FloatField(default=0)
-    maximum_number_of_hours = FloatField(default=-1)
-    average_number_of_hours = FloatField(null=False)
 
-    variance = FloatField(null=True)
+    # distribution properties
+    minimum_number_of_hours = FloatField(default=0)
+    maximum_number_of_hours = FloatField(default=None)
+    average_number_of_hours = FloatField(default=None)
+    variance = FloatField(default=None)
 
     class Meta:
         primary_key = CompositeKey('delivered_by', 'picked_up_by', 'storage_requirement')

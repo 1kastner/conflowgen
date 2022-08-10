@@ -83,7 +83,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         Returns:
             The plotly figure of the Sankey diagram.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
 
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu

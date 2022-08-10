@@ -2,13 +2,19 @@ from __future__ import annotations
 
 import datetime
 import math
+import random
 import unittest
+import unittest.mock
 from collections import Counter
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-from conflowgen import ModeOfTransport, StorageRequirement, ContainerLength
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
+from conflowgen.domain_models.data_types.container_length import ContainerLength
+from conflowgen.api.container_dwell_time_distribution_manager import ContainerDwellTimeDistributionManager
+from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
@@ -17,7 +23,7 @@ from conflowgen.domain_models.distribution_repositories.container_dwell_time_dis
     ContainerDwellTimeDistributionRepository
 from conflowgen.domain_models.distribution_seeders import truck_arrival_distribution_seeder, \
     container_dwell_time_distribution_seeder
-from conflowgen.domain_models.large_vehicle_schedule import Destination
+from conflowgen.domain_models.large_vehicle_schedule import Destination, Schedule
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
@@ -37,7 +43,9 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             Container,
             Truck,
             LargeScheduledVehicle,
-            Destination
+            Destination,
+            Schedule,
+            TruckArrivalInformationForPickup
         ])
         truck_arrival_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()
@@ -113,7 +121,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
         self.assertEqual(216, container_dwell_time_distribution.maximum)
 
-        possible_hours_for_truck_arrival = truck_arrival_distribution.considered_time_window_in_hours
+        possible_hours_for_truck_arrival = truck_arrival_distribution.size_of_time_window_in_hours
         self.assertEqual(
             216 - 3,
             possible_hours_for_truck_arrival,
@@ -242,7 +250,71 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         dwell_time_distribution = self.container_dwell_time_distributions_from_x_to_truck[ModeOfTransport.feeder][
             StorageRequirement.standard]
         self.assertEqual(
-            truck_arrival_distribution.considered_time_window_in_hours,
+            truck_arrival_distribution.size_of_time_window_in_hours,
             int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)),
             "Import movement means the truck can come later than minimum but must be earlier than maximum"
         )
+
+    def test_nothing_to_do(self):
+        with unittest.mock.patch.object(
+                self.manager.vehicle_factory, "create_truck", return_value=None) as create_truck_method:
+            self.manager.generate_trucks_for_picking_up()
+
+        create_truck_method.assert_not_called()
+
+    def test_happy_path(self):
+        container_arrival_time = datetime.datetime(
+            year=2022, month=8, day=10
+        )
+        schedule = Schedule.create(
+            vehicle_type=ModeOfTransport.deep_sea_vessel,
+            service_name="TestDeepSeaService",
+            vehicle_arrives_at=container_arrival_time.date(),
+            vehicle_arrives_at_time=container_arrival_time.time(),
+            average_vehicle_capacity=5000,
+            average_moved_capacity=1200,
+        )
+        lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestDeepSeaVessel",
+            capacity_in_teu=schedule.average_vehicle_capacity,
+            moved_capacity=schedule.average_moved_capacity,
+            scheduled_arrival=container_arrival_time,
+            schedule=schedule
+        )
+
+        self._use_uniform_distribution()
+
+        for _ in range(1000):
+            Container.create(
+                delivered_by=ModeOfTransport.deep_sea_vessel,
+                delivered_by_large_scheduled_vehicle=lsv,
+                picked_up_by=ModeOfTransport.truck,
+                picked_up_by_initial=ModeOfTransport.truck,
+                storage_requirement=StorageRequirement.standard,
+                weight=random.randint(2, 30),
+                length=ContainerLength.twenty_feet
+            )
+
+        with unittest.mock.patch.object(
+                self.manager.vehicle_factory, "create_truck", return_value=None) as create_truck_method:
+            self.manager.generate_trucks_for_picking_up()
+
+        self.assertEqual(create_truck_method.call_count, 1000)
+
+    @staticmethod
+    def _use_uniform_distribution():
+        container_dwell_time_distribution_manager = ContainerDwellTimeDistributionManager()
+        container_dwell_time_distributions = container_dwell_time_distribution_manager. \
+            get_container_dwell_time_distribution()
+        new_distribution = {}
+        for inbound_vehicle in ModeOfTransport:
+            new_distribution[inbound_vehicle] = {}
+            for outbound_vehicle in ModeOfTransport:
+                new_distribution[inbound_vehicle][outbound_vehicle] = {}
+                for storage_requirement in StorageRequirement:
+                    distribution = container_dwell_time_distributions[inbound_vehicle][outbound_vehicle][
+                        storage_requirement]
+                    distribution_dict = distribution.to_dict()
+                    distribution_dict["distribution_name"] = "uniform"
+                    new_distribution[inbound_vehicle][outbound_vehicle][storage_requirement] = distribution_dict
+        container_dwell_time_distribution_manager.set_container_dwell_time_distribution(new_distribution)

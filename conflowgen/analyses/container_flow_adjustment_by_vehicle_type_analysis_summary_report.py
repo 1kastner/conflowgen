@@ -63,7 +63,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
 
         adjusted_to = self.analysis_summary.get_summary()
 
-        plot_title = "Adjusted vehicle type"
+        plot_title = "Adjusted vehicle type (summary)"
 
         if sum(adjusted_to) == 0:
             ax = no_data_graph()
@@ -79,7 +79,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
             }, name="Vehicle type adjustment")
             ax = data_series.plot.pie(
                 legend=False,
-                autopct='%1.1f%%',
+                autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
                 label="",
                 title=plot_title
             )

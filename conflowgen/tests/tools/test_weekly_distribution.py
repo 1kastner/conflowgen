@@ -16,7 +16,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=48
+            size_of_time_window_in_hours=48
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=2, hour=3
@@ -37,7 +37,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=36
+            size_of_time_window_in_hours=36
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=2
@@ -61,7 +61,7 @@ class TestWeeklyDistribution(unittest.TestCase):
             (120, 0),
             (144, 0)
         ],
-            considered_time_window_in_hours=(7 * 24)
+            size_of_time_window_in_hours=(7 * 24)
         )
         _datetime = datetime.datetime(
             year=2021, month=8, day=1, hour=0
@@ -100,7 +100,7 @@ class TestWeeklyDistribution(unittest.TestCase):
 
         weekly_distribution = WeeklyDistribution(
             list(distribution.items()),
-            considered_time_window_in_hours=72,  # 3 days before delivery is allowed
+            size_of_time_window_in_hours=72,  # 3 days before delivery is allowed
         )
         container_departure_time = datetime.datetime(
             year=2021, month=8, day=2, hour=11, minute=30
@@ -142,7 +142,7 @@ class TestWeeklyDistribution(unittest.TestCase):
 
         weekly_distribution = WeeklyDistribution(
             list(distribution.items()),
-            considered_time_window_in_hours=72,  # 3 days before delivery is allowed
+            size_of_time_window_in_hours=72,  # 3 days before delivery is allowed
         )
         container_departure_time = datetime.datetime(
             year=2021, month=8, day=2, hour=11, minute=30
@@ -173,7 +173,7 @@ class TestWeeklyDistribution(unittest.TestCase):
 
         weekly_distribution = WeeklyDistribution(
             list(distribution.items()),
-            considered_time_window_in_hours=72,  # 3 days before delivery is allowed
+            size_of_time_window_in_hours=72,  # 3 days before delivery is allowed
         )
         container_departure_time = datetime.datetime(
             year=2021, month=8, day=2, hour=11, minute=30

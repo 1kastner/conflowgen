@@ -22,7 +22,7 @@ from conflowgen.previews.container_flow_by_vehicle_type_preview_report import \
     ContainerFlowByVehicleTypePreviewReport
 from conflowgen.previews.vehicle_capacity_exceeded_preview import VehicleCapacityExceededPreview
 from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
-    VehicleCapacityExceededPreviewReport
+    VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.previews.modal_split_preview_report import ModalSplitPreviewReport
 

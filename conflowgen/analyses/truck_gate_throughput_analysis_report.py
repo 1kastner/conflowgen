@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
-from conflowgen.reporting.no_data_plot import no_data_graph
+from conflowgen.reporting.no_data_plot import no_data_text
 
 
 class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
@@ -29,9 +29,29 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         self.analysis = TruckGateThroughputAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        Keyword Args:
+            start_time (Optional[datetime.datetime]): When to start recording
+            end_time (Optional[datetime.datetime]): When to end recording
+            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
+            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
 
-        truck_gate_throughput = self.analysis.get_throughput_over_time()
+        Returns:
+            The report in text format.
+        """
+        inbound = kwargs.pop("inbound", True)
+        outbound = kwargs.pop("outbound", True)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
+
+        truck_gate_throughput = self.analysis.get_throughput_over_time(
+            inbound=inbound,
+            outbound=outbound,
+            start_date=start_date,
+            end_date=end_date
+        )
+
         if truck_gate_throughput:
             truck_gate_throughput_sequence = list(truck_gate_throughput.values())
             maximum_truck_gate_throughput = max(truck_gate_throughput_sequence)
@@ -55,19 +75,49 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         """
         The report as a graph is represented as a line graph using pandas.
 
+        Keyword Args:
+            start_time (Optional[datetime.datetime]): When to start recording
+            end_time (Optional[datetime.datetime]): When to end recording
+            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
+            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
+            ax (Optional[plt.Axes]): Which MatPlotLib axis to plot on
+
         Returns:
              The matplotlib axis of the bar chart.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        inbound = kwargs.pop("inbound", True)
+        outbound = kwargs.pop("outbound", True)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        ax = kwargs.pop("ax", None)
+        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
 
-        truck_gate_throughput = self.analysis.get_throughput_over_time()
+        truck_gate_throughput = self.analysis.get_throughput_over_time(
+            inbound=inbound,
+            outbound=outbound,
+            start_date=start_date,
+            end_date=end_date
+        )
+
         if len(truck_gate_throughput) == 0:
-            ax = no_data_graph()
+            ax = no_data_text(ax)
         else:
             series = pd.Series(truck_gate_throughput)
-            ax = series.plot()
+            if ax is None:
+                ax = series.plot()
+            else:
+                series.plot(ax=ax)
             plt.xticks(rotation=45)
             ax.set_xlabel("Date")
             ax.set_ylabel("Number of boxes (hourly count)")
-        ax.set_title(self.plot_tile)
+
+        current_plot_title = self.plot_tile
+        if inbound and not outbound:
+            current_plot_title += " (inbound)"
+        elif outbound and not inbound:
+            current_plot_title += " (inbound)"
+        else:
+            current_plot_title += " (inbound and outbound)"
+        ax.set_title(current_plot_title)
+
         return ax

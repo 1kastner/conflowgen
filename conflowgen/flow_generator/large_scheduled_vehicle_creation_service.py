@@ -1,5 +1,5 @@
 import datetime
-from typing import List
+from typing import List, Type
 import logging
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -37,16 +37,20 @@ class LargeScheduledVehicleCreationService:
     def create(self) -> None:
         assert self.container_flow_start_date is not None
         assert self.container_flow_end_date is not None
-        schedules: List[Schedule] = Schedule.select().execute()
+        schedules = Schedule.select()
+        number_schedules = schedules.count()
         for i, schedule in enumerate(schedules):
+            i += 1
             self.logger.debug(f"Create vehicles and containers for service '{schedule.service_name}' of type "
                               f"'{schedule.vehicle_type}', "
-                              f"progress: {i+1} / {len(schedules)} ({100*(i + 1)/len(schedules):.2f}%)")
-            # noinspection PyArgumentList
-            vehicles: List[AbstractLargeScheduledVehicle] = self.fleet_creator[schedule.vehicle_type](
+                              f"progress: {i} / {number_schedules} ({i / number_schedules:.2%})")
+
+            # noinspection PyArgumentList,PyTypeChecker
+            vehicles: List[Type[AbstractLargeScheduledVehicle]] = self.fleet_creator[schedule.vehicle_type](
                 schedule=schedule,
                 latest_at=self.container_flow_end_date,
                 first_at=self.container_flow_start_date
             )
+
             for vehicle in vehicles:
                 self.container_factory.create_containers_for_large_scheduled_vehicle(vehicle)

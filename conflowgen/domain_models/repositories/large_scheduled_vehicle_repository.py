@@ -26,7 +26,7 @@ class LargeScheduledVehicleRepository:
         self.free_capacity_for_inbound_journey_buffer = {}
 
     @staticmethod
-    def load_all_vehicles() -> Dict[ModeOfTransport, List[AbstractLargeScheduledVehicle]]:
+    def load_all_vehicles() -> Dict[ModeOfTransport, List[Type[AbstractLargeScheduledVehicle]]]:
         result = {}
         for vehicle_type in ModeOfTransport.get_scheduled_vehicles():
             large_schedule_vehicle_as_subtype = AbstractLargeScheduledVehicle.map_mode_of_transport_to_class(

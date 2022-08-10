@@ -14,12 +14,12 @@ class WeeklyDistribution:
     def __init__(
             self,
             hour_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]],
-            considered_time_window_in_hours: int
+            size_of_time_window_in_hours: int
     ):
-        self.considered_time_window_in_hours = considered_time_window_in_hours
+        self.size_of_time_window_in_hours = size_of_time_window_in_hours
 
         self.hour_of_the_week_fraction_pairs = []
-        number_of_weeks_to_consider = 2 + int(considered_time_window_in_hours / 24 / 7)
+        number_of_weeks_to_consider = 2 + int(size_of_time_window_in_hours / 24 / 7)
         for week in range(number_of_weeks_to_consider):
             for hour, fraction in hour_fraction_pairs:
                 hour_relative_to_first_monday = (week * self.HOURS_IN_WEEK) + hour
@@ -51,7 +51,7 @@ class WeeklyDistribution:
         start_hour = self._get_hour_of_the_week_from_datetime(start_as_datetime)
 
         # Calculate the week hour of when to end the distribution slice
-        end_hour = start_hour + self.considered_time_window_in_hours
+        end_hour = start_hour + self.size_of_time_window_in_hours
 
         assert 0 <= start_hour <= self.HOURS_IN_WEEK, "Start hour must be in first week"
         assert start_hour < end_hour, "Start hour must be before end hour"
@@ -78,6 +78,6 @@ class WeeklyDistribution:
         return (
             "<"
             f"{self.__class__.__name__}: "
-            f"considered_time_window_in_hours: {self.considered_time_window_in_hours}"
+            f"size_of_time_window_in_hours={self.size_of_time_window_in_hours}h"
             ">"
         )

@@ -76,7 +76,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         ).order_by(
             fn.Random()
         ).where(
-            Container.picked_up_by << ModeOfTransport.get_scheduled_vehicles()
+            (Container.picked_up_by << ModeOfTransport.get_scheduled_vehicles())
+            & (Container.delivered_by << ModeOfTransport.get_scheduled_vehicles())
         )
 
         # all the joins just exist to speed up the process and avoid triggering too many database calls
@@ -99,15 +100,16 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         selected_containers_count = selected_containers.count()
         assert selected_containers_count == preloaded_containers.count(), \
             f"No container should be lost due to the join operations but " \
-            f"{selected_containers.count()} != {preloaded_containers.count()}"
+            f"{selected_containers_count} != {preloaded_containers.count()}"
 
         self.logger.info(f"In total, {len(preloaded_containers)} containers continue their journey on a vehicle that "
                          f"adhere to a schedule, assigning these containers to their respective vehicles...")
+        container: Container
         for i, container in enumerate(preloaded_containers):
             i += 1
-            if i % 1000 == 0 and i > 0:
+            if i % 1000 == 0 or i == 1 or i == selected_containers_count:
                 self.logger.info(
-                    f"Progress: {i} / {len(selected_containers)} ({100 * i / len(selected_containers):.2f}%) "
+                    f"Progress: {i} / {selected_containers_count} ({i / selected_containers_count:.2%}) "
                     f"containers have been assigned to a scheduled vehicle to leave the terminal again."
                 )
 
@@ -165,8 +167,11 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             self._save_chosen_vehicle(container, vehicle)
         return vehicle
 
-    def _save_chosen_vehicle(self, container, vehicle):
+    def _save_chosen_vehicle(self, container: Container, vehicle: Type[AbstractLargeScheduledVehicle]):
+
+        # noinspection PyTypeChecker
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
+
         vehicle_type = vehicle.get_mode_of_transport()
         container.picked_up_by_large_scheduled_vehicle = large_scheduled_vehicle
         container.picked_up_by = vehicle_type

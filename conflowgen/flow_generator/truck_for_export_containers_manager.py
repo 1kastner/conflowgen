@@ -4,6 +4,7 @@ import random
 from typing import Dict
 
 from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
+from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
 from ..domain_models.container import Container
@@ -104,13 +105,16 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         """
         containers = Container.select().where(
             Container.delivered_by == ModeOfTransport.truck
-        ).execute()
-        self.logger.info(f"In total {len(containers)} containers are delivered by truck, creating these trucks now...")
+        )
+        number_containers = containers.count()
+        self.logger.info(
+            f"In total {number_containers} containers are delivered by truck, creating these trucks now...")
+        teu_total = 0
         for i, container in enumerate(containers):
             i += 1
-            if i % 1000 == 0 and i > 0:
+            if i % 1000 == 0 or i == 1 or i == number_containers:
                 self.logger.info(
-                    f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks generated "
+                    f"Progress: {i} / {number_containers} ({i / number_containers:.2%}) trucks generated "
                     f"to deliver containers to the terminal.")
             picked_up_with: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
 
@@ -131,4 +135,6 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             )
             container.delivered_by_truck = truck
             container.save()
-        self.logger.info("All trucks that deliver a container are created now.")
+            teu_total += ContainerLength.get_factor(container.length)
+        self.logger.info(f"All {number_containers} trucks that deliver a container are created now, moving "
+                         f"{teu_total} TEU.")

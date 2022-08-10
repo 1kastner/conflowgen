@@ -98,7 +98,7 @@ class AbstractTruckForContainersManager(abc.ABC):
                                  f"{container_dwell_time_distribution.maximum}h")
                 self.truck_arrival_distributions[vehicle_type][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    considered_time_window_in_hours=considered_time_window_in_hours
+                    size_of_time_window_in_hours=considered_time_window_in_hours
                 )
 
     def _get_distributions(

@@ -7,7 +7,7 @@ from conflowgen.domain_models.distribution_repositories.mode_of_transport_distri
     ModeOfTransportDistributionRepository
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
-    VehicleCapacityExceededPreviewReport
+    VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
 from conflowgen.tests.autoclose_matplotlib import UnitTestCaseWithMatplotlib
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
@@ -63,7 +63,7 @@ class TestVehicleCapacityExceededPreviewReport(UnitTestCaseWithMatplotlib):
             start_date=now,
             end_date=now + datetime.timedelta(weeks=2)
         ).save()  # mostly use default values
-        self.preview_report = VehicleCapacityExceededPreviewReport()
+        self.preview_report = VehicleCapacityUtilizationOnOutboundJourneyPreviewReport()
         self.preview_report.reload()
 
     def test_report_with_no_schedules(self):
