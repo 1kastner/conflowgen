@@ -151,7 +151,7 @@ for i, row in df_feeders.iterrows():
         ]
     ]
 
-    port_call_manager.add_large_scheduled_vehicle(
+    port_call_manager.add_vehicle(
         vehicle_type=conflowgen.ModeOfTransport.feeder,
         service_name=feeder_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
@@ -201,7 +201,7 @@ for i, row in df_deep_sea_vessels.iterrows():
         ]
     ]
 
-    port_call_manager.add_large_scheduled_vehicle(
+    port_call_manager.add_vehicle(
         vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
         service_name=deep_sea_vessel_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
@@ -235,7 +235,7 @@ for i, row in df_barges.iterrows():
     logger.info(f"Add barge '{barge_vehicle_name}' to database")
     # assume that the barge approaches 2 or more terminals, thus not the whole barge is available for CTA
     moved_capacity = int(round(capacity * seeded_random.uniform(0.3, 0.6)))
-    port_call_manager.add_large_scheduled_vehicle(
+    port_call_manager.add_vehicle(
         vehicle_type=conflowgen.ModeOfTransport.barge,
         service_name=barge_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
@@ -267,7 +267,7 @@ for i, row in df_trains.iterrows():
     vehicle_arrives_at_time_as_delta = earliest_time_as_delta + datetime.timedelta(hours=0.5 * drawn_slot)
     vehicle_arrives_at_time = (datetime.datetime.min + vehicle_arrives_at_time_as_delta).time()
     logger.info(f"Add train '{train_vehicle_name}' to database")
-    port_call_manager.add_large_scheduled_vehicle(
+    port_call_manager.add_vehicle(
         vehicle_type=conflowgen.ModeOfTransport.train,
         service_name=train_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),

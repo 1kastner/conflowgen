@@ -11,7 +11,7 @@ class TestPortCallManager(unittest.TestCase):
     def setUp(self) -> None:
         self.port_call_manager = PortCallManager()
 
-    def test_add_large_scheduled_vehicle(self):
+    def test_add_vehicle(self):
         feeder_service_name = "LX050"
         arrives_at = datetime.date(2021, 7, 9)
         time_of_the_day = datetime.time(hour=11)
@@ -29,7 +29,7 @@ class TestPortCallManager(unittest.TestCase):
                     self.port_call_manager,
                     'has_schedule',
                     return_value=False) as mock_has_schedule:
-                self.port_call_manager.add_large_scheduled_vehicle(
+                self.port_call_manager.add_vehicle(
                     vehicle_type=ModeOfTransport.feeder,
                     service_name=feeder_service_name,
                     vehicle_arrives_at=arrives_at,
