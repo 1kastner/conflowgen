@@ -14,6 +14,7 @@ from conflowgen.domain_models.distribution_models.container_dwell_time_distribut
 class ContinuousDistribution(abc.ABC):
 
     average: float
+    variance: float
     minimum: float
     maximum: float
 
@@ -21,7 +22,7 @@ class ContinuousDistribution(abc.ABC):
 
     def __init__(
             self,
-            average: float,
+            average: Optional[float],
             minimum: float,
             maximum: float,
             unit: Optional[str] = None,
@@ -33,7 +34,9 @@ class ContinuousDistribution(abc.ABC):
             maximum: The maximum of the distribution. Larger values are automatically set to zero.
             unit: The unit for the average, minimum, and maximum. It is used for the __repr__ implementation.
         """
-        assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
+        assert minimum < maximum, f"The assertion {minimum} < {maximum} failed."
+        if average is not None:
+            assert minimum < average < maximum, f"The assertion {minimum} < {average} < {maximum} failed."
         self.average = average
         self.minimum = minimum
         self.maximum = maximum
@@ -52,6 +55,7 @@ class ContinuousDistribution(abc.ABC):
         """
         super().__init_subclass__()
         cls.distribution_types[short_name] = cls
+        cls.short_name = short_name
 
     @abc.abstractmethod
     def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
@@ -59,7 +63,7 @@ class ContinuousDistribution(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Type[ContinuousDistribution]:
+    def from_database_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Type[ContinuousDistribution]:
         """
         Args:
             entry: The database entry describing a continuous distribution.
@@ -68,6 +72,15 @@ class ContinuousDistribution(abc.ABC):
             The loaded distribution instance.
         """
         pass
+
+    def to_dict(self) -> Dict:
+        return {
+            "distribution_name": self.short_name,
+            "average_number_of_hours": self.average,
+            "variance": self.variance,
+            "maximum_number_of_hours": self.maximum,
+            "minimum_number_of_hours": self.minimum
+        }
 
     def get_probabilities(
             self,
@@ -97,8 +110,6 @@ class ContinuousDistribution(abc.ABC):
 
 
 class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
-
-    variance: float
 
     def __init__(
             self,
@@ -137,7 +148,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
         return self._lognorm.pdf(xs)
 
     @classmethod
-    def from_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> ClippedLogNormal:
+    def from_database_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> ClippedLogNormal:
         return cls(
             average=entry.average_number_of_hours,
             variance=entry.variance,
@@ -153,6 +164,41 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
             f"min={self.minimum:.1f}{self.unit_repr}, "
             f"max={self.maximum:.1f}{self.unit_repr}, "
             f"var={self.variance:.1f}{self.unit_repr_square}"
+            f">"
+        )
+
+
+class Uniform(ContinuousDistribution, short_name="uniform"):
+
+    def __init__(
+            self,
+            minimum: float,
+            maximum: float,
+            unit: Optional[str] = None
+    ):
+        super().__init__(
+            average=None,
+            minimum=minimum,
+            maximum=maximum,
+            unit=unit
+        )
+
+    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
+        return np.ones_like(xs)
+
+    @classmethod
+    def from_database_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Uniform:
+        return cls(
+            minimum=entry.minimum_number_of_hours,
+            maximum=entry.maximum_number_of_hours,
+            unit="h"
+        )
+
+    def __repr__(self) -> str:
+        return (
+            f"<{self.__class__.__name__}: "
+            f"min={self.minimum:.1f}{self.unit_repr}, "
+            f"max={self.maximum:.1f}{self.unit_repr}"
             f">"
         )
 

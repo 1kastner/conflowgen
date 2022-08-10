@@ -16,12 +16,13 @@ def _plt_modal_split_instance(
         "truck": modal_split.truck_capacity,
         "barge": modal_split.barge_capacity
     }, name=name)
+    series_modal_split_inbound.replace(0, np.nan).dropna(inplace=True)
     if sum(series_modal_split_inbound) == 0:
         no_data_text(ax)
     else:
         series_modal_split_inbound.plot.pie(
             legend=False,
-            autopct='%1.1f%%',
+            autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
             label="",
             title=name,
             ax=ax
@@ -37,7 +38,7 @@ def plot_modal_splits(
     fig, axes = plt.subplots(2, 2)
 
     series_hinterland_and_transshipment = pd.Series({
-        "Inland gateway traffic": transshipment_and_hinterland_split.hinterland_capacity,
+        "Inland\n gateway traffic": transshipment_and_hinterland_split.hinterland_capacity,
         "Transshipment traffic": transshipment_and_hinterland_split.transshipment_capacity
     }, name="Role in network")
 
@@ -46,7 +47,7 @@ def plot_modal_splits(
     else:
         series_hinterland_and_transshipment.plot.pie(
             legend=False,
-            autopct='%1.1f%%',
+            autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
             label="",
             title=series_hinterland_and_transshipment.name,
             ax=axes[0, 0]

@@ -96,7 +96,7 @@ Generating previews
 .. autoclass:: conflowgen.VehicleCapacityExceededPreview
     :members:
 
-.. autoclass:: conflowgen.VehicleCapacityExceededPreviewReport
+.. autoclass:: conflowgen.VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
     :members:
 
 Running analyses

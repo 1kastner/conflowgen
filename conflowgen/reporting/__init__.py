@@ -103,15 +103,23 @@ class AbstractReport(abc.ABC):
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
+
+        # All matplotlib reports are currently static in the sense that they do not require additional libraries to work
+        # on a webpage such as the documentation. We can simply ignore this keyword.
+        kwargs.pop("static", None)
+
         with plt.style.context('seaborn-colorblind'):
-            self.get_report_as_graph()
-            plt.show()
+            self.get_report_as_graph(**kwargs)
+            plt.show(block=True)
 
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
         fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
-        if "static" in kwargs and kwargs["static"]:
+
+        # Plotly needs quite some libraries loaded in the online documentation so that the figures are actually visible
+        # to the user. Thus, we take the short-cut and convert them to figures for the documentation.
+        if kwargs.pop("static", False):
             png_format_image = fig.to_image(format="png", width=800)
             with tempfile.NamedTemporaryFile() as _file:
                 _file.write(png_format_image)
@@ -119,6 +127,6 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
             plt.figure(figsize=(20, 10))
             plt.imshow(img)
             plt.axis('off')
-            plt.show()
+            plt.show(block=True)
         else:
             fig.show()

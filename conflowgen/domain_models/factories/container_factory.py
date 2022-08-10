@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 import random
-from typing import Dict, MutableSequence, Sequence
+from typing import Dict, MutableSequence, Sequence, Type
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
@@ -32,10 +32,10 @@ class ContainerFactory:
 
     def __init__(self):
         self.seeded_random = random.Random(x=self.random_seed)
-        self.mode_of_transportation_distribution = None
-        self.container_length_distribution = None
-        self.container_weight_distribution = None
-        self.storage_requirement_distribution = None
+        self.mode_of_transportation_distribution: dict[ModeOfTransport, dict[ModeOfTransport, float]] | None = None
+        self.container_length_distribution: dict[ContainerLength, float] | None = None
+        self.container_weight_distribution:  dict[ContainerLength, dict[int, float]] | None = None
+        self.storage_requirement_distribution:  dict[ContainerLength, dict[StorageRequirement, float]] | None = None
         self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
 
     def reload_distributions(self):
@@ -47,7 +47,7 @@ class ContainerFactory:
 
     def create_containers_for_large_scheduled_vehicle(
             self,
-            large_scheduled_vehicle_as_subtype: AbstractLargeScheduledVehicle
+            large_scheduled_vehicle_as_subtype: Type[AbstractLargeScheduledVehicle]
     ) -> Sequence[Container]:
         """
         Creates all containers a large vehicle delivers to a terminal.
@@ -59,6 +59,7 @@ class ContainerFactory:
 
         delivered_by = large_scheduled_vehicle_as_subtype.get_mode_of_transport()
 
+        # noinspection PyTypeChecker
         large_scheduled_vehicle: LargeScheduledVehicle = large_scheduled_vehicle_as_subtype.large_scheduled_vehicle
 
         free_capacity_in_teu = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
@@ -87,6 +88,8 @@ class ContainerFactory:
         free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
             large_scheduled_vehicle_as_subtype
         )
+
+        # noinspection PyUnresolvedReferences
         assert free_capacity >= 0, \
                f"The vehicle {large_scheduled_vehicle_as_subtype.large_scheduled_vehicle.vehicle_name} does not " \
                f"have sufficient free capacity (in TEU): {free_capacity}."
@@ -124,7 +127,7 @@ class ContainerFactory:
 
     def _create_single_container_for_large_scheduled_vehicle(
             self,
-            delivered_by_large_scheduled_vehicle_as_subtype: AbstractLargeScheduledVehicle
+            delivered_by_large_scheduled_vehicle_as_subtype: Type[AbstractLargeScheduledVehicle]
     ) -> Container:
         """Creates a generic single container delivered by a specific large scheduled vehicle"""
 
@@ -132,23 +135,10 @@ class ContainerFactory:
         delivered_by_large_scheduled_vehicle = \
             delivered_by_large_scheduled_vehicle_as_subtype.large_scheduled_vehicle
 
-        length = self.distribution_approximators["length"].sample()
-        weight = self.seeded_random.choices(
-            population=list(self.container_weight_distribution[length].keys()),
-            weights=list(self.container_weight_distribution[length].values()),
-            k=1
-        )[0]
+        length, storage_requirement, weight = self.draw_physical_properties(approximate=True)
+
         picked_up_by = self.distribution_approximators["picked_up_by"].sample()
-        storage_requirement = self.seeded_random.choices(
-            population=list(self.storage_requirement_distribution[length].keys()),
-            weights=list(self.storage_requirement_distribution[length].values()),
-            k=1
-        )[0]
-        new_weight = self._update_weight_according_to_container_type(
-            storage_requirement=storage_requirement,
-            length=length
-        )
-        weight = new_weight if new_weight is not None else weight
+
         container = Container.create(
             weight=weight,
             length=length,
@@ -162,36 +152,46 @@ class ContainerFactory:
         container.save()
         return container
 
+    def draw_physical_properties(self, approximate: bool = False) -> (ContainerLength, StorageRequirement, int):
+
+        length: ContainerLength
+        if approximate:
+            length = self.distribution_approximators["length"].sample()
+        else:
+            length = self.seeded_random.choices(
+                population=list(self.container_length_distribution.keys()),
+                weights=list(self.container_length_distribution.values()),
+                k=1
+            )[0]
+
+        weight: int = self.seeded_random.choices(
+            population=list(self.container_weight_distribution[length].keys()),
+            weights=list(self.container_weight_distribution[length].values()),
+            k=1
+        )[0]
+        storage_requirement: StorageRequirement = self.seeded_random.choices(
+            population=list(self.storage_requirement_distribution[length].keys()),
+            weights=list(self.storage_requirement_distribution[length].values()),
+            k=1
+        )[0]
+        new_weight: int = self._update_weight_according_to_container_type(
+            storage_requirement=storage_requirement,
+            length=length
+        )
+        weight = new_weight if new_weight is not None else weight
+        return length, storage_requirement, weight
+
     def create_container_for_delivering_truck(
             self,
-            picked_up_by_large_scheduled_vehicle_subtype: AbstractLargeScheduledVehicle
+            picked_up_by_large_scheduled_vehicle_subtype: Type[AbstractLargeScheduledVehicle]
     ) -> Container:
         """Creates a generic single container delivered by a truck"""
 
         picked_up_by_large_scheduled_vehicle = picked_up_by_large_scheduled_vehicle_subtype.large_scheduled_vehicle
         picked_up_by = picked_up_by_large_scheduled_vehicle_subtype.get_mode_of_transport()
 
-        self._load_distribution_approximators(
-            number_of_containers=1,
-            delivered_by=ModeOfTransport.truck
-        )
+        length, storage_requirement, weight = self.draw_physical_properties()
 
-        length = self.distribution_approximators["length"].sample()
-        weight = self.seeded_random.choices(
-            population=list(self.container_weight_distribution[length].keys()),
-            weights=list(self.container_weight_distribution[length].values()),
-            k=1
-        )[0]
-        storage_requirement = self.seeded_random.choices(
-            population=list(self.storage_requirement_distribution[length].keys()),
-            weights=list(self.storage_requirement_distribution[length].values()),
-            k=1
-        )[0]
-        new_weight = self._update_weight_according_to_container_type(
-            storage_requirement=storage_requirement,
-            length=length
-        )
-        weight = new_weight if new_weight is not None else weight
         container = Container.create(
             weight=weight,
             length=length,

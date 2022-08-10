@@ -69,9 +69,10 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
             in a Jupyter Notebook.
         """
+        in_teu = kwargs.pop("in_teu", True)
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow(in_teu=in_teu)
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
         source_ids = list(range(len(vehicle_types)))
@@ -125,8 +126,14 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             ]
         )
 
+        plot_title = "Container flow from vehicle type A to vehicle type B as defined by generated containers"
+        if in_teu:
+            plot_title += "(reported in TEU)"
+        else:
+            plot_title += " (reported in boxes)"
+
         fig.update_layout(
-            title_text="Container flow from vehicle type A to vehicle type B as defined by generated containers",
+            title_text=plot_title,
             font_size=10,
             width=900,
             height=700

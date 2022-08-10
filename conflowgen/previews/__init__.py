@@ -3,7 +3,7 @@ from typing import Iterable, Type, Callable, Optional, Union
 from .inbound_and_outbound_vehicle_capacity_preview_report import InboundAndOutboundVehicleCapacityPreviewReport
 from .container_flow_by_vehicle_type_preview_report import ContainerFlowByVehicleTypePreviewReport
 from .modal_split_preview_report import ModalSplitPreviewReport
-from .vehicle_capacity_exceeded_preview_report import VehicleCapacityExceededPreviewReport
+from .vehicle_capacity_exceeded_preview_report import VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
 from ..reporting import AbstractReport
 from ..reporting.auto_reporter import AutoReporter
 from ..reporting.output_style import DisplayAsMarkupLanguage
@@ -11,7 +11,7 @@ from ..reporting.output_style import DisplayAsMarkupLanguage
 
 reports: Iterable[Type[AbstractReport]] = [
     InboundAndOutboundVehicleCapacityPreviewReport,
-    VehicleCapacityExceededPreviewReport,
+    VehicleCapacityUtilizationOnOutboundJourneyPreviewReport,
     ContainerFlowByVehicleTypePreviewReport,
     ModalSplitPreviewReport,
 ]

@@ -1,5 +1,6 @@
 import datetime
 import unittest
+import unittest.mock
 from typing import Iterable
 
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
@@ -55,10 +56,13 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.debug = False
 
     @staticmethod
-    def _create_feeder(scheduled_arrival: datetime.datetime) -> Feeder:
+    def _create_feeder(
+            scheduled_arrival: datetime.datetime,
+            service_name_suffix: str = ""
+    ) -> Feeder:
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
-            service_name="TestFeederService",
+            service_name="TestFeederService" + service_name_suffix,
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=300,
@@ -144,21 +148,22 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         return container
 
     def test_no_exception_for_empty_database(self):
-        self.assertIsNone(self.manager.choose_departing_vehicle_for_containers())
+        self.manager.choose_departing_vehicle_for_containers()
 
-    def test_load_container_from_truck_on_feeder(self):
-        truck = self._create_truck(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
-        feeder = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15))
+    def test_load_container_from_feeder_to_feeder(self):
+        feeder_1 = self._create_feeder(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0), "1")
+        feeder_2 = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15), "2")
 
-        container = self._create_container_for_truck(truck)
+        container = self._create_container_for_large_scheduled_vehicle(feeder_1)
 
         self.manager.choose_departing_vehicle_for_containers()
 
         self.assertIsNone(container.picked_up_by_large_scheduled_vehicle, msg="peewee does not use a singleton pattern")
         self.assertEqual(Container.select().count(), 1)
         container_reloaded = Container.get()
-        self.assertEqual(feeder.large_scheduled_vehicle, container_reloaded.picked_up_by_large_scheduled_vehicle,
-                         msg="Only after reloading the container transfer information is available.")
+        container_picked_up_by = container_reloaded.picked_up_by_large_scheduled_vehicle
+        self.assertIsNotNone(container_picked_up_by, "Container was assigned a feeder")
+        self.assertEqual(feeder_2.large_scheduled_vehicle, container_picked_up_by, "Box loaded onto feeder 2")
 
     def test_do_not_overload_feeder_with_truck_traffic(self):
         truck = self._create_truck(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
@@ -303,3 +308,9 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
+
+    def test_nothing_to_do(self):
+        with unittest.mock.patch.object(
+                self.manager.schedule_repository, "get_departing_vehicles", return_value=None) as get_vehicles_method:
+            self.manager.choose_departing_vehicle_for_containers()
+        get_vehicles_method.assert_not_called()

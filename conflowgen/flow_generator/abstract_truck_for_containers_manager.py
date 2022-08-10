@@ -94,11 +94,11 @@ class AbstractTruckForContainersManager(abc.ABC):
 
                 self.logger.info(f"For vehicle type {vehicle_type} and storage requirement {storage_requirement}, "
                                  "the container dwell times need to range from "
-                                 f"{container_dwell_time_distribution.minimum} to "
-                                 f"{container_dwell_time_distribution.maximum}")
+                                 f"{container_dwell_time_distribution.minimum}h to "
+                                 f"{container_dwell_time_distribution.maximum}h")
                 self.truck_arrival_distributions[vehicle_type][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    considered_time_window_in_hours=considered_time_window_in_hours
+                    size_of_time_window_in_hours=considered_time_window_in_hours
                 )
 
     def _get_distributions(

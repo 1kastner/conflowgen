@@ -30,7 +30,7 @@ class ContainerDwellTimeDistributionRepository:
             ContinuousDistribution.distribution_types.get(entry.distribution_name, None)
         if distribution_class is None:
             raise NotImplementedError(f"No implementation found for '{entry.distribution_name}'")
-        return distribution_class.from_entry(entry)
+        return distribution_class.from_database_entry(entry)
 
     @classmethod
     def get_distributions(
@@ -53,7 +53,8 @@ class ContainerDwellTimeDistributionRepository:
     @staticmethod
     def set_distributions(
             distributions:
-            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, Dict[str, Any]]]]
+            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[
+                StorageRequirement, Dict[str, Any] | ContinuousDistribution]]]
     ) -> None:
         validate_distribution_with_two_dependent_variables(
             distributions, ModeOfTransport, ModeOfTransport, StorageRequirement, values_are_frequencies=False
@@ -61,7 +62,16 @@ class ContainerDwellTimeDistributionRepository:
         ContainerDwellTimeDistribution.delete().execute()
         for delivered_by, picked_up_by_distribution in distributions.items():
             for picked_up_by, storage_requirement_distribution in picked_up_by_distribution.items():
-                for storage_requirement, distribution_properties in storage_requirement_distribution.items():
+                for storage_requirement, container_dwell_time_distribution in storage_requirement_distribution.items():
+                    if isinstance(container_dwell_time_distribution, ContinuousDistribution):
+                        distribution_properties = container_dwell_time_distribution.to_dict()
+                    elif isinstance(container_dwell_time_distribution, dict):
+                        distribution_properties = container_dwell_time_distribution
+                    else:
+                        raise Exception(
+                            f"The container dwell time distribution representation "
+                            f"'{container_dwell_time_distribution}' could not be casted."
+                        )
                     ContainerDwellTimeDistribution.create(
                         delivered_by=delivered_by,
                         picked_up_by=picked_up_by,

@@ -84,7 +84,7 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         })
         df.index = [str(i).replace("_", " ") for i in df.index]
         ax = df.plot.barh()
-        ax.set_xlabel("Capacity (in TEU)")
+        ax.set_xlabel("Container volume (in TEU)")
         ax.set_title("Inbound and outbound vehicle capacity preview")
         return ax
 

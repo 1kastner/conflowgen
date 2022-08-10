@@ -66,3 +66,8 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             next_destinations=None
         )
         self.container_flow_generator_service.generate()
+
+    def test_nothing_to_do(self):
+        create_tables(self.sqlite_db)
+        seed_all_distributions()
+        self.container_flow_generator_service.generate()

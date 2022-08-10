@@ -3,6 +3,7 @@ import random
 from typing import Dict
 
 from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
+from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForPickup
 from ..domain_models.container import Container
@@ -38,7 +39,10 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
         minimum_dwell_time_in_hours = container_dwell_time_distribution.minimum
         maximum_dwell_time_in_hours = container_dwell_time_distribution.maximum
 
-        earliest_slot = container_arrival_time.replace(minute=0, second=0, microsecond=0) + datetime.timedelta(hours=1)
+        earliest_slot = (
+                container_arrival_time.replace(minute=0, second=0, microsecond=0)
+                + datetime.timedelta(hours=1)
+        )
         truck_arrival_distribution_slice = truck_arrival_distribution.get_distribution_slice(earliest_slot)
 
         pickup_time_window_start = self._get_time_window_of_truck_arrival(
@@ -53,7 +57,8 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
         truck_arrival_time = (
             earliest_slot
             + datetime.timedelta(hours=pickup_time_window_start)  # these are several days, comparable to time slot
-            + datetime.timedelta(hours=random_time_component)  # a small random component for the truck arrival time
+            - datetime.timedelta(hours=self.time_window_length_in_hours)  # go one time window back
+            + datetime.timedelta(hours=random_time_component)  # choose random time component within that window
         )
 
         dwell_time_in_hours = (truck_arrival_time - container_arrival_time).total_seconds() / 3600
@@ -68,12 +73,17 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
     def generate_trucks_for_picking_up(self):
         containers = Container.select().where(
             Container.picked_up_by == ModeOfTransport.truck
-        ).execute()
-        self.logger.info(f"In total {len(containers)} containers are picked up by truck, creating these trucks now...")
+        )
+        number_containers = containers.count()
+        self.logger.info(
+            f"In total {number_containers} containers are picked up by truck, creating these trucks now..."
+        )
+        container: Container
+        teu_total = 0
         for i, container in enumerate(containers):
             i += 1
-            if i % 1000 == 0 and i > 0:
-                self.logger.info(f"Progress: {i} / {len(containers)} ({100 * i / len(containers):.2f}%) trucks "
+            if i % 1000 == 0 or i == 1 or i == number_containers:
+                self.logger.info(f"Progress: {i} / {number_containers} ({i / number_containers:.2%}) trucks "
                                  f"generated to pick up containers at the terminal.")
             delivered_by: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
 
@@ -96,4 +106,6 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             )
             container.picked_up_by_truck = truck
             container.save()
-        self.logger.info("All trucks that pick up a container have been generated.")
+            teu_total += ContainerLength.get_factor(container.length)
+        self.logger.info(f"All {number_containers} trucks that pick up a container have been generated, moving "
+                         f"{teu_total} TEU.")

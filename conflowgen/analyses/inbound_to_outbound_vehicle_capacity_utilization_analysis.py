@@ -48,7 +48,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
         capacities: Dict[CompleteVehicleIdentifier, (float, float)] = {}
 
         selected_vehicles = LargeScheduledVehicle.select().join(Schedule)
-        if vehicle_type != "all":
+        if vehicle_type is not None and vehicle_type != "all":
             if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
                 selected_vehicles = selected_vehicles.where(
                     LargeScheduledVehicle.schedule.vehicle_type == vehicle_type

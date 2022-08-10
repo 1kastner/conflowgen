@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 import random
-from typing import Dict
+from typing import Dict, Type, List
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
@@ -30,7 +30,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
             transportation_buffer=transportation_buffer
         )
         self.logger.info(f"Use transport buffer of {transportation_buffer} for allocating containers delivered by "
-                         "trucks")
+                         "trucks.")
 
     @staticmethod
     def _get_number_containers_to_allocate() -> int:
@@ -53,14 +53,15 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         truck_to_other_vehicle_distribution: Dict[ModeOfTransport, float] = \
             self.mode_of_transport_distribution[ModeOfTransport.truck].copy()
         if truck_to_other_vehicle_distribution[ModeOfTransport.truck] > 0:
-            raise NotImplementedError()
+            raise NotImplementedError("Truck to truck traffic is not supported.")
 
         self.large_scheduled_vehicle_repository.reset_cache()
 
         number_containers_to_allocate = self._get_number_containers_to_allocate()
 
         # A list of vehicles that have free capacity for further containers. The entries are removed in a lazy fashion.
-        vehicles = self.large_scheduled_vehicle_repository.load_all_vehicles()
+        vehicles: Dict[ModeOfTransport, List[Type[AbstractLargeScheduledVehicle]]]\
+            = self.large_scheduled_vehicle_repository.load_all_vehicles()
 
         for vehicle_type, frequency in list(truck_to_other_vehicle_distribution.items()):
             if vehicle_type not in vehicles:  # this class is only concerned about large scheduled vehicles
@@ -70,80 +71,115 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                 del vehicles[vehicle_type]
                 del truck_to_other_vehicle_distribution[vehicle_type]
 
-        abort = False
+        successful_assignment = 0
 
+        teu_total = 0
         for i in range(number_containers_to_allocate):
             i += 1
-            if i % 1000 == 0 and i > 0:
+            if i % 1000 == 0 or i == 1 or i == number_containers_to_allocate:
                 self.logger.info(
-                    f"Progress: {i} / {number_containers_to_allocate} ({100 * i / number_containers_to_allocate:.2f}%) "
+                    f"Progress: {i} / {number_containers_to_allocate} ({i / number_containers_to_allocate:.2%}) "
                     f"of the containers which are delivered by truck are allocated on a vehicle adhering to a schedule")
             while True:
-                # Choose vehicle type according to distribution
-                vehicle_types = list(truck_to_other_vehicle_distribution.keys())
-                frequency_of_vehicle_types = list(truck_to_other_vehicle_distribution.values())
+                selected_mode_of_transport = self._pick_vehicle_type(truck_to_other_vehicle_distribution)
 
-                # rescale so that all values sum up to one
-                sum_of_all_frequencies = sum(frequency_of_vehicle_types)
-                if sum_of_all_frequencies == 0:
-                    self.logger.info("No vehicles are left for placing containers on them that are delivered by "
-                                     f"trucks. This happened at container number {i} of "
-                                     f"{number_containers_to_allocate} (i.e., at "
-                                     f"{(i / number_containers_to_allocate * 100):.2f}%).")
-                    abort = True  # is used to break eternal looping at the end of the for loop
-                    break  # Not enough vehicles of any kind could be found (refers to while loop)
-                frequency_of_vehicle_types = [
-                    i / sum_of_all_frequencies
-                    for i in frequency_of_vehicle_types
-                ]
+                # Ensure that if no storage space at all is left, this loop is aborted
+                if selected_mode_of_transport is None:
+                    self.logger.warning(
+                        "No vehicles left at all! Aborting allocation process. "
+                        f"This happened at container number {i} of {number_containers_to_allocate} (i.e., at "
+                        f"{(i / number_containers_to_allocate * 100):.2f}%).")
+                    return
 
-                # pick vehicle type
-                vehicle_type: ModeOfTransport = random.choices(
-                    population=vehicle_types,
-                    weights=frequency_of_vehicle_types
-                )[0]
-                vehicles_of_type = vehicles[vehicle_type]
-                if len(vehicles_of_type) == 0:  # Ensure that if no vehicle is left, this mode of transport is ignored
-                    del truck_to_other_vehicle_distribution[vehicle_type]
-                    self.logger.info(f"Vehicle type '{vehicle_type}' is exhausted and is no further tried. This "
-                                     f"happened at container number {i} of {number_containers_to_allocate} (i.e., "
+                vehicles_of_type = vehicles[selected_mode_of_transport]
+
+                # Ensure that if no vehicle of this type is left, this specific mode of transport is ignored
+                if len(vehicles_of_type) == 0:
+                    del truck_to_other_vehicle_distribution[selected_mode_of_transport]
+                    self.logger.info(f"Vehicle type '{selected_mode_of_transport}' does not offer any capacities "
+                                     f"anymore and is thus dropped. "
+                                     f"This happened at container number {i} of {number_containers_to_allocate} (i.e., "
                                      f"at {(i / number_containers_to_allocate * 100):.2f}%).")
                     continue  # try again with another vehicle type (refers to while loop)
 
-                # Make it more likely that a container ends up on a large vessel than on a smaller one
-                vehicle_distribution = {
-                    vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
-                    for vehicle in vehicles_of_type
-                }
-                all_free_capacities = list(vehicle_distribution.values())
-                if sum(all_free_capacities) == 0:  # if there is no free vehicles left of a certain type...
-                    del truck_to_other_vehicle_distribution[vehicle_type]   # drop this type and...
-                    continue  # try again
+                vehicle = self._pick_vehicle(vehicles_of_type)
 
-                vehicle: AbstractLargeScheduledVehicle = random.choices(
-                    population=list(vehicle_distribution.keys()),
-                    weights=list(vehicle_distribution.values())
-                )[0]
+                if vehicle is None:
+                    del truck_to_other_vehicle_distribution[selected_mode_of_transport]  # drop this type
+                    continue  # try again with another vehicle type (refers to while loop)
 
                 free_capacity_of_vehicle = self.large_scheduled_vehicle_repository.\
                     get_free_capacity_for_outbound_journey(vehicle)
+
                 if free_capacity_of_vehicle <= self.ignored_capacity:
+
+                    # noinspection PyTypeChecker
                     large_scheduled_vehicle: AbstractLargeScheduledVehicle = vehicle.large_scheduled_vehicle
+
                     large_scheduled_vehicle.capacity_exhausted_while_allocating_space_for_export_containers = True
                     large_scheduled_vehicle.save()
-                    vehicles_of_type.remove(vehicle)  # Ignore the vehicle which would be overloaded if chosen
-                    vehicle_name: str = vehicle.large_scheduled_vehicle.vehicle_name
-                    self.logger.debug(f"Vehicle '{vehicle_name}' of type '{vehicle_type}' has no remaining capacity "
-                                      f"and is no further tried - free capacity of {free_capacity_of_vehicle:.2f} "
+
+                    # Ignore the vehicle which would be overloaded if chosen
+                    vehicles_of_type.remove(vehicle)
+
+                    # noinspection PyTypeChecker
+                    vehicle_name: str = large_scheduled_vehicle.vehicle_name
+
+                    self.logger.debug(f"Vehicle '{vehicle_name}' of type '{selected_mode_of_transport}' has no "
+                                      f"remaining capacity. The free capacity of {free_capacity_of_vehicle:.2f} "
                                       f"TEU is less than the required {self.ignored_capacity} TEU.")
                     continue  # try again (possibly new vehicle type, definitely not same vehicle again)
 
                 container = self.container_factory.create_container_for_delivering_truck(vehicle)
+                teu_total += ContainerLength.get_factor(container.length)
                 self.large_scheduled_vehicle_repository.block_capacity_for_outbound_journey(vehicle, container)
+                successful_assignment += 1
                 break  # success, no further looping to search for a suitable vehicle
 
-            if abort:  # Not enough vehicles of any kind could be found
-                break  # break out of for loop
+        assert successful_assignment == number_containers_to_allocate, "Allocate all containers!"
+        self.logger.info(f"All {successful_assignment} containers that need to be delivered by truck have been "
+                         f"assigned to a vehicle that adheres to a schedule, corresponding to {teu_total} TEU.")
 
-        self.logger.info("All containers that need to be delivered by truck have been assigned to a vehicle that moves "
-                         "according to a schedule.")
+    def _pick_vehicle_type(
+            self,
+            truck_to_other_vehicle_distribution: dict[ModeOfTransport, float],
+    ) -> ModeOfTransport | None:
+
+        # Choose vehicle type according to distribution
+        vehicle_types = list(truck_to_other_vehicle_distribution.keys())
+        frequency_of_vehicle_types = list(truck_to_other_vehicle_distribution.values())
+
+        sum_of_all_frequencies = sum(frequency_of_vehicle_types)
+        if sum_of_all_frequencies == 0:
+            self.logger.info("No vehicles are left for placing containers on them that are delivered by trucks.")
+            return None
+
+        # pick vehicle type
+        vehicle_type: ModeOfTransport = random.choices(
+            population=vehicle_types,
+            weights=frequency_of_vehicle_types
+        )[0]
+        return vehicle_type
+
+    def _pick_vehicle(
+            self,
+            vehicles_of_type: List[Type[AbstractLargeScheduledVehicle]]
+    ) -> Type[AbstractLargeScheduledVehicle] | None:
+
+        # Make it more likely that a container ends up on a large vessel than on a smaller one
+        vehicle: Type[AbstractLargeScheduledVehicle]
+        vehicle_distribution: Dict[Type[AbstractLargeScheduledVehicle], float] = {
+            vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+            for vehicle in vehicles_of_type
+        }
+        all_free_capacities = list(vehicle_distribution.values())
+        if sum(all_free_capacities) == 0:  # if there is no free vehicles left of a certain type...
+            self.logger.info("No vehicles of selected type are left for placing containers on them that are delivered "
+                             "by trucks.")
+            return None
+
+        vehicle: Type[AbstractLargeScheduledVehicle] = random.choices(
+            population=list(vehicle_distribution.keys()),
+            weights=list(vehicle_distribution.values())
+        )[0]
+        return vehicle
