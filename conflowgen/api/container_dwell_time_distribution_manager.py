@@ -37,10 +37,12 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         and the storage requirement.
 
         A distribution is described by the following parameters:
-            * distribution_name (str) - The name of the distribution. Currently, only 'lognormal' is supported.
+            * distribution_name (str) - The name of the distribution.
             * average (float) - The expected mean
             * minimum (float) - The lower bound
             * maximum (float) - The upper bound
+
+        Currently, the distributions 'lognormal' and 'uniform' are supported.
         """
         sanitized_distribution = self._normalize_and_validate_distribution_with_two_dependent_variables(
             distribution,

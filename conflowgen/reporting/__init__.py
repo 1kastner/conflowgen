@@ -106,7 +106,7 @@ class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
 
         # All matplotlib reports are currently static in the sense that they do not require additional libraries to work
         # on a webpage such as the documentation. We can simply ignore this keyword.
-        kwargs.pop("static")
+        kwargs.pop("static", None)
 
         with plt.style.context('seaborn-colorblind'):
             self.get_report_as_graph(**kwargs)
