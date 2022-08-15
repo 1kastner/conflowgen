@@ -4,11 +4,8 @@ import datetime
 from typing import Dict, Tuple, List, Collection, Union
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
-from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
-    TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
-from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
 from conflowgen.tools import hashable
 
@@ -46,8 +43,6 @@ class YardCapacityAnalysis(AbstractAnalysis):
         Returns:
             A series of the used yard capacity in TEU over the time.
         """
-        container_stays: List[Tuple[datetime.datetime, datetime.datetime, float]] = []
-
         selected_containers = Container.select()
         if storage_requirement != "all":
             if hashable(storage_requirement) and storage_requirement in set(StorageRequirement):
@@ -59,34 +54,13 @@ class YardCapacityAnalysis(AbstractAnalysis):
                     Container.storage_requirement << storage_requirement
                 )
 
+        container_stays: List[Tuple[datetime.datetime, datetime.datetime, float]] = []
+
         container: Container
         for container in selected_containers:
-            container_enters_yard: datetime.datetime
-            container_leaves_yard: datetime.datetime
-            if container.delivered_by_truck is not None:
-                truck: Truck = container.delivered_by_truck
-                arrival_time_information: TruckArrivalInformationForDelivery = \
-                    truck.truck_arrival_information_for_delivery
-                container_enters_yard = arrival_time_information.realized_container_delivery_time
-            elif container.delivered_by_large_scheduled_vehicle is not None:
-                vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
-                container_enters_yard = vehicle.scheduled_arrival
-            else:
-                raise Exception(f"Faulty data: {container}")
-
-            if container.picked_up_by_truck is not None:
-                truck: Truck = container.picked_up_by_truck
-                arrival_time_information: TruckArrivalInformationForPickup = \
-                    truck.truck_arrival_information_for_pickup
-                container_leaves_yard = arrival_time_information.realized_container_pickup_time
-            elif container.picked_up_by_large_scheduled_vehicle is not None:
-                vehicle: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
-                container_leaves_yard = vehicle.scheduled_arrival
-            else:
-                raise Exception(f"Faulty data: {container}")
-
+            container_enters_yard = container.get_arrival_time()
+            container_leaves_yard = container.get_departure_time()
             teu_factor_of_container = ContainerLength.get_factor(container.length)
-
             container_stays.append((container_enters_yard, container_leaves_yard, teu_factor_of_container))
 
         if len(container_stays) == 0:
