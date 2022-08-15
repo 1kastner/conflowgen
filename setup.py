@@ -72,7 +72,8 @@ setup(
             # publish at PyPI
             'twine'
         ],
-        'jupyterlab': [  # a collection of nice-to-haves for working on Jupyter Notebooks
+        # a collection of nice-to-haves for working on Jupyter Notebooks - just a favorites list of the authors
+        'jupyterlab': [
             "jupyterlab-spellchecker",
             "jupyterlab-lsp",
             "python-lsp-server",
@@ -80,7 +81,10 @@ setup(
             "autopep8",
             "rope",
             "yapf",
-            "pydocstyle"
+            "pydocstyle",
+            "jupyterlab_code_formatter",
+            "black",
+            "isort"
         ]
     },
     license=metadata['__license__'],
