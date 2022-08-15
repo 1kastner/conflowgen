@@ -256,7 +256,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
     def _get_arrival_time_of_container(container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """
-        return container.get_arrival_time_on_terminal()
+        return container.get_arrival_time()
 
     def _find_alternative_mode_of_transportation(
             self,

@@ -123,7 +123,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
         possible_hours_for_truck_arrival = truck_arrival_distribution.size_of_time_window_in_hours
         self.assertEqual(
-            216 - 3,
+            216,
             possible_hours_for_truck_arrival,
             "The truck might arrive 216h after the arrival of the container, but not within the first three hours. "
             "Furthermore, the last hour is subtracted because up to 59 minutes are later added again and the maximum "
@@ -251,7 +251,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             StorageRequirement.standard]
         self.assertEqual(
             truck_arrival_distribution.size_of_time_window_in_hours,
-            int(math.floor(dwell_time_distribution.maximum) - math.ceil(dwell_time_distribution.minimum)),
+            int(math.floor(dwell_time_distribution.maximum)),
             "Import movement means the truck can come later than minimum but must be earlier than maximum"
         )
 
@@ -318,3 +318,108 @@ class TestTruckForImportContainersManager(unittest.TestCase):
                     distribution_dict["distribution_name"] = "uniform"
                     new_distribution[inbound_vehicle][outbound_vehicle][storage_requirement] = distribution_dict
         container_dwell_time_distribution_manager.set_container_dwell_time_distribution(new_distribution)
+
+    def test_helper_drop_where_zero(self):
+        cleaned = self.manager._drop_where_zero([1, 2, 3], [0, 0, 1])  # pylint: disable=protected-access
+        self.assertListEqual([3], cleaned)
+
+        cleaned = self.manager._drop_where_zero([1, 2, 3], [1, 0, 1])  # pylint: disable=protected-access
+        self.assertListEqual([1, 3], cleaned)
+
+        cleaned = self.manager._drop_where_zero([1, 2, 3], [0, 1, 1])  # pylint: disable=protected-access
+        self.assertListEqual([2, 3], cleaned)
+
+    def test_pickup_time_minimum(self):
+        container_arrival_time = datetime.datetime(
+            year=2021, month=8, day=6, hour=12, minute=19  # a Monday
+        )
+        container: Container = Container.create(
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            storage_requirement=StorageRequirement.standard,
+            weight=23,
+            length=ContainerLength.twenty_feet
+        )
+
+        # pylint: disable=protected-access
+        pickup_time = self.manager._get_container_pickup_time(
+            container, container_arrival_time, _debug_check_distribution_property="minimum"
+        )
+
+        distribution = self.manager.container_dwell_time_distributions[
+            ModeOfTransport.deep_sea_vessel][ModeOfTransport.truck][StorageRequirement.standard]
+        self.assertEqual(3, distribution.minimum)
+
+        minimum = datetime.datetime(2021, 8, 6, 16)  # 12:19 -> 13:00 -> 16:00
+        self.assertEqual(minimum, pickup_time)
+
+        containder_dwell_time = (minimum - container_arrival_time).total_seconds() / 3600
+        self.assertGreater(distribution.maximum, containder_dwell_time)
+        self.assertLess(distribution.minimum, containder_dwell_time)
+
+    def test_pickup_time_maximum(self):
+        container_arrival_time = datetime.datetime(
+            year=2021, month=8, day=8, hour=12, minute=13  # a Monday
+        )
+        container: Container = Container.create(
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            storage_requirement=StorageRequirement.standard,
+            weight=23,
+            length=ContainerLength.twenty_feet
+        )
+
+        # pylint: disable=protected-access
+        pickup_time = self.manager._get_container_pickup_time(
+            container, container_arrival_time, _debug_check_distribution_property="maximum"
+        )
+
+        distribution_1 = self.manager.container_dwell_time_distributions[
+            ModeOfTransport.deep_sea_vessel][ModeOfTransport.truck][StorageRequirement.standard]
+        self.assertEqual(216, distribution_1.maximum)
+
+        distribution_2 = self.manager.truck_arrival_distributions[
+            ModeOfTransport.deep_sea_vessel][StorageRequirement.standard]
+        distribution_2_maximum = distribution_2.size_of_time_window_in_hours
+        self.assertEqual(216, distribution_2_maximum)
+
+        # One might think that 215h59min would be a better choice. However, the earliest feasible time is 13:00 because
+        # in the truck arrival distribution we only account for full hours. That means we already have 47 minutes of
+        # waiting on the clock and we do not want to go beyond the maximum dwell time of 216h
+        maximum = datetime.datetime(2021, 8, 8, 13) + datetime.timedelta(hours=214, minutes=59)
+        self.assertEqual(maximum, pickup_time)
+
+        containder_dwell_time = (maximum - container_arrival_time).total_seconds() / 3600
+        self.assertGreater(distribution_1.maximum, containder_dwell_time)
+        self.assertLess(distribution_1.minimum, containder_dwell_time)
+
+    def test_pickup_time_average(self):
+        container_arrival_time = datetime.datetime(
+            year=2021, month=8, day=8, hour=12, minute=13  # a Monday
+        )
+        container: Container = Container.create(
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            storage_requirement=StorageRequirement.standard,
+            weight=23,
+            length=ContainerLength.twenty_feet
+        )
+
+        # pylint: disable=protected-access
+        pickup_time = self.manager._get_container_pickup_time(
+            container, container_arrival_time, _debug_check_distribution_property="average"
+        )
+
+        distribution = self.manager.container_dwell_time_distributions[
+            ModeOfTransport.deep_sea_vessel][ModeOfTransport.truck][StorageRequirement.standard]
+        self.assertEqual(72, distribution.average)
+
+        average = datetime.datetime(2021, 8, 8, 13) + datetime.timedelta(hours=72)
+        self.assertEqual(average, pickup_time)
+
+        containder_dwell_time = (average - container_arrival_time).total_seconds() / 3600
+        self.assertGreater(distribution.maximum, containder_dwell_time)
+        self.assertLess(distribution.minimum, containder_dwell_time)

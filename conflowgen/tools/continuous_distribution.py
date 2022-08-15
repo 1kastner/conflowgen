@@ -97,8 +97,8 @@ class ContinuousDistribution(abc.ABC):
         """
         xs = np.array(xs)
         densities = self._get_probabilities_based_on_distribution(xs)
-        densities[xs <= self.minimum] = 0
-        densities[xs >= self.maximum] = 0
+        densities[xs < self.minimum] = 0
+        densities[xs > self.maximum] = 0
         sum_of_all_densities = densities.sum()
         if not np.isnan(sum_of_all_densities) and sum_of_all_densities > 0:
             densities = densities / sum_of_all_densities
@@ -128,6 +128,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
         self.variance = variance
         self._lognorm = self._get_scipy_lognorm()
 
+    # noinspection PyUnresolvedReferences
     def _get_scipy_lognorm(self) -> scipy.stats.rv_frozen:
         """
         See https://www.johndcook.com/blog/2022/02/24/find-log-normal-parameters/ for reference
@@ -163,7 +164,8 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
             f"avg={self.average:.1f}{self.unit_repr}, "
             f"min={self.minimum:.1f}{self.unit_repr}, "
             f"max={self.maximum:.1f}{self.unit_repr}, "
-            f"var={self.variance:.1f}{self.unit_repr_square}"
+            f"var={self.variance:.1f}{self.unit_repr_square}, "
+            f"sd={self.variance ** .5:.1f}{self.unit_repr}"
             f">"
         )
 

@@ -3,7 +3,7 @@ import abc
 import logging
 import math
 import random
-from typing import List, Tuple, Union, Optional, Dict
+from typing import List, Tuple, Union, Optional, Dict, Sequence
 
 from conflowgen.tools.weekly_distribution import WeeklyDistribution
 from ..domain_models.data_types.storage_requirement import StorageRequirement
@@ -80,25 +80,13 @@ class AbstractTruckForContainersManager(abc.ABC):
                 container_dwell_time_distribution.maximum = int(math.floor(
                     container_dwell_time_distribution.maximum))
 
-                # When we talk about truck deliveries, they can come earliest at the maximum container dwell time
-                # and latest at the minimum. When, on the other hand, we talk about truck pickups, they can come
-                # earliest after container arrival and latest at the maximum dwell time.
-                # In both cases, less time windows are available.
-                if not self.is_reversed:
-                    considered_time_window_in_hours = (
-                        container_dwell_time_distribution.maximum
-                        - container_dwell_time_distribution.minimum
-                    )
-                else:
-                    considered_time_window_in_hours = container_dwell_time_distribution.maximum
-
                 self.logger.info(f"For vehicle type {vehicle_type} and storage requirement {storage_requirement}, "
                                  "the container dwell times need to range from "
                                  f"{container_dwell_time_distribution.minimum}h to "
                                  f"{container_dwell_time_distribution.maximum}h")
                 self.truck_arrival_distributions[vehicle_type][storage_requirement] = WeeklyDistribution(
                     hour_fraction_pairs=hour_of_the_week_fraction_pairs,
-                    size_of_time_window_in_hours=considered_time_window_in_hours
+                    size_of_time_window_in_hours=container_dwell_time_distribution.maximum
                 )
 
     def _get_distributions(
@@ -121,14 +109,14 @@ class AbstractTruckForContainersManager(abc.ABC):
     def _get_time_window_of_truck_arrival(
             self,
             container_dwell_time_distribution: ContinuousDistribution,
-            truck_arrival_distribution_slice: Dict[int, float]
+            truck_arrival_distribution_slice: Dict[int, float],
+            _debug_check_distribution_property: Optional[str] = None
     ) -> int:
         """
         Returns:
             Number of hours after the earliest possible slot
         """
         time_windows_for_truck_arrival = list(truck_arrival_distribution_slice.keys())
-        assert max(time_windows_for_truck_arrival) < container_dwell_time_distribution.maximum
 
         truck_arrival_probabilities = list(truck_arrival_distribution_slice.values())
         container_dwell_time_probabilities = container_dwell_time_distribution.get_probabilities(
@@ -138,19 +126,53 @@ class AbstractTruckForContainersManager(abc.ABC):
             truck_arrival_probabilities,
             container_dwell_time_probabilities
         )
+
         if sum(total_probabilities) == 0:  # bad circumstances, no slot available
-            raise Exception(f"No truck slots available! {truck_arrival_probabilities} and {total_probabilities} just "
-                            "do not match.")
-        selected_time_window = random.choices(
-            population=time_windows_for_truck_arrival,
-            weights=total_probabilities
-        )[0]
+            raise Exception(
+                f"No truck slots available! {truck_arrival_probabilities} and {total_probabilities} just do not match."
+            )
+
+        selected_time_window: int
+        if _debug_check_distribution_property:
+            hours_with_arrivals = self._drop_where_zero(truck_arrival_distribution_slice, total_probabilities)
+            if _debug_check_distribution_property == "minimum":
+                selected_time_window = min(hours_with_arrivals)
+            elif _debug_check_distribution_property == "maximum":
+                selected_time_window = max(hours_with_arrivals)
+            elif _debug_check_distribution_property == "average":
+                selected_time_window = container_dwell_time_distribution.average
+            else:
+                raise Exception(f"Unknown: {_debug_check_distribution_property}")
+        else:
+            selected_time_window = random.choices(
+                population=time_windows_for_truck_arrival,
+                weights=total_probabilities
+            )[0]
+
         if not self.is_reversed:  # truck delivery of export container
-            assert container_dwell_time_distribution.minimum <= selected_time_window
-            assert selected_time_window < container_dwell_time_distribution.maximum
+            # The container must be picked up later than the minimum dwell time
+            assert container_dwell_time_distribution.minimum <= selected_time_window, \
+                f"{container_dwell_time_distribution.minimum} <= {selected_time_window}"
+            # The contaienr must be picked up before the maximum dwell time is exceeded
+            assert selected_time_window <= container_dwell_time_distribution.maximum, \
+                f"{selected_time_window} <= {container_dwell_time_distribution.maximum}"
         else:  # truck pick-up of import container
-            assert 0 <= selected_time_window
-            assert selected_time_window < (container_dwell_time_distribution.maximum
-                                           - container_dwell_time_distribution.minimum)
+            # If the selected time window is zero, this means that actually the maximum dwell time was selected.
+            assert 0 <= selected_time_window, f"0 <= {selected_time_window}"
+            # If, e.g., a truck delivers a container to a vessel and the cut-off is 12h before vessel arrival,
+            # then the latest selected time window must be before that cut-off.
+            dwell_time_from_earliest_point_in_time_until_cutoff = (
+                    container_dwell_time_distribution.maximum - container_dwell_time_distribution.minimum
+            )
+            assert selected_time_window < dwell_time_from_earliest_point_in_time_until_cutoff, \
+                f"{selected_time_window} < {dwell_time_from_earliest_point_in_time_until_cutoff}"
 
         return selected_time_window
+
+    @staticmethod
+    def _drop_where_zero(sequence: Sequence, filter_sequence: Sequence) -> Sequence:
+        new_sequence = []
+        for element, filter_element in zip(sequence, filter_sequence):
+            if filter_element:
+                new_sequence.append(element)
+        return new_sequence

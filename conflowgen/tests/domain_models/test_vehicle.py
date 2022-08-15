@@ -58,10 +58,11 @@ class TestFeeder(unittest.TestCase):
 
     def test_save_feeder_to_database(self) -> None:
         """Check if feeder can be saved"""
+        now = datetime.datetime.now()
         schedule = Schedule.create(
             service_name="MyTestFeederLine",
             vehicle_type=ModeOfTransport.feeder,
-            vehicle_arrives_at=datetime.datetime.now(),
+            vehicle_arrives_at=now,
             average_vehicle_capacity=1100,
             average_moved_capacity=200
         )
@@ -69,7 +70,7 @@ class TestFeeder(unittest.TestCase):
             vehicle_name="TestFeeder1",
             capacity_in_teu=1000,
             moved_capacity=200,
-            scheduled_arrival=datetime.datetime.now(),
+            scheduled_arrival=now,
             schedule=schedule
         )
         Feeder.create(

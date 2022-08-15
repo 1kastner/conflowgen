@@ -5,10 +5,7 @@ from typing import Collection, Union
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
-from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
-    TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 from conflowgen.tools import hashable
 
@@ -84,33 +81,11 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
                     Container.picked_up_by << container_picked_up_by_vehicle_type
                 )
 
+        container: Container
         for container in selected_containers:
-            container_enters_yard: datetime.datetime
-            container_leaves_yard: datetime.datetime
-            if container.delivered_by_truck is not None:
-                truck: Truck = container.delivered_by_truck
-                arrival_time_information: TruckArrivalInformationForDelivery = \
-                    truck.truck_arrival_information_for_delivery
-                container_enters_yard = arrival_time_information.realized_container_delivery_time
-            elif container.delivered_by_large_scheduled_vehicle is not None:
-                vehicle: LargeScheduledVehicle = container.delivered_by_large_scheduled_vehicle
-                container_enters_yard = vehicle.scheduled_arrival
-            else:
-                raise Exception(f"Faulty data: {container}")
-
-            if container.picked_up_by_truck is not None:
-                truck: Truck = container.picked_up_by_truck
-                arrival_time_information: TruckArrivalInformationForPickup = \
-                    truck.truck_arrival_information_for_pickup
-                container_leaves_yard = arrival_time_information.realized_container_pickup_time
-            elif container.picked_up_by_large_scheduled_vehicle is not None:
-                vehicle: LargeScheduledVehicle = container.picked_up_by_large_scheduled_vehicle
-                container_leaves_yard = vehicle.scheduled_arrival
-            else:
-                raise Exception(f"Faulty data: {container}")
-
+            container_enters_yard = container.get_arrival_time()
+            container_leaves_yard = container.get_departure_time()
             container_dwell_time = container_leaves_yard - container_enters_yard
-
             container_dwell_times.add(container_dwell_time)
 
         return container_dwell_times
