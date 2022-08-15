@@ -68,7 +68,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
             int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
         ]
 
-        if container_dwell_times_in_hours:
+        number_containers = len(container_dwell_times_in_hours)
+        if number_containers:
             minimum_container_dwell_time = min(container_dwell_times_in_hours)
             maximum_container_dwell_timey = max(container_dwell_times_in_hours)
             average_container_dwell_time = statistics.mean(container_dwell_times_in_hours)
@@ -84,6 +85,7 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         report += "container picked up by vehicle type = " + self._get_vehicle_representation(
             container_picked_up_by_vehicle_type) + "\n"
         report += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
+        report += f"number containers:                          {number_containers:>10}\n"
         report += "                                       (reported in h)\n"
         report += f"minimum container dwell time:               {minimum_container_dwell_time:>10.1f}\n"
         report += f"average container dwell time:               {average_container_dwell_time:>10.1f}\n"

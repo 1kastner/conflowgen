@@ -111,6 +111,7 @@ class TestContainerDwellTimeAnalysisReport(UnitTestCaseWithMatplotlib):
 container is delivered by vehicle type = all
 container picked up by vehicle type = all
 storage requirement = all
+number containers:                                   0
                                        (reported in h)
 minimum container dwell time:                      0.0
 average container dwell time:                      0.0
@@ -131,6 +132,7 @@ standard deviation:                               -1.0
 container is delivered by vehicle type = truck
 container picked up by vehicle type = feeder
 storage requirement = all
+number containers:                                   0
                                        (reported in h)
 minimum container dwell time:                      0.0
 average container dwell time:                      0.0
@@ -147,6 +149,7 @@ standard deviation:                               -1.0
 container is delivered by vehicle type = all
 container picked up by vehicle type = all
 storage requirement = all
+number containers:                                   2
                                        (reported in h)
 minimum container dwell time:                     12.0
 average container dwell time:                     18.5
@@ -165,6 +168,7 @@ standard deviation:                                9.2
 container is delivered by vehicle type = barge
 container picked up by vehicle type = all
 storage requirement = all
+number containers:                                   0
                                        (reported in h)
 minimum container dwell time:                      0.0
 average container dwell time:                      0.0

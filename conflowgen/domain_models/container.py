@@ -4,7 +4,7 @@ from peewee import AutoField, BooleanField
 from peewee import ForeignKeyField
 from peewee import IntegerField
 
-from .arrival_information import TruckArrivalInformationForDelivery
+from .arrival_information import TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from .base_model import BaseModel
 from .field_types.container_length import ContainerLengthField
 from .field_types.mode_of_transport import ModeOfTransportField
@@ -85,18 +85,34 @@ class Container(BaseModel):
                   "explicitly to pick up the container so that the maximum dwell time is not exceeded."
     )
 
-    def get_arrival_time_on_terminal(self) -> datetime.datetime:
+    def get_arrival_time(self) -> datetime.datetime:
         container_arrival_time: datetime.datetime
         if self.delivered_by == ModeOfTransport.truck:
             # noinspection PyTypeChecker
             truck: Truck = self.delivered_by_truck
             truck_arrival_information: TruckArrivalInformationForDelivery = truck.truck_arrival_information_for_delivery
-            container_arrival = truck_arrival_information.realized_container_delivery_time
-        else:
+            container_arrival_time = truck_arrival_information.realized_container_delivery_time
+        elif self.delivered_by in ModeOfTransport.get_scheduled_vehicles():
             # noinspection PyTypeChecker
             large_scheduled_vehicle: LargeScheduledVehicle = self.delivered_by_large_scheduled_vehicle
-            container_arrival = large_scheduled_vehicle.scheduled_arrival
-        return container_arrival
+            container_arrival_time = large_scheduled_vehicle.scheduled_arrival
+        else:
+            raise Exception(f"Faulty data: {self}")
+        return container_arrival_time
+
+    def get_departure_time(self) -> datetime.datetime:
+        container_departure_time: datetime.datetime
+        if self.picked_up_by_truck is not None:
+            truck: Truck = self.picked_up_by_truck
+            arrival_time_information: TruckArrivalInformationForPickup = \
+                truck.truck_arrival_information_for_pickup
+            container_departure_time = arrival_time_information.realized_container_pickup_time
+        elif self.picked_up_by_large_scheduled_vehicle is not None:
+            vehicle: LargeScheduledVehicle = self.picked_up_by_large_scheduled_vehicle
+            container_departure_time = vehicle.scheduled_arrival
+        else:
+            raise Exception(f"Faulty data: {self}")
+        return container_departure_time
 
     def __repr__(self):
         return "<Container " \
@@ -107,3 +123,6 @@ class Container(BaseModel):
                f"picked_up_by_large_scheduled_vehicle: {self.picked_up_by_large_scheduled_vehicle}; " \
                f"picked_up_by_truck: {self.picked_up_by_truck}" \
                ">"
+
+    def __str__(self) -> str:
+        return repr(self)
