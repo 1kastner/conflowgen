@@ -69,8 +69,8 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
             self._get_container_volumes_in_teu()
 
         df = pd.DataFrame({
-            "inbound volume": inbound_capacities,
-            "outbound volume": outbound_actual_capacities,
+            "inbound volume (in TEU)": inbound_capacities,
+            "outbound volume (in TEU)": outbound_actual_capacities,
             "outbound maximum capacity": outbound_maximum_capacities
         })
         df.index = [str(i).replace("_", " ") for i in df.index]
