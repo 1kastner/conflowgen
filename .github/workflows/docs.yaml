@@ -42,11 +42,6 @@ jobs:
       run: |
         pip3 install --user -e .[dev]
 
-    - name: Set matplotlib backend to QT
-      run: |
-        export MPLBACKEND=svg
-        python -c "import matplotlib; print(matplotlib.rcParams['backend'])"
-
     - name: Build documentation and check for warnings
       run: |
         cd ./docs/ && make html SPHINXOPTS="-W --keep-going"
