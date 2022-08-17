@@ -24,7 +24,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             inbound: bool = True,
             outbound: bool = True,
             start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            end_date: Optional[datetime.datetime] = None,
     ) -> Dict[datetime.datetime, float]:
         """
         For each hour, the trucks entering through the truck gate are checked. Based on this, the required truck gate
@@ -92,7 +92,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
 
         truck_gate_throughput: Dict[datetime.datetime, float] = {
             time_window: 0
-            for time_window in get_hour_based_range(first_time_window, last_time_window)
+            for time_window in get_hour_based_range(first_time_window, last_time_window, True)
         }
 
         for time_of_container_crossing_quay_side in containers_that_pass_truck_gate:

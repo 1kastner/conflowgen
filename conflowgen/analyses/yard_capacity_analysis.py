@@ -19,7 +19,8 @@ class YardCapacityAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_used_yard_capacity_over_time(
-            storage_requirement: Union[str, Collection, StorageRequirement] = "all"
+            storage_requirement: Union[str, Collection, StorageRequirement] = "all",
+            smoothen_peaks: bool = True
     ) -> Dict[datetime.datetime, float]:
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
@@ -27,18 +28,24 @@ class YardCapacityAnalysis(AbstractAnalysis):
         ``storage_requirement`` the yard capacity can be filtered, e.g. to only include standard containers, empty
         containers, or any other kind of subset.
 
-        Please be aware that this method slightly overestimates the required capacity. If one container leaves the yard
-        at the beginning of the respective time window and another container enters the yard at the end of the same time
-        window, still the TEU equivalence of both containers is recorded as the required yard capacity. Obviously the
-        entering container could use the same slot as the container which entered later. This minor inaccuracy might be
-        of little importance because no yard should be planned that tight. The benefit is that it further allows a
-        faster computation.
+        Please be aware that this method slightly overestimates the required capacity if ``smoothen_peaks`` is set to
+        false.
+        When one container leaves the yard at the beginning of the respective time window and another container enters
+        the yard at the end of the same time window, still the TEU equivalence of both containers is recorded as the
+        required yard capacity for that time window.
+        Obviously, in that case the entering container could use the slot previously used by the container which left
+        earlier.
+        This, however, is not true if the container enters the terminal before the other container leaves.
+        This minor inaccuracy might be of little importance because no yard should be planned that tight.
+        If, on the other hand, ``smoothen_peaks`` is set to true, the last time window is not recorded as occupied.
+        This slightly underestimates the required capacity but leads to visually more appealing cuves with less spikes.
 
         Args:
             storage_requirement: One of
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
+            smoothen_peaks: Whether to smoothen the peaks.
 
         Returns:
             A series of the used yard capacity in TEU over the time.
@@ -74,13 +81,17 @@ class YardCapacityAnalysis(AbstractAnalysis):
 
         used_yard_capacity: Dict[datetime.datetime, float] = {
             time_window: 0
-            for time_window in get_hour_based_range(first_time_window, last_time_window)
+            for time_window in get_hour_based_range(
+                first_time_window, last_time_window, include_end=(not smoothen_peaks)
+            )
         }
 
         for (container_enters_yard, container_leaves_yard, teu_factor_of_container) in container_stays:
             time_window_at_entering = get_hour_based_time_window(container_enters_yard)
             time_window_at_leaving = get_hour_based_time_window(container_leaves_yard)
-            for time_window in get_hour_based_range(time_window_at_entering, time_window_at_leaving):
+            for time_window in get_hour_based_range(
+                    time_window_at_entering, time_window_at_leaving, include_end=(not smoothen_peaks)
+            ):
                 used_yard_capacity[time_window] += teu_factor_of_container
 
         return used_yard_capacity

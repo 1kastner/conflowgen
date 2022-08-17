@@ -80,8 +80,12 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
         self.assertEqual(len(used_yard_over_time), 28)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 27)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
 
     def test_with_two_containers(self):
@@ -143,8 +147,12 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck_2
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
         self.assertEqual(len(used_yard_over_time), 28)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 27)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
 
     def test_with_container_group(self):
@@ -186,8 +194,14 @@ class TestYardCapacityAnalysis(unittest.TestCase):
                 picked_up_by_large_scheduled_vehicle=feeder_lsv_2
             )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
         self.assertEqual(len(used_yard_over_time), 75)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
         self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))
         self.assertListEqual(list(used_yard_over_time.values()), [0] + [20] * 73 + [0])
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 74)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
+        self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))
+        self.assertListEqual(list(used_yard_over_time.values()), [0] + [20] * 72 + [0])
