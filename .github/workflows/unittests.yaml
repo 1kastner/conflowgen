@@ -32,6 +32,16 @@ jobs:
       run: |
         pip3 install --user -e .[dev]
 
+    - name: Check installed versions
+      run: >
+        python -c "import watermark; print(watermark.watermark(
+          packages="matplotlib,conflowgen,scipy,numpy,plotly", python=True, machine=True)
+        )"
+
+    - name: Check matplotlib backend
+      run: |
+        python -c 'import matplotlib; print(matplotlib.rcParams['backend'])'
+
     - name: Test with pytest
       run: |
         pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html
