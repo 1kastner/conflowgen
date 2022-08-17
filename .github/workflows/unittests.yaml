@@ -40,7 +40,7 @@ jobs:
 
     - name: Check matplotlib backend
       run: |
-        python -c 'import matplotlib; print(matplotlib.rcParams['backend'])'
+        python -c "import matplotlib; print(matplotlib.rcParams['backend'])"
 
     - name: Test with pytest
       run: |
