@@ -122,10 +122,10 @@ standard deviation (laden):                       -1.0
 storage requirement = all
                                      (reported in TEU)
 maximum used yard capacity:                        3.0
-average used yard capacity:                        1.9
+average used yard capacity:                        1.8
 standard deviation:                                1.1
 maximum used yard capacity (laden):                3.0
-average used yard capacity (laden):                1.9
+average used yard capacity (laden):                1.8
 standard deviation (laden):                        1.1
 (rounding errors might exist)
 """

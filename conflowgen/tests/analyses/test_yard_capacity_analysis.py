@@ -80,8 +80,12 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
         self.assertEqual(len(used_yard_over_time), 28)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 27)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
 
     def test_with_two_containers(self):
@@ -143,6 +147,61 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck_2
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time()
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
         self.assertEqual(len(used_yard_over_time), 28)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 27)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
+
+    def test_with_container_group(self):
+        now = datetime.datetime.now()
+        schedule = Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=now.date(),
+            vehicle_arrives_at_time=now.time(),
+            average_vehicle_capacity=300,
+            average_moved_capacity=300,
+        )
+        feeder_lsv_1 = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
+            capacity_in_teu=300,
+            moved_capacity=schedule.average_moved_capacity,
+            scheduled_arrival=now,
+            schedule=schedule
+        )
+        Feeder.create(
+            large_scheduled_vehicle=feeder_lsv_1
+        )
+        feeder_lsv_2 = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder2",
+            capacity_in_teu=300,
+            moved_capacity=schedule.average_moved_capacity,
+            scheduled_arrival=now + datetime.timedelta(hours=72),
+            schedule=schedule
+        )
+        for _ in range(20):
+            Container.create(
+                weight=20,
+                length=ContainerLength.twenty_feet,
+                storage_requirement=StorageRequirement.standard,
+                delivered_by=ModeOfTransport.feeder,
+                delivered_by_large_scheduled_vehicle=feeder_lsv_1,
+                picked_up_by=ModeOfTransport.truck,
+                picked_up_by_initial=ModeOfTransport.truck,
+                picked_up_by_large_scheduled_vehicle=feeder_lsv_2
+            )
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
+        self.assertEqual(len(used_yard_over_time), 75)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
+        self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))
+        self.assertListEqual(list(used_yard_over_time.values()), [0] + [20] * 73 + [0])
+
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        self.assertEqual(len(used_yard_over_time), 74)
+        self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
+        self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))
+        self.assertListEqual(list(used_yard_over_time.values()), [0] + [20] * 72 + [0])

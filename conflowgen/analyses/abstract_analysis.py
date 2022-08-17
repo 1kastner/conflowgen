@@ -15,11 +15,18 @@ def get_week_based_time_window(point_in_time: datetime.datetime) -> datetime.dat
     return monday_of_its_week
 
 
-def get_hour_based_range(start: datetime.datetime, end: datetime.datetime) -> List[datetime.datetime]:
-    return [
+def get_hour_based_range(
+        start: datetime.datetime,
+        end: datetime.datetime,
+        include_end: bool
+) -> List[datetime.datetime]:
+    result = [
         start + datetime.timedelta(hours=hours)
         for hours in range(0, int((end - start).total_seconds() // 3600))
-    ] + [end]
+    ]
+    if include_end:
+        result += [end]
+    return result
 
 
 SECONDS_IN_WEEK = 604800

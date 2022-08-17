@@ -138,14 +138,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_type: str,
             ax: Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound volume", y="outbound volume", ax=ax)
+        ax = df.plot.scatter(x="inbound volume (in TEU)", y="outbound volume (in TEU)", ax=ax)
         slope = 1 + self.transportation_buffer
-        ax.axline((0, 0), slope=slope, color='black', label='outbound capacity')
+        ax.axline((0, 0), slope=slope, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 0), slope=1, color='gray', label='equilibrium')
         ax.set_title(self.plot_title + " (absolute),\n vehicle type = " + vehicle_type)
         ax.set_aspect('equal', adjustable='box')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
-        maximum = df[["inbound volume", "outbound volume"]].max(axis=1).max(axis=0)
+        maximum = df[["inbound volume (in TEU)", "outbound volume (in TEU)"]].max(axis=1).max(axis=0)
         axis_limitation = maximum * 1.1  # add some white space to the top and left
         ax.set_xlim([0, axis_limitation])
         ax.set_ylim([0, axis_limitation])
@@ -157,8 +157,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_type: str,
             ax: Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound volume", y="ratio", ax=ax)
-        ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='outbound capacity')
+        ax = df.plot.scatter(x="inbound volume (in TEU)", y="ratio", ax=ax)
+        ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 1), slope=0, color='gray', label='equilibrium')
         ax.set_title(self.plot_title + " (relative),\n vehicle type = " + vehicle_type)
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
@@ -173,11 +173,11 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_name = self._create_readable_name(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
-                "inbound volume": inbound_capacity,
-                "outbound volume": used_outbound_capacity
+                "inbound volume (in TEU)": inbound_capacity,
+                "outbound volume (in TEU)": used_outbound_capacity
             })
         df = pd.DataFrame(rows)
-        df["ratio"] = df["outbound volume"] / df["inbound volume"]
+        df["ratio"] = df["outbound volume (in TEU)"] / df["inbound volume (in TEU)"]
         return df
 
     def _get_capacities_depending_on_vehicle_type(
