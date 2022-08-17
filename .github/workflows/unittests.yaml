@@ -42,6 +42,10 @@ jobs:
       run: |
         python -c "import matplotlib; print(matplotlib.rcParams['backend'])"
 
+    - name: Set matplotlib backend to QT
+      run: |
+        export MPLBACKEND=qtagg
+
     - name: Test with pytest
       run: |
         pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html
