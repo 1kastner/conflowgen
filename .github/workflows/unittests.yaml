@@ -45,7 +45,7 @@ jobs:
     - name: Set matplotlib backend to QT
       run: |
         export MPLBACKEND=qtagg
-        python -c "import matplotlib; matplotlib.use('Qt5Agg'); print(matplotlib.rcParams['backend'])"
+        python -c "import matplotlib; matplotlib.use('qt'); print(matplotlib.rcParams['backend'])"
 
     - name: Test with pytest
       run: |
