@@ -36,7 +36,7 @@ jobs:
       run: >
         python -c "import watermark; print(watermark.watermark(
           packages='matplotlib,conflowgen,scipy,numpy,plotly', python=True, machine=True
-        )"
+        ))"
 
     - name: Check matplotlib backend
       run: |
