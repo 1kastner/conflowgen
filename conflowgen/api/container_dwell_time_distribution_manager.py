@@ -37,10 +37,10 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         and the storage requirement.
 
         A distribution is described by the following parameters:
-            * distribution_name (str) - The name of the distribution.
-            * average (float) - The expected mean
-            * minimum (float) - The lower bound
-            * maximum (float) - The upper bound
+            * distribution_name (:obj:`str`) - The name of the distribution.
+            * average (:obj:`float`) - The expected mean
+            * minimum (:obj:`float`) - The lower bound
+            * maximum (:obj:`float`) - The upper bound
 
         Currently, the distributions 'lognormal' and 'uniform' are supported.
         """
