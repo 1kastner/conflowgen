@@ -67,7 +67,7 @@ setup(
             # checking code quality
             'pylint',  # lint Python code
             'flake8',  # lint Python code
-            'flake8_nb <0.5',  # lint Jupyter Notebooks (in v0.5 currently flake8_nb specific constants are not properly set)
+            'flake8_nb <0.5',  # lint Jupyter Notebooks (in v0.5.0-1, flake8_nb config is not used)
 
             # publish at PyPI
             'twine',
