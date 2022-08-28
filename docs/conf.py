@@ -75,7 +75,7 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
-autodoc_typehints = 'signature'
+autodoc_typehints = 'both'
 
 autodoc_typehints_format = 'short'
 
@@ -150,6 +150,7 @@ bibtex_reference_style = "author_year"
 numfig = True
 
 # -- Style nbsphinx notebook rendering ----------------------------------------
+
 nbsphinx_prolog = """
 .. raw:: html
 
@@ -172,8 +173,14 @@ nbsphinx_prolog = """
         }
 
         /* Some of the log statements are too long and a scrolling bar appears. This needs to be avoided */
-        div#Generate-the-data pre {
+        div pre {
             white-space: pre-wrap !important;
+        }
+        
+        /* Add listing symbol (without this, the template does not create a proper list but just paragraphs) */
+        ul.simple>li {
+            list-style: square;
+            margin: 20px;
         }
 
     </style>
