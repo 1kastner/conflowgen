@@ -75,7 +75,7 @@ todo_include_todos = True
 
 autoclass_content = 'both'
 
-autodoc_typehints = 'signature'
+autodoc_typehints = 'both'
 
 autodoc_typehints_format = 'short'
 
@@ -150,6 +150,7 @@ bibtex_reference_style = "author_year"
 numfig = True
 
 # -- Style nbsphinx notebook rendering ----------------------------------------
+
 nbsphinx_prolog = """
 .. raw:: html
 
