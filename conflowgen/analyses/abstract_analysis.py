@@ -48,7 +48,8 @@ class AbstractAnalysis(abc.ABC):
         """
 
         Args:
-            transportation_buffer: The buffer, e.g. 0.2 means that 20% more containers (in TEU) can be put on a vessel
+            transportation_buffer:
+                The buffer, e.g. 0.2 means that 20% more containers (in TEU) can be put on a vessel
                 compared to the amount of containers it had on its inbound journey - as long as the total vehicle
                 capacity would not be exceeded.
         """

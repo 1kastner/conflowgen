@@ -27,6 +27,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
     }
 
     def __init__(self):
+        """"""  # overwrite explanation of transportation_buffer
         super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
