@@ -3,6 +3,7 @@ from __future__ import annotations
 import statistics
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.axis
 
 from conflowgen.analyses.quay_side_throughput_analysis import QuaySideThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -31,7 +32,6 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
         self.analysis = QuaySideThroughputAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
-
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         quay_side_throughput = self.analysis.get_throughput_over_time()
@@ -58,12 +58,12 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a line graph using pandas.
 
         Returns:
-             The matplotlib axis of the bar chart.
+             The matplotlib axis of the line chart over time.
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 

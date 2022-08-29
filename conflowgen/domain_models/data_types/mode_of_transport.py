@@ -47,6 +47,6 @@ class ModeOfTransport(enum.Enum):
 
     def __str__(self):
         """
-        The representation is e.g. 'feeder' instead of '<ModeOfTransport.feeder>' and thus nicer for the logs.
+        The representation is, e.g., 'feeder' instead of '<ModeOfTransport.feeder>' and thus nicer for the logs.
         """
         return self.value

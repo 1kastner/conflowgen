@@ -25,7 +25,7 @@ class YardCapacityAnalysis(AbstractAnalysis):
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
         capacity in TEU can be deduced - it is simply the maximum of these values. In addition, with the parameter
-        ``storage_requirement`` the yard capacity can be filtered, e.g. to only include standard containers, empty
+        ``storage_requirement`` the yard capacity can be filtered, e.g., to only include standard containers, empty
         containers, or any other kind of subset.
 
         Please be aware that this method slightly overestimates the required capacity if ``smoothen_peaks`` is set to
@@ -38,7 +38,8 @@ class YardCapacityAnalysis(AbstractAnalysis):
         This, however, is not true if the container enters the terminal before the other container leaves.
         This minor inaccuracy might be of little importance because no yard should be planned that tight.
         If, on the other hand, ``smoothen_peaks`` is set to true, the last time window is not recorded as occupied.
-        This slightly underestimates the required capacity but leads to visually more appealing cuves with less spikes.
+        This slightly underestimates the required capacity but leads to visually more appealing curves with fewer
+        spikes.
 
         Args:
             storage_requirement: One of

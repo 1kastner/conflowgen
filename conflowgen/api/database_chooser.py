@@ -80,7 +80,7 @@ class DatabaseChooser:
 
     def close_current_connection(self) -> None:
         """
-        Close current connection, e.g. as a preparatory step to create a new SQLite database.
+        Close current connection, e.g., as a preparatory step to create a new SQLite database.
         """
         if self.peewee_sqlite_db:
             self._close_and_reset_db()

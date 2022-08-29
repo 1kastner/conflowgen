@@ -4,6 +4,7 @@ from typing import Tuple, Any, Dict, Optional
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker
+import matplotlib.figure
 import pandas as pd
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -50,8 +51,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
 
         Keyword Args:
-            vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
-                vehicle types, e.g. passed as a :class:`list` or :class:`set`.
+            vehicle_type (:py:obj:`Any`): Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a
+                whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
 
@@ -82,14 +83,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.figure.Figure:
         """
         The report as a graph is represented as a scatter plot using pandas.
 
         Keyword Args:
-            plot_type: Either "absolute", "relative", or "both". Defaults to "both".
-            vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
-                vehicle types, e.g. passed as a :class:`list` or :class:`set`.
+            plot_type (:py:obj:`str`): Either "absolute", "relative", or "both". Defaults to "both".
+            vehicle_type (:py:obj:`Any`): Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a
+                whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
 

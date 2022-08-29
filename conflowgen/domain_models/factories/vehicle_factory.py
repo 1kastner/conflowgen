@@ -17,7 +17,7 @@ class UnnecessaryVehicleException(Exception):
 
 
 class MissingInformationException(Exception):
-    """Some information should have been provided but is missing, e.g. is `None`"""
+    """Some information should have been provided but is missing, e.g., is `None`"""
     pass
 
 

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import statistics
+import typing  # noqa, pylint: disable=unused-import  # it is actually used in the docstring!
+
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.axis
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -31,10 +34,14 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
     def get_report_as_text(self, **kwargs) -> str:
         """
         Keyword Args:
-            start_time (Optional[datetime.datetime]): When to start recording
-            end_time (Optional[datetime.datetime]): When to end recording
-            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
-            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
+            start_time (typing.Optional[datetime.datetime]):
+                When to start recording
+            end_time (typing.Optional[datetime.datetime]):
+                When to end recording
+            inbound (typing.Optional[bool]):
+                Whether to check for trucks which deliver a container on their inbound journey
+            outbound (typing.Optional[bool]):
+                Whether to check for trucks which pick up a container on their outbound journey
 
         Returns:
             The report in text format.
@@ -71,19 +78,24 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a line graph using pandas.
 
         Keyword Args:
-            start_time (Optional[datetime.datetime]): When to start recording
-            end_time (Optional[datetime.datetime]): When to end recording
-            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
-            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
-            ax (Optional[plt.Axes]): Which MatPlotLib axis to plot on
+            start_time (typing.Optional[datetime.datetime]):
+                When to start recording
+            end_time (typing.Optional[datetime.datetime]):
+                When to end recording
+            inbound (typing.Optional[bool]):
+                Whether to check for trucks which deliver a container on their inbound journey
+            outbound (typing.Optional[bool]):
+                Whether to check for trucks which pick up a container on their outbound journey
+            ax (typing.Optional[matplotlib.axis.Axis]):
+                Which matplotlib axis to plot on
 
         Returns:
-             The matplotlib axis of the bar chart.
+             The matplotlib axis of the plot over time.
         """
         inbound = kwargs.pop("inbound", True)
         outbound = kwargs.pop("outbound", True)

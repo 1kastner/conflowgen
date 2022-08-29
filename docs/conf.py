@@ -52,7 +52,7 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
     'sphinx.ext.autosectionlabel',  # create reference for each section
-    'sphinx.ext.viewcode',  # create html page for each source file and link between it and and the docs
+    'sphinx.ext.viewcode',  # create html page for each source file and link between it and the docs
 
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
@@ -71,25 +71,15 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.tools']
 
 add_module_names = False
 
-todo_include_todos = True
+todo_include_todos = True  # this is currently especially the open tickets at plotly
 
-autoclass_content = 'both'
+autoclass_content = 'both'  # report both the class docs and __init__ docs
 
-autodoc_typehints = 'both'
+autodoc_typehints = 'description'  # show in description, not signature
 
-autodoc_typehints_format = 'short'
+autodoc_typehints_format = 'short'  # drop leading package path as it takes too much space
 
 python_use_unqualified_type_names = True  # workaround, see https://github.com/sphinx-doc/sphinx/issues/10290
-
-
-def rework_annotations(app, obj, bound_method):
-    if "return" in obj.__annotations__ and obj.__annotations__["return"] is None:
-        del obj.__annotations__["return"]  # drop return none
-
-
-def setup(app):
-    app.connect("autodoc-before-process-signature", rework_annotations)
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -125,7 +115,9 @@ mathjax3_config = {
 version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
 intersphinx_mapping = {
     'python': (f'https://docs.python.org/{version_link}', None),  # link to used Python version
-    'numpy': ('https://numpy.org/doc/stable/', None),  # link to numpy
+    'numpy': ('https://numpy.org/doc/stable', None),
+    'matplotlib': ('https://matplotlib.org/stable', None),
+    'plotly': ('https://plotly.com/python-api-reference', None),
 }
 
 # -- Options for Included Jupyter Notebooks ----------------------------------
@@ -153,6 +145,8 @@ numfig = True
 
 nbsphinx_prolog = """
 .. raw:: html
+
+    <!-- nbsphinx prolog - start -->
 
     <style>
         /* Hide the prompts, i.e. the leading numbers in square brackets of Jupyter Notebooks such as '[1]' */
@@ -184,6 +178,8 @@ nbsphinx_prolog = """
         }
 
     </style>
+    
+    <!-- nbsphinx prolog - end -->
 """
 
 # -- Setting up git lfs if Missing ---------------------------------------------

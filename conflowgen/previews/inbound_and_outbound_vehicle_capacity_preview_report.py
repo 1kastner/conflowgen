@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Dict
 
+import matplotlib
 import numpy as np
 import pandas as pd
 
@@ -66,7 +67,7 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a bar chart using pandas.
 

@@ -3,7 +3,7 @@ import itertools
 import logging
 from typing import Dict
 
-import plotly.graph_objects as go
+import plotly.graph_objects
 
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview
@@ -79,7 +79,7 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         inbound_to_outbound_flow = self.preview.get_inbound_to_outbound_flow()
         return inbound_to_outbound_flow
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> plotly.graph_objects.Figure:
         """
         The container flow is represented by a Sankey diagram.
 
@@ -95,8 +95,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
               coordinates need to be :math:`0 < x,y < 1` (no equals!), see
               https://github.com/plotly/plotly.py/issues/3002.
 
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
-            in a Jupyter Notebook.
+            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
+            e.g., in a Jupyter Notebook.
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
@@ -131,9 +131,9 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
                 round(to_outbound_flow[i], 2))
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
         ]
-        fig = go.Figure(
+        fig = plotly.graph_objects.Figure(
             data=[
-                go.Sankey(
+                plotly.graph_objects.Sankey(
                     arrangement='perpendicular',
                     node=dict(
                         pad=15,

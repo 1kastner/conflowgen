@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 import logging
 
-import plotly.graph_objects as go
+import plotly.graph_objs
 
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
@@ -64,7 +64,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> plotly.graph_objs.Figure:
         """
         The container flow is represented by a Sankey diagram.
 
@@ -77,8 +77,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
               coordinates need to be :math:`0 < x,y < 1` (no equals!), see
               https://github.com/plotly/plotly.py/issues/3002.
 
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
-            in a Jupyter Notebook.
+            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
+            e.g., in a Jupyter Notebook.
 
         Returns:
             The plotly figure of the Sankey diagram.
@@ -120,9 +120,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
                 round(to_adjusted_flow[i], 2))
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
         ]
-        fig = go.Figure(
+        fig = plotly.graph_objs.Figure(
             data=[
-                go.Sankey(
+                plotly.graph_objs.Sankey(
                     arrangement='perpendicular',
                     node=dict(
                         pad=15,

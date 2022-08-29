@@ -1,7 +1,3 @@
-"""
-Check if containers can be stored in the database, i.e. the ORM model is working.
-"""
-
 import datetime
 import unittest
 

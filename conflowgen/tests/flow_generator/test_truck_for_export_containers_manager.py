@@ -326,9 +326,9 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         self.assertEqual(minimum, delivery_time)
 
         # export container -
-        containder_dwell_time = (container_departure_time - minimum).total_seconds() / 3600
-        self.assertGreater(distribution.maximum, containder_dwell_time)
-        self.assertLess(distribution.minimum, containder_dwell_time)
+        container_dwell_time = (container_departure_time - minimum).total_seconds() / 3600
+        self.assertGreater(distribution.maximum, container_dwell_time)
+        self.assertLess(distribution.minimum, container_dwell_time)
 
     def test_delivery_time_maximum(self):
         container_departure_time = datetime.datetime(
@@ -393,6 +393,6 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         average = datetime.datetime(2021, 8, 8, 12) - datetime.timedelta(hours=(468 - 156 - 1))
         self.assertEqual(average, delivery_time)
 
-        containder_dwell_time = (container_departure_time - average).total_seconds() / 3600
-        self.assertGreater(distribution.maximum, containder_dwell_time)
-        self.assertLess(distribution.minimum, containder_dwell_time)
+        container_dwell_time = (container_departure_time - average).total_seconds() / 3600
+        self.assertGreater(distribution.maximum, container_dwell_time)
+        self.assertLess(distribution.minimum, container_dwell_time)

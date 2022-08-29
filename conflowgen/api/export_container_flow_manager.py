@@ -11,7 +11,7 @@ class ExportContainerFlowManager:
     """
     In the SQLite databases all data is stored. This might not be the right format for further usage though. This
     manager provides the interface to export the container flow, excluding the input distributions etc., so that they
-    can be read in easily for the next step, e.g. a routine in a simulation model or mathematical optimization script.
+    can be read in easily for the next step, e.g., a routine in a simulation model or mathematical optimization script.
     """
 
     def __init__(self):
