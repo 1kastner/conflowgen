@@ -3,6 +3,7 @@ from __future__ import annotations
 import statistics
 import pandas as pd
 import matplotlib.pyplot as plt
+import typing
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -31,10 +32,14 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
     def get_report_as_text(self, **kwargs) -> str:
         """
         Keyword Args:
-            start_time (Optional[datetime.datetime]): When to start recording
-            end_time (Optional[datetime.datetime]): When to end recording
-            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
-            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
+            start_time (typing.Optional[datetime.datetime]):
+                When to start recording
+            end_time (typing.Optional[datetime.datetime]):
+                When to end recording
+            inbound (typing.Optional[bool]):
+                Whether to check for trucks which deliver a container on their inbound journey
+            outbound (typing.Optional[bool]):
+                Whether to check for trucks which pick up a container on their outbound journey
 
         Returns:
             The report in text format.
@@ -76,11 +81,16 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a line graph using pandas.
 
         Keyword Args:
-            start_time (Optional[datetime.datetime]): When to start recording
-            end_time (Optional[datetime.datetime]): When to end recording
-            inbound (Optional[bool]): Whether to check for trucks which deliver a container on their inbound journey
-            outbound (Optional[bool]): Whether to check for trucks which pick up a container on their outbound journey
-            ax (Optional[plt.Axes]): Which MatPlotLib axis to plot on
+            start_time (typing.Optional[datetime.datetime]):
+                When to start recording
+            end_time (typing.Optional[datetime.datetime]):
+                When to end recording
+            inbound (typing.Optional[bool]):
+                Whether to check for trucks which deliver a container on their inbound journey
+            outbound (typing.Optional[bool]):
+                Whether to check for trucks which pick up a container on their outbound journey
+            ax (typing.Optional[plt.Axes]):
+                Which matplotlib axis to plot on
 
         Returns:
              The matplotlib axis of the bar chart.

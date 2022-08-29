@@ -1,5 +1,7 @@
 from __future__ import annotations
 import enum
+from collections.abc import Collection
+
 import enum_tools.documentation
 
 
@@ -29,12 +31,12 @@ class StorageRequirement(enum.Enum):
     """
 
     @classmethod
-    def get_full_containers(cls):
+    def get_full_containers(cls) -> Collection[StorageRequirement]:
         """All containers that are not empty containers are also referred to as full containers.
         """
         return {cls.standard, cls.reefer, cls.dangerous_goods}
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         The representation is e.g. 'reefer' instead of '<StorageRequirement.reefer>' and thus nicer for the logs.
         """

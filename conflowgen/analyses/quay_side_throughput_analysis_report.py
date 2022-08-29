@@ -31,7 +31,6 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
         self.analysis = QuaySideThroughputAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
-
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         quay_side_throughput = self.analysis.get_throughput_over_time()
