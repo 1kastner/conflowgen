@@ -152,7 +152,7 @@ def _check_all_required_keys_are_set_in_distribution(
 
     if desired_element_type in SUPPORTED_PRIMITIVE_KEY_TYPES:
         # This is a primitive and for such no obligatory value lists exist.
-        # This is the case e.g. for container weights.
+        # This is the case, e.g., for container weights.
         sanitized_distribution = _check_all_keys_are_of_intended_primitive_type(
             distribution,
             desired_element_type

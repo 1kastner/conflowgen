@@ -153,7 +153,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             # The container must be picked up later than the minimum dwell time
             assert container_dwell_time_distribution.minimum <= selected_time_window, \
                 f"{container_dwell_time_distribution.minimum} <= {selected_time_window}"
-            # The contaienr must be picked up before the maximum dwell time is exceeded
+            # The container must be picked up before the maximum dwell time is exceeded
             assert selected_time_window <= container_dwell_time_distribution.maximum, \
                 f"{selected_time_window} <= {container_dwell_time_distribution.maximum}"
         else:  # truck pick-up of import container

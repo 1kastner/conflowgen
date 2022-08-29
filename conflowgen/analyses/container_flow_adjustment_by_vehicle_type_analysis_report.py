@@ -77,8 +77,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
               coordinates need to be :math:`0 < x,y < 1` (no equals!), see
               https://github.com/plotly/plotly.py/issues/3002.
 
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized e.g.
-            in a Jupyter Notebook.
+            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
+            e.g., in a Jupyter Notebook.
 
         Returns:
             The plotly figure of the Sankey diagram.

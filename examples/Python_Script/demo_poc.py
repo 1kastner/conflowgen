@@ -112,7 +112,7 @@ logger.info("For a better understanding of the data, it is advised to study the 
 
 logger.info("Start data export...")
 
-# Export important entries from SQL to CSV so that it can be further processed, e.g. by a simulation software
+# Export important entries from SQL to CSV so that it can be further processed, e.g., by a simulation software
 export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_folder_name = "demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
 export_container_flow_manager.export(

@@ -38,6 +38,6 @@ class StorageRequirement(enum.Enum):
 
     def __str__(self) -> str:
         """
-        The representation is e.g. 'reefer' instead of '<StorageRequirement.reefer>' and thus nicer for the logs.
+        The representation is, e.g., 'reefer' instead of '<StorageRequirement.reefer>' and thus nicer for the logs.
         """
         return self.value

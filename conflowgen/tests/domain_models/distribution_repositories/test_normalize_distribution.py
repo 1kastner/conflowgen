@@ -21,7 +21,7 @@ class TestNormalizedDependentDistribution(unittest.TestCase):
                 "c": 0.4
             }
         )
-        self.assertEqual(len(context.output), 1, "Excatly one log message")
+        self.assertEqual(len(context.output), 1, "Exactly one log message")
         self.assertEqual(
             context.output[0],
             "DEBUG:conflowgen:Sum of fractions was not 1 and was automatically normalized."

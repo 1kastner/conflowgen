@@ -14,7 +14,7 @@ We would love to see ConFlowGen grow in different dimensions, including (but not
 
 When you work on different tasks related to ConFlowGen, it is suggested to isolate the development environment from the
 other Python environment(s) you use for daily tasks.
-This can be achieved e.g. with
+This can be achieved, e.g., with
 [virtualenv](https://virtualenv.pypa.io/en/latest/)
 or
 [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).
@@ -82,7 +82,7 @@ Likewise, `flake8_nb` is invoked in the same manner.
 For the installation process (both normal users and devs),
 dependencies should be restricted to version ranges as little as possible.
 The users and developers are expected to have an up-to-date Python environment,
-e.g. by means of an isolated environment.
+e.g., by means of an isolated environment.
 However, in case a future update of a dependency does break ConFlowGen,
 we need to be able to return to a working state.
 Thus, the library versions that are known to work are recorded and updated in a certain interval.
@@ -111,7 +111,7 @@ The conda recipe is based on the PyPI package and is located at
 The version number is bumped manually by updating the version number at the following places:
 - [./conflowgen/metadata.py](https://github.com/1kastner/conflowgen/blob/main/conflowgen/metadata.py):
   Updates the version number for the PyPI package. Afterwards the PyPI package can be uploaded.
-- The conda recipe requires a separat manual version number update in the
+- The conda recipe requires a separate manual version number update in the
   [recipe](https://github.com/conda-forge/conflowgen-feedstock/blob/main/recipe/meta.yaml).
 - [./CITATION.cff](https://github.com/1kastner/conflowgen/blob/main/CITATION.cff):
   Updates the version number for zenodo.

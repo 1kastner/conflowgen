@@ -354,9 +354,9 @@ class TestTruckForImportContainersManager(unittest.TestCase):
         minimum = datetime.datetime(2021, 8, 6, 16)  # 12:19 -> 13:00 -> 16:00
         self.assertEqual(minimum, pickup_time)
 
-        containder_dwell_time = (minimum - container_arrival_time).total_seconds() / 3600
-        self.assertGreater(distribution.maximum, containder_dwell_time)
-        self.assertLess(distribution.minimum, containder_dwell_time)
+        container_dwell_time = (minimum - container_arrival_time).total_seconds() / 3600
+        self.assertGreater(distribution.maximum, container_dwell_time)
+        self.assertLess(distribution.minimum, container_dwell_time)
 
     def test_pickup_time_maximum(self):
         container_arrival_time = datetime.datetime(
@@ -387,7 +387,7 @@ class TestTruckForImportContainersManager(unittest.TestCase):
 
         # One might think that 215h59min would be a better choice. However, the earliest feasible time is 13:00 because
         # in the truck arrival distribution we only account for full hours. That means we already have 47 minutes of
-        # waiting on the clock and we do not want to go beyond the maximum dwell time of 216h
+        # waiting on the clock, and we do not want to go beyond the maximum dwell time of 216h
         maximum = datetime.datetime(2021, 8, 8, 13) + datetime.timedelta(hours=214, minutes=59)
         self.assertEqual(maximum, pickup_time)
 

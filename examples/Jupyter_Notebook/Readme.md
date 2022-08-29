@@ -1,7 +1,7 @@
 # Jupyter Notebook
 
 If you wish to execute the Jupyter notebooks that come along the source code, there is an `environment.yml` defined in 
-this directory. This can be imported e.g. by
+this directory. This can be imported, e.g., by
 [default conda commands](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
 or by using the
 [Anaconda Navigator](https://docs.anaconda.com/anaconda/navigator/index.html).

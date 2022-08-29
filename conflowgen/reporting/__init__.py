@@ -29,7 +29,7 @@ class AbstractReport(abc.ABC):
     @property
     @abc.abstractmethod
     def report_description(self) -> str:
-        """The report description is a text representation describing an preview report. It is formatted to allow being
+        """The report description is a text representation describing a preview report. It is formatted to allow being
         logged to a command line interface or a file. This short description does not contain all information available.
         If in doubt, the user should return to the documentation."""
 
@@ -96,6 +96,7 @@ class AbstractReport(abc.ABC):
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
+
     def show_report_as_graph(self, **kwargs) -> None:
 
         # All matplotlib reports are currently static in the sense that they do not require additional libraries to work

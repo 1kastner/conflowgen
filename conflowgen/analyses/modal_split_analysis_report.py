@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import matplotlib.axes
+
 from conflowgen.analyses.modal_split_analysis import ModalSplitAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib, modal_split_report
 from conflowgen.reporting.modal_split_report import plot_modal_splits
@@ -53,12 +55,12 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axes.Axes:
         """
         The report as a graph is represented as a set of pie charts using pandas.
 
         Returns:
-             The matplotlib axis of the last bar chart.
+             The matplotlib axes with all pie charts.
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 

@@ -13,7 +13,7 @@ class ScheduleIsNotUniqueException(Exception):
 class PortCallManager:
     """
     This manager provides the interface to create schedules for services that periodically call the container terminal,
-    e.g. ships of any size and trains. This explicitly does not cover the trucks which arrive according to a
+    e.g., ships of any size and trains. This explicitly does not cover the trucks which arrive according to a
     probability distribution set at
     :class:`.TruckArrivalDistributionManager`.
     """
@@ -43,9 +43,9 @@ class PortCallManager:
                 :class:`ModeOfTransport.barge`, or
                 :class:`ModeOfTransport.train`
             service_name:
-                The name of the service, i.e. the shipping line or rail freight line
+                The name of the service, i.e., the shipping line or rail freight line
             vehicle_arrives_at:
-                A date the service would arrive at the terminal. This can e.g. point at the week day for weekly
+                A date the service would arrive at the terminal. This can, e.g., point at the week day for weekly
                 services. In any case, this is combined with the parameter ``vehicle_arrives_every_k_days`` and only
                 arrivals within the time scope between ``start_date`` and ``end_date`` are considered.
             vehicle_arrives_at_time:

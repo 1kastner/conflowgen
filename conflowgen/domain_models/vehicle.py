@@ -47,7 +47,7 @@ class Truck(BaseModel):
 class LargeScheduledVehicle(BaseModel):
     """
     This is a vehicle (either on water or on land) that moves according to a schedule,
-    e.g. a weekly sequence of ports, train stations etc.
+    e.g., a weekly sequence of ports, train stations etc.
 
     Also check its foreign key relations such as in `large_vehicle_timetable.NextDestinations`.
     """

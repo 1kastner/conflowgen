@@ -52,7 +52,7 @@ extensions = [
     'sphinx.ext.mathjax',  # support LaTeX-style formula
     'sphinx.ext.intersphinx',  # add links to other docs
     'sphinx.ext.autosectionlabel',  # create reference for each section
-    'sphinx.ext.viewcode',  # create html page for each source file and link between it and and the docs
+    'sphinx.ext.viewcode',  # create html page for each source file and link between it and the docs
 
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
@@ -116,7 +116,7 @@ version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
 intersphinx_mapping = {
     'python': (f'https://docs.python.org/{version_link}', None),  # link to used Python version
     'numpy': ('https://numpy.org/doc/stable/', None),  # link to numpy
-    'matplotlib': ('http://matplotlib.org/stable', None)  # link to matplotlib (axes are returned)
+    'matplotlib': ('https://matplotlib.org/stable', None)  # link to matplotlib (axes are returned)
 }
 
 # -- Options for Included Jupyter Notebooks ----------------------------------

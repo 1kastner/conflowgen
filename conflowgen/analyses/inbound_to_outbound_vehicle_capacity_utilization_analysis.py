@@ -39,7 +39,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
         """
         Args:
             vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
-                vehicle types, e.g. passed as a :class:`list` or :class:`set`.
+                vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 Only the vehicles that correspond to the provided vehicle type(s) are considered in the analysis.
 
         Returns:

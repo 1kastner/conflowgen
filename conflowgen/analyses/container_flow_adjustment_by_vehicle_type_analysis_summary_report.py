@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import matplotlib.pyplot
 import numpy as np
 import pandas as pd
 
@@ -52,7 +53,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
 
         return report.replace(" nan", "-")
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.pyplot.axis:
         """
         The report as a graph is represented as a pie chart.
 
