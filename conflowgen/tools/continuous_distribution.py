@@ -32,7 +32,7 @@ class ContinuousDistribution(abc.ABC):
             average: The expected mean of the distribution.
             minimum: The minimum of the distribution. Smaller values are automatically set to zero.
             maximum: The maximum of the distribution. Larger values are automatically set to zero.
-            unit: The unit for the average, minimum, and maximum. It is used for the __repr__ implementation.
+            unit: The unit for the average, minimum, and maximum. It is used for the ``__repr__`` implementation.
         """
         assert minimum < maximum, f"The assertion {minimum} < {maximum} failed."
         if average is not None:
