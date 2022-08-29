@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, NamedTuple, Tuple
+from typing import Dict, NamedTuple, Tuple, Any
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -34,7 +34,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_inbound_and_outbound_capacity_of_each_vehicle(
-            vehicle_type="all"
+            vehicle_type: Any = "all"
     ) -> Dict[CompleteVehicleIdentifier, Tuple[float, float]]:
         """
         Args:

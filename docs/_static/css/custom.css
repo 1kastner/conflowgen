@@ -29,3 +29,26 @@ dl.citation dd {
     display: list-item;
     list-style-type: arabic;
 }
+
+/**
+  Display type references that are automatically generated in boxes and formatted like pre instead of classic html
+  links. See https://github.com/sphinx-doc/sphinx/issues/10776 for reference.
+  As long as that issue is not resolved, we need to do it the hacky way.
+  The following CSS properties have been simply copied from the boxes that have been generated when using the py obj
+  role in the ReadTheDocs theme.
+*/
+a.reference>em {
+    box-sizing: border-box;
+    font-family: SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Courier,monospace;
+    padding: 2px 5px;
+    background: #fff;
+    border: 1px solid #e1e4e5;
+    font-size: 75%;
+    font-style: normal;
+    color: #404040;
+    font-weight: 700;
+}
+
+a+em, em+em {
+    font-style: normal;
+}

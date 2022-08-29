@@ -71,25 +71,15 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.tools']
 
 add_module_names = False
 
-todo_include_todos = True
+todo_include_todos = True  # this is currently especially the open tickets at plotly
 
-autoclass_content = 'both'
+autoclass_content = 'both'  # report both the class docs and __init__ docs
 
-autodoc_typehints = 'both'
+autodoc_typehints = 'description'  # show in description, not signature
 
-autodoc_typehints_format = 'short'
+autodoc_typehints_format = 'short'  # drop leading package path as it takes too much space
 
 python_use_unqualified_type_names = True  # workaround, see https://github.com/sphinx-doc/sphinx/issues/10290
-
-
-def rework_annotations(app, obj, bound_method):
-    if "return" in obj.__annotations__ and obj.__annotations__["return"] is None:
-        del obj.__annotations__["return"]  # drop return none
-
-
-def setup(app):
-    app.connect("autodoc-before-process-signature", rework_annotations)
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -154,6 +144,8 @@ numfig = True
 nbsphinx_prolog = """
 .. raw:: html
 
+    <!-- nbsphinx prolog - start -->
+
     <style>
         /* Hide the prompts, i.e. the leading numbers in square brackets of Jupyter Notebooks such as '[1]' */
         .nbinput .prompt,
@@ -184,6 +176,8 @@ nbsphinx_prolog = """
         }
 
     </style>
+    
+    <!-- nbsphinx prolog - end -->
 """
 
 # -- Setting up git lfs if Missing ---------------------------------------------

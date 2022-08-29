@@ -56,9 +56,7 @@ class AbstractReport(abc.ABC):
         """
         The report as a text is represented as a table suitable for logging.
         It uses a human-readable formatting style.
-
-        Args:
-            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
+        The additional keyword arguments are passed to the analysis instance in case it accepts them.
 
         Returns:
              The report in text format (possibly spanning over several lines).
@@ -69,9 +67,7 @@ class AbstractReport(abc.ABC):
     def get_report_as_graph(self, **kwargs) -> object:
         """
         The report as a graph is represented in a figure.
-
-        Args:
-            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
+        The additional keyword arguments are passed to the analysis instance in case it accepts them.
 
         Returns:
              A reference to the figure. The actual type depends on the plotting library.
@@ -84,9 +80,7 @@ class AbstractReport(abc.ABC):
         This method first invokes ``.get_report_as_graph()`` and then it displays the graph object, e.g., by invoking
         ``plt.show()`` or ``fig.show()``.
         This depends on the visualisation library.
-
-        Args:
-            **kwargs: The additional keyword arguments are passed to the analysis instance in case it accepts them.
+        The additional keyword arguments are passed to the analysis instance in case it accepts them.
         """
         pass
 
