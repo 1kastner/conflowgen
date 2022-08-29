@@ -4,7 +4,7 @@ import datetime
 import statistics
 from typing import Tuple, Any, Dict
 import pandas as pd
-import matplotlib.pyplot
+import matplotlib.axis
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.analyses.yard_capacity_analysis import YardCapacityAnalysis
@@ -87,7 +87,7 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> matplotlib.pyplot.axis:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a line graph using pandas.
 

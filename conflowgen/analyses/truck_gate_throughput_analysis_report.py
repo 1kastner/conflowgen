@@ -4,7 +4,8 @@ import statistics
 import typing  # noqa, pylint: disable=unused-import  # it is actually used in the docstring!
 
 import pandas as pd
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
+import matplotlib.axis
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -77,7 +78,7 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         return report
 
-    def get_report_as_graph(self, **kwargs) -> matplotlib.pyplot.axis:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a line graph using pandas.
 
@@ -118,7 +119,7 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 ax = series.plot()
             else:
                 series.plot(ax=ax)
-            matplotlib.pyplot.xticks(rotation=45)
+            plt.xticks(rotation=45)
             ax.set_xlabel("Date")
             ax.set_ylabel("Number of boxes (hourly count)")
 

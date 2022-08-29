@@ -4,7 +4,7 @@ import datetime
 import statistics
 from typing import Any
 
-import matplotlib.pyplot
+import matplotlib.axis
 import pandas as pd
 
 from conflowgen .domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -96,7 +96,7 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> matplotlib.pyplot.axis:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axis.Axis:
         """
         The report as a graph is represented as a line graph using pandas.
         For the exact interpretation of the parameter, check

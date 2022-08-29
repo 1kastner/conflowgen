@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Dict
 
+import matplotlib
+
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.reporting import AbstractReportWithMatplotlib, modal_split_report
@@ -81,7 +83,7 @@ class ModalSplitPreviewReport(AbstractReportWithMatplotlib):
         )
         return self.preview
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.axes.Axes:
         """
         The report as a graph is represented as a set of pie charts using pandas.
 
