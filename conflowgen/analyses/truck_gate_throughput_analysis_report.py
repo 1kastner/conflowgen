@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import statistics
+import typing  # noqa, pylint: disable=unused-import  # it is actually used in the docstring!
+
 import pandas as pd
 import matplotlib.pyplot as plt
-import typing
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
