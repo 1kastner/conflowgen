@@ -4,6 +4,7 @@ from typing import Tuple, Any, Dict, Optional
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker
+import matplotlib.figure
 import pandas as pd
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -82,7 +83,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> object:
+    def get_report_as_graph(self, **kwargs) -> matplotlib.figure.Figure:
         """
         The report as a graph is represented as a scatter plot using pandas.
 

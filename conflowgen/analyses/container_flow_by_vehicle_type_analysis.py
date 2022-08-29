@@ -19,6 +19,9 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
         """
         This is the overview of the generated inbound to outbound container flow by vehicle type.
+
+        Arguments:
+            in_teu: Whether to report the container volume in TEU or in boxes.
         """
         inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
