@@ -91,7 +91,7 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 Whether to check for trucks which deliver a container on their inbound journey
             outbound (typing.Optional[bool]):
                 Whether to check for trucks which pick up a container on their outbound journey
-            ax (typing.Optional[matplotlib.axes]):
+            ax (typing.Optional[matplotlib.axis.Axis]):
                 Which matplotlib axis to plot on
 
         Returns:
