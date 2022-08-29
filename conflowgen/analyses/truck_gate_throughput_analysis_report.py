@@ -5,6 +5,7 @@ import typing  # noqa, pylint: disable=unused-import  # it is actually used in t
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.axes
 
 from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughputAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
@@ -90,7 +91,7 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 Whether to check for trucks which deliver a container on their inbound journey
             outbound (typing.Optional[bool]):
                 Whether to check for trucks which pick up a container on their outbound journey
-            ax (typing.Optional[plt.Axes]):
+            ax (typing.Optional[matplotlib.axes]):
                 Which matplotlib axis to plot on
 
         Returns:
