@@ -116,7 +116,7 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
         Returns:
-             The matplotlib axis of the bar chart.
+             The matplotlib axis of the histogram
         """
 
         container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")

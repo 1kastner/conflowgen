@@ -63,7 +63,7 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a line graph using pandas.
 
         Returns:
-             The matplotlib axis of the bar chart.
+             The matplotlib axis of the line chart over time.
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
