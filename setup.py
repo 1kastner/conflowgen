@@ -60,10 +60,10 @@ setup(
             'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
             'sphinxcontrib-bibtex',  # a good help for citing
+            'sphinxcontrib-svg2pdfconverter[CairoSVG]',  # creating a PDF
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
-            'jupyterlab',  # continue development on the Jupyter Notebooks included in this repository
 
             # checking code quality
             'pylint',  # lint Python code
@@ -75,6 +75,7 @@ setup(
         ],
         # a collection of nice-to-haves for working on Jupyter Notebooks - just a favorites list of the authors
         'jupyterlab': [
+            'jupyterlab',  # continue development on the Jupyter Notebooks included in this repository
             "jupyterlab-spellchecker",
             "jupyterlab-lsp",
             "python-lsp-server",
