@@ -3,10 +3,12 @@ from __future__ import annotations
 import abc
 import datetime
 import enum
+import logging
 import tempfile
 from typing import Any, Type
 from collections.abc import Iterable
 
+import IPython.display
 import matplotlib.pyplot as plt
 import plotly.graph_objects
 from matplotlib import image as mpimg
@@ -17,6 +19,8 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 
 class AbstractReport(abc.ABC):
+
+    logger = logging.getLogger("conflowgen")
 
     order_of_vehicle_types_in_report = [
         ModeOfTransport.deep_sea_vessel,
@@ -102,9 +106,11 @@ class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
         # All matplotlib reports are currently static in the sense that they do not require additional libraries to work
         # on a webpage such as the documentation. We can simply ignore this keyword.
         kwargs.pop("static", None)
+        kwargs.pop("display_as_ipython_svg", None)
 
         with plt.style.context('seaborn-colorblind'):
             self.get_report_as_graph(**kwargs)
+            self.logger.debug(f"Showing figure for {self} with matplotlib")
             plt.show(block=True)
 
 
@@ -117,8 +123,10 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
 
         Keyword Args:
             static (bool): Whether to convert the interactive plotly plots into static images.
+            display_as_ipython_svg (bool): Whether to convert the interactive plots into SVG and display it with IPython
         """
         static = kwargs.pop("static", False)
+        display_as_ipython_svg = kwargs.pop("display_as_ipython_svg", False)
         assert len(kwargs) == 0, f"The keyword arguments {kwargs} are not supported."
 
         figs: Any = self.get_report_as_graph()
@@ -130,8 +138,15 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
         for fig in figs:
             if static:
                 self._show_static_fig(fig)
-            else:
+            if display_as_ipython_svg:
+                self._display_ipython_svg(fig)
+            if not static and not display_as_ipython_svg:
                 fig.show()
+
+    @staticmethod
+    def _display_ipython_svg(fig: plotly.graph_objects.Figure) -> None:
+        svg_format_image = fig.to_image(format="svg", width=800)
+        IPython.display.display(IPython.display.SVG(svg_format_image))
 
     @staticmethod
     def _show_static_fig(fig: plotly.graph_objects.Figure) -> None:

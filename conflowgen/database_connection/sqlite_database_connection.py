@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import logging
 import os
 from typing import List, Tuple, Optional
 
 from peewee import SqliteDatabase
 
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.base_model import database_proxy
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
@@ -107,6 +110,17 @@ class SqliteDatabaseConnection:
                 self.logger.debug(f"Open existing database at {path_to_sqlite_database}")
             else:
                 self.logger.debug(f"Open new database at {path_to_sqlite_database}")
+
+        container_flow_properties: ContainerFlowGenerationProperties | None = \
+            ContainerFlowGenerationProperties.get_or_none()
+        if container_flow_properties is not None:
+            self.logger.debug(f'name: {container_flow_properties.name}')
+            self.logger.debug(f'start_date: {container_flow_properties.start_date}')
+            self.logger.debug(f'end_date: {container_flow_properties.end_date}')
+            self.logger.debug(f'generated_at: {container_flow_properties.generated_at}')
+            self.logger.debug(f'last_updated_at: {container_flow_properties.last_updated_at}')
+            self.logger.debug(f'transportation_buffer: {container_flow_properties.transportation_buffer}')
+
         return self.sqlite_db_connection
 
     def delete_database(self, database_name: str) -> None:

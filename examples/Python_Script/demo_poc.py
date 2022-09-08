@@ -13,6 +13,7 @@ The intention of this demo is further explained in the logs it generated.
 
 import datetime
 import os
+import sys
 
 try:
     import conflowgen
@@ -25,6 +26,11 @@ except ImportError as exc:
     raise exc
 
 this_dir = os.path.dirname(__file__)
+
+with_visuals = False
+if len(sys.argv) > 2:
+    if sys.argv[2] == "--with-visuals":
+        with_visuals = True
 
 # Start logging
 logger = conflowgen.setup_logger()
@@ -99,14 +105,18 @@ port_call_manager.add_vehicle(
 
 logger.info("Preview the results with some light-weight approaches.")
 
-conflowgen.run_all_previews()
+conflowgen.run_all_previews(
+    as_graph=with_visuals
+)
 
 logger.info("Generate all fleets with all vehicles. This is the core of the whole project.")
 container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run post-hoc analyses on them")
 
-conflowgen.run_all_analyses()
+conflowgen.run_all_analyses(
+    as_graph=with_visuals
+)
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
             "post-hoc analysis results")

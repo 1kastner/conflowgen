@@ -15,7 +15,8 @@ class AutoReporter:
             as_graph: bool,
             display_text_func: Optional[Callable],
             display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None],
-            static_graphs: bool
+            static_graphs: bool,
+            display_as_ipython_svg: bool
     ):
         assert as_text or as_graph, "At least one of the two modes should be chosen"
 
@@ -32,6 +33,7 @@ class AutoReporter:
         }.get(display_in_markup_language, display_in_markup_language)
 
         self.static_graphs = static_graphs
+        self.display_as_ipython_svg = display_as_ipython_svg
 
     @staticmethod
     def _get_report_name(report_instance: object) -> str:
@@ -50,7 +52,10 @@ class AutoReporter:
                 self.output.display_verbatim(report_as_text)
             if self.as_graph:
                 try:
-                    report_instance.show_report_as_graph(static=self.static_graphs)
+                    report_instance.show_report_as_graph(
+                        static=self.static_graphs,
+                        display_as_ipython_svg=self.display_as_ipython_svg
+                    )
                 except NotImplementedError:
                     self.output.display_explanation(
                         f"Skipping {report} as no graph version of the report is implemented"

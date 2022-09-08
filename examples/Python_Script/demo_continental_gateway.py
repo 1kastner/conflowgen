@@ -195,4 +195,5 @@ logger.info("For a better understanding of the data, it is advised to study the 
 
 # Gracefully close everything
 database_chooser.close_current_connection()
-logger.info("Script finished successfully.")
+
+logger.info("Demo 'demo_continental_gateway' finished successfully.")

@@ -177,8 +177,8 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
                 )
             ]
         )
-        plot_title = "Container flow from vehicle type A to vehicle type B as defined by generated containers " \
-                     f"(reported in {unit})"
+        plot_title = "Container flow from vehicle type A to B as defined by generated containers " \
+                     f"(in {unit})"
         fig.update_layout(
             title_text=plot_title,
             font_size=10,
