@@ -105,7 +105,6 @@ truck               truck                                       0.0
     def test_with_no_data_in_boxes(self):
         """If no schedules are provided, no capacity is needed"""
         actual_report = self.analysis.get_report_as_text(unit="containers")
-        self.maxDiff = None
         expected_report = """
 vehicle type (from) vehicle type (to) transported capacity (in containers)
 deep sea vessel     deep sea vessel                             0.0

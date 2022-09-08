@@ -8,7 +8,6 @@ import tempfile
 from typing import Any, Type
 from collections.abc import Iterable
 
-import IPython.display
 import matplotlib.pyplot as plt
 import plotly.graph_objects
 from matplotlib import image as mpimg
@@ -145,6 +144,7 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
 
     @staticmethod
     def _display_ipython_svg(fig: plotly.graph_objects.Figure) -> None:
+        import IPython.display  # pylint: disable=import-outside-toplevel
         svg_format_image = fig.to_image(format="svg", width=800)
         IPython.display.display(IPython.display.SVG(svg_format_image))
 
