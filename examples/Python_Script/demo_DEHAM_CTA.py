@@ -32,16 +32,23 @@ try:
         os.path.join(conflowgen.__file__, os.path.pardir)
     )
     print(f"Importing ConFlowGen version {conflowgen.__version__} installed at {install_dir}.")
-except ImportError:
-    print("Please first install conflowgen as a library")
-    sys.exit()
+except ImportError as exc:
+    print("Please first install ConFlowGen, e.g. with conda or pip")
+    raise exc
 
 # The seed of x=1 guarantees that the same traffic data is generated as input data in this script. However, it does not
 # affect the container generation or the assignment of containers to vehicles.
 seeded_random = random.Random(x=1)
 
+with_visuals = False
+if len(sys.argv) > 2:
+    if sys.argv[2] == "--with-visuals":
+        with_visuals = True
+
+this_dir = os.path.dirname(__file__)
+
 import_deham_dir = os.path.join(
-    os.path.dirname(sys.modules[__name__].__file__),
+    this_dir,
     "data",
     "DEHAM",
     "CT Altenwerder"
@@ -287,14 +294,18 @@ logger.info("All vehicles have been imported")
 
 logger.info("Preview the results with some light-weight approaches.")
 
-conflowgen.run_all_previews()
+conflowgen.run_all_previews(
+    as_graph=with_visuals
+)
 
 logger.info("Generate all fleets with all vehicles. This is the core of the whole project.")
 container_flow_generation_manager.generate()
 
 logger.info("The container flow data have been generated, run analyses on them.")
 
-conflowgen.run_all_analyses()
+conflowgen.run_all_analyses(
+    as_graph=with_visuals
+)
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
             "analysis results.")
@@ -305,6 +316,7 @@ logger.info("Start data export...")
 export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_container_flow_manager.export(
     folder_name="demo-DEHAM-of-day--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0],
+    path_to_export_folder=os.path.join(this_dir, "export"),
     file_format=conflowgen.ExportFileFormat.csv
 )
 

@@ -37,7 +37,8 @@ class ModalSplitAnalysis(AbstractAnalysis):
             The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of containers
             in TEU that are transshipped.
         """
-        inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow = inbound_to_outbound_flows.teu
 
         transshipment_capacity = 0
         hinterland_capacity = 0
@@ -66,9 +67,10 @@ class ModalSplitAnalysis(AbstractAnalysis):
             outbound: Whether to account for outbound journeys
 
         Returns:
-            The modal split for the hinterland as generated.
+            The modal split for the hinterland in TEU.
         """
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow_in_teu = inbound_to_outbound_flow.teu
 
         transported_capacity: Dict[ModeOfTransport, float] = {
             ModeOfTransport.truck: 0,
@@ -79,8 +81,8 @@ class ModalSplitAnalysis(AbstractAnalysis):
         if (not inbound) and (not outbound):
             raise ValueError("The modal split must cover either the inbound traffic, the outbound traffic, or both")
 
-        for inbound_vehicle_type, inbound_capacity in inbound_to_outbound_flow.items():
-            for outbound_vehicle_type, capacity in inbound_to_outbound_flow[inbound_vehicle_type].items():
+        for inbound_vehicle_type, inbound_capacity in inbound_to_outbound_flow_in_teu.items():
+            for outbound_vehicle_type, capacity in inbound_to_outbound_flow_in_teu[inbound_vehicle_type].items():
                 if inbound and inbound_vehicle_type in self.vehicles_considered_for_hinterland:
                     transported_capacity[inbound_vehicle_type] += capacity
                 if outbound and outbound_vehicle_type in self.vehicles_considered_for_hinterland:

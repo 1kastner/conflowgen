@@ -87,7 +87,6 @@ class TestModalSplitAnalysis(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
@@ -95,12 +94,10 @@ class TestModalSplitAnalysis(unittest.TestCase):
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
-        feeder_lsv.save()
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
-        container = Container.create(
+        Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
             storage_requirement=StorageRequirement.standard,
@@ -109,7 +106,6 @@ class TestModalSplitAnalysis(unittest.TestCase):
             picked_up_by=ModeOfTransport.truck,
             picked_up_by_initial=ModeOfTransport.truck
         )
-        container.save()
 
         fractions = self.analysis.get_modal_split_for_hinterland_traffic(True, True)
         self.assertEqual(fractions.truck_capacity, 1)

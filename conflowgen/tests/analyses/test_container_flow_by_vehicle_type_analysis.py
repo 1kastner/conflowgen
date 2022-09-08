@@ -31,12 +31,21 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
 
     def test_with_no_data(self):
         """If no containers exist, everything is zero"""
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
-        self.assertSetEqual(set(ModeOfTransport), set(inbound_to_outbound_flow.keys()))
-        for outbound_flow in inbound_to_outbound_flow.values():
+        inbound_to_outbound_flow_in_teu_and_boxes = self.analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow_in_teu = inbound_to_outbound_flow_in_teu_and_boxes.teu
+        self.assertSetEqual(set(ModeOfTransport), set(inbound_to_outbound_flow_in_teu.keys()))
+        for outbound_flow in inbound_to_outbound_flow_in_teu.values():
+            self.assertSetEqual(set(ModeOfTransport), set(outbound_flow.keys()))
+        for inbound_capacities in inbound_to_outbound_flow_in_teu.values():
+            for outbound_capacity in inbound_capacities.values():
+                self.assertEqual(outbound_capacity, 0)
+
+        inbound_to_outbound_flow_in_boxes = inbound_to_outbound_flow_in_teu_and_boxes.containers
+        self.assertSetEqual(set(ModeOfTransport), set(inbound_to_outbound_flow_in_boxes.keys()))
+        for outbound_flow in inbound_to_outbound_flow_in_boxes.values():
             self.assertSetEqual(set(ModeOfTransport), set(outbound_flow.keys()))
 
-        for inbound_capacities in inbound_to_outbound_flow.values():
+        for inbound_capacities in inbound_to_outbound_flow_in_boxes.values():
             for outbound_capacity in inbound_capacities.values():
                 self.assertEqual(outbound_capacity, 0)
 
@@ -71,7 +80,7 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             picked_up_by_initial=ModeOfTransport.truck
         )
 
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow().teu
         self.assertSetEqual(set(ModeOfTransport), set(inbound_to_outbound_flow.keys()))
         for outbound_flow in inbound_to_outbound_flow.values():
             self.assertSetEqual(set(ModeOfTransport), set(outbound_flow.keys()))
