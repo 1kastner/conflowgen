@@ -28,7 +28,6 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
         """
-
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         # gather data

@@ -4,12 +4,12 @@ import abc
 import datetime
 import enum
 import tempfile
-from typing import cast, Any, Type
+from typing import Any, Type
 from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
+import plotly.graph_objects
 from matplotlib import image as mpimg
-import plotly.graph_objects as go
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -110,18 +110,36 @@ class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
 
 class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
     def show_report_as_graph(self, **kwargs) -> None:
-        fig: go.Figure = cast(go.Figure, self.get_report_as_graph())
+        """
+        Plotly needs quite some libraries loaded in the online documentation so that the figures are actually visible
+        to the user.
+        Thus, they are converted to static images for the meantime.
 
-        # Plotly needs quite some libraries loaded in the online documentation so that the figures are actually visible
-        # to the user. Thus, we take the short-cut and convert them to figures for the documentation.
-        if kwargs.pop("static", False):
-            png_format_image = fig.to_image(format="png", width=800)
-            with tempfile.NamedTemporaryFile() as _file:
-                _file.write(png_format_image)
-                img = mpimg.imread(_file)
-            plt.figure(figsize=(20, 10))
-            plt.imshow(img)
-            plt.axis('off')
-            plt.show(block=True)
-        else:
-            fig.show()
+        Keyword Args:
+            static (bool): Whether to convert the interactive plotly plots into static images.
+        """
+        static = kwargs.pop("static", False)
+        assert len(kwargs) == 0, f"The keyword arguments {kwargs} are not supported."
+
+        figs: Any = self.get_report_as_graph()
+        try:
+            len(figs)
+        except TypeError:  # there is only one
+            figs = [figs]
+
+        for fig in figs:
+            if static:
+                self._show_static_fig(fig)
+            else:
+                fig.show()
+
+    @staticmethod
+    def _show_static_fig(fig: plotly.graph_objects.Figure) -> None:
+        png_format_image = fig.to_image(format="png", width=800)
+        with tempfile.NamedTemporaryFile() as _file:
+            _file.write(png_format_image)
+            img = mpimg.imread(_file)
+        plt.figure(figsize=(20, 10))
+        plt.imshow(img)
+        plt.axis('off')
+        plt.show(block=True)

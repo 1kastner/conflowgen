@@ -12,7 +12,6 @@ The intention of this demo is further explained in the logs it generated.
 """
 
 import datetime
-import sys
 import os
 
 try:
@@ -21,9 +20,11 @@ try:
         os.path.join(conflowgen.__file__, os.path.pardir)
     )
     print(f"Importing ConFlowGen version {conflowgen.__version__} installed at {install_dir}.")
-except ImportError:
-    print("Please first install conflowgen as a library")
-    sys.exit()
+except ImportError as exc:
+    print("Please first install ConFlowGen, e.g. with conda or pip")
+    raise exc
+
+this_dir = os.path.dirname(__file__)
 
 # Start logging
 logger = conflowgen.setup_logger()
@@ -117,6 +118,7 @@ export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_folder_name = "demo-poc--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
 export_container_flow_manager.export(
     folder_name=export_folder_name,
+    path_to_export_folder=os.path.join(this_dir, "export"),
     file_format=conflowgen.ExportFileFormat.csv
 )
 
