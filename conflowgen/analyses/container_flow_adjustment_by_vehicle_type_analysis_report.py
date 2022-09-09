@@ -85,6 +85,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         """
         assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
 
+        unit = "TEU"
+
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
@@ -107,8 +109,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             self.logger.warning("No data available for plotting")
 
         initial_labels = [
-            str(vehicle_type_initial).replace("_", " ").capitalize() + ":<br>Initial: " + str(
-                round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2))
+            str(vehicle_type_initial).replace("_", " ").capitalize() + " initial:<br>" + str(
+                round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2)
+            ) + " " + unit
             for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
         ]
         to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
@@ -116,8 +119,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
                 to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
         adjusted_labels = [
-            str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(
-                round(to_adjusted_flow[i], 2))
+            str(vehicle_type_adjusted).replace("_", " ").capitalize() + " adjusted:<br> " + str(
+                round(to_adjusted_flow[i], 2)) + " " + unit
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
         ]
         fig = plotly.graph_objs.Figure(
@@ -144,7 +147,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         )
 
         fig.update_layout(
-            title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
+            title_text=f"Container flow from initial vehicle type A to adjusted vehicle type B in {unit} as for some "
                        "containers<br>"
                        "the initially intended vehicle type was not available due to constraints "
                        "(schedules, dwell times, etc.).",
