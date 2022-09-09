@@ -100,6 +100,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
         """
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
+        unit = "TEU"
+
         inbound_to_outbound_flow = self._get_inbound_to_outbound_flow()
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
@@ -118,8 +120,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             self.logger.warning("No data available for plotting")
 
         inbound_labels = [
-            str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
-                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
+            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br>" + str(
+                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2)) + " " + unit
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
         ]
         to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
@@ -127,8 +129,8 @@ class ContainerFlowByVehicleTypePreviewReport(AbstractReportWithPlotly):
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
                 to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
         outbound_labels = [
-            str(outbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Outbound: " + str(
-                round(to_outbound_flow[i], 2))
+            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br>" + str(
+                round(to_outbound_flow[i], 2)) + " " + unit
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
         ]
         fig = plotly.graph_objects.Figure(

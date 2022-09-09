@@ -109,7 +109,6 @@ class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
 
         with plt.style.context('seaborn-colorblind'):
             self.get_report_as_graph(**kwargs)
-            self.logger.debug(f"Showing figure for {self} with matplotlib")
             plt.show(block=True)
 
 
