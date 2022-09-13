@@ -8,8 +8,8 @@ class TestUniform(unittest.TestCase):
     def setUp(self) -> None:
         self.cln = Uniform(minimum=1, maximum=15)
 
-    def assertArrayEqual(self, array_1, array_2, msg=""):
-        self.assertListEqual(list(array_1), list(array_2), msg=msg)  # pylint: disable=invalid-name
+    def assertArrayEqual(self, array_1, array_2, msg=""):  # pylint: disable=invalid-name
+        self.assertListEqual(list(array_1), list(array_2), msg=msg)
 
     def test_minimum_is_respected(self):
         self.assertArrayEqual(self.cln.get_probabilities([0.5, 4]), [0, 1])

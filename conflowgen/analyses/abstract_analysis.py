@@ -2,7 +2,15 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import List, Optional
+from typing import List, Optional, Any
+
+from peewee import ModelSelect
+
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
+from conflowgen.domain_models.container import Container
+from conflowgen.domain_models.vehicle import LargeScheduledVehicle
+from conflowgen.tools import hashable
 
 
 def get_hour_based_time_window(point_in_time: datetime.datetime) -> datetime.datetime:
@@ -73,3 +81,59 @@ class AbstractAnalysis(abc.ABC):
         if transportation_buffer is not None:
             assert transportation_buffer > -1
             self.transportation_buffer = transportation_buffer
+
+    @staticmethod
+    def _restrict_storage_requirement(selected_containers: ModelSelect, storage_requirement: Any) -> ModelSelect:
+        if hashable(storage_requirement) and storage_requirement in set(StorageRequirement):
+            selected_containers = selected_containers.where(
+                Container.storage_requirement == storage_requirement
+            )
+        else:  # assume it is some kind of collection (list, set, ...)
+            selected_containers = selected_containers.where(
+                Container.storage_requirement << storage_requirement
+            )
+        return selected_containers
+
+    @staticmethod
+    def _restrict_container_delivered_by_vehicle_type(
+            selected_containers: ModelSelect, container_delivered_by_vehicle_type: Any
+    ) -> ModelSelect:
+        if hashable(container_delivered_by_vehicle_type) \
+                and container_delivered_by_vehicle_type in set(ModeOfTransport):
+            selected_containers = selected_containers.where(
+                Container.delivered_by == container_delivered_by_vehicle_type
+            )
+        else:  # assume it is some kind of collection (list, set, ...)
+            selected_containers = selected_containers.where(
+                Container.delivered_by << container_delivered_by_vehicle_type
+            )
+        return selected_containers
+
+    @staticmethod
+    def _restrict_container_picked_up_by_vehicle_type(
+            selected_containers: ModelSelect, container_picked_up_by_vehicle_type: Any
+    ) -> ModelSelect:
+        if hashable(container_picked_up_by_vehicle_type) \
+                and container_picked_up_by_vehicle_type in set(ModeOfTransport):
+            selected_containers = selected_containers.where(
+                Container.picked_up_by == container_picked_up_by_vehicle_type
+            )
+        else:  # assume it is some kind of collection (list, set, ...)
+            selected_containers = selected_containers.where(
+                Container.picked_up_by << container_picked_up_by_vehicle_type
+            )
+        return selected_containers
+
+    @staticmethod
+    def _restrict_vehicle_type(
+            selected_vehicles: ModelSelect, vehicle_type: Any
+    ):
+        if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
+            selected_vehicles = selected_vehicles.where(
+                LargeScheduledVehicle.schedule.vehicle_type == vehicle_type
+            )
+        else:  # assume it is some kind of collection (list, set, ...)
+            selected_vehicles = selected_vehicles.where(
+                LargeScheduledVehicle.schedule.vehicle_type << vehicle_type
+            )
+        return selected_vehicles

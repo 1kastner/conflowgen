@@ -34,9 +34,15 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
     def get_report_as_text(
             self, **kwargs
     ) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        Keyword Args:
+            start_time (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_time (datetime.datetime):
+                Only include containers that depart before the given end time.
+        """
+        initial_to_adjusted_outbound_flow = self._get_analysis(kwargs)
 
-        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
@@ -68,26 +74,18 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         """
         The container flow is represented by a Sankey diagram.
 
-        .. note::
-            At the time of writing, plotly comes with some shortcomings.
-
-            * Sorting the labels on either the left or right side without recalculating the height of each bar is not
-              possible, see https://github.com/plotly/plotly.py/issues/1732.
-            * Empty nodes require special handling, see https://github.com/plotly/plotly.py/issues/3003 and the
-              coordinates need to be :math:`0 < x,y < 1` (no equals!), see
-              https://github.com/plotly/plotly.py/issues/3002.
-
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
-            e.g., in a Jupyter Notebook.
+        Keyword Args:
+            start_time (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_time (datetime.datetime):
+                Only include containers that depart before the given end time.
 
         Returns:
             The plotly figure of the Sankey diagram.
         """
-        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
+        initial_to_adjusted_outbound_flow = self._get_analysis(kwargs)
 
         unit = "TEU"
-
-        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         vehicle_types = [
@@ -156,3 +154,13 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             height=700
         )
         return fig
+
+    def _get_analysis(self, kwargs):
+        start_time = kwargs.pop("start_time", None)
+        end_time = kwargs.pop("end_time", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow(
+            start_time=start_time,
+            end_time=end_time
+        )
+        return initial_to_adjusted_outbound_flow

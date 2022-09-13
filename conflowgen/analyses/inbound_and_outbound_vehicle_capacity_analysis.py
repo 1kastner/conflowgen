@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Dict
+import datetime
+from typing import Dict, Optional
 import numpy as np
 
 from conflowgen.domain_models.container import Container
@@ -46,7 +47,11 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
             teu=inbound_container_volume_in_teu
         )
 
-    def get_outbound_container_volume_by_vehicle_type(self) -> OutboundUsedAndMaximumCapacity:
+    def get_outbound_container_volume_by_vehicle_type(
+            self,
+            start_time: Optional[datetime.datetime] = None,
+            end_time: Optional[datetime.datetime] = None
+    ) -> OutboundUsedAndMaximumCapacity:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
         in TEU.
@@ -69,6 +74,10 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
+            if start_time and container.get_arrival_time() < start_time:
+                continue
+            if end_time and container.get_departure_time() > end_time:
+                continue
             outbound_vehicle_type: ModeOfTransport = container.picked_up_by
             teu_factor_of_container: float = ContainerLength.get_factor(container.length)
             outbound_actually_moved_container_volume_in_teu[outbound_vehicle_type] += teu_factor_of_container

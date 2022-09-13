@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import Dict
+
+import datetime
+from typing import Dict, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
@@ -31,13 +33,26 @@ class ModalSplitAnalysis(AbstractAnalysis):
         super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
-    def get_transshipment_and_hinterland_split(self) -> TransshipmentAndHinterlandSplit:
+    def get_transshipment_and_hinterland_split(
+            self,
+            start_time: Optional[datetime.datetime] = None,
+            end_time: Optional[datetime.datetime] = None
+    ) -> TransshipmentAndHinterlandSplit:
         """
+        Args:
+            start_time:
+                Only include containers that arrive after the given start time.
+            end_time:
+                Only include containers that depart before the given end time.
+
         Returns:
             The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of containers
             in TEU that are transshipped.
         """
-        inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
+            start_time=start_time,
+            end_time=end_time
+        )
         inbound_to_outbound_flow = inbound_to_outbound_flows.teu
 
         transshipment_capacity = 0
@@ -59,18 +74,27 @@ class ModalSplitAnalysis(AbstractAnalysis):
     def get_modal_split_for_hinterland_traffic(
             self,
             inbound: bool,
-            outbound: bool
+            outbound: bool,
+            start_time: Optional[datetime.datetime] = None,
+            end_time: Optional[datetime.datetime] = None
     ) -> HinterlandModalSplit:
         """
         Args:
             inbound: Whether to account for inbound journeys
             outbound: Whether to account for outbound journeys
+            start_time:
+                Only include containers that arrive after the given start time.
+            end_time:
+                Only include containers that depart before the given end time.
 
         Returns:
             The modal split for the hinterland in TEU.
         """
-        inbound_to_outbound_flow = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow()
-        inbound_to_outbound_flow_in_teu = inbound_to_outbound_flow.teu
+        inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
+            start_time=start_time,
+            end_time=end_time
+        )
+        inbound_to_outbound_flow_in_teu = inbound_to_outbound_flows.teu
 
         transported_capacity: Dict[ModeOfTransport, float] = {
             ModeOfTransport.truck: 0,

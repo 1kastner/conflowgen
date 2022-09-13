@@ -1,11 +1,13 @@
 import datetime
 
-from peewee import AutoField, BooleanField
+from peewee import AutoField, BooleanField, DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
+from playhouse.hybrid import hybrid_property
 
 from .arrival_information import TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from .base_model import BaseModel
+from .data_types.container_length import CONTAINER_LENGTH_TO_OCCUPIED_TEU
 from .field_types.container_length import ContainerLengthField
 from .field_types.mode_of_transport import ModeOfTransportField
 from .field_types.storage_requirement import StorageRequirementField
@@ -84,8 +86,28 @@ class Container(BaseModel):
         help_text="This indicates that no regular means of transport was available so that a vehicle had to be called "
                   "explicitly to pick up the container so that the maximum dwell time is not exceeded."
     )
+    cached_arrival_time = DateTimeField(
+        default=None,
+        null=True,
+        help_text="This field is used to cache the arrival time for faster evaluation of analyses."
+    )
+    cached_departure_time = DateTimeField(
+        default=None,
+        null=True,
+        help_text="This field is used to cache the departure time for faster evaluation of analyses."
+    )
 
-    def get_arrival_time(self) -> datetime.datetime:
+    @hybrid_property
+    def occupied_teu(self) -> float:
+        return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
+
+    def get_arrival_time(self, use_cache: bool = True) -> datetime.datetime:
+
+        if use_cache:
+            if self.cached_arrival_time is not None:
+                # noinspection PyTypeChecker
+                return self.cached_arrival_time
+
         container_arrival_time: datetime.datetime
         if self.delivered_by == ModeOfTransport.truck:
             # noinspection PyTypeChecker
@@ -100,14 +122,22 @@ class Container(BaseModel):
             raise Exception(f"Faulty data: {self}")
         return container_arrival_time
 
-    def get_departure_time(self) -> datetime.datetime:
+    def get_departure_time(self, use_cache: bool = True) -> datetime.datetime:
+
+        if use_cache:
+            if self.cached_departure_time is not None:
+                # noinspection PyTypeChecker
+                return self.cached_departure_time
+
         container_departure_time: datetime.datetime
         if self.picked_up_by_truck is not None:
+            # noinspection PyTypeChecker
             truck: Truck = self.picked_up_by_truck
             arrival_time_information: TruckArrivalInformationForPickup = \
                 truck.truck_arrival_information_for_pickup
             container_departure_time = arrival_time_information.realized_container_pickup_time
         elif self.picked_up_by_large_scheduled_vehicle is not None:
+            # noinspection PyTypeChecker
             vehicle: LargeScheduledVehicle = self.picked_up_by_large_scheduled_vehicle
             container_departure_time = vehicle.scheduled_arrival
         else:

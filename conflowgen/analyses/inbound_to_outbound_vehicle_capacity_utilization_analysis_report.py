@@ -71,7 +71,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         report += "inbound volume (in TEU) "
         report += "outbound volume (in TEU)"
         report += "\n"
-        for vehicle_identifier, (used_inbound_capacity, used_outbound_capacity) in capacities.items():
+        for vehicle_identifier, (arrival_time, used_inbound_capacity, used_outbound_capacity) in capacities.items():
             vehicle_name = self._create_readable_name(vehicle_identifier)
             report += f"{vehicle_name:<50} "  # align this with cls.maximum_length_for_readable_name!
             report += f"{used_inbound_capacity:>23.1f} "
@@ -106,9 +106,9 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         if len(capacities) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
             ax.set_title(self.plot_title)
-            return ax
+            return fig
 
         df = self._convert_analysis_to_df(capacities)
 
@@ -170,10 +170,11 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             capacities: Dict[CompleteVehicleIdentifier, Tuple[float, float]]
     ) -> pd.DataFrame:
         rows = []
-        for vehicle_identifier, (inbound_capacity, used_outbound_capacity) in capacities.items():
+        for vehicle_identifier, (arrival_time, inbound_capacity, used_outbound_capacity) in capacities.items():
             vehicle_name = self._create_readable_name(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
+                "arrival_time": arrival_time,
                 "inbound volume (in TEU)": inbound_capacity,
                 "outbound volume (in TEU)": used_outbound_capacity
             })

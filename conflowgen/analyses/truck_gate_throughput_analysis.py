@@ -3,10 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict, List, Optional
 
-from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
-    TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.vehicle import Truck
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 
@@ -31,16 +28,12 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
         capacity in boxes can be deduced.
 
         Args:
-            start_date: When to start recording
-            end_date: When to end recording
             inbound: Whether to check for trucks which deliver a container on their inbound journey
             outbound: Whether to check for trucks which pick up a container on their outbound journey
+            start_date: When to start recording. Start with the earliest container if no date is provided.
+            end_date: When to end recording. Stop with the latest container if no date is provided.
         """
         assert (inbound or outbound), "At least one of the two must be checked for"
-
-        if None in (start_date, end_date):
-            assert start_date is None
-            assert end_date is None
 
         containers_that_pass_truck_gate: List[datetime.datetime] = []
 
@@ -50,32 +43,27 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             (Container.delivered_by == ModeOfTransport.truck) | (Container.picked_up_by == ModeOfTransport.truck)
         )
 
+        container: Container
         for container in selected_containers:
             if inbound:
                 mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by
                 if mode_of_transport_at_container_arrival == ModeOfTransport.truck:
-                    truck: Truck = container.delivered_by_truck
-                    arrival_time_information: TruckArrivalInformationForDelivery = \
-                        truck.truck_arrival_information_for_delivery
-                    time_of_entering = arrival_time_information.realized_container_delivery_time
-                    if start_date is None and end_date is None:
+                    time_of_entering = container.get_arrival_time()
+                    if (
+                            (start_date is None or time_of_entering >= start_date)
+                            and (end_date is None or time_of_entering <= end_date)
+                    ):
                         containers_that_pass_truck_gate.append(time_of_entering)
-                    else:
-                        if start_date <= time_of_entering <= end_date:
-                            containers_that_pass_truck_gate.append(time_of_entering)
 
             if outbound:
                 mode_of_transport_at_container_departure: ModeOfTransport = container.picked_up_by
                 if mode_of_transport_at_container_departure == ModeOfTransport.truck:
-                    truck: Truck = container.picked_up_by_truck
-                    arrival_time_information: TruckArrivalInformationForPickup = \
-                        truck.truck_arrival_information_for_pickup
-                    time_of_leaving = arrival_time_information.realized_container_pickup_time
-                    if start_date is None and end_date is None:
+                    time_of_leaving = container.get_departure_time()
+                    if (
+                            (start_date is None or time_of_leaving >= start_date)
+                            and (end_date is None or time_of_leaving <= end_date)
+                    ):
                         containers_that_pass_truck_gate.append(time_of_leaving)
-                    else:
-                        if start_date <= time_of_leaving <= end_date:
-                            containers_that_pass_truck_gate.append(time_of_leaving)
 
         if len(containers_that_pass_truck_gate) == 0:
             return {}

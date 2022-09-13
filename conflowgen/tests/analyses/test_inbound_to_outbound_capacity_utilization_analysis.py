@@ -56,11 +56,9 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
-        feeder_lsv.save()
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
         Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
@@ -83,7 +81,8 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         self.assertEqual(vehicle_name, "TestFeeder1")
 
         value_of_entry = list(capacities_with_one_feeder.values())[0]
-        self.assertEqual(len(value_of_entry), 2, "Value consists of two components")
-        (used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
+        self.assertEqual(len(value_of_entry), 3, "Value consists of two components")
+        (arrival_time, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
+        self.assertEqual(arrival_time, one_week_later)
         self.assertEqual(used_capacity_on_inbound_journey, 250)
         self.assertEqual(used_capacity_on_outbound_journey, 1, "One 20' is loaded")

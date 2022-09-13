@@ -1,16 +1,16 @@
 import unittest
 import unittest.mock
 
-from conflowgen import ContainerStorageRequirementDistributionManager
-from conflowgen.domain_models.distribution_seeders import container_storage_requirement_distribution_seeder
+from conflowgen import StorageRequirementDistributionManager
+from conflowgen.domain_models.distribution_seeders import storage_requirement_distribution_seeder
 
 
-class TestContainerStorageRequirementsDistributionManager(unittest.TestCase):
+class TestStorageRequirementsDistributionManager(unittest.TestCase):
 
-    SAMPLE_DISTRIBUTION = container_storage_requirement_distribution_seeder.DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION
+    SAMPLE_DISTRIBUTION = storage_requirement_distribution_seeder.DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION
 
     def setUp(self) -> None:
-        self.manager = ContainerStorageRequirementDistributionManager()
+        self.manager = StorageRequirementDistributionManager()
 
     def test_get_container_lengths(self):
         with unittest.mock.patch.object(
