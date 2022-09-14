@@ -153,6 +153,7 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
             container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
             container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,

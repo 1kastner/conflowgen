@@ -141,7 +141,8 @@ class Container(BaseModel):
             vehicle: LargeScheduledVehicle = self.picked_up_by_large_scheduled_vehicle
             container_departure_time = vehicle.scheduled_arrival
         else:
-            raise Exception(f"Faulty data: {self}")
+            raise Exception(f"The container {self} is not picked up by any vehicle even though a vehicle of type "
+                            f"{self.picked_up_by} should be there.")
         return container_departure_time
 
     def __repr__(self):

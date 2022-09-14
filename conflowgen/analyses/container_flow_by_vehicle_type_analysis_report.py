@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import itertools
 import logging
+import typing
 from collections.abc import Collection
 from typing import Dict
 
 import plotly.graph_objects
 
+from conflowgen.descriptive_datatypes import ContainerVolumeFromOriginToDestination
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
@@ -43,11 +45,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         Returns:
             The report in human-readable text format
         """
-        unit = kwargs.pop("unit", "both")
-        assert len(kwargs) == 0, f"No further keyword arguments supported for {self.__class__.__name__} but received " \
-                                 f"{kwargs}"
-
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow, unit = self._get_analysis_and_unit(kwargs)
 
         report = ""
 
@@ -64,6 +62,17 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
 
         # create string representation
         return report
+
+    def _get_analysis_and_unit(self, kwargs: dict) -> typing.Tuple[ContainerVolumeFromOriginToDestination, str]:
+        unit = kwargs.pop("unit", "both")
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow(
+            start_date=start_date,
+            end_date=end_date
+        )
+        return inbound_to_outbound_flow, unit
 
     def _generate_report_for_unit(
             self,
@@ -95,11 +104,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         Returns:
              The plotly figure(s) of the Sankey diagram.
         """
-        unit = kwargs.pop("unit", "both")
-        assert len(kwargs) == 0, f"No further keyword arguments supported for {self.__class__.__name__} but received " \
-                                 f"{kwargs}"
-
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
+        inbound_to_outbound_flow, unit = self._get_analysis_and_unit(kwargs)
 
         figs = []
 

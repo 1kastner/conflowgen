@@ -48,7 +48,6 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             average_moved_capacity=250,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
