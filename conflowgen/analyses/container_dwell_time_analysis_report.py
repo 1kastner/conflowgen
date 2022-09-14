@@ -48,9 +48,9 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -112,9 +112,9 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
-            start_time:
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time:
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
         Returns:
              The matplotlib axis of the histogram
@@ -150,15 +150,15 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
         container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
         storage_requirement = kwargs.pop("storage_requirement", "all")
-        start_time = kwargs.pop("start_time", None)
-        end_time = kwargs.pop("end_time", None)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
             container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
             container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,
             storage_requirement=storage_requirement,
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
         return (container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
                 storage_requirement)

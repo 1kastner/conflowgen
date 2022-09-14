@@ -36,9 +36,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
     ) -> str:
         """
         Keyword Args:
-            start_time (datetime.datetime):
+            start_date (datetime.datetime):
                 Only include containers that arrive after the given start time.
-            end_time (datetime.datetime):
+            end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
         """
         initial_to_adjusted_outbound_flow = self._get_analysis(kwargs)
@@ -75,9 +75,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         The container flow is represented by a Sankey diagram.
 
         Keyword Args:
-            start_time (datetime.datetime):
+            start_date (datetime.datetime):
                 Only include containers that arrive after the given start time.
-            end_time (datetime.datetime):
+            end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -156,11 +156,11 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         return fig
 
     def _get_analysis(self, kwargs):
-        start_time = kwargs.pop("start_time", None)
-        end_time = kwargs.pop("end_time", None)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
         initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow(
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
         return initial_to_adjusted_outbound_flow

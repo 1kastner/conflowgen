@@ -30,9 +30,9 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
 
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
         """
         (
@@ -54,9 +54,9 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a set of pie charts using pandas.
 
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -77,21 +77,21 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
         return axes
 
     def _get_analysis_output(self, kwargs):
-        start_time = kwargs.pop("start_time", None)
-        end_time = kwargs.pop("end_time", None)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         transshipment_and_hinterland_split = self.analysis.get_transshipment_and_hinterland_split(
-            start_time=start_time, end_time=end_time
+            start_date=start_date, end_date=end_date
         )
         modal_split_in_hinterland_inbound_traffic = self.analysis.get_modal_split_for_hinterland_traffic(
-            inbound=True, outbound=False, start_time=start_time, end_time=end_time
+            inbound=True, outbound=False, start_date=start_date, end_date=end_date
         )
         modal_split_in_hinterland_outbound_traffic = self.analysis.get_modal_split_for_hinterland_traffic(
-            inbound=False, outbound=True, start_time=start_time, end_time=end_time
+            inbound=False, outbound=True, start_date=start_date, end_date=end_date
         )
         modal_split_in_hinterland_traffic_both_directions = self.analysis.get_modal_split_for_hinterland_traffic(
-            inbound=True, outbound=True, start_time=start_time, end_time=end_time
+            inbound=True, outbound=True, start_date=start_date, end_date=end_date
         )
         return (
             modal_split_in_hinterland_traffic_both_directions, modal_split_in_hinterland_inbound_traffic,

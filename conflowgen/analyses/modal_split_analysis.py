@@ -35,14 +35,14 @@ class ModalSplitAnalysis(AbstractAnalysis):
 
     def get_transshipment_and_hinterland_split(
             self,
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> TransshipmentAndHinterlandSplit:
         """
         Args:
-            start_time:
+            start_date:
                 Only include containers that arrive after the given start time.
-            end_time:
+            end_date:
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -50,8 +50,8 @@ class ModalSplitAnalysis(AbstractAnalysis):
             in TEU that are transshipped.
         """
         inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
         inbound_to_outbound_flow = inbound_to_outbound_flows.teu
 
@@ -75,24 +75,24 @@ class ModalSplitAnalysis(AbstractAnalysis):
             self,
             inbound: bool,
             outbound: bool,
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> HinterlandModalSplit:
         """
         Args:
             inbound: Whether to account for inbound journeys
             outbound: Whether to account for outbound journeys
-            start_time:
+            start_date:
                 Only include containers that arrive after the given start time.
-            end_time:
+            end_date:
                 Only include containers that depart before the given end time.
 
         Returns:
             The modal split for the hinterland in TEU.
         """
         inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
         inbound_to_outbound_flow_in_teu = inbound_to_outbound_flows.teu
 

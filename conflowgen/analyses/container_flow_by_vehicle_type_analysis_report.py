@@ -35,9 +35,9 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         """
         Keyword Args:
             unit (str): One of "teu", "container", or "both". Defaults to "both" if none provided.
-            start_time (datetime.datetime): The earliest arriving container that is included.
+            start_date (datetime.datetime): The earliest arriving container that is included.
                 Consider all containers if :obj:`None`.
-            end_time (datetime.datetime): The latest departing container that is included.
+            end_date (datetime.datetime): The latest departing container that is included.
                 Consider all containers if :obj:`None`.
 
         Returns:

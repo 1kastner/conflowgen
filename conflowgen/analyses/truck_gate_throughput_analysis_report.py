@@ -34,9 +34,9 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
     def get_report_as_text(self, **kwargs) -> str:
         """
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 When to start recording
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 When to end recording
             inbound (typing.Optional[bool]):
                 Whether to check for trucks which deliver a container on their inbound journey
@@ -83,9 +83,9 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a line graph using pandas.
 
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 When to start recording
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 When to end recording
             inbound (typing.Optional[bool]):
                 Whether to check for trucks which deliver a container on their inbound journey

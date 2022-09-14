@@ -3,10 +3,10 @@ from __future__ import annotations
 import datetime
 from typing import Dict, Optional
 import numpy as np
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
-from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
@@ -25,9 +25,18 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         )
 
     @staticmethod
-    def get_inbound_container_volumes_by_vehicle_type() -> ContainerVolumeByVehicleType:
+    def get_inbound_container_volumes_by_vehicle_type(
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
+    ) -> ContainerVolumeByVehicleType:
         """
-        This is the used capacity of all vehicles separated by vehicle type on their inbound journey in teu.
+        This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
+
+        Args:
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
         """
         inbound_container_volume_in_teu: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
@@ -37,9 +46,12 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
+            if start_date and container.get_arrival_time() < start_date:
+                continue
+            if end_date and container.get_departure_time() > end_date:
+                continue
             inbound_vehicle_type = container.delivered_by
-            teu_factor_of_container: float = ContainerLength.get_factor(container.length)
-            inbound_container_volume_in_teu[inbound_vehicle_type] += teu_factor_of_container
+            inbound_container_volume_in_teu[inbound_vehicle_type] += container.occupied_teu
             inbound_container_volume_in_containers[inbound_vehicle_type] += 1
 
         return ContainerVolumeByVehicleType(
@@ -49,8 +61,8 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
     def get_outbound_container_volume_by_vehicle_type(
             self,
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> OutboundUsedAndMaximumCapacity:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
@@ -58,6 +70,14 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         If for a vehicle type, the used capacity is very close to the maximum capacity, you might want to
         reconsider the mode of transport distribution.
         See :class:`.ModeOfTransportDistributionManager` for further details.
+
+        Args:
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
+        Returns:
+            Both the used and maximum outbound capacities grouped by vehicle type.
         """
         assert self.transportation_buffer is not None
 
@@ -74,13 +94,12 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_time and container.get_arrival_time() < start_time:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_time and container.get_departure_time() > end_time:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             outbound_vehicle_type: ModeOfTransport = container.picked_up_by
-            teu_factor_of_container: float = ContainerLength.get_factor(container.length)
-            outbound_actually_moved_container_volume_in_teu[outbound_vehicle_type] += teu_factor_of_container
+            outbound_actually_moved_container_volume_in_teu[outbound_vehicle_type] += container.occupied_teu
             outbound_actually_moved_container_volume_in_containers[outbound_vehicle_type] += 1
 
         large_scheduled_vehicle: LargeScheduledVehicle

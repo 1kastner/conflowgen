@@ -18,8 +18,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_initial_to_adjusted_outbound_flow(
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> ContainerVolumeFromOriginToDestination:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
@@ -28,9 +28,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         in case no vehicle of the initial outbound vehicle type is left within the maximum dwell time.
 
         Args:
-            start_time:
+            start_date:
                 Only include containers that arrive after the given start time.
-            end_time:
+            end_date:
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -59,9 +59,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         # Iterate over all containers and count number of containers / used teu capacity
         container: Container
         for container in Container.select():
-            if start_time and container.get_arrival_time() < start_time:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_time and container.get_departure_time() > end_time:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             vehicle_type_initial = container.picked_up_by_initial
             vehicle_type_adjusted = container.picked_up_by

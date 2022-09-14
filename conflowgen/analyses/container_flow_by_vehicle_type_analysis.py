@@ -19,15 +19,15 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_inbound_to_outbound_flow(
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> ContainerVolumeFromOriginToDestination:
         """
         This is the overview of the generated inbound to outbound container flow by vehicle type.
 
         Args:
-            start_time: The earliest arriving container that is included. Consider all containers if :obj:`None`.
-            end_time: The latest departing container that is included. Consider all containers if :obj:`None`.
+            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
         """
         inbound_to_outbound_flow_in_containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
@@ -41,9 +41,9 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_time and container.get_arrival_time() < start_time:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_time and container.get_departure_time() > end_time:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             inbound_vehicle_type = container.delivered_by
             outbound_vehicle_type = container.picked_up_by

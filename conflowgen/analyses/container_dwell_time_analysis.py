@@ -21,8 +21,8 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
             container_delivered_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
             container_picked_up_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
             storage_requirement: Union[str, Collection[StorageRequirement], StorageRequirement] = "all",
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> set[datetime.timedelta]:
         """
         The containers are filtered according to the provided criteria.
@@ -42,9 +42,9 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
-            start_time:
+            start_date:
                 Only include containers that arrive after the given start time.
-            end_time:
+            end_date:
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -73,9 +73,9 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
         for container in selected_containers:
             container_enters_yard = container.get_arrival_time()
             container_leaves_yard = container.get_departure_time()
-            if start_time and container_enters_yard < start_time:
+            if start_date and container_enters_yard < start_date:
                 continue
-            if end_time and container_leaves_yard > end_time:
+            if end_date and container_leaves_yard > end_date:
                 continue
             container_dwell_time = container_leaves_yard - container_enters_yard
             container_dwell_times.add(container_dwell_time)

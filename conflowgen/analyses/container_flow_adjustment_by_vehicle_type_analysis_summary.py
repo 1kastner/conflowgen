@@ -45,8 +45,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
 
     def get_summary(
             self,
-            start_time: Optional[datetime.datetime] = None,
-            end_time: Optional[datetime.datetime] = None
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> ContainerFlowAdjustedToVehicleType:
         """
         Under certain circumstances (as explained in
@@ -57,12 +57,12 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
         The capacity is expressed in TEU.
 
         Args:
-            start_time: The earliest arriving container that is included. Consider all containers if :obj:`None`.
-            end_time: The latest departing container that is included. Consider all containers if :obj:`None`.
+            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
         """
         initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow(
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
 
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu

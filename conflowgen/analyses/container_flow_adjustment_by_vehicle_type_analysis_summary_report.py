@@ -36,9 +36,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
         It uses a human-readable formatting style.
 
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -72,9 +72,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
         The report as a graph is represented as a pie chart.
 
         Keyword Args:
-            start_time (typing.Optional[datetime.datetime]):
+            start_date (typing.Optional[datetime.datetime]):
                 Only include containers that arrive after the given start time.
-            end_time (typing.Optional[datetime.datetime]):
+            end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
 
         Returns:
@@ -106,11 +106,11 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
         return ax
 
     def _get_analysis(self, kwargs: dict) -> ContainerFlowAdjustedToVehicleType:
-        start_time = kwargs.pop("start_time", None)
-        end_time = kwargs.pop("end_time", None)
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
         adjusted_to = self.analysis_summary.get_summary(
-            start_time=start_time,
-            end_time=end_time
+            start_date=start_date,
+            end_date=end_date
         )
         return adjusted_to
