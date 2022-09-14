@@ -56,3 +56,5 @@ Untitled*.ipynb
 *.log 
 docs/notebooks/data/db/
 docs/notebooks/data/export/
+.venv/
+examples/
