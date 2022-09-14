@@ -135,7 +135,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             self.logger.warning("No data available for plotting")
         inbound_labels = [
             str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br> " + str(
-                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
+                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2)) + " " + unit
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
         ]
         to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
