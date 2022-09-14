@@ -117,7 +117,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
                 to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
         adjusted_labels = [
-            str(vehicle_type_adjusted).replace("_", " ").capitalize() + " adjusted:<br> " + str(
+            str(vehicle_type_adjusted).replace("_", " ").capitalize() + " adjusted:<br>" + str(
                 round(to_adjusted_flow[i], 2)) + " " + unit
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
         ]

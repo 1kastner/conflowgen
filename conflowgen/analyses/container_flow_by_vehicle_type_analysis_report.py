@@ -134,7 +134,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         if sum(value) == 0:
             self.logger.warning("No data available for plotting")
         inbound_labels = [
-            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br> " + str(
+            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br>" + str(
                 round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2)) + " " + unit
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
         ]
@@ -143,7 +143,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
                 to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
         outbound_labels = [
-            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br> " + str(
+            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br>" + str(
                 round(to_outbound_flow[i], 2)) + " " + unit
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
         ]
