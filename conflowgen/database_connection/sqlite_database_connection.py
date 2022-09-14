@@ -106,10 +106,7 @@ class SqliteDatabaseConnection:
             self.logger.debug("Seed with default values...")
             seed_all_distributions(**seeder_options)
         else:
-            if not reset:
-                self.logger.debug(f"Open existing database at {path_to_sqlite_database}")
-            else:
-                self.logger.debug(f"Open new database at {path_to_sqlite_database}")
+            self.logger.debug(f"Open existing database at {path_to_sqlite_database}")
 
         container_flow_properties: ContainerFlowGenerationProperties | None = \
             ContainerFlowGenerationProperties.get_or_none()

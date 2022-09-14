@@ -11,8 +11,8 @@ from conflowgen.domain_models.distribution_repositories.container_weight_distrib
     ContainerWeightDistributionRepository
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
-from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
-    ContainerStorageRequirementDistributionRepository
+from conflowgen.domain_models.distribution_repositories.storage_requirement_distribution_repository import \
+    StorageRequirementDistributionRepository
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -43,7 +43,7 @@ class ContainerFactory:
         self.mode_of_transportation_distribution = ModeOfTransportDistributionRepository.get_distribution()
         self.container_length_distribution = ContainerLengthDistributionRepository.get_distribution()
         self.container_weight_distribution = ContainerWeightDistributionRepository.get_distribution()
-        self.storage_requirement_distribution = ContainerStorageRequirementDistributionRepository.get_distribution()
+        self.storage_requirement_distribution = StorageRequirementDistributionRepository.get_distribution()
 
     def create_containers_for_large_scheduled_vehicle(
             self,

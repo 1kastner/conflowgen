@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import Dict
+
+import datetime
+from typing import Dict, Optional
 
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 from conflowgen.descriptive_datatypes import ContainerVolumeFromOriginToDestination
@@ -16,12 +17,21 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
     """
 
     @staticmethod
-    def get_initial_to_adjusted_outbound_flow() -> ContainerVolumeFromOriginToDestination:
+    def get_initial_to_adjusted_outbound_flow(
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
+    ) -> ContainerVolumeFromOriginToDestination:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
         onward transportation might change. The initial outbound vehicle type is the vehicle type that is drawn
         randomly for a container at the time of generation. The adjusted vehicle type is the vehicle type that is drawn
         in case no vehicle of the initial outbound vehicle type is left within the maximum dwell time.
+
+        Args:
+            start_date:
+                Only include containers that arrive after the given start time.
+            end_date:
+                Only include containers that depart before the given end time.
 
         Returns:
             The data structure describes how often an initial outbound vehicle type had to be adjusted with which other
@@ -49,12 +59,15 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         # Iterate over all containers and count number of containers / used teu capacity
         container: Container
         for container in Container.select():
+            if start_date and container.get_arrival_time() < start_date:
+                continue
+            if end_date and container.get_departure_time() > end_date:
+                continue
             vehicle_type_initial = container.picked_up_by_initial
             vehicle_type_adjusted = container.picked_up_by
-            teu_factor_of_container: float = ContainerLength.get_factor(container.length)
             initial_to_adjusted_outbound_flow_in_containers[vehicle_type_initial][vehicle_type_adjusted] += 1
             initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial][vehicle_type_adjusted] += \
-                teu_factor_of_container
+                container.occupied_teu
 
         return ContainerVolumeFromOriginToDestination(
             containers=initial_to_adjusted_outbound_flow_in_containers,

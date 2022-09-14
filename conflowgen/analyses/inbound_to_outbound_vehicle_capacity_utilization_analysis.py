@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+import datetime
 from typing import Dict, NamedTuple, Tuple, Any
 
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
-from conflowgen.tools import hashable
 
 
 class CompleteVehicleIdentifier(NamedTuple):
@@ -32,10 +31,10 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             transportation_buffer=transportation_buffer
         )
 
-    @staticmethod
     def get_inbound_and_outbound_capacity_of_each_vehicle(
+            self,
             vehicle_type: Any = "all"
-    ) -> Dict[CompleteVehicleIdentifier, Tuple[float, float]]:
+    ) -> Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]:
         """
         Args:
             vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
@@ -49,14 +48,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
 
         selected_vehicles = LargeScheduledVehicle.select().join(Schedule)
         if vehicle_type is not None and vehicle_type != "all":
-            if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
-                selected_vehicles = selected_vehicles.where(
-                    LargeScheduledVehicle.schedule.vehicle_type == vehicle_type
-                )
-            else:  # assume it is some kind of collection (list, set, ...)
-                selected_vehicles = selected_vehicles.where(
-                    LargeScheduledVehicle.schedule.vehicle_type << vehicle_type
-                )
+            selected_vehicles = self._restrict_vehicle_type(selected_vehicles, vehicle_type)
 
         vehicle: LargeScheduledVehicle
         for vehicle in selected_vehicles:
@@ -67,12 +59,12 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             used_capacity_on_inbound_journey = vehicle.moved_capacity
 
             used_capacity_on_outbound_journey = 0
+
             container: Container
             for container in Container.select().where(
                 Container.picked_up_by_large_scheduled_vehicle == vehicle
             ):
-                teu_factor_of_container: float = ContainerLength.get_factor(container.length)
-                used_capacity_on_outbound_journey += teu_factor_of_container
+                used_capacity_on_outbound_journey += container.occupied_teu
 
             vehicle_id = CompleteVehicleIdentifier(
                 mode_of_transport=mode_of_transport,
@@ -80,6 +72,12 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
                 vehicle_name=vehicle_name
             )
 
-            capacities[vehicle_id] = (used_capacity_on_inbound_journey, used_capacity_on_outbound_journey)
+            vehicle_arrival = datetime.datetime.combine(
+                vehicle_schedule.vehicle_arrives_at, vehicle_schedule.vehicle_arrives_at_time
+            )
+
+            capacities[vehicle_id] = (
+                vehicle_arrival, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey
+            )
 
         return capacities

@@ -2,13 +2,11 @@ from __future__ import annotations
 
 import datetime
 import statistics
-from typing import Any
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
 import matplotlib.axis
 import pandas as pd
 
-from conflowgen .domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.analyses.container_dwell_time_analysis import ContainerDwellTimeAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
@@ -50,21 +48,19 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
 
         Returns:
              The report in text format (possibly spanning over several lines).
         """
 
-        container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
-        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
-        storage_requirement = kwargs.pop("storage_requirement", "all")
-        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
-
-        container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
-            container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
-            container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,
-            storage_requirement=storage_requirement
-        )
+        (
+            container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
+            storage_requirement
+        ) = self._get_container_dwell_times(kwargs)
 
         container_dwell_times_in_hours = [
             int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
@@ -86,7 +82,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
             container_delivered_by_vehicle_type) + "\n"
         report += "container picked up by vehicle type = " + self._get_vehicle_representation(
             container_picked_up_by_vehicle_type) + "\n"
-        report += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
+        report += "storage requirement = " + self._get_storage_requirement_representation(
+            storage_requirement) + "\n"
         report += f"number containers:                          {number_containers:>10}\n"
         report += "                                       (reported in h)\n"
         report += f"minimum container dwell time:               {minimum_container_dwell_time:>10.1f}\n"
@@ -115,24 +112,21 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
         Returns:
              The matplotlib axis of the histogram
         """
 
-        container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
-        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
-        storage_requirement = kwargs.pop("storage_requirement", "all")
-
-        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
-
-        container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
-            container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
-            container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,
-            storage_requirement=storage_requirement
-        )
+        (
+            container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
+            storage_requirement
+        ) = self._get_container_dwell_times(kwargs)
 
         if len(container_dwell_times) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
         else:
             container_dwell_times_in_hours = [
                 int(round(dwell_time.total_seconds() / 3600)) for dwell_time in container_dwell_times
@@ -145,14 +139,26 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
             container_delivered_by_vehicle_type) + "\n"
         title += "container picked up by vehicle type = " + self._get_vehicle_representation(
             container_picked_up_by_vehicle_type) + "\n"
-        title += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
+        title += "storage requirement = " + self._get_storage_requirement_representation(
+            storage_requirement) + "\n"
 
         ax.set_xlabel("Container Dwell Time (h)")
         ax.set_title(title)
         return ax
 
-    def _get_vehicle_representation(self, vehicle_type: Any) -> str:
-        return self._get_enum_or_enum_set_representation(vehicle_type, ModeOfTransport)
-
-    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
-        return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
+    def _get_container_dwell_times(self, kwargs):
+        container_delivered_by_vehicle_type = kwargs.pop("container_delivered_by_vehicle_type", "all")
+        container_picked_up_by_vehicle_type = kwargs.pop("container_picked_up_by_vehicle_type", "all")
+        storage_requirement = kwargs.pop("storage_requirement", "all")
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
+            container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
+            container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,
+            storage_requirement=storage_requirement,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return (container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
+                storage_requirement)

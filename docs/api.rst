@@ -51,7 +51,7 @@ These are all required for generating the synthetic data.
 .. autoclass:: conflowgen.ContainerLengthDistributionManager
     :members:
 
-.. autoclass:: conflowgen.ContainerStorageRequirementDistributionManager
+.. autoclass:: conflowgen.StorageRequirementDistributionManager
     :members:
 
 .. autoclass:: conflowgen.ContainerWeightDistributionManager

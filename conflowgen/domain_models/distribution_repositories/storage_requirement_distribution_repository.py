@@ -18,7 +18,7 @@ class SumOfProbabilitiesUnequalOneException(Exception):
     pass
 
 
-class ContainerStorageRequirementDistributionRepository:
+class StorageRequirementDistributionRepository:
     @staticmethod
     def _validate(distribution: Dict[ContainerLength, Dict[StorageRequirement, float]]):
         if not set(ContainerLength) == set(distribution.keys()):

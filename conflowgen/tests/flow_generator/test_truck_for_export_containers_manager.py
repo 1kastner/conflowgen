@@ -6,6 +6,7 @@ import random
 import unittest
 import unittest.mock
 from collections import Counter
+from typing import Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -92,7 +93,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
 
         plt.show(block=True)
 
-    def _get_distributions(self, container: Container) -> tuple[ContinuousDistribution, WeeklyDistribution | None]:
+    def _get_distributions(self, container: Container) -> Tuple[ContinuousDistribution, WeeklyDistribution | None]:
 
         # pylint: disable=protected-access
         container_dwell_time_distribution, truck_arrival_distribution = self.manager._get_distributions(container)

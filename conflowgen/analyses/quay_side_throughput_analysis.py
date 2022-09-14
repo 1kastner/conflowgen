@@ -43,6 +43,7 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
 
         containers_that_pass_quay_side: List[datetime.datetime] = []
 
+        container: Container
         for container in Container.select():
             if inbound:
                 mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by

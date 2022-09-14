@@ -3,18 +3,18 @@ from typing import Dict
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.data_types.container_length import ContainerLength
-from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
-    ContainerStorageRequirementDistributionRepository
+from conflowgen.domain_models.distribution_repositories.storage_requirement_distribution_repository import \
+    StorageRequirementDistributionRepository
 
 
-class ContainerStorageRequirementDistributionManager(AbstractDistributionManager):
+class StorageRequirementDistributionManager(AbstractDistributionManager):
     """
     This is the interface to set and get the storage requirement distribution.
     It determines how many containers are selected to have a certain :class:`.StorageRequirement`.
     """
 
     def __init__(self):
-        self.storage_requirement_repository = ContainerStorageRequirementDistributionRepository()
+        self.storage_requirement_repository = StorageRequirementDistributionRepository()
 
     def get_storage_requirement_distribution(self) -> Dict[ContainerLength, Dict[StorageRequirement, float]]:
         """

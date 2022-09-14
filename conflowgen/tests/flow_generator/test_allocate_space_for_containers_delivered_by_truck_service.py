@@ -10,7 +10,7 @@ from conflowgen.domain_models.distribution_models.mode_of_transport_distribution
 from conflowgen.domain_models.distribution_models.storage_requirement_distribution import StorageRequirementDistribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, \
     container_length_distribution_seeder, container_weight_distribution_seeder, \
-    container_storage_requirement_distribution_seeder
+    storage_requirement_distribution_seeder
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -48,7 +48,7 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
         mode_of_transport_distribution_seeder.seed()
         container_length_distribution_seeder.seed()
         container_weight_distribution_seeder.seed()
-        container_storage_requirement_distribution_seeder.seed()
+        storage_requirement_distribution_seeder.seed()
 
         self.service = AllocateSpaceForContainersDeliveredByTruckService()
         self.service.reload_distribution(

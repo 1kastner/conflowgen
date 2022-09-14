@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects
 from matplotlib import image as mpimg
 
+from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -96,6 +97,12 @@ class AbstractReport(abc.ABC):
         if isinstance(enum_or_enum_set, Iterable):  # a & b & c
             return " & ".join([str(element) for element in enum_or_enum_set])
         return str(enum_or_enum_set)  # just give it a try
+
+    def _get_vehicle_representation(self, vehicle_type: Any) -> str:
+        return self._get_enum_or_enum_set_representation(vehicle_type, ModeOfTransport)
+
+    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
+        return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):

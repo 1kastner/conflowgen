@@ -140,7 +140,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             elif _debug_check_distribution_property == "maximum":
                 selected_time_window = max(hours_with_arrivals)
             elif _debug_check_distribution_property == "average":
-                selected_time_window = container_dwell_time_distribution.average
+                selected_time_window = int(round(container_dwell_time_distribution.average))
             else:
                 raise Exception(f"Unknown: {_debug_check_distribution_property}")
         else:
@@ -170,7 +170,7 @@ class AbstractTruckForContainersManager(abc.ABC):
         return selected_time_window
 
     @staticmethod
-    def _drop_where_zero(sequence: Sequence, filter_sequence: Sequence) -> Sequence:
+    def _drop_where_zero(sequence: Sequence, filter_sequence: Sequence) -> list:
         new_sequence = []
         for element, filter_element in zip(sequence, filter_sequence):
             if filter_element:

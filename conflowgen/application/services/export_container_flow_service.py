@@ -100,6 +100,8 @@ class ExportContainerFlowService:
         ],
         Container: [
             "destination",  # it is already joined, so only the key would remain
+            "cached_arrival_time",  # This should be looked up at the vehicle that delivers the container
+            "cached_departure_time"  # This should be looked up at the vehicle that picks up the container
         ],
         LargeScheduledVehicle: [
             "schedule",  # it is already joined, so only the key would remain

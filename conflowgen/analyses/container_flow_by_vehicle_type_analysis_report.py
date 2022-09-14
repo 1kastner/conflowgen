@@ -34,7 +34,11 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
     ) -> str:
         """
         Keyword Args:
-            unit (str): One of "teu", "container", or "both"
+            unit (str): One of "teu", "container", or "both". Defaults to "both" if none provided.
+            start_date (datetime.datetime): The earliest arriving container that is included.
+                Consider all containers if :obj:`None`.
+            end_date (datetime.datetime): The latest departing container that is included.
+                Consider all containers if :obj:`None`.
 
         Returns:
             The report in human-readable text format
@@ -86,22 +90,10 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         The container flow is represented by a Sankey diagram.
 
         Keyword Args:
-            unit (str): One of "TEU", "containers", or "both"
+            unit (str): One of "TEU", "containers", or "both". Defaults to "both" if none provided.
 
         Returns:
              The plotly figure(s) of the Sankey diagram.
-
-        .. note::
-            At the time of writing, plotly comes with some shortcomings.
-
-            * Sorting the labels on either the left or right side without recalculating the height of each bar is not
-              possible, see https://github.com/plotly/plotly.py/issues/1732.
-            * Empty nodes require special handling, see https://github.com/plotly/plotly.py/issues/3003 and the
-              coordinates need to be :math:`0 < x,y < 1` (no equals!), see
-              https://github.com/plotly/plotly.py/issues/3002.
-
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
-            e.g., in a Jupyter Notebook.
         """
         unit = kwargs.pop("unit", "both")
         assert len(kwargs) == 0, f"No further keyword arguments supported for {self.__class__.__name__} but received " \
@@ -142,8 +134,8 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
         if sum(value) == 0:
             self.logger.warning("No data available for plotting")
         inbound_labels = [
-            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br> " + str(
-                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
+            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br>" + str(
+                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2)) + " " + unit
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
         ]
         to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
@@ -151,7 +143,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
                 to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
         outbound_labels = [
-            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br> " + str(
+            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br>" + str(
                 round(to_outbound_flow[i], 2)) + " " + unit
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
         ]

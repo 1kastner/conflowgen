@@ -104,7 +104,7 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         storage_requirement, yard_capacity_over_time = self._get_used_yard_capacity_based_on_storage_requirement(kwargs)
 
         if len(yard_capacity_over_time) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
         else:
             series = pd.Series(yard_capacity_over_time)
             ax = series.plot()
