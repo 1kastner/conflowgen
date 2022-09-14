@@ -226,3 +226,73 @@ class TestContainerDwellTimeAnalysis(unittest.TestCase):
             {
                 datetime.timedelta(hours=12),
             })
+
+    def test_with_two_containers_and_start_and_end_time(self):
+        now = datetime.datetime.now()
+        schedule = Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=now.date(),
+            vehicle_arrives_at_time=now.time(),
+            average_vehicle_capacity=300,
+            average_moved_capacity=300,
+        )
+        feeder_lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestFeeder1",
+            capacity_in_teu=300,
+            moved_capacity=schedule.average_moved_capacity,
+            scheduled_arrival=now,
+            schedule=schedule
+        )
+        Feeder.create(
+            large_scheduled_vehicle=feeder_lsv
+        )
+        aip = TruckArrivalInformationForPickup.create(
+            realized_container_pickup_time=now + datetime.timedelta(hours=25)
+        )
+        truck = Truck.create(
+            delivers_container=False,
+            picks_up_container=True,
+            truck_arrival_information_for_delivery=None,
+            truck_arrival_information_for_pickup=aip
+        )
+        Container.create(
+            weight=20,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.feeder,
+            delivered_by_large_scheduled_vehicle=feeder_lsv,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            picked_up_by_truck=truck
+        )
+        aip_2 = TruckArrivalInformationForPickup.create(
+            realized_container_pickup_time=now + datetime.timedelta(hours=12)
+        )
+        truck_2 = Truck.create(
+            delivers_container=False,
+            picks_up_container=True,
+            truck_arrival_information_for_delivery=None,
+            truck_arrival_information_for_pickup=aip_2
+        )
+        Container.create(
+            weight=20,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.feeder,
+            delivered_by_large_scheduled_vehicle=feeder_lsv,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            picked_up_by_truck=truck_2
+        )
+
+        container_dwell_times = self.analysis.get_container_dwell_times(
+            start_date=now - datetime.timedelta(hours=10),
+            end_date=now + datetime.timedelta(hours=14)
+        )
+        self.assertEqual(len(container_dwell_times), 1)
+        self.assertSetEqual(
+            container_dwell_times,
+            {
+                datetime.timedelta(hours=12),
+            })

@@ -3,7 +3,6 @@ import datetime
 from peewee import AutoField, BooleanField, DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
-from playhouse.hybrid import hybrid_property
 
 from .arrival_information import TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from .base_model import BaseModel
@@ -97,7 +96,7 @@ class Container(BaseModel):
         help_text="This field is used to cache the departure time for faster evaluation of analyses."
     )
 
-    @hybrid_property
+    @property
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
 
@@ -120,6 +119,9 @@ class Container(BaseModel):
             container_arrival_time = large_scheduled_vehicle.scheduled_arrival
         else:
             raise Exception(f"Faulty data: {self}")
+
+        self.cached_arrival_time = container_arrival_time
+        self.save()
         return container_arrival_time
 
     def get_departure_time(self, use_cache: bool = True) -> datetime.datetime:
@@ -143,6 +145,9 @@ class Container(BaseModel):
         else:
             raise Exception(f"The container {self} is not picked up by any vehicle even though a vehicle of type "
                             f"{self.picked_up_by} should be there.")
+
+        self.cached_departure_time = container_departure_time
+        self.save()
         return container_departure_time
 
     def __repr__(self):

@@ -9,7 +9,9 @@ from peewee import SqliteDatabase
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.base_model import database_proxy
+from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
+from conflowgen.domain_models.vehicle import Truck, DeepSeaVessel, Feeder, Barge, Train
 
 
 class SqliteDatabaseIsMissingException(Exception):
@@ -117,6 +119,9 @@ class SqliteDatabaseConnection:
             self.logger.debug(f'generated_at: {container_flow_properties.generated_at}')
             self.logger.debug(f'last_updated_at: {container_flow_properties.last_updated_at}')
             self.logger.debug(f'transportation_buffer: {container_flow_properties.transportation_buffer}')
+
+        for vehicle in (DeepSeaVessel, Feeder, Barge, Train, Truck, Container):
+            self.logger.debug(f"Number entries in table '{vehicle.__name__}': {vehicle.select().count()}")
 
         return self.sqlite_db_connection
 

@@ -5,7 +5,6 @@ from typing import Dict, Tuple, List, Collection, Union
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
 
 
@@ -51,17 +50,17 @@ class YardCapacityAnalysis(AbstractAnalysis):
             A series of the used yard capacity in TEU over the time.
         """
         selected_containers = Container.select()
-        if storage_requirement != "all":
+
+        if storage_requirement is not None and storage_requirement != "all":
             selected_containers = self._restrict_storage_requirement(selected_containers, storage_requirement)
 
         container_stays: List[Tuple[datetime.datetime, datetime.datetime, float]] = []
 
         container: Container
         for container in selected_containers:
-            container_enters_yard = container.get_arrival_time()
-            container_leaves_yard = container.get_departure_time()
-            teu_factor_of_container = ContainerLength.get_factor(container.length)
-            container_stays.append((container_enters_yard, container_leaves_yard, teu_factor_of_container))
+            container_stays.append(
+                (container.get_arrival_time(), container.get_departure_time(), container.occupied_teu)
+            )
 
         if len(container_stays) == 0:
             return {}
