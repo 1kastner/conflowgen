@@ -120,7 +120,7 @@ class SqliteDatabaseConnection:
             self.logger.debug(f'last_updated_at: {container_flow_properties.last_updated_at}')
             self.logger.debug(f'transportation_buffer: {container_flow_properties.transportation_buffer}')
 
-        for vehicle in {DeepSeaVessel, Feeder, Barge, Train, Truck, Container}:
+        for vehicle in (DeepSeaVessel, Feeder, Barge, Train, Truck, Container):
             self.logger.debug(f"Number entries in table '{vehicle.__name__}': {vehicle.select().count()}")
 
         return self.sqlite_db_connection
