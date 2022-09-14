@@ -18,3 +18,4 @@ Its source code hosted
    api
    contributing
    bibliography
+   imprint
