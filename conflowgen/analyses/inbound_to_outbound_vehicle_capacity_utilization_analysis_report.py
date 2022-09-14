@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import Tuple, Any, Dict, Optional
 
 import matplotlib.pyplot as plt
@@ -55,14 +56,15 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
                 whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
 
         Returns:
              The report in text format (possibly spanning over several lines).
         """
-        vehicle_type_any = kwargs.pop("vehicle_type", "all")
-
-        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(vehicle_type_any)
-
+        capacities, vehicle_type_description = self._get_analysis(kwargs)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         report = "\n"
@@ -83,6 +85,18 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             report += "(rounding errors might exist)\n"
         return report
 
+    def _get_analysis(self, kwargs):
+        vehicle_type_any = kwargs.pop("vehicle_type", "all")
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(
+            vehicle_type_any,
+            start_date=start_date,
+            end_date=end_date
+        )
+        return capacities, vehicle_type_description
+
     def get_report_as_graph(self, **kwargs) -> matplotlib.figure.Figure:
         """
         The report as a graph is represented as a scatter plot using pandas.
@@ -93,16 +107,18 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
                 whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
-
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
         Returns:
              The matplotlib figure
         """
+        # kwargs for plot
         plot_type = kwargs.pop("plot_type", "both")
 
-        vehicle_type_any = kwargs.pop("vehicle_type", "all")
-
-        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(vehicle_type_any)
-
+        # kwargs for report
+        capacities, vehicle_type_description = self._get_analysis(kwargs)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
 
         if len(capacities) == 0:
@@ -167,7 +183,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def _convert_analysis_to_df(
             self,
-            capacities: Dict[CompleteVehicleIdentifier, Tuple[float, float]]
+            capacities: Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]
     ) -> pd.DataFrame:
         rows = []
         for vehicle_identifier, (arrival_time, inbound_capacity, used_outbound_capacity) in capacities.items():
@@ -184,9 +200,13 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def _get_capacities_depending_on_vehicle_type(
             self,
-            vehicle_type_any: Any
-    ) -> Tuple[str, Dict[CompleteVehicleIdentifier, Tuple[float, float]]]:
+            vehicle_type_any: Any,
+            start_date: Optional[datetime.datetime],
+            end_date: Optional[datetime.datetime]
+    ) -> Tuple[str, Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]]:
         capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
-            vehicle_type=vehicle_type_any
+            vehicle_type=vehicle_type_any,
+            start_date=start_date,
+            end_date=end_date
         )
         return self._get_enum_or_enum_set_representation(vehicle_type_any, ModeOfTransport), capacities
