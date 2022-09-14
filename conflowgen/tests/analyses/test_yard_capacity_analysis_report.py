@@ -108,9 +108,6 @@ storage requirement = all
 maximum used yard capacity:                        0.0
 average used yard capacity:                        0.0
 standard deviation:                               -1.0
-maximum used yard capacity (laden):                0.0
-average used yard capacity (laden):                0.0
-standard deviation (laden):                       -1.0
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
@@ -124,9 +121,6 @@ storage requirement = all
 maximum used yard capacity:                        3.0
 average used yard capacity:                        1.8
 standard deviation:                                1.1
-maximum used yard capacity (laden):                3.0
-average used yard capacity (laden):                1.8
-standard deviation (laden):                        1.1
 (rounding errors might exist)
 """
         self.assertEqual(actual_report, expected_report)
