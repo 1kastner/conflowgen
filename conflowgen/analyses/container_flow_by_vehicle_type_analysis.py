@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import datetime
 from typing import Dict, Optional
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport

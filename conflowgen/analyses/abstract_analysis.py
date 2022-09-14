@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import List, Optional, Any
+from typing import List, Any
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
+# noinspection PyProtectedMember
 from peewee import ModelSelect
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -51,7 +53,7 @@ class AbstractAnalysis(abc.ABC):
 
     def __init__(
             self,
-            transportation_buffer: Optional[float] = None
+            transportation_buffer: typing.Optional[float] = None
     ):
         """
 
@@ -61,14 +63,14 @@ class AbstractAnalysis(abc.ABC):
                 compared to the amount of containers it had on its inbound journey - as long as the total vehicle
                 capacity would not be exceeded.
         """
-        self.transportation_buffer: Optional[float] = None
+        self.transportation_buffer: typing.Optional[float] = None
         self.update(
             transportation_buffer=transportation_buffer
         )
 
     def update(
             self,
-            transportation_buffer: Optional[float]
+            transportation_buffer: typing.Optional[float]
     ):
         """
         For some analyses, the transportation buffer needs to be provided.
