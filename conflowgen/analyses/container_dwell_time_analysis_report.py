@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import statistics
-import typing  # noqa, pylint: disable=unused-import, lgtm [py/unused-import]  # used in the docstring
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
 import matplotlib.axis
 import pandas as pd
