@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import datetime
-from typing import Dict, Optional
-import numpy as np
 import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+
+import numpy as np
 
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
@@ -26,8 +26,8 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_inbound_container_volumes_by_vehicle_type(
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> ContainerVolumeByVehicleType:
         """
         This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
@@ -38,7 +38,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
             end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
         """
-        inbound_container_volume_in_teu: Dict[ModeOfTransport, float] = {
+        inbound_container_volume_in_teu: typing.Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
@@ -61,8 +61,8 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
     def get_outbound_container_volume_by_vehicle_type(
             self,
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> OutboundUsedAndMaximumCapacity:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
@@ -81,13 +81,13 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         """
         assert self.transportation_buffer is not None
 
-        outbound_actually_moved_container_volume_in_teu: Dict[ModeOfTransport, float] = {
+        outbound_actually_moved_container_volume_in_teu: typing.Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
         outbound_actually_moved_container_volume_in_containers = outbound_actually_moved_container_volume_in_teu.copy()
 
-        outbound_maximum_capacity_in_teu: Dict[ModeOfTransport, float] = {
+        outbound_maximum_capacity_in_teu: typing.Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
