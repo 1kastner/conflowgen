@@ -124,7 +124,9 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
         """
         Plotly needs quite some libraries loaded in the online documentation so that the figures are actually visible
         to the user.
-        Thus, they are converted to static images for the meantime.
+        With the two keywords ``static`` and ``display_as_ipython_svg``, alternative means of visualization can be
+        selected.
+        Additional keywords are passed on to the report.
 
         Keyword Args:
             static (bool): Whether to convert the interactive plotly plots into static images.
@@ -132,9 +134,8 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
         """
         static = kwargs.pop("static", False)
         display_as_ipython_svg = kwargs.pop("display_as_ipython_svg", False)
-        assert len(kwargs) == 0, f"The keyword arguments {kwargs} are not supported."
 
-        figs: Any = self.get_report_as_graph()
+        figs: Any = self.get_report_as_graph(**kwargs)
         try:
             len(figs)
         except TypeError:  # there is only one
