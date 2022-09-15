@@ -65,7 +65,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
              The report in text format (possibly spanning over several lines).
         """
         capacities, vehicle_type_description = self._get_analysis(kwargs)
-        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         report = "\n"
         report += "vehicle type = " + vehicle_type_description + "\n"
@@ -89,7 +89,6 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         vehicle_type_any = kwargs.pop("vehicle_type", "all")
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
-        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
         vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(
             vehicle_type_any,
             start_date=start_date,
@@ -119,7 +118,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
         # kwargs for report
         capacities, vehicle_type_description = self._get_analysis(kwargs)
-        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         if len(capacities) == 0:
             fig, ax = no_data_graph()
