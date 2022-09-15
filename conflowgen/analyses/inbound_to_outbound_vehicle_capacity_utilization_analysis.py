@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import typing
 from typing import Dict, NamedTuple, Tuple, Any
 
 from conflowgen.domain_models.container import Container
@@ -33,14 +34,19 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
 
     def get_inbound_and_outbound_capacity_of_each_vehicle(
             self,
-            vehicle_type: Any = "all"
+            vehicle_type: Any = "all",
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]:
         """
         Args:
             vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
                 vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 Only the vehicles that correspond to the provided vehicle type(s) are considered in the analysis.
-
+            start_date:
+                Only include containers that arrive after the given start time.
+            end_date:
+                Only include containers that depart before the given end time.
         Returns:
             The transported containers of each vehicle on their inbound and outbound journey in TEU.
         """
@@ -75,6 +81,11 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             vehicle_arrival = datetime.datetime.combine(
                 vehicle_schedule.vehicle_arrives_at, vehicle_schedule.vehicle_arrives_at_time
             )
+
+            if start_date and vehicle_arrival < start_date:
+                continue
+            if end_date and vehicle_arrival > end_date:
+                continue
 
             capacities[vehicle_id] = (
                 vehicle_arrival, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey

@@ -37,6 +37,13 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         empty_capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle()
         self.assertDictEqual({}, empty_capacities)
 
+    def test_with_no_data_and_start_and_end_date(self):
+        empty_capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
+            start_date=datetime.datetime(2022, 9, 15),
+            end_date=datetime.datetime(2022, 9, 16)
+        )
+        self.assertDictEqual({}, empty_capacities)
+
     def test_inbound_with_single_feeder(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
         schedule = Schedule.create(
