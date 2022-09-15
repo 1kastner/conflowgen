@@ -52,6 +52,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 Only include containers that arrive after the given start time.
             end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
+            use_cache (typing.Optional[bool]):
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
              The report in text format (possibly spanning over several lines).
@@ -116,6 +118,8 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
                 Only include containers that arrive after the given start time.
             end_date (typing.Optional[datetime.datetime]):
                 Only include containers that depart before the given end time.
+            use_cache (typing.Optional[bool]):
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
         Returns:
              The matplotlib axis of the histogram
         """
@@ -152,14 +156,18 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
         storage_requirement = kwargs.pop("storage_requirement", "all")
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
-        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        use_cache = kwargs.pop("use_cache", False)
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed"
 
         container_dwell_times: set[datetime.timedelta] = self.analysis.get_container_dwell_times(
             container_delivered_by_vehicle_type=container_delivered_by_vehicle_type,
             container_picked_up_by_vehicle_type=container_picked_up_by_vehicle_type,
             storage_requirement=storage_requirement,
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            use_cache=use_cache
         )
-        return (container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
-                storage_requirement)
+        return (
+            container_delivered_by_vehicle_type, container_dwell_times, container_picked_up_by_vehicle_type,
+            storage_requirement
+        )
