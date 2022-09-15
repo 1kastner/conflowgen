@@ -22,7 +22,8 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
             container_picked_up_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
             storage_requirement: Union[str, Collection[StorageRequirement], StorageRequirement] = "all",
             start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            end_date: Optional[datetime.datetime] = None,
+            use_cache: bool = True
     ) -> set[datetime.timedelta]:
         """
         The containers are filtered according to the provided criteria.
@@ -46,6 +47,8 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
             A set of container dwell times.
@@ -71,8 +74,9 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
 
         container: Container
         for container in selected_containers:
-            container_enters_yard = container.get_arrival_time()
-            container_leaves_yard = container.get_departure_time()
+            container_enters_yard = container.get_arrival_time(use_cache=use_cache)
+            container_leaves_yard = container.get_departure_time(use_cache=use_cache)
+            assert container_enters_yard < container_leaves_yard, "A container should enter the yard before leaving it"
             if start_date and container_enters_yard < start_date:
                 continue
             if end_date and container_leaves_yard > end_date:
