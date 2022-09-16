@@ -61,6 +61,7 @@ extensions = [
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
+    'sphinx_simplepdf',  # create PDFs
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -185,6 +186,8 @@ nbsphinx_prolog = """
 """
 
 # -- Setting up git lfs if Missing ---------------------------------------------
+
+simplepdf_debug = True
 
 
 def _install_git_lfs_on_linux_on_the_fly() -> str:
