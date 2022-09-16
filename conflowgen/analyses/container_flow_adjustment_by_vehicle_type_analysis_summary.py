@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import NamedTuple
+
+import datetime
+from typing import NamedTuple, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis import \
@@ -42,7 +44,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
     """
 
     def get_summary(
-            self
+            self,
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None
     ) -> ContainerFlowAdjustedToVehicleType:
         """
         Under certain circumstances (as explained in
@@ -51,8 +55,16 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
         Thus, the question remains how often this has been the case and which vehicles were the primary target for this
         redirected traffic?
         The capacity is expressed in TEU.
+
+        Args:
+            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
         """
-        initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow()
+        initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow(
+            start_date=start_date,
+            end_date=end_date
+        )
+
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
         adjusted_to_dict = {
             "unchanged": 0,

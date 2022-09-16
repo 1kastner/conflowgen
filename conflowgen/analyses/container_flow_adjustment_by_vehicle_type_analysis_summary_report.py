@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+
 import matplotlib.axis
 import numpy as np
 import pandas as pd
 
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
-    ContainerFlowAdjustmentByVehicleTypeAnalysisSummary
+    ContainerFlowAdjustmentByVehicleTypeAnalysisSummary, ContainerFlowAdjustedToVehicleType
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
 
@@ -29,9 +31,21 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
     def get_report_as_text(
             self, **kwargs
     ) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        The report as a text is represented as a table suitable for logging.
+        It uses a human-readable formatting style.
 
-        adjusted_to = self.analysis_summary.get_summary()
+        Keyword Args:
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
+
+        Returns:
+             The report in text format (possibly spanning over several lines).
+        """
+        adjusted_to = self._get_analysis(kwargs)
+
         total_capacity = sum(adjusted_to)
         total_capacity = total_capacity if total_capacity else np.nan
 
@@ -57,17 +71,22 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
         """
         The report as a graph is represented as a pie chart.
 
+        Keyword Args:
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
+
         Returns:
              The matplotlib axis of the pie chart.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
-        adjusted_to = self.analysis_summary.get_summary()
+        adjusted_to = self._get_analysis(kwargs)
 
         plot_title = "Adjusted vehicle type (summary)"
 
         if sum(adjusted_to) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
             ax.set_title(plot_title)
         else:
             data_series = pd.Series({
@@ -85,3 +104,13 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
                 title=plot_title
             )
         return ax
+
+    def _get_analysis(self, kwargs: dict) -> ContainerFlowAdjustedToVehicleType:
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        adjusted_to = self.analysis_summary.get_summary(
+            start_date=start_date,
+            end_date=end_date
+        )
+        return adjusted_to

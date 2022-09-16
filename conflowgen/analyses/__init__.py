@@ -39,7 +39,8 @@ def run_all_analyses(
         as_graph: bool = False,
         display_text_func: Optional[Callable] = None,
         display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None] = None,
-        static_graphs: bool = False
+        static_graphs: bool = False,
+        display_as_ipython_svg: bool = False
 ) -> None:
     """
     Runs all post-hoc analyses in sequence.
@@ -48,6 +49,9 @@ def run_all_analyses(
     See
     :func:`setup_logger`
     for more details.
+
+    If neither ``static_graphs`` nor ``display_as_ipython_svg`` are true, the default functionality of the respective
+    plotting library is used.
 
     Args:
         as_text: Whether to get the reports as text and log them
@@ -59,13 +63,16 @@ def run_all_analyses(
         static_graphs: Whether the graphs should be static. Plotly has some nice interactive options that are currently
             not supported inside some websites such as the HTML version of the documentation. In such cases, the static
             version of the plots is used.
+        display_as_ipython_svg: Whether the graphs should be plotted with the IPython functionality. This is suitable,
+            e.g., inside Jupyter Notebooks where a conversion to a raster image is not desirable.
     """
     auto_reporter = AutoReporter(
         as_text=as_text,
         as_graph=as_graph,
         display_text_func=display_text_func,
         display_in_markup_language=display_in_markup_language,
-        static_graphs=static_graphs
+        static_graphs=static_graphs,
+        display_as_ipython_svg=display_as_ipython_svg
     )
 
     auto_reporter.output.display_explanation(

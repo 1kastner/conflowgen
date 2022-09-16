@@ -37,6 +37,13 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         empty_capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle()
         self.assertDictEqual({}, empty_capacities)
 
+    def test_with_no_data_and_start_and_end_date(self):
+        empty_capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
+            start_date=datetime.datetime(2022, 9, 15),
+            end_date=datetime.datetime(2022, 9, 16)
+        )
+        self.assertDictEqual({}, empty_capacities)
+
     def test_inbound_with_single_feeder(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
         schedule = Schedule.create(
@@ -48,7 +55,6 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             average_moved_capacity=250,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
@@ -56,11 +62,9 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
-        feeder_lsv.save()
-        feeder = Feeder.create(
+        Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
         Container.create(
             weight=20,
             length=ContainerLength.twenty_feet,
@@ -83,7 +87,8 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         self.assertEqual(vehicle_name, "TestFeeder1")
 
         value_of_entry = list(capacities_with_one_feeder.values())[0]
-        self.assertEqual(len(value_of_entry), 2, "Value consists of two components")
-        (used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
+        self.assertEqual(len(value_of_entry), 3, "Value consists of two components")
+        (arrival_time, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
+        self.assertEqual(arrival_time, one_week_later)
         self.assertEqual(used_capacity_on_inbound_journey, 250)
         self.assertEqual(used_capacity_on_outbound_journey, 1, "One 20' is loaded")

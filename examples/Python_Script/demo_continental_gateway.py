@@ -15,16 +15,23 @@ try:
         os.path.join(conflowgen.__file__, os.path.pardir)
     )
     print(f"Importing ConFlowGen version {conflowgen.__version__} installed at {install_dir}.")
-except ImportError:
-    print("Please first install conflowgen as a library")
-    sys.exit()
+except ImportError as exc:
+    print("Please first install ConFlowGen, e.g. with conda or pip")
+    raise exc
 
 # The seed of x=1 guarantees that the same traffic data is generated as input data in this script. However, it does not
 # affect the container generation or the assignment of containers to vehicles.
 seeded_random = random.Random(x=1)
 
+with_visuals = False
+if len(sys.argv) > 2:
+    if sys.argv[2] == "--with-visuals":
+        with_visuals = True
+
+this_dir = os.path.dirname(__file__)
+
 import_deham_dir = os.path.join(
-    os.path.dirname(sys.modules[__name__].__file__),
+    this_dir,
     "data",
     "DEHAM",
     "CT Altenwerder"
@@ -43,7 +50,9 @@ logger = conflowgen.setup_logger()
 logger.info(__doc__)
 
 # Pick database
-database_chooser = conflowgen.DatabaseChooser()
+database_chooser = conflowgen.DatabaseChooser(
+    sqlite_databases_directory=os.path.join(this_dir, "databases")
+)
 demo_file_name = "demo_continental_gateway.sqlite"
 database_chooser.create_new_sqlite_database(
     demo_file_name,
@@ -186,4 +195,5 @@ logger.info("For a better understanding of the data, it is advised to study the 
 
 # Gracefully close everything
 database_chooser.close_current_connection()
-logger.info("Script finished successfully.")
+
+logger.info("Demo 'demo_continental_gateway' finished successfully.")

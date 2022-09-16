@@ -28,7 +28,7 @@ class ContainerFlowGenerationProperties(BaseModel):
     )
 
     generated_at = DateTimeField(
-        default=datetime.datetime.now,
+        default=lambda: datetime.datetime.now().replace(microsecond=0),
         help_text="The date the these properties have been created"
     )
 

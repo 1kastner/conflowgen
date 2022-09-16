@@ -56,7 +56,7 @@ class DatabaseChooser:
         All required tables are created and all input distributions are seeded with default values. These can be simply
         overwritten by the use-case specific distributions with the help of the API, e.g. the
         :class:`.ContainerLengthDistributionManager`,
-        :class:`.ContainerStorageRequirementDistributionManager`,
+        :class:`.StorageRequirementDistributionManager`,
         :class:`.ModeOfTransportDistributionManager`,
         :class:`.TruckArrivalDistributionManager`,
         or similar.

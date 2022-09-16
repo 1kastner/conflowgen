@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import math
-from typing import Collection, Sequence, Optional, Type, Dict
+import typing
 
 import numpy as np
 import scipy.stats
@@ -18,14 +18,14 @@ class ContinuousDistribution(abc.ABC):
     minimum: float
     maximum: float
 
-    distribution_types: Dict[str, Type[ContinuousDistribution]] = {}
+    distribution_types: typing.Dict[str, typing.Type[ContinuousDistribution]] = {}
 
     def __init__(
             self,
-            average: Optional[float],
+            average: typing.Optional[float],
             minimum: float,
             maximum: float,
-            unit: Optional[str] = None,
+            unit: typing.Optional[str] = None,
     ):
         """
         Args:
@@ -58,12 +58,12 @@ class ContinuousDistribution(abc.ABC):
         cls.short_name = short_name
 
     @abc.abstractmethod
-    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
+    def _get_probabilities_based_on_distribution(self, xs: typing.Sequence[float]) -> np.ndarray:
         pass
 
     @classmethod
     @abc.abstractmethod
-    def from_database_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> Type[ContinuousDistribution]:
+    def from_database_entry(cls, entry: ContainerDwellTimeDistributionInterface) -> typing.Type[ContinuousDistribution]:
         """
         Args:
             entry: The database entry describing a continuous distribution.
@@ -73,7 +73,7 @@ class ContinuousDistribution(abc.ABC):
         """
         pass
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> typing.Dict:
         return {
             "distribution_name": self.short_name,
             "average_number_of_hours": self.average,
@@ -84,7 +84,7 @@ class ContinuousDistribution(abc.ABC):
 
     def get_probabilities(
             self,
-            xs: Sequence[float],
+            xs: typing.Sequence[float],
             reversed_distribution: bool = False
     ) -> np.ndarray:
         """
@@ -117,7 +117,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
             variance: float,
             minimum: float,
             maximum: float,
-            unit: Optional[str] = None
+            unit: typing.Optional[str] = None
     ):
         super().__init__(
             average=average,
@@ -145,7 +145,7 @@ class ClippedLogNormal(ContinuousDistribution, short_name="lognormal"):
 
         return frozen_lognorm
 
-    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
+    def _get_probabilities_based_on_distribution(self, xs: typing.Sequence[float]) -> np.ndarray:
         return self._lognorm.pdf(xs)
 
     @classmethod
@@ -176,7 +176,7 @@ class Uniform(ContinuousDistribution, short_name="uniform"):
             self,
             minimum: float,
             maximum: float,
-            unit: Optional[str] = None
+            unit: typing.Optional[str] = None
     ):
         super().__init__(
             average=None,
@@ -185,7 +185,7 @@ class Uniform(ContinuousDistribution, short_name="uniform"):
             unit=unit
         )
 
-    def _get_probabilities_based_on_distribution(self, xs: Sequence[float]) -> np.ndarray:
+    def _get_probabilities_based_on_distribution(self, xs: typing.Sequence[float]) -> np.ndarray:
         return np.ones_like(xs)
 
     @classmethod
@@ -205,7 +205,7 @@ class Uniform(ContinuousDistribution, short_name="uniform"):
         )
 
 
-def multiply_discretized_probability_densities(*probabilities: Collection[float]) -> Sequence[float]:
+def multiply_discretized_probability_densities(*probabilities: typing.Collection[float]) -> typing.Sequence[float]:
     assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length, but found these:" \
                                                       f"'{ [len(p) for p in probabilities] } "
     for i, probability_vector in enumerate(probabilities):

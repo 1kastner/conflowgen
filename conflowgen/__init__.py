@@ -8,8 +8,8 @@ from conflowgen.api.export_container_flow_manager import ExportContainerFlowMana
 from conflowgen.api.mode_of_transport_distribution_manager import ModeOfTransportDistributionManager
 from conflowgen.api.port_call_manager import PortCallManager
 from conflowgen.api.truck_arrival_distribution_manager import TruckArrivalDistributionManager
-from conflowgen.api.container_storage_requirement_distribution_manager import \
-    ContainerStorageRequirementDistributionManager
+from conflowgen.api.storage_requirement_distribution_manager import \
+    StorageRequirementDistributionManager
 
 # Previews and their reports
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview_report import \

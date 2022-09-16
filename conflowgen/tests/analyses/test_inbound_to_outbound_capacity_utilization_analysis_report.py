@@ -66,10 +66,22 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(UnitTestCaseWithMat
             start_date=datetime.date(2021, 12, 15),
             end_date=datetime.date(2021, 12, 17)
         )
-        self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
+        self.report = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
 
     def test_with_no_data(self):
-        actual_report = self.analysis.get_report_as_text()
+        actual_report = self.report.get_report_as_text()
+        expected_report = """
+vehicle type = all
+vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
+--no vehicles exist--
+"""
+        self.assertEqual(actual_report, expected_report)
+
+    def test_with_no_data_and_start_and_end_date(self):
+        actual_report = self.report.get_report_as_text(
+            start_date=datetime.datetime.now(),
+            end_date=datetime.datetime.now() + datetime.timedelta(hours=3)
+        )
         expected_report = """
 vehicle type = all
 vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
@@ -79,7 +91,7 @@ vehicle identifier                                 inbound volume (in TEU) outbo
 
     def test_inbound_with_single_feeder(self):
         setup_feeder_data()
-        actual_report = self.analysis.get_report_as_text()
+        actual_report = self.report.get_report_as_text()
         expected_report = """
 vehicle type = all
 vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
@@ -90,9 +102,9 @@ feeder-TestFeederService-TestFeeder1                                 250.0      
 
     def test_graph_with_feeder(self):
         setup_feeder_data()
-        graph = self.analysis.get_report_as_graph()
+        graph = self.report.get_report_as_graph()
         self.assertIsNotNone(graph)
 
     def test_graph_with_no_data(self):
-        empty_graph = self.analysis.get_report_as_graph()
+        empty_graph = self.report.get_report_as_graph()
         self.assertIsNotNone(empty_graph)

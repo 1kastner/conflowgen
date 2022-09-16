@@ -34,9 +34,15 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
     def get_report_as_text(
             self, **kwargs
     ) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
+        """
+        initial_to_adjusted_outbound_flow = self._get_analysis(kwargs)
 
-        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
         initial_to_adjusted_outbound_flow_in_containers = initial_to_adjusted_outbound_flow.containers
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
@@ -68,24 +74,18 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         """
         The container flow is represented by a Sankey diagram.
 
-        .. note::
-            At the time of writing, plotly comes with some shortcomings.
-
-            * Sorting the labels on either the left or right side without recalculating the height of each bar is not
-              possible, see https://github.com/plotly/plotly.py/issues/1732.
-            * Empty nodes require special handling, see https://github.com/plotly/plotly.py/issues/3003 and the
-              coordinates need to be :math:`0 < x,y < 1` (no equals!), see
-              https://github.com/plotly/plotly.py/issues/3002.
-
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
-            e.g., in a Jupyter Notebook.
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
 
         Returns:
             The plotly figure of the Sankey diagram.
         """
-        assert len(kwargs) == 0, f"The following keys have not been processed: {list(kwargs.keys())}"
+        initial_to_adjusted_outbound_flow = self._get_analysis(kwargs)
 
-        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow()
+        unit = "TEU"
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu
 
         vehicle_types = [
@@ -107,8 +107,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             self.logger.warning("No data available for plotting")
 
         initial_labels = [
-            str(vehicle_type_initial).replace("_", " ").capitalize() + ":<br>Initial: " + str(
-                round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2))
+            str(vehicle_type_initial).replace("_", " ").capitalize() + " initial:<br>" + str(
+                round(sum(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial].values()), 2)
+            ) + " " + unit
             for vehicle_type_initial in initial_to_adjusted_outbound_flow_in_teu.keys()
         ]
         to_adjusted_flow = [0 for _ in range(len(initial_to_adjusted_outbound_flow_in_teu.keys()))]
@@ -116,8 +117,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu[vehicle_type_initial]):
                 to_adjusted_flow[i] += capacity[vehicle_type_adjusted]
         adjusted_labels = [
-            str(vehicle_type_adjusted).replace("_", " ").capitalize() + ":<br>Adjusted: " + str(
-                round(to_adjusted_flow[i], 2))
+            str(vehicle_type_adjusted).replace("_", " ").capitalize() + " adjusted:<br>" + str(
+                round(to_adjusted_flow[i], 2)) + " " + unit
             for i, vehicle_type_adjusted in enumerate(initial_to_adjusted_outbound_flow_in_teu.keys())
         ]
         fig = plotly.graph_objs.Figure(
@@ -144,7 +145,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
         )
 
         fig.update_layout(
-            title_text="Container flow from initial vehicle type A to adjusted vehicle type B in TEU as for some "
+            title_text=f"Container flow from initial vehicle type A to adjusted vehicle type B in {unit} as for some "
                        "containers<br>"
                        "the initially intended vehicle type was not available due to constraints "
                        "(schedules, dwell times, etc.).",
@@ -153,3 +154,13 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             height=700
         )
         return fig
+
+    def _get_analysis(self, kwargs):
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        initial_to_adjusted_outbound_flow = self.analysis.get_initial_to_adjusted_outbound_flow(
+            start_date=start_date,
+            end_date=end_date
+        )
+        return initial_to_adjusted_outbound_flow

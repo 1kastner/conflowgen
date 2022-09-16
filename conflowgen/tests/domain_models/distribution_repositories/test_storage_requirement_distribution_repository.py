@@ -1,11 +1,11 @@
 import unittest
 
 from conflowgen.domain_models.distribution_models.storage_requirement_distribution import StorageRequirementDistribution
-from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
-    ContainerStorageRequirementDistributionRepository
+from conflowgen.domain_models.distribution_repositories.storage_requirement_distribution_repository import \
+    StorageRequirementDistributionRepository
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
-from conflowgen.domain_models.distribution_seeders import container_storage_requirement_distribution_seeder
+from conflowgen.domain_models.distribution_seeders import storage_requirement_distribution_seeder
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -16,8 +16,8 @@ class TestStorageRequirementDistributionRepository(unittest.TestCase):
         sqlite_db.create_tables([
             StorageRequirementDistribution
         ])
-        container_storage_requirement_distribution_seeder.seed()
-        self.repository = ContainerStorageRequirementDistributionRepository()
+        storage_requirement_distribution_seeder.seed()
+        self.repository = StorageRequirementDistributionRepository()
 
     def test_validity(self):
         distribution = self.repository.get_distribution()

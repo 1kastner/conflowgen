@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import datetime
-from typing import Collection, Union
+from typing import Collection, Union, Optional
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
-from conflowgen.tools import hashable
 
 
 class ContainerDwellTimeAnalysis(AbstractAnalysis):
@@ -17,14 +16,17 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
     as it is the case with :class:`.ContainerDwellTimeAnalysisReport`.
     """
 
-    @staticmethod
     def get_container_dwell_times(
+            self,
             container_delivered_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
             container_picked_up_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
-            storage_requirement: Union[str, Collection[StorageRequirement], StorageRequirement] = "all"
+            storage_requirement: Union[str, Collection[StorageRequirement], StorageRequirement] = "all",
+            start_date: Optional[datetime.datetime] = None,
+            end_date: Optional[datetime.datetime] = None,
+            use_cache: bool = True
     ) -> set[datetime.timedelta]:
         """
-        The containers are filtered according to the provided vehicle types and storage requirements.
+        The containers are filtered according to the provided criteria.
         Then, the time between the arrival of the container in the yard and the departure of the container is
         calculated.
 
@@ -41,6 +43,12 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
                 ``"all"``,
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
+            start_date:
+                Only include containers that arrive after the given start time.
+            end_date:
+                Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
             A set of container dwell times.
@@ -50,41 +58,29 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
         selected_containers = Container.select()
 
         if storage_requirement != "all":
-            if hashable(storage_requirement) and storage_requirement in set(StorageRequirement):
-                selected_containers = selected_containers.where(
-                    Container.storage_requirement == storage_requirement
-                )
-            else:  # assume it is some kind of collection (list, set, ...)
-                selected_containers = selected_containers.where(
-                    Container.storage_requirement << storage_requirement
-                )
+            selected_containers = self._restrict_storage_requirement(
+                selected_containers, storage_requirement
+            )
 
         if container_delivered_by_vehicle_type != "all":
-            if hashable(container_delivered_by_vehicle_type) \
-                    and container_delivered_by_vehicle_type in set(ModeOfTransport):
-                selected_containers = selected_containers.where(
-                    Container.delivered_by == container_delivered_by_vehicle_type
-                )
-            else:  # assume it is some kind of collection (list, set, ...)
-                selected_containers = selected_containers.where(
-                    Container.delivered_by << container_delivered_by_vehicle_type
-                )
+            selected_containers = self._restrict_container_delivered_by_vehicle_type(
+                selected_containers, container_delivered_by_vehicle_type
+            )
 
         if container_picked_up_by_vehicle_type != "all":
-            if hashable(container_picked_up_by_vehicle_type) \
-                    and container_picked_up_by_vehicle_type in set(ModeOfTransport):
-                selected_containers = selected_containers.where(
-                    Container.picked_up_by == container_picked_up_by_vehicle_type
-                )
-            else:  # assume it is some kind of collection (list, set, ...)
-                selected_containers = selected_containers.where(
-                    Container.picked_up_by << container_picked_up_by_vehicle_type
-                )
+            selected_containers = self._restrict_container_picked_up_by_vehicle_type(
+                selected_containers, container_picked_up_by_vehicle_type
+            )
 
         container: Container
         for container in selected_containers:
-            container_enters_yard = container.get_arrival_time()
-            container_leaves_yard = container.get_departure_time()
+            container_enters_yard = container.get_arrival_time(use_cache=use_cache)
+            container_leaves_yard = container.get_departure_time(use_cache=use_cache)
+            assert container_enters_yard < container_leaves_yard, "A container should enter the yard before leaving it"
+            if start_date and container_enters_yard < start_date:
+                continue
+            if end_date and container_leaves_yard > end_date:
+                continue
             container_dwell_time = container_leaves_yard - container_enters_yard
             container_dwell_times.add(container_dwell_time)
 

@@ -1,7 +1,7 @@
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.data_types.container_length import ContainerLength
-from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
-    ContainerStorageRequirementDistributionRepository
+from conflowgen.domain_models.distribution_repositories.storage_requirement_distribution_repository import \
+    StorageRequirementDistributionRepository
 
 
 DEFAULT_STORAGE_REQUIREMENT_FOR_ALL_LENGTHS = {
@@ -33,4 +33,4 @@ DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION = {
 
 
 def seed():
-    ContainerStorageRequirementDistributionRepository().set_distribution(DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION)
+    StorageRequirementDistributionRepository().set_distribution(DEFAULT_STORAGE_REQUIREMENT_DISTRIBUTION)

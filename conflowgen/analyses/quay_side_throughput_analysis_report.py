@@ -69,7 +69,7 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
 
         quay_side_throughput = self.analysis.get_throughput_over_time()
         if len(quay_side_throughput) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
         else:
             series = pd.Series(quay_side_throughput)
             ax = series.plot()

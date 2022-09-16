@@ -2,9 +2,14 @@ from __future__ import annotations
 
 import itertools
 import logging
+import typing
+from collections.abc import Collection
+from typing import Dict
 
-import plotly.graph_objs
+import plotly.graph_objects
 
+from conflowgen.descriptive_datatypes import ContainerVolumeFromOriginToDestination
+from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.reporting import AbstractReportWithPlotly
 
@@ -29,15 +34,55 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
     def get_report_as_text(
             self, **kwargs
     ) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        Keyword Args:
+            unit (str): One of "teu", "container", or "both". Defaults to "both" if none provided.
+            start_date (datetime.datetime): The earliest arriving container that is included.
+                Consider all containers if :obj:`None`.
+            end_date (datetime.datetime): The latest departing container that is included.
+                Consider all containers if :obj:`None`.
 
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow()
+        Returns:
+            The report in human-readable text format
+        """
+        inbound_to_outbound_flow, unit = self._get_analysis_and_unit(kwargs)
+
+        report = ""
+
+        if unit == "TEU":
+            report += self._generate_report_for_unit(inbound_to_outbound_flow.teu, unit=unit)
+        elif unit == "containers":
+            report += self._generate_report_for_unit(inbound_to_outbound_flow.containers, unit=unit)
+        elif unit == "both":
+            report += self._generate_report_for_unit(inbound_to_outbound_flow.teu, unit="TEU")
+            report += "\n"
+            report += self._generate_report_for_unit(inbound_to_outbound_flow.containers, unit="containers")
+        else:
+            raise ValueError(f"Unknown unit '{unit}'")
 
         # create string representation
+        return report
+
+    def _get_analysis_and_unit(self, kwargs: dict) -> typing.Tuple[ContainerVolumeFromOriginToDestination, str]:
+        unit = kwargs.pop("unit", "both")
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
+        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow(
+            start_date=start_date,
+            end_date=end_date
+        )
+        return inbound_to_outbound_flow, unit
+
+    def _generate_report_for_unit(
+            self,
+            inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]],
+            unit: str
+    ):
         report = "\n"
         report += "vehicle type (from) "
         report += "vehicle type (to) "
-        report += "transported capacity (in TEU)"
+        report += f"transported capacity (in {unit})"
         report += "\n"
         for vehicle_type_from, vehicle_type_to in itertools.product(self.order_of_vehicle_types_in_report, repeat=2):
             vehicle_type_from_as_text = str(vehicle_type_from).replace("_", " ")
@@ -46,33 +91,39 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             report += f"{vehicle_type_to_as_text:<18} "
             report += f"{inbound_to_outbound_flow[vehicle_type_from][vehicle_type_to]:>28.1f}"
             report += "\n"
-
         report += "(rounding errors might exist)\n"
         return report
 
-    def get_report_as_graph(self, **kwargs) -> plotly.graph_objs.Figure:
+    def get_report_as_graph(self, **kwargs) -> Collection[plotly.graph_objects.Figure]:
         """
         The container flow is represented by a Sankey diagram.
 
+        Keyword Args:
+            unit (str): One of "TEU", "containers", or "both". Defaults to "both" if none provided.
+
         Returns:
-             The plotly figure of the Sankey diagram.
-
-        .. note::
-            At the time of writing, plotly comes with some shortcomings.
-
-            * Sorting the labels on either the left or right side without recalculating the height of each bar is not
-              possible, see https://github.com/plotly/plotly.py/issues/1732.
-            * Empty nodes require special handling, see https://github.com/plotly/plotly.py/issues/3003 and the
-              coordinates need to be :math:`0 < x,y < 1` (no equals!), see
-              https://github.com/plotly/plotly.py/issues/3002.
-
-            However, it seems to be the best available library for plotting Sankey diagrams that can be visualized,
-            e.g., in a Jupyter Notebook.
+             The plotly figure(s) of the Sankey diagram.
         """
-        in_teu = kwargs.pop("in_teu", True)
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        inbound_to_outbound_flow, unit = self._get_analysis_and_unit(kwargs)
 
-        inbound_to_outbound_flow = self.analysis.get_inbound_to_outbound_flow(in_teu=in_teu)
+        figs = []
+
+        if unit == "TEU":
+            figs += [self._plot_inbound_to_outbound_flow(inbound_to_outbound_flow.teu, unit=unit)]
+        elif unit == "containers":
+            figs += [self._plot_inbound_to_outbound_flow(inbound_to_outbound_flow.containers, unit=unit)]
+        elif unit == "both":
+            figs += [self._plot_inbound_to_outbound_flow(inbound_to_outbound_flow.teu, unit="TEU")]
+            figs += [self._plot_inbound_to_outbound_flow(inbound_to_outbound_flow.containers, unit="containers")]
+        else:
+            raise ValueError(f"Unknown unit '{unit}'")
+        return figs
+
+    def _plot_inbound_to_outbound_flow(
+            self,
+            inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]],
+            unit: str
+    ) -> plotly.graph_objects.Figure:
 
         vehicle_types = [str(vehicle_type).replace("_", " ") for vehicle_type in inbound_to_outbound_flow.keys()]
         source_ids = list(range(len(vehicle_types)))
@@ -85,13 +136,11 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
             for outbound_vehicle_type in inbound_to_outbound_flow[inbound_vehicle_type].keys()
         ]
-
         if sum(value) == 0:
             self.logger.warning("No data available for plotting")
-
         inbound_labels = [
-            str(inbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Inbound: " + str(
-                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2))
+            str(inbound_vehicle_type).replace("_", " ").capitalize() + " inbound:<br>" + str(
+                round(sum(inbound_to_outbound_flow[inbound_vehicle_type].values()), 2)) + " " + unit
             for inbound_vehicle_type in inbound_to_outbound_flow.keys()
         ]
         to_outbound_flow = [0 for _ in range(len(inbound_to_outbound_flow.keys()))]
@@ -99,13 +148,13 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow[inbound_vehicle_type].keys()):
                 to_outbound_flow[i] += inbound_capacity[outbound_vehicle_type]
         outbound_labels = [
-            str(outbound_vehicle_type).replace("_", " ").capitalize() + ":<br>Outbound: " + str(
-                round(to_outbound_flow[i], 2))
+            str(outbound_vehicle_type).replace("_", " ").capitalize() + " outbound:<br>" + str(
+                round(to_outbound_flow[i], 2)) + " " + unit
             for i, outbound_vehicle_type in enumerate(inbound_to_outbound_flow.keys())
         ]
-        fig = plotly.graph_objs.Figure(
+        fig = plotly.graph_objects.Figure(
             data=[
-                plotly.graph_objs.Sankey(
+                plotly.graph_objects.Sankey(
                     arrangement='perpendicular',
                     node=dict(
                         pad=15,
@@ -125,13 +174,8 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
                 )
             ]
         )
-
-        plot_title = "Container flow from vehicle type A to vehicle type B as defined by generated containers"
-        if in_teu:
-            plot_title += "(reported in TEU)"
-        else:
-            plot_title += " (reported in boxes)"
-
+        plot_title = "Container flow from vehicle type A to B as defined by generated containers " \
+                     f"(in {unit})"
         fig.update_layout(
             title_text=plot_title,
             font_size=10,

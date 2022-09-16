@@ -57,3 +57,5 @@ Untitled*.ipynb
 docs/notebooks/data/db/
 docs/notebooks/data/export/
 .coverage.*
+examples/Python_Script/export/
+examples/Python_Script/databases/

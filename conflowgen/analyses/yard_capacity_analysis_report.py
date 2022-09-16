@@ -60,20 +60,6 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
             maximum_used_yard_capacity = average_used_yard_capacity = 0
             stddev_used_yard_capacity = -1
 
-        used_laden_standard_container_yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(
-            storage_requirement=StorageRequirement.standard
-        )
-        if used_laden_standard_container_yard_capacity_over_time:
-            used_laden_standard_yard_capacity_sequence = list(
-                used_laden_standard_container_yard_capacity_over_time.values())
-            maximum_used_laden_standard_yard_capacity = max(used_laden_standard_yard_capacity_sequence)
-            average_used_laden_standard_yard_capacity = statistics.mean(used_laden_standard_yard_capacity_sequence)
-            stddev_laden_standard_yard_capacity = statistics.stdev(
-                used_laden_standard_yard_capacity_sequence)
-        else:
-            maximum_used_laden_standard_yard_capacity = average_used_laden_standard_yard_capacity = 0
-            stddev_laden_standard_yard_capacity = -1
-
         # create string representation
         report = "\n"
         report += "storage requirement = " + self._get_storage_requirement_representation(storage_requirement) + "\n"
@@ -81,9 +67,6 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         report += f"maximum used yard capacity:                 {maximum_used_yard_capacity:>10.1f}\n"
         report += f"average used yard capacity:                 {average_used_yard_capacity:>10.1f}\n"
         report += f"standard deviation:                         {stddev_used_yard_capacity:>10.1f}\n"
-        report += f"maximum used yard capacity (laden):         {maximum_used_laden_standard_yard_capacity:>10.1f}\n"
-        report += f"average used yard capacity (laden):         {average_used_laden_standard_yard_capacity:>10.1f}\n"
-        report += f"standard deviation (laden):                 {stddev_laden_standard_yard_capacity:>10.1f}\n"
         report += "(rounding errors might exist)\n"
         return report
 
@@ -104,7 +87,7 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         storage_requirement, yard_capacity_over_time = self._get_used_yard_capacity_based_on_storage_requirement(kwargs)
 
         if len(yard_capacity_over_time) == 0:
-            ax = no_data_graph()
+            fig, ax = no_data_graph()
         else:
             series = pd.Series(yard_capacity_over_time)
             ax = series.plot()
@@ -120,12 +103,9 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs
     ) -> Tuple[Any, Dict[datetime.datetime, float]]:
-        storage_requirement = None
-        if "storage_requirement" in kwargs:
-            storage_requirement = kwargs["storage_requirement"]
-            yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(
-                storage_requirement=storage_requirement
-            )
-        else:
-            yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time()
+
+        storage_requirement = kwargs.pop("storage_requirement", None)
+        yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(
+            storage_requirement=storage_requirement
+        )
         return storage_requirement, yard_capacity_over_time

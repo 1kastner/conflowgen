@@ -11,8 +11,8 @@ from conflowgen.domain_models.distribution_repositories.container_weight_distrib
     ContainerWeightDistributionRepository
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
-from conflowgen.domain_models.distribution_repositories.container_storage_requirement_distribution_repository import \
-    ContainerStorageRequirementDistributionRepository
+from conflowgen.domain_models.distribution_repositories.storage_requirement_distribution_repository import \
+    StorageRequirementDistributionRepository
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -43,7 +43,7 @@ class ContainerFactory:
         self.mode_of_transportation_distribution = ModeOfTransportDistributionRepository.get_distribution()
         self.container_length_distribution = ContainerLengthDistributionRepository.get_distribution()
         self.container_weight_distribution = ContainerWeightDistributionRepository.get_distribution()
-        self.storage_requirement_distribution = ContainerStorageRequirementDistributionRepository.get_distribution()
+        self.storage_requirement_distribution = StorageRequirementDistributionRepository.get_distribution()
 
     def create_containers_for_large_scheduled_vehicle(
             self,
@@ -135,7 +135,7 @@ class ContainerFactory:
         delivered_by_large_scheduled_vehicle = \
             delivered_by_large_scheduled_vehicle_as_subtype.large_scheduled_vehicle
 
-        length, storage_requirement, weight = self.draw_physical_properties(approximate=True)
+        length, storage_requirement, weight = self._draw_physical_properties(approximate=False)
 
         picked_up_by = self.distribution_approximators["picked_up_by"].sample()
 
@@ -149,11 +149,9 @@ class ContainerFactory:
             delivered_by_large_scheduled_vehicle=delivered_by_large_scheduled_vehicle,
             delivered_by_truck=None
         )
-        container.save()
         return container
 
-    def draw_physical_properties(self, approximate: bool = False) -> (ContainerLength, StorageRequirement, int):
-
+    def _draw_physical_properties(self, approximate: bool = False) -> (ContainerLength, StorageRequirement, int):
         length: ContainerLength
         if approximate:
             length = self.distribution_approximators["length"].sample()
@@ -190,7 +188,7 @@ class ContainerFactory:
         picked_up_by_large_scheduled_vehicle = picked_up_by_large_scheduled_vehicle_subtype.large_scheduled_vehicle
         picked_up_by = picked_up_by_large_scheduled_vehicle_subtype.get_mode_of_transport()
 
-        length, storage_requirement, weight = self.draw_physical_properties()
+        length, storage_requirement, weight = self._draw_physical_properties(approximate=False)
 
         container = Container.create(
             weight=weight,
