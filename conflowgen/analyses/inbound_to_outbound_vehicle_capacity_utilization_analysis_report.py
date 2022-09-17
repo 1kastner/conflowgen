@@ -179,8 +179,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             end_date: datetime.datetime | None
     ) -> str:
         filter_values = f"vehicle type = {vehicle_type}\n"
-        f"start date = {self._get_datetime_representation(start_date)}\n"
-        f"end date = {self._get_datetime_representation(end_date)}"
+        filter_values += f"start date = {self._get_datetime_representation(start_date)}\n"
+        filter_values += f"end date = {self._get_datetime_representation(end_date)}"
 
         return filter_values
 

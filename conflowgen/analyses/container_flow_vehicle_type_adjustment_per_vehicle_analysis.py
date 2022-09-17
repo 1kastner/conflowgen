@@ -99,16 +99,17 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
     @staticmethod
     def _get_vehicle_identifier_for_vehicle_picking_up_the_container(container: Container) -> VehicleIdentifier:
         if container.picked_up_by == ModeOfTransport.truck:
-            return VehicleIdentifier(
+            vehicle_identifier = VehicleIdentifier(
                 mode_of_transport=ModeOfTransport.truck,
                 vehicle_arrival_time=container.get_departure_time(),
                 service_name=None,
                 vehicle_name=None
             )
         else:
-            return VehicleIdentifier(
+            vehicle_identifier = VehicleIdentifier(
                 mode_of_transport=container.picked_up_by,
                 vehicle_arrival_time=container.get_departure_time(),
                 service_name=container.picked_up_by_large_scheduled_vehicle.schedule.service_name,
                 vehicle_name=container.picked_up_by_large_scheduled_vehicle.vehicle_name
             )
+        return vehicle_identifier
