@@ -123,7 +123,7 @@ port_call_manager = conflowgen.PortCallManager()
 
 logger.info("Start importing feeder vessels...")
 for i, row in df_feeders.iterrows():
-    feeder_vehicle_name = row["vehicle_name"] + "-unique"
+    feeder_vehicle_name = row["vehicle_name"]
     capacity = row["capacity"]
     vessel_arrives_at_as_pandas_type = row["arrival (planned)"]
     vessel_arrives_at_as_datetime_type = pd.to_datetime(vessel_arrives_at_as_pandas_type)
@@ -172,7 +172,7 @@ logger.info("Feeder vessels are imported")
 
 logger.info("Start importing deep sea vessels...")
 for i, row in df_deep_sea_vessels.iterrows():
-    deep_sea_vessel_vehicle_name = row["vehicle_name"] + "-unique"
+    deep_sea_vessel_vehicle_name = row["vehicle_name"]
     capacity = row["capacity"]
     vessel_arrives_at_as_pandas_type = row["arrival (planned)"]
     vessel_arrives_at_as_datetime_type = pd.to_datetime(vessel_arrives_at_as_pandas_type)
@@ -222,7 +222,7 @@ logger.info("Deep sea vessels are imported")
 
 logger.info("Start importing barges...")
 for i, row in df_barges.iterrows():
-    barge_vehicle_name = row["vehicle_name"] + "-unique"
+    barge_vehicle_name = row["vehicle_name"]
     capacity = row["capacity"]
     vessel_arrives_at_as_pandas_type = row["arrival (planned)"]
     vessel_arrives_at_as_datetime_type = pd.to_datetime(vessel_arrives_at_as_pandas_type)
