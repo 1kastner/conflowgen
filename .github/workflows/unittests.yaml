@@ -21,7 +21,10 @@ jobs:
 
     - uses: actions/checkout@v2
       with:
-        lfs: false
+        lfs: 'true'
+    - run: |
+        git lfs fetch -p -I '**/notebooks/data/prepared_dbs/demo_poc.sqlite'
+        git lfs fetch
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v2
