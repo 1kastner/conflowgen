@@ -55,7 +55,13 @@ class AutoReporter:
             self.output.display_headline(name_of_report)
             self.output.display_explanation(report_instance.report_description)
             if self.as_text:
-                report_as_text = report_instance.get_report_as_text()
+                if self.start_date is not None or self.end_date is not None:
+                    report_as_text = report_instance.get_report_as_text(
+                        start_date=self.start_date,
+                        end_date=self.end_date
+                    )
+                else:
+                    report_as_text = report_instance.get_report_as_text()
                 self.output.display_verbatim(report_as_text)
             if self.as_graph:
                 try:
