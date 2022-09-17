@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Tuple, Any, Dict, Optional
+import typing
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker
@@ -10,7 +10,7 @@ import pandas as pd
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysis, CompleteVehicleIdentifier
+    InboundToOutboundVehicleCapacityUtilizationAnalysis, VehicleIdentifier
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
 
@@ -39,14 +39,6 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             transportation_buffer=self.transportation_buffer
         )
 
-    @classmethod
-    def _create_readable_name(cls, vehicle_identifier: Tuple[Any]) -> str:
-        name = "-".join(str(part) for part in vehicle_identifier)
-        if len(name) > cls.maximum_length_for_readable_name:
-            name = name[:46] + "..."
-
-        return name
-
     def get_report_as_text(self, **kwargs) -> str:
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
@@ -64,17 +56,19 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         Returns:
              The report in text format (possibly spanning over several lines).
         """
-        capacities, vehicle_type_description = self._get_analysis(kwargs)
+        capacities, vehicle_type_description, start_date, end_date = self._get_analysis(kwargs)
         assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         report = "\n"
         report += "vehicle type = " + vehicle_type_description + "\n"
+        report += f"start date = {self._get_datetime_representation(start_date)}\n"
+        report += f"end date = {self._get_datetime_representation(end_date)}\n"
         report += "vehicle identifier                                 "
         report += "inbound volume (in TEU) "
         report += "outbound volume (in TEU)"
         report += "\n"
-        for vehicle_identifier, (arrival_time, used_inbound_capacity, used_outbound_capacity) in capacities.items():
-            vehicle_name = self._create_readable_name(vehicle_identifier)
+        for vehicle_identifier, (used_inbound_capacity, used_outbound_capacity) in capacities.items():
+            vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             report += f"{vehicle_name:<50} "  # align this with cls.maximum_length_for_readable_name!
             report += f"{used_inbound_capacity:>23.1f} "
             report += f"{used_outbound_capacity:>24.1f}"
@@ -85,16 +79,24 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             report += "(rounding errors might exist)\n"
         return report
 
-    def _get_analysis(self, kwargs):
+    def _get_analysis(self, kwargs) -> typing.Tuple[
+        typing.Dict[VehicleIdentifier, typing.Tuple[float, float]],
+        str,
+        datetime.datetime,
+        datetime.datetime
+    ]:
         vehicle_type_any = kwargs.pop("vehicle_type", "all")
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
-        vehicle_type_description, capacities = self._get_capacities_depending_on_vehicle_type(
-            vehicle_type_any,
+
+        capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
+            vehicle_type=vehicle_type_any,
             start_date=start_date,
             end_date=end_date
         )
-        return capacities, vehicle_type_description
+        vehicle_type_description: str = self._get_enum_or_enum_set_representation(vehicle_type_any, ModeOfTransport)
+
+        return capacities, vehicle_type_description, start_date, end_date
 
     def get_report_as_graph(self, **kwargs) -> matplotlib.figure.Figure:
         """
@@ -117,7 +119,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         plot_type = kwargs.pop("plot_type", "both")
 
         # kwargs for report
-        capacities, vehicle_type_description = self._get_analysis(kwargs)
+        capacities, vehicle_type_description, start_date, end_date = self._get_analysis(kwargs)
 
         assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
@@ -130,14 +132,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
         if plot_type == "absolute":
             fig, ax = plt.subplots(1, 1)
-            self._plot_absolute_values(df, vehicle_type_description, ax=ax)
+            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax)
         elif plot_type == "relative":
             fig, ax = plt.subplots(1, 1)
-            self._plot_relative_values(df, vehicle_type_description, ax=ax)
+            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax)
         elif plot_type == "both":
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-            self._plot_absolute_values(df, vehicle_type_description, ax=ax1)
-            self._plot_relative_values(df, vehicle_type_description, ax=ax2)
+            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax1)
+            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax2)
             plt.subplots_adjust(wspace=0.4)
         else:
             raise Exception(f"Plot type '{plot_type}' is not supported.")
@@ -153,13 +155,15 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             self,
             df: pd.DataFrame,
             vehicle_type: str,
-            ax: Optional[matplotlib.pyplot.axis] = None
+            start_date: datetime.datetime | None,
+            end_date: datetime.datetime | None,
+            ax: typing.Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
         ax = df.plot.scatter(x="inbound volume (in TEU)", y="outbound volume (in TEU)", ax=ax)
         slope = 1 + self.transportation_buffer
         ax.axline((0, 0), slope=slope, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 0), slope=1, color='gray', label='equilibrium')
-        ax.set_title(self.plot_title + " (absolute),\n vehicle type = " + vehicle_type)
+        ax.set_title(self.plot_title + " (absolute),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
         ax.set_aspect('equal', adjustable='box')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         maximum = df[["inbound volume (in TEU)", "outbound volume (in TEU)"]].max(axis=1).max(axis=0)
@@ -168,45 +172,46 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         ax.set_ylim([0, axis_limitation])
         return ax
 
+    def _get_filter_values(
+            self,
+            vehicle_type: str,
+            start_date: datetime.datetime | None,
+            end_date: datetime.datetime | None
+    ) -> str:
+        filter_values = f"vehicle type = {vehicle_type}\n"
+        filter_values += f"start date = {self._get_datetime_representation(start_date)}\n"
+        filter_values += f"end date = {self._get_datetime_representation(end_date)}"
+
+        return filter_values
+
     def _plot_relative_values(
             self,
             df: pd.DataFrame,
             vehicle_type: str,
-            ax: Optional[matplotlib.pyplot.axis] = None
+            start_date: datetime.datetime | None,
+            end_date: datetime.datetime | None,
+            ax: typing.Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
         ax = df.plot.scatter(x="inbound volume (in TEU)", y="ratio", ax=ax)
         ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 1), slope=0, color='gray', label='equilibrium')
-        ax.set_title(self.plot_title + " (relative),\n vehicle type = " + vehicle_type)
+        ax.set_title(self.plot_title + " (relative),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         return ax
 
     def _convert_analysis_to_df(
             self,
-            capacities: Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]
+            capacities: typing.Dict[VehicleIdentifier, typing.Tuple[float, float]]
     ) -> pd.DataFrame:
         rows = []
-        for vehicle_identifier, (arrival_time, inbound_capacity, used_outbound_capacity) in capacities.items():
-            vehicle_name = self._create_readable_name(vehicle_identifier)
+        for vehicle_identifier, (inbound_capacity, used_outbound_capacity) in capacities.items():
+            vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
-                "arrival_time": arrival_time,
+                "arrival_time": vehicle_identifier.vehicle_arrival_time,
                 "inbound volume (in TEU)": inbound_capacity,
                 "outbound volume (in TEU)": used_outbound_capacity
             })
         df = pd.DataFrame(rows)
         df["ratio"] = df["outbound volume (in TEU)"] / df["inbound volume (in TEU)"]
         return df
-
-    def _get_capacities_depending_on_vehicle_type(
-            self,
-            vehicle_type_any: Any,
-            start_date: Optional[datetime.datetime],
-            end_date: Optional[datetime.datetime]
-    ) -> Tuple[str, Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]]:
-        capacities = self.analysis.get_inbound_and_outbound_capacity_of_each_vehicle(
-            vehicle_type=vehicle_type_any,
-            start_date=start_date,
-            end_date=end_date
-        )
-        return self._get_enum_or_enum_set_representation(vehicle_type_any, ModeOfTransport), capacities

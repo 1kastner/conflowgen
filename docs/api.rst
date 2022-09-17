@@ -28,7 +28,7 @@ Domain datatypes
 
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandSplit
 
-.. autonamedtuple:: conflowgen.CompleteVehicleIdentifier
+.. autonamedtuple:: conflowgen.VehicleIdentifier
 
 
 Setting up ConFlowGen
@@ -112,6 +112,12 @@ Running analyses
     :members:
 
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisReport
+    :members:
+
+.. autoclass:: conflowgen.ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis
+    :members:
+
+.. autoclass:: conflowgen.ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
     :members:
 
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisSummary

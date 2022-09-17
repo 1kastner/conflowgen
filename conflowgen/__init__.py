@@ -56,6 +56,10 @@ from conflowgen.analyses.truck_gate_throughput_analysis import TruckGateThroughp
 from conflowgen.analyses.truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 from conflowgen.analyses.container_dwell_time_analysis import ContainerDwellTimeAnalysis
 from conflowgen.analyses.container_dwell_time_analysis_report import ContainerDwellTimeAnalysisReport
+from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_analysis import \
+    ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis
+from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_analysis_report import \
+    ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
 
 # Specific classes for reports
 from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
@@ -84,7 +88,7 @@ from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summ
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit, ContainerVolumeFromOriginToDestination
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    CompleteVehicleIdentifier
+    VehicleIdentifier
 from conflowgen.descriptive_datatypes import ContainerVolumeByVehicleType
 
 # Add metadata constants

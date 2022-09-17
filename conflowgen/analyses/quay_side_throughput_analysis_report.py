@@ -32,9 +32,9 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
         self.analysis = QuaySideThroughputAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        quay_side_throughput = self._get_analysis_result(kwargs)
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
-        quay_side_throughput = self.analysis.get_throughput_over_time()
         if quay_side_throughput:
             quay_side_throughput_sequence = list(quay_side_throughput.values())
             maximum_quay_side_throughput = max(quay_side_throughput_sequence)
@@ -62,12 +62,18 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
         """
         The report as a graph is represented as a line graph using pandas.
 
+        Keyword Args:
+            start_date (typing.Optional[datetime.datetime]):
+                Only include containers that arrive after the given start time.
+            end_date (typing.Optional[datetime.datetime]):
+                Only include containers that depart before the given end time.
+
         Returns:
              The matplotlib axis of the line chart over time.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        quay_side_throughput = self._get_analysis_result(kwargs)
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
-        quay_side_throughput = self.analysis.get_throughput_over_time()
         if len(quay_side_throughput) == 0:
             fig, ax = no_data_graph()
         else:
@@ -78,3 +84,12 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
             ax.set_ylabel("Number of boxes (weekly count)")
         ax.set_title(self.plot_title)
         return ax
+
+    def _get_analysis_result(self, kwargs):
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        quay_side_throughput = self.analysis.get_throughput_over_time(
+            start_date=start_date,
+            end_date=end_date
+        )
+        return quay_side_throughput
