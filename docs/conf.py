@@ -13,12 +13,19 @@
 import datetime
 import os
 import sys
+import warnings
 
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
 from matplotlib.font_manager import fontManager
 fontManager.get_default_size()  # just some random action so that the import is not flagged as unnecessary
+
+# ignore certain messages, so they do not show up in the docs
+warnings.filterwarnings(
+    "ignore",
+    message="No data for colormapping provided via 'c'. Parameters 'cmap' will be ignored"
+)
 
 # include conflowgen from source code, avoid being served an outdated installation
 sys.path.insert(
