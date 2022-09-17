@@ -168,7 +168,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
             start_date=start_date
         )
         ax = df.plot.scatter(x="arrival time", y="percentage of adjusted containers")
-        ax.yaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))
+        ax.yaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))  # pylint: disable=consider-using-f-string
         ax.set_title(self.plot_title + "\n" + filter_conditions)
         plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
