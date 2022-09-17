@@ -1,3 +1,4 @@
+import logging
 import os
 import unittest
 import nbformat
@@ -7,19 +8,23 @@ from nbconvert.preprocessors import ExecutePreprocessor
 
 class RunNotebooks(unittest.TestCase):
 
-    @staticmethod
+    logger = logging.getLogger("conflowgen")
+
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    def run_jupyter_notebook(notebook_filename):
+    def run_jupyter_notebook(self, notebook_filename: str) -> None:
+        this_dir = os.path.dirname(os.path.abspath(__file__))
         path_to_notebook = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
+            this_dir,
             notebook_filename
         )
         with open(path_to_notebook, encoding="utf8") as f:
             nb = nbformat.read(f, as_version=4)
 
+        os.chdir(this_dir)
+        self.logger.debug("Execute test in " + os.getcwd())
+
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-        out = ep.preprocess(nb)
-        return out
+        ep.preprocess(nb)
 
     def test_analyses_with_missing_data(self):
         self.run_jupyter_notebook("analyses_with_missing_data.ipynb")
