@@ -27,6 +27,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
     random_seed = 1
 
+    use_cache = True
+
     def __init__(self):
         self.seeded_random = random.Random(x=self.random_seed)
         self.logger = logging.getLogger("conflowgen")
@@ -252,11 +254,10 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         return minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
 
-    @staticmethod
-    def _get_arrival_time_of_container(container: Container) -> datetime.datetime:
+    def _get_arrival_time_of_container(self, container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """
-        return container.get_arrival_time()
+        return container.get_arrival_time(use_cache=self.use_cache)
 
     def _find_alternative_mode_of_transportation(
             self,

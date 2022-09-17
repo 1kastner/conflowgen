@@ -1,4 +1,4 @@
-from typing import Dict
+import typing
 
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
@@ -17,7 +17,7 @@ class ModeOfTransportDistributionManager(AbstractDistributionManager):
 
     def get_mode_of_transport_distribution(
             self
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:
+    ) -> typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]]:
         """
         Returns:
             The distribution of mode of transports dependent on the vehicle the container is delivered by.
@@ -28,7 +28,7 @@ class ModeOfTransportDistributionManager(AbstractDistributionManager):
 
     def set_mode_of_transport_distribution(
             self,
-            distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
+            distribution: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]]
     ) -> None:
         """
 

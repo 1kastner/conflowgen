@@ -27,9 +27,8 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
     at the container terminal as it has delivered.
     Great disparities between the transported capacities on the inbound and outbound journey are considered noteworthy
     but depending on the input data it might be acceptable.
+    Trucks are excluded from this analysis.
     """
-
-    maximum_length_for_readable_name = 50  # doc: Each vehicle has a name that might be a bit lengthy for text output
 
     plot_title = "Capacity utilization analysis"
 
@@ -54,7 +53,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
                 Only include containers that depart before the given end time.
 
         Returns:
-             The report in text format (possibly spanning over several lines).
+             The report in text format spanning over several lines.
         """
         capacities, vehicle_type_description, start_date, end_date = self._get_analysis(kwargs)
         assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
@@ -103,20 +102,22 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         The report as a graph is represented as a scatter plot using pandas.
 
         Keyword Args:
-            plot_type (:py:obj:`str`): Either "absolute", "relative", or "both". Defaults to "both".
-            vehicle_type (:py:obj:`Any`): Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a
+            plot_type (:obj:`str`): Either ``"absolute"``, ``"relative"``, ``"absolute and relative"``, ``"over time"``,
+                or ``"all"``. Defaults to "all".
+            vehicle_type (:obj:`Any`): Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a
                 whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
+                Defaults to ``"all"``.
             start_date (datetime.datetime):
-                Only include containers that arrive after the given start time.
+                Only include containers that arrive after the given start time. Defaults to ``None``.
             end_date (datetime.datetime):
-                Only include containers that depart before the given end time.
+                Only include containers that depart before the given end time. Defaults to ``None``.
         Returns:
              The matplotlib figure
         """
         # kwargs for plot
-        plot_type = kwargs.pop("plot_type", "both")
+        plot_type = kwargs.pop("plot_type", "all")
 
         # kwargs for report
         capacities, vehicle_type_description, start_date, end_date = self._get_analysis(kwargs)
@@ -136,11 +137,28 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         elif plot_type == "relative":
             fig, ax = plt.subplots(1, 1)
             self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax)
-        elif plot_type == "both":
+        elif plot_type == "absolute and relative":
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
             self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax1)
             self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax2)
             plt.subplots_adjust(wspace=0.4)
+        elif plot_type == "over time":
+            fig, ax = plt.subplots(1, 1)
+            self._plot_relative_values_over_time(
+                df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax
+            )
+        elif plot_type == "all":
+            fig = plt.figure(figsize=(10, 10))
+            gs = fig.add_gridspec(2, 2)
+            ax1 = fig.add_subplot(gs[0, 0])
+            ax2 = fig.add_subplot(gs[0, 1])
+            ax3 = fig.add_subplot(gs[1, :])
+            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax1)
+            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax2)
+            self._plot_relative_values_over_time(
+                df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax3
+            )
+            fig.tight_layout(pad=5.0)
         else:
             raise Exception(f"Plot type '{plot_type}' is not supported.")
 
@@ -199,6 +217,22 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         return ax
 
+    def _plot_relative_values_over_time(
+            self,
+            df: pd.DataFrame,
+            vehicle_type: str,
+            start_date: datetime.datetime | None,
+            end_date: datetime.datetime | None,
+            ax: typing.Optional[matplotlib.pyplot.axis] = None
+    ) -> matplotlib.pyplot.axis:
+        ax = df.plot.scatter(x="arrival time", y="ratio", ax=ax)
+        df_arrival_time = df.set_index("arrival time")
+        df_arrival_time["equilibrium"].plot(ax=ax, color="gray")
+        df_arrival_time["outbound capacity (in TEU)"].plot(ax=ax, color="black")
+        ax.set_title(self.plot_title + " (over time),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
+        ax.grid(color='lightgray', linestyle=':', linewidth=.5)
+        return ax
+
     def _convert_analysis_to_df(
             self,
             capacities: typing.Dict[VehicleIdentifier, typing.Tuple[float, float]]
@@ -208,9 +242,11 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
-                "arrival_time": vehicle_identifier.vehicle_arrival_time,
+                "arrival time": vehicle_identifier.vehicle_arrival_time,
                 "inbound volume (in TEU)": inbound_capacity,
-                "outbound volume (in TEU)": used_outbound_capacity
+                "outbound volume (in TEU)": used_outbound_capacity,
+                "equilibrium": 1,
+                "outbound capacity (in TEU)": 1 + self.transportation_buffer
             })
         df = pd.DataFrame(rows)
         df["ratio"] = df["outbound volume (in TEU)"] / df["inbound volume (in TEU)"]

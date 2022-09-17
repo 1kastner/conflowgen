@@ -26,3 +26,6 @@ class RunNotebooks(unittest.TestCase):
 
     def test_previews_with_missing_data(self):
         self.run_jupyter_notebook("previews_with_missing_data.ipynb")
+
+    def test_small_analyses_example(self):
+        self.run_jupyter_notebook("fast_analyses_for_proof_of_concept.ipynb")

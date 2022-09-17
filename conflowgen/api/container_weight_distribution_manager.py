@@ -1,4 +1,4 @@
-from typing import Dict
+import typing
 
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_weight_distribution_repository import \
@@ -17,7 +17,7 @@ class ContainerWeightDistributionManager(AbstractDistributionManager):
     def __init__(self):
         self.container_weight_repository = ContainerWeightDistributionRepository()
 
-    def get_container_weight_distribution(self) -> Dict[ContainerLength, Dict[int, float]]:
+    def get_container_weight_distribution(self) -> typing.Dict[ContainerLength, typing.Dict[int, float]]:
         """
         Returns:
             The distribution of container weights. Each length is assigned its frequency of showing up.
@@ -26,7 +26,7 @@ class ContainerWeightDistributionManager(AbstractDistributionManager):
 
     def set_container_weight_distribution(
             self,
-            container_weights: Dict[ContainerLength, Dict[int, float]]
+            container_weights: typing.Dict[ContainerLength, typing.Dict[int, float]]
     ) -> None:
         """
         Set the assumed global distribution of container weights.

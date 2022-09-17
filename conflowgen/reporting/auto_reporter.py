@@ -1,7 +1,6 @@
 import datetime
 import logging
 import typing
-from typing import Optional, Callable, Union, Iterable, Type
 
 from conflowgen.reporting import AbstractReport
 from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
@@ -15,8 +14,8 @@ class AutoReporter:
             self,
             as_text: bool,
             as_graph: bool,
-            display_text_func: Optional[Callable],
-            display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None],
+            display_text_func: typing.Optional[typing.Callable],
+            display_in_markup_language: typing.Union[DisplayAsMarkupLanguage, str, None],
             static_graphs: bool,
             display_as_ipython_svg: bool,
             start_date: typing.Optional[datetime.datetime],
@@ -48,7 +47,7 @@ class AutoReporter:
         class_name_with_spaces = ''.join(map(lambda x: x if x.islower() else " " + x, class_name))
         return class_name_with_spaces.strip()
 
-    def present_reports(self, reports: Iterable[Type[AbstractReport]]):
+    def present_reports(self, reports: typing.Iterable[typing.Type[AbstractReport]]):
         for report in reports:
             report_instance = report()
             name_of_report = self._get_report_name(report_instance)

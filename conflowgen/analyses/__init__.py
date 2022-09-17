@@ -1,7 +1,6 @@
 import datetime
 import logging
 import typing
-from typing import Optional, Union, Callable, Iterable, Type
 
 from .container_dwell_time_analysis_report import ContainerDwellTimeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_report import \
@@ -24,7 +23,7 @@ from ..reporting.output_style import DisplayAsMarkupLanguage
 
 logger = logging.getLogger("conflowgen")
 
-reports: Iterable[Type[AbstractReport]] = [
+reports: typing.Iterable[typing.Type[AbstractReport]] = [
     InboundAndOutboundVehicleCapacityAnalysisReport,
     ContainerFlowByVehicleTypeAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport,
@@ -42,8 +41,8 @@ reports: Iterable[Type[AbstractReport]] = [
 def run_all_analyses(
         as_text: bool = True,
         as_graph: bool = False,
-        display_text_func: Optional[Callable] = None,
-        display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None] = None,
+        display_text_func: typing.Optional[typing.Callable] = None,
+        display_in_markup_language: typing.Union[DisplayAsMarkupLanguage, str, None] = None,
         static_graphs: bool = False,
         display_as_ipython_svg: bool = False,
         start_date: typing.Optional[datetime.datetime] = None,

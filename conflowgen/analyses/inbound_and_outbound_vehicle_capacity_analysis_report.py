@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Dict
+import typing
 
 import matplotlib.axis
 import numpy as np
@@ -33,6 +33,18 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         )
 
     def get_report_as_text(self, **kwargs) -> str:
+        """
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
+
+        Returns:
+             The report in text format spanning over several lines.
+        """
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
             self._get_container_volumes_in_teu(kwargs)
 
@@ -66,6 +78,8 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
                 Only include containers that arrive after the given start time.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
              The matplotlib axis of the bar chart.
@@ -89,19 +103,28 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
     def _get_container_volumes_in_teu(
             self,
             kwargs
-    ) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
+    ) -> typing.Tuple[typing.Dict[ModeOfTransport, float], typing.Dict[
+         ModeOfTransport, float], typing.Dict[ModeOfTransport, float]]:
+
         assert self.transportation_buffer is not None
         self.analysis.update(
             transportation_buffer=self.transportation_buffer
         )
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
+        use_cache = kwargs.pop("use_cache", True)
 
         # gather data
         inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type(
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            use_cache=use_cache
         )
         outbound_container_volume, outbound_maximum_container_volume = \
-            self.analysis.get_outbound_container_volume_by_vehicle_type()
+            self.analysis.get_outbound_container_volume_by_vehicle_type(
+                start_date=start_date,
+                end_date=end_date,
+                use_cache=use_cache
+            )
+
         return inbound_container_volume.teu, outbound_container_volume.teu, outbound_maximum_container_volume.teu

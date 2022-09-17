@@ -1,4 +1,4 @@
-from typing import Dict
+import typing
 
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.truck_arrival_distribution_repository import \
@@ -17,7 +17,7 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
     def __init__(self):
         self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
 
-    def get_truck_arrival_distribution(self) -> Dict[int, float]:
+    def get_truck_arrival_distribution(self) -> typing.Dict[int, float]:
         """
         Each key represents the hour in the week and each value represents the
         probability of a truck to arrive between that hour and the start of the next time slot (the successor
@@ -28,7 +28,7 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
         """
         return self.truck_arrival_distribution_repository.get_distribution()
 
-    def set_truck_arrival_distribution(self, distribution: Dict[int, float]) -> None:
+    def set_truck_arrival_distribution(self, distribution: typing.Dict[int, float]) -> None:
         """
 
         Args:

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import abc
 import datetime
-from typing import List, Any
-import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+import typing
 
 # noinspection PyProtectedMember
 from peewee import ModelSelect
@@ -29,7 +28,7 @@ def get_hour_based_range(
         start: datetime.datetime,
         end: datetime.datetime,
         include_end: bool
-) -> List[datetime.datetime]:
+) -> typing.List[datetime.datetime]:
     result = [
         start + datetime.timedelta(hours=hours)
         for hours in range(0, int((end - start).total_seconds() // 3600))
@@ -42,7 +41,7 @@ def get_hour_based_range(
 SECONDS_IN_WEEK = 604800
 
 
-def get_week_based_range(start: datetime.date, end: datetime.date) -> List[datetime.date]:
+def get_week_based_range(start: datetime.date, end: datetime.date) -> typing.List[datetime.date]:
     return [
         start + datetime.timedelta(weeks=weeks)
         for weeks in range(0, int((end - start).total_seconds() // SECONDS_IN_WEEK))
@@ -85,7 +84,7 @@ class AbstractAnalysis(abc.ABC):
             self.transportation_buffer = transportation_buffer
 
     @staticmethod
-    def _restrict_storage_requirement(selected_containers: ModelSelect, storage_requirement: Any) -> ModelSelect:
+    def _restrict_storage_requirement(selected_containers: ModelSelect, storage_requirement: typing.Any) -> ModelSelect:
         if hashable(storage_requirement) and storage_requirement in set(StorageRequirement):
             selected_containers = selected_containers.where(
                 Container.storage_requirement == storage_requirement
@@ -98,7 +97,7 @@ class AbstractAnalysis(abc.ABC):
 
     @staticmethod
     def _restrict_container_delivered_by_vehicle_type(
-            selected_containers: ModelSelect, container_delivered_by_vehicle_type: Any
+            selected_containers: ModelSelect, container_delivered_by_vehicle_type: typing.Any
     ) -> ModelSelect:
         if hashable(container_delivered_by_vehicle_type) \
                 and container_delivered_by_vehicle_type in set(ModeOfTransport):
@@ -113,7 +112,7 @@ class AbstractAnalysis(abc.ABC):
 
     @staticmethod
     def _restrict_container_picked_up_by_vehicle_type(
-            selected_containers: ModelSelect, container_picked_up_by_vehicle_type: Any
+            selected_containers: ModelSelect, container_picked_up_by_vehicle_type: typing.Any
     ) -> ModelSelect:
         if container_picked_up_by_vehicle_type == "scheduled vehicles":
             container_picked_up_by_vehicle_type = ModeOfTransport.get_scheduled_vehicles()
@@ -131,7 +130,7 @@ class AbstractAnalysis(abc.ABC):
 
     @staticmethod
     def _restrict_container_picked_up_by_initial_vehicle_type(
-            selected_containers: ModelSelect, container_picked_up_by_initial_vehicle_type: Any
+            selected_containers: ModelSelect, container_picked_up_by_initial_vehicle_type: typing.Any
     ) -> ModelSelect:
 
         if container_picked_up_by_initial_vehicle_type == "scheduled vehicles":
@@ -150,7 +149,7 @@ class AbstractAnalysis(abc.ABC):
 
     @staticmethod
     def _restrict_vehicle_type(
-            selected_vehicles: ModelSelect, vehicle_type: Any
+            selected_vehicles: ModelSelect, vehicle_type: typing.Any
     ) -> ModelSelect:
         if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
             selected_vehicles = selected_vehicles.where(
