@@ -59,12 +59,18 @@ class AutoReporter:
                 self.output.display_verbatim(report_as_text)
             if self.as_graph:
                 try:
-                    report_instance.show_report_as_graph(
-                        static=self.static_graphs,
-                        display_as_ipython_svg=self.display_as_ipython_svg,
-                        start_date=self.start_date,
-                        end_date=self.end_date
-                    )
+                    if self.start_date is not None or self.end_date is not None:
+                        report_instance.show_report_as_graph(
+                            static=self.static_graphs,
+                            display_as_ipython_svg=self.display_as_ipython_svg,
+                            start_date=self.start_date,
+                            end_date=self.end_date
+                        )
+                    else:
+                        report_instance.show_report_as_graph(
+                            static=self.static_graphs,
+                            display_as_ipython_svg=self.display_as_ipython_svg,
+                         )
                 except NotImplementedError:
                     self.output.display_explanation(
                         f"Skipping {report} as no graph version of the report is implemented"

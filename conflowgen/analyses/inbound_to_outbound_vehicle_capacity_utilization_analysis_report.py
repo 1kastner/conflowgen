@@ -163,7 +163,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         slope = 1 + self.transportation_buffer
         ax.axline((0, 0), slope=slope, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 0), slope=1, color='gray', label='equilibrium')
-        ax.set_title(self.plot_title + f" (absolute),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
+        ax.set_title(self.plot_title + " (absolute),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
         ax.set_aspect('equal', adjustable='box')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         maximum = df[["inbound volume (in TEU)", "outbound volume (in TEU)"]].max(axis=1).max(axis=0)

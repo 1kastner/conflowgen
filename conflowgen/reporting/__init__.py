@@ -116,7 +116,7 @@ class AbstractReport(abc.ABC):
     def _get_datetime_representation(datetime_object: datetime.datetime | None):
         if datetime_object is None:
             return "none"
-        return datetime_object.isoformat()
+        return datetime_object.replace(second=0, microsecond=0).isoformat()
 
     @classmethod
     def _vehicle_identifier_to_text(cls, vehicle_identifier: VehicleIdentifier) -> str:

@@ -72,18 +72,24 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(UnitTestCaseWithMat
         actual_report = self.report.get_report_as_text()
         expected_report = """
 vehicle type = all
+start date = none
+end date = none
 vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
 --no vehicles exist--
 """
         self.assertEqual(actual_report, expected_report)
 
     def test_with_no_data_and_start_and_end_date(self):
+        now = datetime.datetime(2022, 9, 17, 17, 58, 11)
+        later = now + datetime.timedelta(hours=3)
         actual_report = self.report.get_report_as_text(
-            start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now() + datetime.timedelta(hours=3)
+            start_date=now,
+            end_date=later
         )
         expected_report = """
 vehicle type = all
+start date = 2022-09-17T17:58:00
+end date = 2022-09-17T20:58:00
 vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
 --no vehicles exist--
 """
@@ -94,6 +100,8 @@ vehicle identifier                                 inbound volume (in TEU) outbo
         actual_report = self.report.get_report_as_text()
         expected_report = """
 vehicle type = all
+start date = none
+end date = none
 vehicle identifier                                 inbound volume (in TEU) outbound volume (in TEU)
 feeder-TestFeederService-TestFeeder1                                 250.0                      1.0
 (rounding errors might exist)
