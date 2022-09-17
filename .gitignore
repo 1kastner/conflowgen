@@ -59,3 +59,6 @@ docs/notebooks/data/export/
 .coverage.*
 examples/Python_Script/export/
 examples/Python_Script/databases/
+
+# Ignore local changes as they happen with every execution. If something changes, the commit must be forced.
+docs/notebooks/data/prepared_dbs/demo_poc.sqlite

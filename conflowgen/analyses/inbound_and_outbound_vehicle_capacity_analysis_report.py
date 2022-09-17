@@ -33,10 +33,10 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         )
 
     def get_report_as_text(self, **kwargs) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
-
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
-            self._get_container_volumes_in_teu()
+            self._get_container_volumes_in_teu(kwargs)
+
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         # create string representation
         report = "\n(all numbers are reported in TEU)\n"
@@ -61,13 +61,19 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         """
         The report as a graph is represented as a bar chart using pandas.
 
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
+
         Returns:
              The matplotlib axis of the bar chart.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
-
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
-            self._get_container_volumes_in_teu()
+            self._get_container_volumes_in_teu(kwargs)
+
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         df = pd.DataFrame({
             "inbound volume (in TEU)": inbound_capacities,
@@ -81,14 +87,21 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         return ax
 
     def _get_container_volumes_in_teu(
-            self
+            self,
+            kwargs
     ) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
         assert self.transportation_buffer is not None
         self.analysis.update(
             transportation_buffer=self.transportation_buffer
         )
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+
         # gather data
-        inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type()
+        inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type(
+            start_date=start_date,
+            end_date=end_date
+        )
         outbound_container_volume, outbound_maximum_container_volume = \
             self.analysis.get_outbound_container_volume_by_vehicle_type()
         return inbound_container_volume.teu, outbound_container_volume.teu, outbound_maximum_container_volume.teu

@@ -115,6 +115,9 @@ class AbstractAnalysis(abc.ABC):
     def _restrict_container_picked_up_by_vehicle_type(
             selected_containers: ModelSelect, container_picked_up_by_vehicle_type: Any
     ) -> ModelSelect:
+        if container_picked_up_by_vehicle_type == "scheduled vehicles":
+            container_picked_up_by_vehicle_type = ModeOfTransport.get_scheduled_vehicles()
+
         if hashable(container_picked_up_by_vehicle_type) \
                 and container_picked_up_by_vehicle_type in set(ModeOfTransport):
             selected_containers = selected_containers.where(
@@ -127,9 +130,28 @@ class AbstractAnalysis(abc.ABC):
         return selected_containers
 
     @staticmethod
+    def _restrict_container_picked_up_by_initial_vehicle_type(
+            selected_containers: ModelSelect, container_picked_up_by_initial_vehicle_type: Any
+    ) -> ModelSelect:
+
+        if container_picked_up_by_initial_vehicle_type == "scheduled vehicles":
+            container_picked_up_by_initial_vehicle_type = ModeOfTransport.get_scheduled_vehicles()
+
+        if hashable(container_picked_up_by_initial_vehicle_type) \
+                and container_picked_up_by_initial_vehicle_type in set(ModeOfTransport):
+            selected_containers = selected_containers.where(
+                Container.picked_up_by_initial == container_picked_up_by_initial_vehicle_type
+            )
+        else:  # assume it is some kind of collection (list, set, ...)
+            selected_containers = selected_containers.where(
+                Container.picked_up_by_initial << container_picked_up_by_initial_vehicle_type
+            )
+        return selected_containers
+
+    @staticmethod
     def _restrict_vehicle_type(
             selected_vehicles: ModelSelect, vehicle_type: Any
-    ):
+    ) -> ModelSelect:
         if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
             selected_vehicles = selected_vehicles.where(
                 LargeScheduledVehicle.schedule.vehicle_type == vehicle_type

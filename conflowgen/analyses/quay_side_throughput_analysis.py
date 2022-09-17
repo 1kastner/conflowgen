@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import typing
 from typing import Dict, List
 
 from conflowgen.domain_models.container import Container
@@ -24,7 +25,13 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
     }
 
     @classmethod
-    def get_throughput_over_time(cls, inbound: bool = True, outbound: bool = True) -> Dict[datetime.date, float]:
+    def get_throughput_over_time(
+            cls,
+            inbound: bool = True,
+            outbound: bool = True,
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None
+    ) -> Dict[datetime.date, float]:
         """
         For each week, the containers crossing the quay are checked. Based on this, the required quay capacity in boxes
         can be deduced - it is the maximum of these values (based on all the assumptions, in reality an additional
@@ -37,6 +44,8 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
         Args:
             inbound: Whether to check for vessels which deliver a container on their inbound journey
             outbound: Whether to check for vessels which pick up a container on their outbound journey
+            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
         """
 
         assert (inbound or outbound), "At least one of the two must be checked for"
@@ -45,6 +54,11 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
+            if start_date and container.get_arrival_time() < start_date:
+                continue
+            if end_date and container.get_departure_time() > end_date:
+                continue
+
             if inbound:
                 mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by
                 if mode_of_transport_at_container_arrival in cls.QUAY_SIDE_VEHICLES:

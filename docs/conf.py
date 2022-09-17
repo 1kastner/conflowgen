@@ -75,7 +75,7 @@ todo_include_todos = True  # this is currently especially the open tickets at pl
 
 autoclass_content = 'both'  # report both the class docs and __init__ docs
 
-autodoc_typehints = 'description'  # show in description, not signature
+autodoc_typehints = 'description'  # show typehints in description, not signature
 
 autodoc_typehints_format = 'short'  # drop leading package path as it takes too much space
 

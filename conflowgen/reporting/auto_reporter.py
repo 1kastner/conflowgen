@@ -1,4 +1,6 @@
+import datetime
 import logging
+import typing
 from typing import Optional, Callable, Union, Iterable, Type
 
 from conflowgen.reporting import AbstractReport
@@ -16,7 +18,9 @@ class AutoReporter:
             display_text_func: Optional[Callable],
             display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None],
             static_graphs: bool,
-            display_as_ipython_svg: bool
+            display_as_ipython_svg: bool,
+            start_date: typing.Optional[datetime.datetime],
+            end_date: typing.Optional[datetime.datetime]
     ):
         assert as_text or as_graph, "At least one of the two modes should be chosen"
 
@@ -34,6 +38,9 @@ class AutoReporter:
 
         self.static_graphs = static_graphs
         self.display_as_ipython_svg = display_as_ipython_svg
+
+        self.start_date = start_date
+        self.end_date = end_date
 
     @staticmethod
     def _get_report_name(report_instance: object) -> str:
@@ -54,7 +61,9 @@ class AutoReporter:
                 try:
                     report_instance.show_report_as_graph(
                         static=self.static_graphs,
-                        display_as_ipython_svg=self.display_as_ipython_svg
+                        display_as_ipython_svg=self.display_as_ipython_svg,
+                        start_date=self.start_date,
+                        end_date=self.end_date
                     )
                 except NotImplementedError:
                     self.output.display_explanation(

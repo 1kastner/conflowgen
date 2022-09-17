@@ -103,6 +103,12 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs
     ) -> Tuple[Any, Dict[datetime.datetime, float]]:
+        internal_none = object()
+        start_date = kwargs.pop("start_date", internal_none)
+        end_date = kwargs.pop("end_date", internal_none)
+        if start_date is not internal_none or end_date is not internal_none:
+            self.logger.debug(f"{self.__class__.__name__} does not support start or end date, always the whole time "
+                              f"range is shown.")
 
         storage_requirement = kwargs.pop("storage_requirement", None)
         yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(

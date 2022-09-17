@@ -5,13 +5,14 @@ import datetime
 import enum
 import logging
 import tempfile
-from typing import Any, Type
+import typing
 from collections.abc import Iterable
 
 import matplotlib.pyplot as plt
 import plotly.graph_objects
 from matplotlib import image as mpimg
 
+from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -20,8 +21,13 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 
 class AbstractReport(abc.ABC):
 
+    #: Each report can log to the console
     logger = logging.getLogger("conflowgen")
 
+    #: Some entries are too long to be printed to console, such as vehicle identifiers
+    maximum_length_for_readable_name = 50
+
+    #: The default order in which vehicle types are reported. If desired, this can be altered.
     order_of_vehicle_types_in_report = [
         ModeOfTransport.deep_sea_vessel,
         ModeOfTransport.feeder,
@@ -89,20 +95,41 @@ class AbstractReport(abc.ABC):
         pass
 
     @staticmethod
-    def _get_enum_or_enum_set_representation(enum_or_enum_set: Any, enum_type: Type[enum.Enum]) -> str:
+    def _get_enum_or_enum_set_representation(enum_or_enum_set: typing.Any, enum_type: typing.Type[enum.Enum]) -> str:
         if enum_or_enum_set is None or enum_or_enum_set == "all":
             return "all"
+        if isinstance(enum_or_enum_set, str):
+            return enum_or_enum_set
         if isinstance(enum_or_enum_set, enum_type):  # a
             return str(enum_or_enum_set)
         if isinstance(enum_or_enum_set, Iterable):  # a & b & c
             return " & ".join([str(element) for element in enum_or_enum_set])
         return str(enum_or_enum_set)  # just give it a try
 
-    def _get_vehicle_representation(self, vehicle_type: Any) -> str:
+    def _get_vehicle_representation(self, vehicle_type: typing.Any) -> str:
         return self._get_enum_or_enum_set_representation(vehicle_type, ModeOfTransport)
 
-    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
+    def _get_storage_requirement_representation(self, storage_requirement: typing.Any) -> str:
         return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
+
+    @staticmethod
+    def _get_datetime_representation(datetime_object: datetime.datetime | None):
+        if datetime_object is None:
+            return "none"
+        return datetime_object.isoformat()
+
+    @classmethod
+    def _vehicle_identifier_to_text(cls, vehicle_identifier: VehicleIdentifier) -> str:
+        if vehicle_identifier.mode_of_transport != ModeOfTransport.truck:
+            name = f"{vehicle_identifier.mode_of_transport}-{vehicle_identifier.service_name}" \
+                   f"-{vehicle_identifier.vehicle_name}"
+        else:
+            arrival_time = vehicle_identifier.vehicle_arrival_time.replace(microsecond=0)
+            name = f"{vehicle_identifier.mode_of_transport}-{arrival_time}"
+        if len(name) > cls.maximum_length_for_readable_name:
+            name = name[:46] + "..."
+
+        return name
 
 
 class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
@@ -135,18 +162,18 @@ class AbstractReportWithPlotly(AbstractReport, metaclass=abc.ABCMeta):
         static = kwargs.pop("static", False)
         display_as_ipython_svg = kwargs.pop("display_as_ipython_svg", False)
 
-        figs: Any = self.get_report_as_graph(**kwargs)
+        figs: typing.Any = self.get_report_as_graph(**kwargs)
         try:
             len(figs)
         except TypeError:  # there is only one
             figs = [figs]
 
         for fig in figs:
-            if static:
+            if static:  # show as PNG or similar
                 self._show_static_fig(fig)
-            if display_as_ipython_svg:
+            if display_as_ipython_svg:  # use IPython SVG functionality (e.g., in browser)
                 self._display_ipython_svg(fig)
-            if not static and not display_as_ipython_svg:
+            if not static and not display_as_ipython_svg:  # the default way chosen by plotly
                 fig.show()
 
     @staticmethod
