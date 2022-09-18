@@ -100,7 +100,7 @@ class Container(BaseModel):
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
 
-    def get_arrival_time(self, use_cache: bool = True) -> datetime.datetime:
+    def get_arrival_time(self, use_cache: bool) -> datetime.datetime:
 
         if use_cache:
             if self.cached_arrival_time is not None:
@@ -124,7 +124,7 @@ class Container(BaseModel):
         self.save()
         return container_arrival_time
 
-    def get_departure_time(self, use_cache: bool = True) -> datetime.datetime:
+    def get_departure_time(self, use_cache: bool) -> datetime.datetime:
 
         if use_cache:
             if self.cached_departure_time is not None:

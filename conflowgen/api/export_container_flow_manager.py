@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+import typing
 
 from conflowgen.application.services.export_container_flow_service import \
     ExportContainerFlowService
@@ -20,8 +20,8 @@ class ExportContainerFlowManager:
     def export(
             self,
             folder_name: str,
-            path_to_export_folder: Optional[str] = None,
-            file_format: Optional[ExportFileFormat] = None,
+            path_to_export_folder: typing.Optional[str] = None,
+            file_format: typing.Optional[ExportFileFormat] = None,
             overwrite: bool = False
     ) -> str:
         """

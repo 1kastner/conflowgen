@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Dict, Optional
+import typing
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -18,8 +18,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_initial_to_adjusted_outbound_flow(
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None,
+            use_cache: bool = True
     ) -> ContainerVolumeFromOriginToDestination:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
@@ -32,6 +33,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
+                Defaults to ``True``.
 
         Returns:
             The data structure describes how often an initial outbound vehicle type had to be adjusted with which other
@@ -39,7 +43,8 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         """
 
         # Initialize empty data structures
-        initial_to_adjusted_outbound_flow_in_containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
+        initial_to_adjusted_outbound_flow_in_containers: typing.Dict[
+            ModeOfTransport, typing.Dict[ModeOfTransport, float]] = {
             vehicle_type_initial:
                 {
                     vehicle_type_adjusted: 0
@@ -47,7 +52,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
                 }
             for vehicle_type_initial in ModeOfTransport
         }
-        initial_to_adjusted_outbound_flow_in_teu: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
+        initial_to_adjusted_outbound_flow_in_teu: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]] = {
             vehicle_type_initial:
                 {
                     vehicle_type_adjusted: 0
@@ -59,9 +64,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         # Iterate over all containers and count number of containers / used teu capacity
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time() < start_date:
+            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
                 continue
-            if end_date and container.get_departure_time() > end_date:
+            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
                 continue
             vehicle_type_initial = container.picked_up_by_initial
             vehicle_type_adjusted = container.picked_up_by

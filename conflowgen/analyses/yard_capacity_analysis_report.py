@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import statistics
-from typing import Tuple, Any, Dict
+import typing
 import pandas as pd
 import matplotlib.axis
 
@@ -97,12 +97,12 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         ax.set_title("Yard capacity analysis")
         return ax
 
-    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
+    def _get_storage_requirement_representation(self, storage_requirement: typing.Any) -> str:
         return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
 
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs
-    ) -> Tuple[Any, Dict[datetime.datetime, float]]:
+    ) -> typing.Tuple[typing.Any, typing.Dict[datetime.datetime, float]]:
         internal_none = object()
         start_date = kwargs.pop("start_date", internal_none)
         end_date = kwargs.pop("end_date", internal_none)

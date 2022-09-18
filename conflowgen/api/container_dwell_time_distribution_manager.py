@@ -1,4 +1,4 @@
-from typing import Dict, Any
+import typing
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.api import AbstractDistributionManager
@@ -19,7 +19,8 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
 
     def get_container_dwell_time_distribution(
             self
-    ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]]:
+    ) -> typing.Dict[ModeOfTransport, typing.Dict[
+         ModeOfTransport, typing.Dict[StorageRequirement, ContinuousDistribution]]]:
         """
 
         Returns:
@@ -30,7 +31,8 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
 
     def set_container_dwell_time_distribution(
             self,
-            distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, Dict[str, Any]]]]
+            distribution: typing.Dict[ModeOfTransport, typing.Dict[
+                ModeOfTransport, typing.Dict[StorageRequirement, typing.Dict[str, typing.Any]]]]
     ) -> None:
         """
         The container dwell time distribution depends on the vehicle the container is delivered by, picked up by,

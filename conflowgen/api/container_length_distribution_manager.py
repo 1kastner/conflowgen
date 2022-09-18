@@ -1,4 +1,4 @@
-from typing import Dict
+import typing
 
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
@@ -17,7 +17,7 @@ class ContainerLengthDistributionManager(AbstractDistributionManager):
     def __init__(self):
         self.container_length_repository = ContainerLengthDistributionRepository()
 
-    def get_container_length_distribution(self) -> Dict[ContainerLength, float]:
+    def get_container_length_distribution(self) -> typing.Dict[ContainerLength, float]:
         """
         Returns:
              The distribution of container lengths. Each length is assigned its frequency of showing up.
@@ -26,7 +26,7 @@ class ContainerLengthDistributionManager(AbstractDistributionManager):
 
     def set_container_length_distribution(
             self,
-            container_lengths: Dict[ContainerLength, float]
+            container_lengths: typing.Dict[ContainerLength, float]
     ) -> None:
         """
         Set the assumed global distribution of container lengths.

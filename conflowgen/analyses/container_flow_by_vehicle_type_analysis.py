@@ -2,8 +2,7 @@ from __future__ import annotations
 
 import copy
 import datetime
-from typing import Dict, Optional
-import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+import typing
 
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -20,17 +19,22 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
 
     @staticmethod
     def get_inbound_to_outbound_flow(
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None,
+            use_cache: bool = True
     ) -> ContainerVolumeFromOriginToDestination:
         """
         This is the overview of the generated inbound to outbound container flow by vehicle type.
 
         Args:
-            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
-            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
+            start_date:
+                The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date:
+                The latest departing container that is included. Consider all containers if :obj:`None`.
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
         """
-        inbound_to_outbound_flow_in_containers: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] = {
+        inbound_to_outbound_flow_in_containers: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]] = {
             vehicle_type_inbound:
                 {
                     vehicle_type_outbound: 0
@@ -42,9 +46,9 @@ class ContainerFlowByVehicleTypeAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time() < start_date:
+            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
                 continue
-            if end_date and container.get_departure_time() > end_date:
+            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
                 continue
             inbound_vehicle_type = container.delivered_by
             outbound_vehicle_type = container.picked_up_by

@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import itertools
 import logging
-import typing
 from collections.abc import Collection
-from typing import Dict
+import typing
 
 import plotly.graph_objects
 
@@ -76,7 +75,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
 
     def _generate_report_for_unit(
             self,
-            inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]],
+            inbound_to_outbound_flow: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]],
             unit: str
     ):
         report = "\n"
@@ -121,7 +120,7 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
 
     def _plot_inbound_to_outbound_flow(
             self,
-            inbound_to_outbound_flow: Dict[ModeOfTransport, Dict[ModeOfTransport, float]],
+            inbound_to_outbound_flow: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]],
             unit: str
     ) -> plotly.graph_objects.Figure:
 

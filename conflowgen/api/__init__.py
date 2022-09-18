@@ -1,5 +1,5 @@
 import abc
-from typing import Dict, Any, Type, TypeVar
+import typing
 
 from conflowgen.domain_models.distribution_repositories import normalize_distribution_with_no_dependent_variable, \
     normalize_distribution_with_one_dependent_variable, normalize_distribution_with_two_dependent_variables
@@ -9,18 +9,18 @@ from conflowgen.domain_models.distribution_validators import validate_distributi
 
 class AbstractDistributionManager(abc.ABC):
 
-    KeyEnumFirstLevel = TypeVar('KeyEnumFirstLevel')
+    KeyEnumFirstLevel = typing.TypeVar('KeyEnumFirstLevel')
 
-    KeyEnumSecondLevel = TypeVar('KeyEnumSecondLevel')
+    KeyEnumSecondLevel = typing.TypeVar('KeyEnumSecondLevel')
 
-    KeyEnumThirdLevel = TypeVar('KeyEnumThirdLevel')
+    KeyEnumThirdLevel = typing.TypeVar('KeyEnumThirdLevel')
 
     @staticmethod
     def _normalize_and_validate_distribution_without_dependent_variables(
-            distribution: Dict[Any, float],
-            key_type: Type[KeyEnumFirstLevel],
+            distribution: typing.Dict[typing.Any, float],
+            key_type: typing.Type[KeyEnumFirstLevel],
             values_are_frequencies: bool
-    ) -> Dict[KeyEnumFirstLevel, float]:
+    ) -> typing.Dict[KeyEnumFirstLevel, float]:
         normalized_distribution = normalize_distribution_with_no_dependent_variable(
             distribution,
             values_are_frequencies=values_are_frequencies
@@ -34,11 +34,11 @@ class AbstractDistributionManager(abc.ABC):
 
     @staticmethod
     def _normalize_and_validate_distribution_with_one_dependent_variable(
-            distribution: Dict[Any, Dict[Any, Any]],
-            key_type_first_level: Type[KeyEnumFirstLevel],
-            key_type_second_level: Type[KeyEnumSecondLevel],
+            distribution: typing.Dict[typing.Any, typing.Dict[typing.Any, typing.Any]],
+            key_type_first_level: typing.Type[KeyEnumFirstLevel],
+            key_type_second_level: typing.Type[KeyEnumSecondLevel],
             values_are_frequencies: bool
-    ) -> Dict[KeyEnumFirstLevel, Dict[KeyEnumSecondLevel, float]]:
+    ) -> typing.Dict[KeyEnumFirstLevel, typing.Dict[KeyEnumSecondLevel, float]]:
         normalized_distribution = normalize_distribution_with_one_dependent_variable(
             distribution,
             values_are_frequencies=values_are_frequencies
@@ -53,12 +53,12 @@ class AbstractDistributionManager(abc.ABC):
 
     @staticmethod
     def _normalize_and_validate_distribution_with_two_dependent_variables(
-            distribution: Dict[Any, Dict[Any, Dict[Any, Any]]],
-            key_type_first_level: Type[KeyEnumFirstLevel],
-            key_type_second_level: Type[KeyEnumSecondLevel],
-            key_type_third_level: Type[KeyEnumThirdLevel],
+            distribution: typing.Dict[typing.Any, typing.Dict[typing.Any, typing.Dict[typing.Any, typing.Any]]],
+            key_type_first_level: typing.Type[KeyEnumFirstLevel],
+            key_type_second_level: typing.Type[KeyEnumSecondLevel],
+            key_type_third_level: typing.Type[KeyEnumThirdLevel],
             values_are_frequencies: bool
-    ) -> Dict[KeyEnumFirstLevel, Dict[KeyEnumSecondLevel, Dict[KeyEnumThirdLevel, Any]]]:
+    ) -> typing.Dict[KeyEnumFirstLevel, typing.Dict[KeyEnumSecondLevel, typing.Dict[KeyEnumThirdLevel, typing.Any]]]:
         normalized_distribution = normalize_distribution_with_two_dependent_variables(
             distribution,
             values_are_frequencies=False

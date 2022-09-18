@@ -34,14 +34,16 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
     def get_report_as_text(self, **kwargs) -> str:
         """
         Keyword Args:
-            start_date (typing.Optional[datetime.datetime]):
+            start_date (datetime.datetime):
                 When to start recording
-            end_date (typing.Optional[datetime.datetime]):
+            end_date (datetime.datetime):
                 When to end recording
-            inbound (typing.Optional[bool]):
+            inbound (bool):
                 Whether to check for trucks which deliver a container on their inbound journey
-            outbound (typing.Optional[bool]):
+            outbound (bool):
                 Whether to check for trucks which pick up a container on their outbound journey
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
 
         Returns:
             The report in text format.
@@ -83,16 +85,18 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
         The report as a graph is represented as a line graph using pandas.
 
         Keyword Args:
-            start_date (typing.Optional[datetime.datetime]):
+            start_date (datetime.datetime):
                 When to start recording
-            end_date (typing.Optional[datetime.datetime]):
+            end_date (datetime.datetime):
                 When to end recording
-            inbound (typing.Optional[bool]):
+            inbound (bool):
                 Whether to check for trucks which deliver a container on their inbound journey
-            outbound (typing.Optional[bool]):
+            outbound (bool):
                 Whether to check for trucks which pick up a container on their outbound journey
-            ax (typing.Optional[matplotlib.axis.Axis]):
-                Which matplotlib axis to plot on
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
+            ax (matplotlib.axis.Axis):
+                Which matplotlib axis to plot on.
 
         Returns:
              The matplotlib axis of the plot over time.
