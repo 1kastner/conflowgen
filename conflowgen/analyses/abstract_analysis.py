@@ -152,6 +152,8 @@ class AbstractAnalysis(abc.ABC):
             selected_vehicles: ModelSelect, vehicle_type: typing.Any
     ) -> ModelSelect:
         if hashable(vehicle_type) and vehicle_type in set(ModeOfTransport):
+            if vehicle_type in ModeOfTransport.get_unscheduled_vehicles():
+                raise ValueError(f"Vehicle type {vehicle_type} not supported because it adheres to no schedule.")
             selected_vehicles = selected_vehicles.where(
                 LargeScheduledVehicle.schedule.vehicle_type == vehicle_type
             )

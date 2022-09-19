@@ -56,11 +56,12 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             average_moved_capacity=250,
             vehicle_arrives_every_k_days=-1
         )
+        now = datetime.datetime.now()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
-            scheduled_arrival=datetime.datetime.now(),
+            scheduled_arrival=now,
             schedule=schedule
         )
         Feeder.create(
@@ -85,7 +86,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         self.assertEqual(key_of_entry.mode_of_transport, ModeOfTransport.feeder)
         self.assertEqual(key_of_entry.service_name, "TestFeederService")
         self.assertEqual(key_of_entry.vehicle_name, "TestFeeder1")
-        self.assertEqual(key_of_entry.vehicle_arrival_time, one_week_later)
+        self.assertEqual(key_of_entry.vehicle_arrival_time, now)
 
         value_of_entry = list(capacities_with_one_feeder.values())[0]
         self.assertEqual(len(value_of_entry), 2, "Value consists of two components")

@@ -36,14 +36,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
 
     def get_inbound_and_outbound_capacity_of_each_vehicle(
             self,
-            vehicle_type: typing.Any = "all",
+            vehicle_type: typing.Any = "scheduled vehicles",
             start_date: typing.Optional[datetime.datetime] = None,
             end_date: typing.Optional[datetime.datetime] = None
     ) -> typing.Dict[VehicleIdentifier, typing.Tuple[float, float]]:
         """
         Args:
-            vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
-                vehicle types, e.g., passed as a :class:`list` or :class:`set`.
+            vehicle_type: Either ``"scheduled vehicles"``, a single vehicle of type :class:`.ModeOfTransport` or a whole
+                collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 Only the vehicles that correspond to the provided vehicle type(s) are considered in the analysis.
             start_date:
                 Only include containers that arrive after the given start time.
@@ -55,16 +55,26 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
         capacities: typing.Dict[VehicleIdentifier, InboundAndOutboundCapacity] = {}
 
         selected_vehicles = LargeScheduledVehicle.select().join(Schedule)
-        if vehicle_type is not None and vehicle_type != "all":
+        if vehicle_type is not None and vehicle_type not in ("scheduled vehicles", "all"):
             selected_vehicles = self._restrict_vehicle_type(selected_vehicles, vehicle_type)
 
         vehicle: LargeScheduledVehicle
         for vehicle in selected_vehicles:
+
+            # vehicle properties
+            vehicle_name = vehicle.vehicle_name
+            vehicle_arrival_time = vehicle.get_arrival_time()
+            used_capacity_on_inbound_journey = vehicle.moved_capacity
+
+            if start_date and vehicle_arrival_time < start_date:
+                continue
+            if end_date and vehicle_arrival_time > end_date:
+                continue
+
+            # schedule properties
             vehicle_schedule: Schedule = vehicle.schedule
             mode_of_transport = vehicle_schedule.vehicle_type
             service_name = vehicle_schedule.service_name
-            vehicle_name = vehicle.vehicle_name
-            used_capacity_on_inbound_journey = vehicle.moved_capacity
 
             used_capacity_on_outbound_journey = 0
 
@@ -74,21 +84,12 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             ):
                 used_capacity_on_outbound_journey += container.occupied_teu
 
-            vehicle_arrival_time = datetime.datetime.combine(
-                vehicle_schedule.vehicle_arrives_at, vehicle_schedule.vehicle_arrives_at_time
-            )
-
             vehicle_id = VehicleIdentifier(
                 mode_of_transport=mode_of_transport,
                 service_name=service_name,
                 vehicle_name=vehicle_name,
                 vehicle_arrival_time=vehicle_arrival_time
             )
-
-            if start_date and vehicle_arrival_time < start_date:
-                continue
-            if end_date and vehicle_arrival_time > end_date:
-                continue
 
             capacities[vehicle_id] = InboundAndOutboundCapacity(
                 inbound_capacity=used_capacity_on_inbound_journey,
