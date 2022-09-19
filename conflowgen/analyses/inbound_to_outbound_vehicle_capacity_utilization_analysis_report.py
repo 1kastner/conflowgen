@@ -34,17 +34,23 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def __init__(self):
         super().__init__()
+        self._end_date = None
+        self._start_date = None
+        self._vehicle_type_description = None
+        self.vehicle_type_description = None
         self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysis(
             transportation_buffer=self.transportation_buffer
         )
+        self._df = None
 
     def get_report_as_text(self, **kwargs) -> str:
         """
         The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
 
         Keyword Args:
-            vehicle_type (:py:obj:`Any`): Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a
-                whole collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
+            vehicle_type (:py:obj:`Any`): Either ``"scheduled vehicles"``, a single vehicle of type
+                :class:`.ModeOfTransport` or a whole collection of vehicle types, e.g., passed as a :class:`list` or
+                :class:`set`.
                 For the exact interpretation of the parameter, check
                 :class:`.InboundToOutboundVehicleCapacityUtilizationAnalysis`.
             start_date (datetime.datetime):
@@ -84,7 +90,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
         datetime.datetime,
         datetime.datetime
     ]:
-        vehicle_type_any = kwargs.pop("vehicle_type", "all")
+        vehicle_type_any = kwargs.pop("vehicle_type", "scheduled vehicles")
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
 
@@ -121,6 +127,9 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
         # kwargs for report
         capacities, vehicle_type_description, start_date, end_date = self._get_analysis(kwargs)
+        self._vehicle_type_description = vehicle_type_description
+        self._start_date = start_date
+        self._end_date = end_date
 
         assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
@@ -129,35 +138,31 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             ax.set_title(self.plot_title)
             return fig
 
-        df = self._convert_analysis_to_df(capacities)
+        self._df = self._convert_analysis_to_df(capacities)
 
         if plot_type == "absolute":
             fig, ax = plt.subplots(1, 1)
-            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax)
+            self._plot_absolute_values(ax=ax)
         elif plot_type == "relative":
             fig, ax = plt.subplots(1, 1)
-            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax)
+            self._plot_relative_values(ax=ax)
         elif plot_type == "absolute and relative":
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
-            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax1)
-            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax2)
+            self._plot_absolute_values(ax=ax1)
+            self._plot_relative_values(ax=ax2)
             plt.subplots_adjust(wspace=0.4)
         elif plot_type == "over time":
             fig, ax = plt.subplots(1, 1)
-            self._plot_relative_values_over_time(
-                df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax
-            )
+            self._plot_relative_values_over_time(ax=ax)
         elif plot_type == "all":
             fig = plt.figure(figsize=(10, 10))
             gs = fig.add_gridspec(2, 2)
             ax1 = fig.add_subplot(gs[0, 0])
             ax2 = fig.add_subplot(gs[0, 1])
             ax3 = fig.add_subplot(gs[1, :])
-            self._plot_absolute_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax1)
-            self._plot_relative_values(df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax2)
-            self._plot_relative_values_over_time(
-                df, vehicle_type_description, start_date=start_date, end_date=end_date, ax=ax3
-            )
+            self._plot_absolute_values(ax=ax1)
+            self._plot_relative_values(ax=ax2)
+            self._plot_relative_values_over_time(ax=ax3)
             fig.tight_layout(pad=5.0)
         else:
             raise Exception(f"Plot type '{plot_type}' is not supported.")
@@ -171,20 +176,18 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def _plot_absolute_values(
             self,
-            df: pd.DataFrame,
-            vehicle_type: str,
-            start_date: datetime.datetime | None,
-            end_date: datetime.datetime | None,
             ax: typing.Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound volume (in TEU)", y="outbound volume (in TEU)", ax=ax)
+        ax = self._df.plot.scatter(x="inbound volume (in TEU)", y="outbound volume (in TEU)", ax=ax)
         slope = 1 + self.transportation_buffer
         ax.axline((0, 0), slope=slope, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 0), slope=1, color='gray', label='equilibrium')
-        ax.set_title(self.plot_title + " (absolute),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
+        ax.set_title(self.plot_title + " (absolute),\n" + self._get_filter_values(
+            self._vehicle_type_description, self._start_date, self._end_date)
+                     )
         ax.set_aspect('equal', adjustable='box')
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
-        maximum = df[["inbound volume (in TEU)", "outbound volume (in TEU)"]].max(axis=1).max(axis=0)
+        maximum = self._df[["inbound volume (in TEU)", "outbound volume (in TEU)"]].max(axis=1).max(axis=0)
         axis_limitation = maximum * 1.1  # add some white space to the top and left
         ax.set_xlim([0, axis_limitation])
         ax.set_ylim([0, axis_limitation])
@@ -204,32 +207,29 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def _plot_relative_values(
             self,
-            df: pd.DataFrame,
-            vehicle_type: str,
-            start_date: datetime.datetime | None,
-            end_date: datetime.datetime | None,
             ax: typing.Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="inbound volume (in TEU)", y="ratio", ax=ax)
+        ax = self._df.plot.scatter(x="inbound volume (in TEU)", y="ratio", ax=ax)
         ax.axline((0, (1 + self.transportation_buffer)), slope=0, color='black', label='outbound capacity (in TEU)')
         ax.axline((0, 1), slope=0, color='gray', label='equilibrium')
-        ax.set_title(self.plot_title + " (relative),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
+        ax.set_title(self.plot_title + " (relative),\n" + self._get_filter_values(
+            self._vehicle_type_description, self._start_date, self._end_date)
+                     )
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         return ax
 
     def _plot_relative_values_over_time(
             self,
-            df: pd.DataFrame,
-            vehicle_type: str,
-            start_date: datetime.datetime | None,
-            end_date: datetime.datetime | None,
             ax: typing.Optional[matplotlib.pyplot.axis] = None
     ) -> matplotlib.pyplot.axis:
-        ax = df.plot.scatter(x="arrival time", y="ratio", ax=ax)
-        df_arrival_time = df.set_index("arrival time")
+        ax = self._df.plot.scatter(x="arrival time", y="ratio", ax=ax)
+        df_arrival_time = self._df.set_index("arrival time")
+        df_arrival_time["ratio"].rename("ratio outbound to inbound volume (in TEU)", inplace=True)
         df_arrival_time["equilibrium"].plot(ax=ax, color="gray")
         df_arrival_time["outbound capacity (in TEU)"].plot(ax=ax, color="black")
-        ax.set_title(self.plot_title + " (over time),\n" + self._get_filter_values(vehicle_type, start_date, end_date))
+        ax.set_title(self.plot_title + " (over time),\n" + self._get_filter_values(
+            self._vehicle_type_description, self._start_date, self._end_date)
+                     )
         ax.grid(color='lightgray', linestyle=':', linewidth=.5)
         return ax
 

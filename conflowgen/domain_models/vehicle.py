@@ -4,6 +4,7 @@ or picks up containers from a container terminal.
 """
 from __future__ import annotations
 
+import datetime
 import uuid
 from typing import Type
 
@@ -103,6 +104,14 @@ class LargeScheduledVehicle(BaseModel):
                   "If this applies to many vehicles, you might want to either recheck the schedules or your "
                   "ModeOfTransportDistribution as obviously the different information does not match."
     )
+
+    def get_arrival_time(self) -> datetime.datetime:
+        """
+        Returns:
+            The actual arrival time of the vehicle.
+        """
+        # noinspection PyTypeChecker
+        return self.realized_arrival or self.scheduled_arrival
 
     def __repr__(self):
         return f"<LargeScheduleVehicle '{self.vehicle_name}'>"
