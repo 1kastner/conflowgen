@@ -184,6 +184,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
             vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
+                "vehicle type": vehicle_identifier.mode_of_transport,
                 "arrival time": vehicle_identifier.vehicle_arrival_time,
                 "percentage of adjusted containers": fraction
             })
