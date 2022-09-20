@@ -30,6 +30,7 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.preview = InboundAndOutboundVehicleCapacityPreview(
             self.start_date,
             self.end_date,
@@ -78,13 +79,13 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
 
-        df = pd.DataFrame({
+        self._df = pd.DataFrame({
             "inbound volume": inbound_capacities,
             "outbound average volume": outbound_average_capacities,
             "outbound maximum capacity": outbound_maximum_capacities
         })
-        df.index = [str(i).replace("_", " ") for i in df.index]
-        ax = df.plot.barh()
+        self._df.index = [str(i).replace("_", " ") for i in self._df.index]
+        ax = self._df.plot.barh()
         ax.set_xlabel("Container volume (in TEU)")
         ax.set_title("Inbound and outbound vehicle capacity preview")
         return ax
