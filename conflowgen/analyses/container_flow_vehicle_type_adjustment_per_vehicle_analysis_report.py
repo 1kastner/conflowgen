@@ -39,6 +39,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.analysis = ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(
             transportation_buffer=self.transportation_buffer
         )
@@ -159,7 +160,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
             ax.set_title(self.plot_title)
             return ax
 
-        df = self._convert_analysis_result_to_df(fraction_per_vehicle)
+        self._df = self._convert_analysis_result_to_df(fraction_per_vehicle)
 
         filter_conditions = self._get_filter_condition(
             adjusted_vehicle_type=adjusted_vehicle_type,
@@ -167,7 +168,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
             initial_vehicle_type=initial_vehicle_type,
             start_date=start_date
         )
-        ax = df.plot.scatter(x="arrival time", y="percentage of adjusted containers")
+        ax = self._df.plot.scatter(x="arrival time", y="percentage of adjusted containers")
         ax.yaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))  # pylint: disable=consider-using-f-string
         ax.set_title(self.plot_title + "\n" + filter_conditions)
         plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
@@ -183,6 +184,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport(AbstractReportW
             vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
+                "vehicle type": vehicle_identifier.mode_of_transport,
                 "arrival time": vehicle_identifier.vehicle_arrival_time,
                 "percentage of adjusted containers": fraction
             })

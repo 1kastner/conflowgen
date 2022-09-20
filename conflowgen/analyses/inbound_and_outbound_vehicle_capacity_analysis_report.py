@@ -28,6 +28,7 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.analysis = InboundAndOutboundVehicleCapacityAnalysis(
             transportation_buffer=self.transportation_buffer
         )
@@ -89,13 +90,13 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
 
         assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
-        df = pd.DataFrame({
+        self._df = pd.DataFrame({
             "inbound volume (in TEU)": inbound_capacities,
             "outbound volume (in TEU)": outbound_actual_capacities,
             "outbound maximum capacity": outbound_maximum_capacities
         })
-        df.index = [str(i).replace("_", " ") for i in df.index]
-        ax = df.plot.barh()
+        self._df.index = [str(i).replace("_", " ") for i in self._df.index]
+        ax = self._df.plot.barh()
         ax.set_xlabel("Capacity (in TEU)")
         ax.set_title("Inbound and outbound vehicle capacity analysis")
         return ax

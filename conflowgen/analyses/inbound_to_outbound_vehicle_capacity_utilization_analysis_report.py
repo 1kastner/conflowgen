@@ -242,6 +242,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             vehicle_name = self._vehicle_identifier_to_text(vehicle_identifier)
             rows.append({
                 "vehicle name": vehicle_name,
+                "vehicle type": vehicle_identifier.mode_of_transport,
                 "arrival time": vehicle_identifier.vehicle_arrival_time,
                 "inbound volume (in TEU)": inbound_capacity,
                 "outbound volume (in TEU)": used_outbound_capacity,
