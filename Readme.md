@@ -71,4 +71,4 @@ The next steps are described
 [in the documentation](https://conflowgen.readthedocs.io/en/latest/).
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
-https://conflowgen.readthedocs.io/en/latest/background.html#academic-discussion.
+https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.
