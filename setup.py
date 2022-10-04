@@ -64,6 +64,7 @@ setup(
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
+            'sphinx-simplepdf',  # create PDF based on HTML version
 
             # checking code quality
             'pylint',  # lint Python code
