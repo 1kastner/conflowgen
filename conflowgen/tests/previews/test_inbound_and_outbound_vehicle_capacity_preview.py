@@ -67,7 +67,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
     def test_inbound_with_no_schedules(self):
         """If no schedules are provided, no capacity is needed"""
-        empty_capacity = self.preview.get_inbound_capacity_of_vehicles()
+        empty_capacity = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(empty_capacity.keys()))
         for mode_of_transport in ModeOfTransport:
             capacity_in_teu = empty_capacity[mode_of_transport]
@@ -75,7 +75,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
     def test_inbound_with_single_arrival_schedules(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=one_week_later.date(),
@@ -84,8 +84,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             average_moved_capacity=300,
             vehicle_arrives_every_k_days=-1
         )
-        schedule.save()
-        capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles()
+        capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
         uninvolved_vehicles = (
                 set(ModeOfTransport.get_scheduled_vehicles())
@@ -104,7 +103,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
     def test_inbound_with_several_arrivals_schedules(self):
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=two_days_later.date(),
@@ -112,8 +111,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300
         )
-        schedule.save()
-        capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles()
+        capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
         uninvolved_vehicles = (
                 set(ModeOfTransport.get_scheduled_vehicles())
@@ -132,7 +130,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
     def test_outbound_average_capacity_with_several_arrivals_schedules(self):
         """`capacity_with_one_feeder, _ = self.preview.get_outbound_capacity_of_vehicles()` is the key difference!"""
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
-        schedule = Schedule.create(
+        Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeederService",
             vehicle_arrives_at=two_days_later.date(),
@@ -140,8 +138,8 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300
         )
-        schedule.save()
-        capacity_with_one_feeder, _ = self.preview.get_outbound_capacity_of_vehicles()
+        capacities = self.preview.get_outbound_capacity_of_vehicles()
+        capacity_with_one_feeder = capacities.used.teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
 
         uninvolved_vehicles = (
@@ -172,7 +170,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             average_vehicle_capacity=400,
             average_moved_capacity=300
         )
-        _, capacity_with_one_feeder = self.preview.get_outbound_capacity_of_vehicles()
+        capacity_with_one_feeder = self.preview.get_outbound_capacity_of_vehicles().maximum.teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
 
         uninvolved_vehicles = (

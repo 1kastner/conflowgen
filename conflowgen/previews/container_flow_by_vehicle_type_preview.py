@@ -77,7 +77,7 @@ class ContainerFlowByVehicleTypePreview(AbstractPreview):
             for vehicle_type_inbound in ModeOfTransport
         }
         inbound_capacity_per_vehicle_type = self.inbound_and_outbound_vehicle_capacity_preview.\
-            get_inbound_capacity_of_vehicles()
+            get_inbound_capacity_of_vehicles().teu
 
         for inbound_vehicle_type in inbound_capacity_per_vehicle_type.keys():
             inbound_capacity_of_vehicle_type = inbound_capacity_per_vehicle_type[inbound_vehicle_type]
