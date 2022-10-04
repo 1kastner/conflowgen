@@ -11,16 +11,16 @@ def _plt_modal_split_instance(
         name: str,
         ax: plt.axis
 ) -> None:
-    series_modal_split_inbound = pd.Series({
+    series_modal_split = pd.Series({
         "train": modal_split.train_capacity,
         "truck": modal_split.truck_capacity,
         "barge": modal_split.barge_capacity
     }, name=name)
-    series_modal_split_inbound.replace(0, np.nan).dropna(inplace=True)
-    if sum(series_modal_split_inbound) == 0:
+    series_modal_split.replace(0, np.nan).dropna(inplace=True)
+    if sum(series_modal_split) == 0:
         no_data_text(ax)
     else:
-        series_modal_split_inbound.plot.pie(
+        series_modal_split.plot.pie(
             legend=False,
             autopct=lambda p: f'{p:.1f}%' if p > 0 else '',
             label="",

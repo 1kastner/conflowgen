@@ -32,6 +32,7 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
 
     def __init__(self):
         super().__init__()
+        self._series: pd.Series | None = None
         self.analysis = YardCapacityAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
@@ -89,8 +90,8 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         if len(yard_capacity_over_time) == 0:
             fig, ax = no_data_graph()
         else:
-            series = pd.Series(yard_capacity_over_time)
-            ax = series.plot()
+            self._series = pd.Series(yard_capacity_over_time)
+            ax = self._series.plot()
         x_label = f"storage requirement = {self._get_storage_requirement_representation(storage_requirement)}"
         ax.set_xlabel(x_label)
         ax.set_ylabel("Used yard capacity (in TEU)")

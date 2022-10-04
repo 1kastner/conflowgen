@@ -40,4 +40,4 @@ class StorageRequirement(enum.Enum):
         """
         The representation is, e.g., 'reefer' instead of '<StorageRequirement.reefer>' and thus nicer for the logs.
         """
-        return self.value
+        return str(self.value)

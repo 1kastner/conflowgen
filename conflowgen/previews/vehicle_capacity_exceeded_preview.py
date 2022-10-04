@@ -102,9 +102,9 @@ class VehicleCapacityExceededPreview(AbstractPreview):
         }
 
         inbound_vehicle_capacities = self.inbound_and_outbound_vehicle_capacity_preview.\
-            get_inbound_capacity_of_vehicles()
-        _, outbound_maximum_capacities = self.inbound_and_outbound_vehicle_capacity_preview.\
-            get_outbound_capacity_of_vehicles()
+            get_inbound_capacity_of_vehicles().teu
+        outbound_maximum_capacities = self.inbound_and_outbound_vehicle_capacity_preview.\
+            get_outbound_capacity_of_vehicles().maximum.teu
         flow = self.container_flow_by_vehicle_type_preview.get_inbound_to_outbound_flow()
         for outgoing_vehicle_type, maximum_capacity in outbound_maximum_capacities.items():
             container_capacity_to_pick_up = 0

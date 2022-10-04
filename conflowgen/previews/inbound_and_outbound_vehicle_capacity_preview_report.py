@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Tuple
 
 import matplotlib
 import numpy as np
@@ -90,7 +90,10 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
         ax.set_title("Inbound and outbound vehicle capacity preview")
         return ax
 
-    def _get_capacities(self):
+    def _get_capacities(
+            self
+    ) -> Tuple[dict[ModeOfTransport, float], dict[ModeOfTransport, float], dict[ModeOfTransport, float]]:
+
         assert self.start_date is not None
         assert self.end_date is not None
         assert self.transportation_buffer is not None
@@ -100,6 +103,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
             transportation_buffer=self.transportation_buffer
         )
         # gather data
-        inbound_capacities = self.preview.get_inbound_capacity_of_vehicles()
-        outbound_average_capacities, outbound_maximum_capacities = self.preview.get_outbound_capacity_of_vehicles()
+        inbound_capacities = self.preview.get_inbound_capacity_of_vehicles().teu
+        capacities = self.preview.get_outbound_capacity_of_vehicles()
+        outbound_average_capacities, outbound_maximum_capacities = capacities.used.teu, capacities.maximum.teu
+
         return inbound_capacities, outbound_average_capacities, outbound_maximum_capacities

@@ -61,7 +61,10 @@ class TestContainerFactory(unittest.TestCase):
 
     def test_create_containers_for_feeder_vessel(self) -> None:
         feeder_1 = self.feeders[1]
+
+        # noinspection PyTypeChecker
         containers = self.container_factory.create_containers_for_large_scheduled_vehicle(feeder_1)
+
         self.assertEqual(
             1,
             len(containers),
