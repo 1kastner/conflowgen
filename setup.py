@@ -71,7 +71,8 @@ setup(
             'flake8_nb',  # lint Jupyter Notebooks
 
             # publish at PyPI
-            'twine',
+            'wheel',  # use command 'bdist_wheel'
+            'twine',  # check and upload package to PyPI
         ],
         # a collection of nice-to-haves for working on Jupyter Notebooks - just a favorites list of the authors
         'jupyterlab': [
