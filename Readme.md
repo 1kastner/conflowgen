@@ -48,12 +48,14 @@ In addition, conflowgen is also available on conda-forge.
 conda install -c conda-forge conflowgen
 ```
 
-If you want to download all examples, it is best to obtain a full copy of this repository.
-Please ensure that git-lfs is installed to properly download the larger files.
+If you want to download all examples including simulation models, prepared SQLite databases, and Excel tables, it is best to obtain a full copy of this repository.
+Please ensure that 
+[git-lfs](https://git-lfs.github.com/)
+is installed and properly set up to download the larger files.
 Then, please execute the following lines in your CLI:
 
 ```bash
-git clone https://github.com/1kastner/conflowgen
+git clone https://github.com/1kastner/conflowgen 
 cd conflowgen
 pip install .
 ```
