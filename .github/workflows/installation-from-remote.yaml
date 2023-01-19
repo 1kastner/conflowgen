@@ -66,6 +66,8 @@ jobs:
 
     name: ConFlowGen installation via pip
     runs-on: ${{ matrix.os }}
+    env:
+      MPLBACKEND: Agg
 
     steps:
 
@@ -78,7 +80,7 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        python -m pip install conflowgen tk pytest
+        python -m pip install conflowgen pytest
 
     - name: Run tests
       run: |
