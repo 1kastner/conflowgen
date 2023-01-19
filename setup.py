@@ -67,7 +67,7 @@ setup(
 
             # checking code quality
             'pylint',  # lint Python code
-            'flake8',  # lint Python code
+            'flake8 <6.0',  # lint Python code
             'flake8_nb',  # lint Jupyter Notebooks
 
             # publish at PyPI
