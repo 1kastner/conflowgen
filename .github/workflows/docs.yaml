@@ -22,19 +22,19 @@ jobs:
     steps:
 
     - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v3.4.1
+      uses: fkirc/skip-duplicate-actions@v5
 
     - name: Update Ubuntu and install pandoc
       run: |
         sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         lfs: 'true'
     - run: git lfs pull
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
