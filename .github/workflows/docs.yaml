@@ -22,7 +22,7 @@ jobs:
     steps:
 
     - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v3.4.1
+      uses: fkirc/skip-duplicate-actions@v5
 
     - name: Update Ubuntu and install pandoc
       run: |

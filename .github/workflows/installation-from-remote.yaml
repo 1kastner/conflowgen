@@ -13,7 +13,7 @@ jobs:
     steps:
 
     - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v3.4.1
+      uses: fkirc/skip-duplicate-actions@v5
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
