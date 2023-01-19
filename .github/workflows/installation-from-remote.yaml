@@ -78,7 +78,7 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        python -m pip install conflowgen pytest
+        python -m pip install conflowgen tk pytest
 
     - name: Run tests
       run: |
