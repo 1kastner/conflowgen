@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+import typing
 
 from peewee import SqliteDatabase
 
@@ -17,7 +17,7 @@ class DatabaseChooser:
     databases.
     """
 
-    def __init__(self, sqlite_databases_directory: Optional[str] = None):
+    def __init__(self, sqlite_databases_directory: typing.Optional[str] = None):
         """
         Args:
             sqlite_databases_directory: The DatabaseChooser opens one directory. All databases are saved to and load
@@ -27,9 +27,9 @@ class DatabaseChooser:
         self.sqlite_database_connection = SqliteDatabaseConnection(
             sqlite_databases_directory=sqlite_databases_directory
         )
-        self.peewee_sqlite_db: Optional[SqliteDatabase] = None
+        self.peewee_sqlite_db: typing.Optional[SqliteDatabase] = None
 
-    def list_all_sqlite_databases(self) -> List[str]:
+    def list_all_sqlite_databases(self) -> typing.List[str]:
         """
         Returns:
              A list of all SQLite databases in the opened directory

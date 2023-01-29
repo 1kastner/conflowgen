@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Collection, Union, Optional
+import typing
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -18,11 +18,14 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
 
     def get_container_dwell_times(
             self,
-            container_delivered_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
-            container_picked_up_by_vehicle_type: Union[str, Collection[ModeOfTransport], ModeOfTransport] = "all",
-            storage_requirement: Union[str, Collection[StorageRequirement], StorageRequirement] = "all",
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None,
+            container_delivered_by_vehicle_type: typing.Union[
+                str, typing.Collection[ModeOfTransport], ModeOfTransport] = "all",
+            container_picked_up_by_vehicle_type: typing.Union[
+                str, typing.Collection[ModeOfTransport], ModeOfTransport] = "all",
+            storage_requirement: typing.Union[
+                str, typing.Collection[StorageRequirement], StorageRequirement] = "all",
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None,
             use_cache: bool = True
     ) -> set[datetime.timedelta]:
         """

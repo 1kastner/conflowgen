@@ -5,8 +5,6 @@
 [![codecov](https://codecov.io/gh/1kastner/conflowgen/branch/main/graph/badge.svg?token=GICVMYHJ42)](https://codecov.io/gh/1kastner/conflowgen)
 [![Linting](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/linting.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/1kastner/conflowgen/badge)](https://www.codefactor.io/repository/github/1kastner/conflowgen)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/context:python)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/1kastner/conflowgen.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/1kastner/conflowgen/alerts/)
 
 [![Demo](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/demo.yaml)
 [![Windows conda installation (conda in PATH)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/conda-installation.yaml)
@@ -48,12 +46,14 @@ In addition, conflowgen is also available on conda-forge.
 conda install -c conda-forge conflowgen
 ```
 
-If you want to download all examples, it is best to obtain a full copy of this repository.
-Please ensure that git-lfs is installed to properly download the larger files.
+If you want to download all examples including simulation models, prepared SQLite databases, and Excel tables, it is best to obtain a full copy of this repository.
+Please ensure that 
+[git-lfs](https://git-lfs.github.com/)
+is installed and properly set up to download the larger files.
 Then, please execute the following lines in your CLI:
 
 ```bash
-git clone https://github.com/1kastner/conflowgen
+git clone https://github.com/1kastner/conflowgen 
 cd conflowgen
 pip install .
 ```
@@ -71,4 +71,4 @@ The next steps are described
 [in the documentation](https://conflowgen.readthedocs.io/en/latest/).
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
-https://conflowgen.readthedocs.io/en/latest/background.html#academic-discussion.
+https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.

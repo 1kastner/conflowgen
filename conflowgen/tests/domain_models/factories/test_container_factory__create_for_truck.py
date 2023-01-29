@@ -74,6 +74,7 @@ class TestContainerFactory(unittest.TestCase):
                 realized_container_delivery_time=datetime.datetime.now()
             )
         )
+        # noinspection PyTypeChecker
         container = self.container_factory.create_container_for_delivering_truck(
             picked_up_by_large_scheduled_vehicle_subtype=self.feeder
         )

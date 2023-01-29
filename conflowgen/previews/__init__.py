@@ -55,7 +55,9 @@ def run_all_previews(
         display_text_func=display_text_func,
         display_in_markup_language=display_in_markup_language,
         static_graphs=static_graphs,
-        display_as_ipython_svg=display_as_ipython_svg
+        display_as_ipython_svg=display_as_ipython_svg,
+        start_date=None,
+        end_date=None
     )
 
     auto_reporter.output.display_explanation(

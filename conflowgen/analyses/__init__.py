@@ -1,5 +1,6 @@
+import datetime
 import logging
-from typing import Optional, Union, Callable, Iterable, Type
+import typing
 
 from .container_dwell_time_analysis_report import ContainerDwellTimeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_report import \
@@ -7,6 +8,8 @@ from .container_flow_adjustment_by_vehicle_type_analysis_report import \
 from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
 from .container_flow_by_vehicle_type_analysis_report import ContainerFlowByVehicleTypeAnalysisReport
+from .container_flow_vehicle_type_adjustment_per_vehicle_analysis_report import \
+    ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
 from .inbound_and_outbound_vehicle_capacity_analysis_report import InboundAndOutboundVehicleCapacityAnalysisReport
 from .inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
     InboundToOutboundVehicleCapacityUtilizationAnalysisReport
@@ -20,11 +23,12 @@ from ..reporting.output_style import DisplayAsMarkupLanguage
 
 logger = logging.getLogger("conflowgen")
 
-reports: Iterable[Type[AbstractReport]] = [
+reports: typing.Iterable[typing.Type[AbstractReport]] = [
     InboundAndOutboundVehicleCapacityAnalysisReport,
     ContainerFlowByVehicleTypeAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport,
+    ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport,
     ModalSplitAnalysisReport,
     ContainerDwellTimeAnalysisReport,
     QuaySideThroughputAnalysisReport,
@@ -37,10 +41,12 @@ reports: Iterable[Type[AbstractReport]] = [
 def run_all_analyses(
         as_text: bool = True,
         as_graph: bool = False,
-        display_text_func: Optional[Callable] = None,
-        display_in_markup_language: Union[DisplayAsMarkupLanguage, str, None] = None,
+        display_text_func: typing.Optional[typing.Callable] = None,
+        display_in_markup_language: typing.Union[DisplayAsMarkupLanguage, str, None] = None,
         static_graphs: bool = False,
-        display_as_ipython_svg: bool = False
+        display_as_ipython_svg: bool = False,
+        start_date: typing.Optional[datetime.datetime] = None,
+        end_date: typing.Optional[datetime.datetime] = None
 ) -> None:
     """
     Runs all post-hoc analyses in sequence.
@@ -65,6 +71,10 @@ def run_all_analyses(
             version of the plots is used.
         display_as_ipython_svg: Whether the graphs should be plotted with the IPython functionality. This is suitable,
             e.g., inside Jupyter Notebooks where a conversion to a raster image is not desirable.
+        start_date:
+            Only include containers that arrive after the given start time (if supported by the report).
+        end_date:
+            Only include containers that depart before the given end time (if supported by the report).
     """
     auto_reporter = AutoReporter(
         as_text=as_text,
@@ -72,7 +82,9 @@ def run_all_analyses(
         display_text_func=display_text_func,
         display_in_markup_language=display_in_markup_language,
         static_graphs=static_graphs,
-        display_as_ipython_svg=display_as_ipython_svg
+        display_as_ipython_svg=display_as_ipython_svg,
+        start_date=start_date,
+        end_date=end_date
     )
 
     auto_reporter.output.display_explanation(

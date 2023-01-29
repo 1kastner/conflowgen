@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Dict, Tuple, List, Collection, Union
+import typing
 
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.container import Container
@@ -17,9 +17,10 @@ class YardCapacityAnalysis(AbstractAnalysis):
 
     def get_used_yard_capacity_over_time(
             self,
-            storage_requirement: Union[str, Collection, StorageRequirement] = "all",
-            smoothen_peaks: bool = True
-    ) -> Dict[datetime.datetime, float]:
+            storage_requirement: typing.Union[str, typing.Collection, StorageRequirement] = "all",
+            smoothen_peaks: bool = True,
+            use_cache: bool = True
+    ) -> typing.Dict[datetime.datetime, float]:
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
         capacity in TEU can be deduced - it is simply the maximum of these values. In addition, with the parameter
@@ -45,7 +46,8 @@ class YardCapacityAnalysis(AbstractAnalysis):
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
             smoothen_peaks: Whether to smoothen the peaks.
-
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
         Returns:
             A series of the used yard capacity in TEU over the time.
         """
@@ -54,12 +56,16 @@ class YardCapacityAnalysis(AbstractAnalysis):
         if storage_requirement is not None and storage_requirement != "all":
             selected_containers = self._restrict_storage_requirement(selected_containers, storage_requirement)
 
-        container_stays: List[Tuple[datetime.datetime, datetime.datetime, float]] = []
+        container_stays: typing.List[typing.Tuple[datetime.datetime, datetime.datetime, float]] = []
 
         container: Container
         for container in selected_containers:
             container_stays.append(
-                (container.get_arrival_time(), container.get_departure_time(), container.occupied_teu)
+                (
+                    container.get_arrival_time(use_cache=use_cache),
+                    container.get_departure_time(use_cache=use_cache),
+                    container.occupied_teu
+                )
             )
 
         if len(container_stays) == 0:
@@ -71,7 +77,7 @@ class YardCapacityAnalysis(AbstractAnalysis):
         first_time_window = get_hour_based_time_window(first_arrival) - datetime.timedelta(hours=1)
         last_time_window = get_hour_based_time_window(last_pickup) + datetime.timedelta(hours=1)
 
-        used_yard_capacity: Dict[datetime.datetime, float] = {
+        used_yard_capacity: typing.Dict[datetime.datetime, float] = {
             time_window: 0
             for time_window in get_hour_based_range(
                 first_time_window, last_time_window, include_end=(not smoothen_peaks)

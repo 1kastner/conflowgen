@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Tuple, Dict
+import typing
 
 import matplotlib.axis
 import numpy as np
@@ -28,15 +28,28 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.analysis = InboundAndOutboundVehicleCapacityAnalysis(
             transportation_buffer=self.transportation_buffer
         )
 
     def get_report_as_text(self, **kwargs) -> str:
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
+        """
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
+        Returns:
+             The report in text format spanning over several lines.
+        """
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
-            self._get_container_volumes_in_teu()
+            self._get_container_volumes_in_teu(kwargs)
+
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
 
         # create string representation
         report = "\n(all numbers are reported in TEU)\n"
@@ -61,34 +74,58 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         """
         The report as a graph is represented as a bar chart using pandas.
 
+        Keyword Args:
+            start_date (datetime.datetime):
+                Only include containers that arrive after the given start time.
+            end_date (datetime.datetime):
+                Only include containers that depart before the given end time.
+            use_cache:
+                Use internally cached values. Please set this to false if data are altered between analysis runs.
+
         Returns:
              The matplotlib axis of the bar chart.
         """
-        assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
-
         inbound_capacities, outbound_actual_capacities, outbound_maximum_capacities = \
-            self._get_container_volumes_in_teu()
+            self._get_container_volumes_in_teu(kwargs)
 
-        df = pd.DataFrame({
+        assert len(kwargs) == 0, f"Keyword(s) {list(kwargs.keys())} have not been processed."
+
+        self._df = pd.DataFrame({
             "inbound volume (in TEU)": inbound_capacities,
             "outbound volume (in TEU)": outbound_actual_capacities,
             "outbound maximum capacity": outbound_maximum_capacities
         })
-        df.index = [str(i).replace("_", " ") for i in df.index]
-        ax = df.plot.barh()
+        self._df.index = [str(i).replace("_", " ") for i in self._df.index]
+        ax = self._df.plot.barh()
         ax.set_xlabel("Capacity (in TEU)")
         ax.set_title("Inbound and outbound vehicle capacity analysis")
         return ax
 
     def _get_container_volumes_in_teu(
-            self
-    ) -> Tuple[Dict[ModeOfTransport, float], Dict[ModeOfTransport, float], Dict[ModeOfTransport, float]]:
+            self,
+            kwargs
+    ) -> typing.Tuple[typing.Dict[ModeOfTransport, float], typing.Dict[
+         ModeOfTransport, float], typing.Dict[ModeOfTransport, float]]:
+
         assert self.transportation_buffer is not None
         self.analysis.update(
             transportation_buffer=self.transportation_buffer
         )
+        start_date = kwargs.pop("start_date", None)
+        end_date = kwargs.pop("end_date", None)
+        use_cache = kwargs.pop("use_cache", True)
+
         # gather data
-        inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type()
+        inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type(
+            start_date=start_date,
+            end_date=end_date,
+            use_cache=use_cache
+        )
         outbound_container_volume, outbound_maximum_container_volume = \
-            self.analysis.get_outbound_container_volume_by_vehicle_type()
+            self.analysis.get_outbound_container_volume_by_vehicle_type(
+                start_date=start_date,
+                end_date=end_date,
+                use_cache=use_cache
+            )
+
         return inbound_container_volume.teu, outbound_container_volume.teu, outbound_maximum_container_volume.teu

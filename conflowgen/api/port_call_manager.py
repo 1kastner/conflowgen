@@ -1,6 +1,6 @@
 from __future__ import annotations
 import datetime
-from typing import List, Tuple, Optional
+import typing
 
 from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -29,8 +29,8 @@ class PortCallManager:
             vehicle_arrives_at_time: datetime.time,
             average_vehicle_capacity: int,
             average_moved_capacity: int,
-            next_destinations: Optional[List[Tuple[str, float]]] = None,
-            vehicle_arrives_every_k_days: Optional[int] = None
+            next_destinations: typing.Optional[typing.List[typing.Tuple[str, float]]] = None,
+            vehicle_arrives_every_k_days: typing.Optional[int] = None
     ) -> None:
         r"""
         Add the schedule of a ship of any size or a train. The concrete vehicle instances are automatically generated

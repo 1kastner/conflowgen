@@ -119,7 +119,7 @@ conflowgen.run_all_analyses(
 )
 
 logger.info("For a better understanding of the data, it is advised to study the logs and compare the preview with the "
-            "post-hoc analysis results")
+            "analysis results")
 
 logger.info("Start data export...")
 

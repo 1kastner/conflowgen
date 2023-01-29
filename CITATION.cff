@@ -18,7 +18,7 @@ authors:
     email: ole.grasse@tuhh.de
     affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
     orcid: 'https://orcid.org/0000-0003-1982-9436'
-version: 1.0.3
+version: 2.0.1
 repository-code: "https://github.com/1kastner/conflowgen"
 keywords:
   - logistics
@@ -31,9 +31,6 @@ identifiers:
   - description: This is the collection of archived snapshots of all versions of ConFlowGen
     type: doi
     value: 10.5281/zenodo.5849322
-  - description: This is the archived snapshot of version 1.0.1 of ConFlowGen
-    type: doi
-    value: 10.5281/zenodo.6245523
 preferred-citation:
   title: Container Flow Generation for Maritime Container Terminals
   type: conference-paper

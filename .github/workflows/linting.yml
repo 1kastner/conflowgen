@@ -22,14 +22,14 @@ jobs:
     steps:
 
     - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v3.4.1
+      uses: fkirc/skip-duplicate-actions@v5
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         lfs: false
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -45,5 +45,7 @@ jobs:
 
     - name: Check code quality with flake8 and flake8_nb
       run: |
+        flake8 --version
         flake8
+        flake8_nb --version
         flake8_nb

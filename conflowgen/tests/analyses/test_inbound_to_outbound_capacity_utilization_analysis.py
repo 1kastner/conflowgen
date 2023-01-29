@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
     InboundToOutboundVehicleCapacityUtilizationAnalysis
 from conflowgen.domain_models.container import Container
@@ -55,11 +56,12 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             average_moved_capacity=250,
             vehicle_arrives_every_k_days=-1
         )
+        now = datetime.datetime.now()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
             moved_capacity=schedule.average_moved_capacity,
-            scheduled_arrival=datetime.datetime.now(),
+            scheduled_arrival=now,
             schedule=schedule
         )
         Feeder.create(
@@ -79,16 +81,15 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
 
         self.assertEqual(len(capacities_with_one_feeder), 1, "There is only one vehicle")
 
-        key_of_entry = list(capacities_with_one_feeder.keys())[0]
-        self.assertEqual(len(key_of_entry), 3, "Key consists of three components")
-        mode_of_transport, service_name, vehicle_name = key_of_entry
-        self.assertEqual(mode_of_transport, ModeOfTransport.feeder)
-        self.assertEqual(service_name, "TestFeederService")
-        self.assertEqual(vehicle_name, "TestFeeder1")
+        key_of_entry: VehicleIdentifier = list(capacities_with_one_feeder.keys())[0]
+        self.assertEqual(len(key_of_entry), 4, "Key consists of four components")
+        self.assertEqual(key_of_entry.mode_of_transport, ModeOfTransport.feeder)
+        self.assertEqual(key_of_entry.service_name, "TestFeederService")
+        self.assertEqual(key_of_entry.vehicle_name, "TestFeeder1")
+        self.assertEqual(key_of_entry.vehicle_arrival_time, now)
 
         value_of_entry = list(capacities_with_one_feeder.values())[0]
-        self.assertEqual(len(value_of_entry), 3, "Value consists of two components")
-        (arrival_time, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
-        self.assertEqual(arrival_time, one_week_later)
+        self.assertEqual(len(value_of_entry), 2, "Value consists of two components")
+        (used_capacity_on_inbound_journey, used_capacity_on_outbound_journey) = value_of_entry
         self.assertEqual(used_capacity_on_inbound_journey, 250)
         self.assertEqual(used_capacity_on_outbound_journey, 1, "One 20' is loaded")

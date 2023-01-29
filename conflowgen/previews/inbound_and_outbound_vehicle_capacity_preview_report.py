@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict
+from typing import Dict, Tuple
 
 import matplotlib
 import numpy as np
@@ -30,6 +30,7 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.preview = InboundAndOutboundVehicleCapacityPreview(
             self.start_date,
             self.end_date,
@@ -78,18 +79,21 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
 
         inbound_capacities, outbound_average_capacities, outbound_maximum_capacities = self._get_capacities()
 
-        df = pd.DataFrame({
+        self._df = pd.DataFrame({
             "inbound volume": inbound_capacities,
             "outbound average volume": outbound_average_capacities,
             "outbound maximum capacity": outbound_maximum_capacities
         })
-        df.index = [str(i).replace("_", " ") for i in df.index]
-        ax = df.plot.barh()
+        self._df.index = [str(i).replace("_", " ") for i in self._df.index]
+        ax = self._df.plot.barh()
         ax.set_xlabel("Container volume (in TEU)")
         ax.set_title("Inbound and outbound vehicle capacity preview")
         return ax
 
-    def _get_capacities(self):
+    def _get_capacities(
+            self
+    ) -> Tuple[dict[ModeOfTransport, float], dict[ModeOfTransport, float], dict[ModeOfTransport, float]]:
+
         assert self.start_date is not None
         assert self.end_date is not None
         assert self.transportation_buffer is not None
@@ -99,6 +103,8 @@ class InboundAndOutboundVehicleCapacityPreviewReport(AbstractReportWithMatplotli
             transportation_buffer=self.transportation_buffer
         )
         # gather data
-        inbound_capacities = self.preview.get_inbound_capacity_of_vehicles()
-        outbound_average_capacities, outbound_maximum_capacities = self.preview.get_outbound_capacity_of_vehicles()
+        inbound_capacities = self.preview.get_inbound_capacity_of_vehicles().teu
+        capacities = self.preview.get_outbound_capacity_of_vehicles()
+        outbound_average_capacities, outbound_maximum_capacities = capacities.used.teu, capacities.maximum.teu
+
         return inbound_capacities, outbound_average_capacities, outbound_maximum_capacities

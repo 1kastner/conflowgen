@@ -31,6 +31,7 @@ class VehicleCapacityUtilizationOnOutboundJourneyPreviewReport(AbstractReportWit
 
     def __init__(self):
         super().__init__()
+        self._df = None
         self.preview = VehicleCapacityExceededPreview(
             start_date=self.start_date,
             end_date=self.end_date,
@@ -93,10 +94,10 @@ class VehicleCapacityUtilizationOnOutboundJourneyPreviewReport(AbstractReportWit
         assert len(kwargs) == 0, f"No keyword arguments supported for {self.__class__.__name__}"
 
         comparison = self._get_comparison()
-        df = pd.DataFrame.from_dict(comparison).T
-        df.columns = ["currently planned", "maximum", "exceeded"]
-        df.index = [str(i).replace("_", " ") for i in df.index]
-        ax = df.plot.barh()
+        self._df = pd.DataFrame.from_dict(comparison).T
+        self._df.columns = ["currently planned", "maximum", "exceeded"]
+        self._df.index = [str(i).replace("_", " ") for i in self._df.index]
+        ax = self._df.plot.barh()
         ax.set_title("Capacity utilization on outbound journey")
         ax.set_xlabel("Capacity (in TEU)")
         return ax

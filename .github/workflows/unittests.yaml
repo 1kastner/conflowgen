@@ -17,14 +17,17 @@ jobs:
     steps:
 
     - name: Skip Duplicate Actions
-      uses: fkirc/skip-duplicate-actions@v3.4.1
+      uses: fkirc/skip-duplicate-actions@v5
 
     - uses: actions/checkout@v2
       with:
-        lfs: false
+        lfs: 'true'
+    - run: |
+        git lfs fetch -p -I '**/notebooks/data/prepared_dbs/demo_poc.sqlite'
+        git lfs checkout
 
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: "3.10"
 

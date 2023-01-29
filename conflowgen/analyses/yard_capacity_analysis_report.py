@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import statistics
-from typing import Tuple, Any, Dict
+import typing
 import pandas as pd
 import matplotlib.axis
 
@@ -32,6 +32,7 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
 
     def __init__(self):
         super().__init__()
+        self._series: pd.Series | None = None
         self.analysis = YardCapacityAnalysis()
 
     def get_report_as_text(self, **kwargs) -> str:
@@ -89,20 +90,26 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         if len(yard_capacity_over_time) == 0:
             fig, ax = no_data_graph()
         else:
-            series = pd.Series(yard_capacity_over_time)
-            ax = series.plot()
+            self._series = pd.Series(yard_capacity_over_time)
+            ax = self._series.plot()
         x_label = f"storage requirement = {self._get_storage_requirement_representation(storage_requirement)}"
         ax.set_xlabel(x_label)
         ax.set_ylabel("Used yard capacity (in TEU)")
         ax.set_title("Yard capacity analysis")
         return ax
 
-    def _get_storage_requirement_representation(self, storage_requirement: Any) -> str:
+    def _get_storage_requirement_representation(self, storage_requirement: typing.Any) -> str:
         return self._get_enum_or_enum_set_representation(storage_requirement, StorageRequirement)
 
     def _get_used_yard_capacity_based_on_storage_requirement(
             self, kwargs
-    ) -> Tuple[Any, Dict[datetime.datetime, float]]:
+    ) -> typing.Tuple[typing.Any, typing.Dict[datetime.datetime, float]]:
+        internal_none = object()
+        start_date = kwargs.pop("start_date", internal_none)
+        end_date = kwargs.pop("end_date", internal_none)
+        if start_date is not internal_none or end_date is not internal_none:
+            self.logger.debug(f"{self.__class__.__name__} does not support start or end date, always the whole time "
+                              f"range is shown.")
 
         storage_requirement = kwargs.pop("storage_requirement", None)
         yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(

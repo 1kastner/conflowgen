@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Union, Dict, Optional
+import typing
 
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
@@ -24,8 +24,8 @@ class ContainerFlowGenerationManager:
             self,
             start_date: datetime.date,
             end_date: datetime.date,
-            name: Optional[str] = None,
-            transportation_buffer: Optional[float] = None
+            name: typing.Optional[str] = None,
+            transportation_buffer: typing.Optional[float] = None
     ) -> None:
         """
         Args:
@@ -52,7 +52,7 @@ class ContainerFlowGenerationManager:
             properties
         )
 
-    def get_properties(self) -> Dict[str, Union[str, datetime.date, float, int]]:
+    def get_properties(self) -> typing.Dict[str, typing.Union[str, datetime.date, float, int]]:
         """
         Returns:
             The properties of the container flow.

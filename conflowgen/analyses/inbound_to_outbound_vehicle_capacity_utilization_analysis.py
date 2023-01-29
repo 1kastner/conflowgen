@@ -2,22 +2,24 @@ from __future__ import annotations
 
 import datetime
 import typing
-from typing import Dict, NamedTuple, Tuple, Any
 
+from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.domain_models.container import Container
-from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 
 
-class CompleteVehicleIdentifier(NamedTuple):
+class InboundAndOutboundCapacity(typing.NamedTuple):
     """
     A vehicle identifier is a composition of the vehicle type, its service name, and the actual vehicle name
     """
-    mode_of_transport: ModeOfTransport
-    service_name: str
-    vehicle_name: str
+
+    #: The capacity of the vehicle on its inbound journey in TEU
+    inbound_capacity: float
+
+    #: The capacity of the vehicle on its outbound journey in TEU
+    outbound_capacity: float
 
 
 class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
@@ -34,14 +36,14 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
 
     def get_inbound_and_outbound_capacity_of_each_vehicle(
             self,
-            vehicle_type: Any = "all",
+            vehicle_type: typing.Any = "scheduled vehicles",
             start_date: typing.Optional[datetime.datetime] = None,
             end_date: typing.Optional[datetime.datetime] = None
-    ) -> Dict[CompleteVehicleIdentifier, Tuple[datetime.datetime, float, float]]:
+    ) -> typing.Dict[VehicleIdentifier, typing.Tuple[float, float]]:
         """
         Args:
-            vehicle_type: Either ``"all"``, a single vehicle of type :class:`.ModeOfTransport` or a whole collection of
-                vehicle types, e.g., passed as a :class:`list` or :class:`set`.
+            vehicle_type: Either ``"scheduled vehicles"``, a single vehicle of type :class:`.ModeOfTransport` or a whole
+                collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
                 Only the vehicles that correspond to the provided vehicle type(s) are considered in the analysis.
             start_date:
                 Only include containers that arrive after the given start time.
@@ -50,19 +52,29 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
         Returns:
             The transported containers of each vehicle on their inbound and outbound journey in TEU.
         """
-        capacities: Dict[CompleteVehicleIdentifier, (float, float)] = {}
+        capacities: typing.Dict[VehicleIdentifier, InboundAndOutboundCapacity] = {}
 
         selected_vehicles = LargeScheduledVehicle.select().join(Schedule)
-        if vehicle_type is not None and vehicle_type != "all":
+        if vehicle_type is not None and vehicle_type not in ("scheduled vehicles", "all"):
             selected_vehicles = self._restrict_vehicle_type(selected_vehicles, vehicle_type)
 
         vehicle: LargeScheduledVehicle
         for vehicle in selected_vehicles:
+
+            # vehicle properties
+            vehicle_name = vehicle.vehicle_name
+            vehicle_arrival_time = vehicle.get_arrival_time()
+            used_capacity_on_inbound_journey = vehicle.moved_capacity
+
+            if start_date and vehicle_arrival_time < start_date:
+                continue
+            if end_date and vehicle_arrival_time > end_date:
+                continue
+
+            # schedule properties
             vehicle_schedule: Schedule = vehicle.schedule
             mode_of_transport = vehicle_schedule.vehicle_type
             service_name = vehicle_schedule.service_name
-            vehicle_name = vehicle.vehicle_name
-            used_capacity_on_inbound_journey = vehicle.moved_capacity
 
             used_capacity_on_outbound_journey = 0
 
@@ -72,23 +84,16 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             ):
                 used_capacity_on_outbound_journey += container.occupied_teu
 
-            vehicle_id = CompleteVehicleIdentifier(
+            vehicle_id = VehicleIdentifier(
                 mode_of_transport=mode_of_transport,
                 service_name=service_name,
-                vehicle_name=vehicle_name
+                vehicle_name=vehicle_name,
+                vehicle_arrival_time=vehicle_arrival_time
             )
 
-            vehicle_arrival = datetime.datetime.combine(
-                vehicle_schedule.vehicle_arrives_at, vehicle_schedule.vehicle_arrives_at_time
-            )
-
-            if start_date and vehicle_arrival < start_date:
-                continue
-            if end_date and vehicle_arrival > end_date:
-                continue
-
-            capacities[vehicle_id] = (
-                vehicle_arrival, used_capacity_on_inbound_journey, used_capacity_on_outbound_journey
+            capacities[vehicle_id] = InboundAndOutboundCapacity(
+                inbound_capacity=used_capacity_on_inbound_journey,
+                outbound_capacity=used_capacity_on_outbound_journey
             )
 
         return capacities

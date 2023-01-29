@@ -128,7 +128,7 @@ port_call_manager = conflowgen.PortCallManager()
 
 logger.info("Start importing feeder vessels...")
 for i, row in df_feeders.iterrows():
-    feeder_vehicle_name = row["vehicle_name"] + "-unique"
+    feeder_vehicle_name = row["vehicle_name"]
     capacity = row["capacity"]
     vessel_arrives_at_as_pandas_type = row["arrival (planned)"]
     vessel_arrives_at_as_datetime_type = pd.to_datetime(vessel_arrives_at_as_pandas_type)

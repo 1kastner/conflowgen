@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 import datetime
-from typing import NamedTuple, Optional
+import typing
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
 
 
-class ContainerFlowAdjustedToVehicleType(NamedTuple):
+class ContainerFlowAdjustedToVehicleType(typing.NamedTuple):
     """
     During the automatic assignment of containers to outbound journeys, sometimes a container cannot be assigned to the
     previously randomly selected vehicle.
@@ -45,8 +45,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
 
     def get_summary(
             self,
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None,
+            use_cache: bool = True
     ) -> ContainerFlowAdjustedToVehicleType:
         """
         Under certain circumstances (as explained in
@@ -57,12 +58,18 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
         The capacity is expressed in TEU.
 
         Args:
-            start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
-            end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
+            start_date:
+                The earliest arriving container that is included. Consider all containers if :obj:`None`.
+            end_date:
+                The latest departing container that is included. Consider all containers if :obj:`None`.
+            use_cache:
+                Use cache instead of re-calculating the arrival and departure time of the container.
+                Defaults to ``True``.
         """
         initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow(
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            use_cache=use_cache
         )
 
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu

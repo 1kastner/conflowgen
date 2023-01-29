@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Dict, List, Optional
+import typing
 
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
@@ -20,9 +20,10 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             cls,
             inbound: bool = True,
             outbound: bool = True,
-            start_date: Optional[datetime.datetime] = None,
-            end_date: Optional[datetime.datetime] = None,
-    ) -> Dict[datetime.datetime, float]:
+            start_date: typing.Optional[datetime.datetime] = None,
+            end_date: typing.Optional[datetime.datetime] = None,
+            use_cache: bool = True
+    ) -> typing.Dict[datetime.datetime, float]:
         """
         For each hour, the trucks entering through the truck gate are checked. Based on this, the required truck gate
         capacity in boxes can be deduced.
@@ -32,10 +33,13 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             outbound: Whether to check for trucks which pick up a container on their outbound journey
             start_date: When to start recording. Start with the earliest container if no date is provided.
             end_date: When to end recording. Stop with the latest container if no date is provided.
+            use_cache (bool):
+                Use cache instead of re-calculating the arrival and departure time of the container.
+                Defaults to ``True``.
         """
         assert (inbound or outbound), "At least one of the two must be checked for"
 
-        containers_that_pass_truck_gate: List[datetime.datetime] = []
+        containers_that_pass_truck_gate: typing.List[datetime.datetime] = []
 
         selected_containers = Container.select()
 
@@ -48,7 +52,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             if inbound:
                 mode_of_transport_at_container_arrival: ModeOfTransport = container.delivered_by
                 if mode_of_transport_at_container_arrival == ModeOfTransport.truck:
-                    time_of_entering = container.get_arrival_time()
+                    time_of_entering = container.get_arrival_time(use_cache=use_cache)
                     if (
                             (start_date is None or time_of_entering >= start_date)
                             and (end_date is None or time_of_entering <= end_date)
@@ -58,7 +62,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
             if outbound:
                 mode_of_transport_at_container_departure: ModeOfTransport = container.picked_up_by
                 if mode_of_transport_at_container_departure == ModeOfTransport.truck:
-                    time_of_leaving = container.get_departure_time()
+                    time_of_leaving = container.get_departure_time(use_cache=use_cache)
                     if (
                             (start_date is None or time_of_leaving >= start_date)
                             and (end_date is None or time_of_leaving <= end_date)
@@ -78,7 +82,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
         first_time_window = get_hour_based_time_window(first_arrival) - datetime.timedelta(hours=1)
         last_time_window = get_hour_based_time_window(last_pickup) + datetime.timedelta(hours=1)
 
-        truck_gate_throughput: Dict[datetime.datetime, float] = {
+        truck_gate_throughput: typing.Dict[datetime.datetime, float] = {
             time_window: 0
             for time_window in get_hour_based_range(first_time_window, last_time_window, True)
         }
