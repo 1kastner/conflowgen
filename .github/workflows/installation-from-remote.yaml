@@ -91,8 +91,8 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        python -m pip show --verbose conflowgen
         python -m pip install conflowgen pytest
+        python -m pip show --verbose conflowgen
 
     - name: Run tests
       run: |
