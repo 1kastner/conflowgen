@@ -34,7 +34,7 @@ jobs:
     - name: Run tests
       run: |
         conda activate test-install-conflowgen
-        pip install pillow==9.0.0
+        conda install pillow=9.0.0
         python -m pytest --pyargs conflowgen
 
   build-conda-on-linux:
