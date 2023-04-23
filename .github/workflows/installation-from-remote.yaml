@@ -3,6 +3,8 @@ name: Install from repository
 on:
   schedule:
     - cron: '42 23 * * 3'  # every Wednesday at 23:42
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
 
 jobs:
   build-conda-on-windows:
@@ -22,14 +24,17 @@ jobs:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: ""
+        python-version: 3.10
 
     - name: Install ConFlowGen
       run: |
+        conda info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
 
     - name: Run tests
       run: |
         conda activate test-install-conflowgen
+        pip install pillow==9.0.0
         python -m pytest --pyargs conflowgen
 
   build-conda-on-linux:
@@ -54,6 +59,7 @@ jobs:
       run: |
         conda init bash
         eval "$(conda shell.bash hook)"
+        conda info
         conda activate base
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
 
@@ -85,6 +91,7 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
+        python -m pip show --verbose conflowgen
         python -m pip install conflowgen pytest
 
     - name: Run tests
