@@ -45,5 +45,5 @@ class TestRunAllPreviews(UnitTestCaseWithMatplotlib):
     def test_with_no_data_as_graph(self):
         with unittest.mock.patch('matplotlib.pyplot.show'):
             with self.assertLogs('conflowgen', level='INFO') as context:
-                run_all_previews(as_text=False, as_graph=True)
+                run_all_previews(as_text=False, as_graph=True, static_graphs=True)
         self.assertEqual(len(context.output), 11)
