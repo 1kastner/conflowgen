@@ -113,6 +113,31 @@ mathjax3_config = {
     },
 }
 
+# -- Options for LaTeX -------------------------------------------------------
+
+latex_engine = 'lualatex'
+
+latex_elements = {
+    'extrapackages':
+        r'''
+        % START: LaTeX extra packages set through conf.py
+        
+        \usepackage{newunicodechar}  % allows to use ≤, see later preamble
+        \usepackage{underscore}  % auto-escape underscore characters
+        
+        % END: LaTeX extra packages set through conf.py
+        ''',
+
+    'preamble':
+        r'''
+            % START: LaTeX preamble document setup through conf.py
+            
+            \newunicodechar{≤}{\ensuremath{\leq}}
+            
+            % END: LaTeX preamble document setup through conf.py
+        '''
+}
+
 # -- Options for Linking  ----------------------------------------------------
 
 version_link = f"{sys.version_info.major}.{sys.version_info.minor}"
