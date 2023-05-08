@@ -14,8 +14,10 @@ from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analys
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
 
+
 class UnsupportedPlotTypeException(Exception):
     pass
+
 
 class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWithMatplotlib):
     """
