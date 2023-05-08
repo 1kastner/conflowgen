@@ -155,21 +155,18 @@ class ContainerFlowByVehicleTypeAnalysisReport(AbstractReportWithPlotly):
             data=[
                 plotly.graph_objects.Sankey(
                     arrangement='perpendicular',
-                    node=dict(
-                        pad=15,
-                        thickness=20,
-                        line=dict(
-                            color="black",
-                            width=0.5
-                        ),
-                        label=inbound_labels + outbound_labels,
-                        color="dimgray",
-                    ),
-                    link=dict(
-                        source=source_ids_with_duplication,
-                        target=target_ids_with_duplication,
-                        value=value
-                    )
+                    node={
+                        "pad": 15,
+                        "thickness": 20,
+                        "line": {"color": "black", "width": 0.5},
+                        "label": inbound_labels + outbound_labels,
+                        "color": "dimgray"
+                    },
+                    link={
+                        "source": source_ids_with_duplication,
+                        "target": target_ids_with_duplication,
+                        "value": value
+                    }
                 )
             ]
         )

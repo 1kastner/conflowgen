@@ -14,6 +14,8 @@ from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analys
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
 
+class UnsupportedPlotTypeException(Exception):
+    pass
 
 class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWithMatplotlib):
     """
@@ -165,7 +167,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
             self._plot_relative_values_over_time(ax=ax3)
             fig.tight_layout(pad=5.0)
         else:
-            raise Exception(f"Plot type '{plot_type}' is not supported.")
+            raise UnsupportedPlotTypeException(f"Plot type '{plot_type}' is not supported.")
 
         plt.legend(
             loc='lower left',
