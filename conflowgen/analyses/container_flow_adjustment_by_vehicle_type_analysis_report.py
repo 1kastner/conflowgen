@@ -128,21 +128,21 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisReport(AbstractReportWithPlotl
             data=[
                 plotly.graph_objs.Sankey(
                     arrangement='perpendicular',
-                    node=dict(
-                        pad=15,
-                        thickness=20,
-                        line=dict(
-                            color="black",
-                            width=0.5
-                        ),
-                        label=initial_labels + adjusted_labels,
-                        color="dimgray",
-                    ),
-                    link=dict(
-                        source=source_ids_with_duplication,
-                        target=target_ids_with_duplication,
-                        value=value
-                    )
+                    node={
+                        'pad': 15,
+                        'thickness': 20,
+                        'line': {
+                            'color': "black",
+                            'width': 0.5
+                        },
+                        'label': initial_labels + adjusted_labels,
+                        'color': "dimgray",
+                    },
+                    link={
+                        'source': source_ids_with_duplication,
+                        'target': target_ids_with_duplication,
+                        'value': value
+                    }
                 )
             ]
         )
