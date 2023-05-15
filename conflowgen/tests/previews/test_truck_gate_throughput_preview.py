@@ -89,7 +89,7 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
         )
 
     def test_get_total_trucks(self):
-        # Test case 1
+        # pylint: disable=protected-access
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
@@ -104,7 +104,7 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
         self.assertEqual(total_trucks, (60, 60))
 
     def test_get_weekly_trucks(self):
-        # Test case 1
+        # pylint: disable=protected-access
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
