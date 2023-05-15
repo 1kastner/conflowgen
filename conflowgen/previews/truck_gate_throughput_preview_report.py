@@ -47,7 +47,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
         )
         return self.preview
 
-    def get_report_as_text(self, inbound: bool = True, outbound: bool = True) -> str:
+    def get_report_as_text(self, inbound: bool = True, outbound: bool = True, **kwargs) -> str:
         truck_distribution = self.preview.get_weekly_truck_arrivals(inbound, outbound)
         DAYS_OF_THE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         data = [
@@ -113,7 +113,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
 
         return table_string
 
-    def get_report_as_graph(self, inbound: bool = True, outbound: bool = True) -> matplotlib.axes.Axes:
+    def get_report_as_graph(self, inbound: bool = True, outbound: bool = True, **kwargs) -> matplotlib.axes.Axes:
         # Retrieve the truck distribution
         truck_distribution = self.preview.get_weekly_truck_arrivals(inbound, outbound)
 
