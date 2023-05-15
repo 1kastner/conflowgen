@@ -56,7 +56,6 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
 
         # Calculate the TEU factor using the container length distribution
         teu_factor = ContainerLengthDistributionRepository.get_teu_factor()
-        print("teu_factor: ", teu_factor)
 
         # Calculate the total number of containers transported by truck
         total_inbound_containers_transported_by_truck = \
@@ -72,10 +71,6 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
         total_trucks = self._get_total_trucks()
         inbound_trucks_per_week = total_trucks[1] / num_weeks
         outbound_trucks_per_week = total_trucks[0] / num_weeks
-
-        print("Total trucks according to _get_total_trucks: ", total_trucks[0]+total_trucks[1])
-        print("Number of weeks: ", num_weeks)
-        print("Total trucks per week according to _get_number_of_trucks_per_week: ", inbound_trucks_per_week+outbound_trucks_per_week)
 
         return inbound_trucks_per_week, outbound_trucks_per_week
 
