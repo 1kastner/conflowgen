@@ -260,8 +260,8 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
             vehicle_arrives_at=two_days_later.date(),
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
-            average_vehicle_capacity=300000,
-            average_moved_capacity=300000
+            average_vehicle_capacity=24000,
+            average_moved_capacity=24000
         )
         report = self.preview_report.get_report_as_graph()
         self.assertIsNotNone(report)
@@ -275,8 +275,8 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
             vehicle_arrives_at=two_days_later.date(),
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
-            average_vehicle_capacity=300000,
-            average_moved_capacity=300000
+            average_vehicle_capacity=24000,
+            average_moved_capacity=24000
         )
         report = self.preview_report.get_report_as_text()
         self.assertIsNotNone(report)
