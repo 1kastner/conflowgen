@@ -267,7 +267,7 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
         self.assertIsNotNone(report)
 
     def test_text_report(self):
-        # pylint: disable=unused-variable
+        # pylint: disable=protected-access
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
