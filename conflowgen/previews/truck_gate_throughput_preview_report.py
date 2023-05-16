@@ -123,7 +123,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
         ax.xaxis.grid(True, which="major", color="k")  # every day
         ax.xaxis.set_minor_locator(matplotlib.ticker.MultipleLocator(1 / 24))  # every hour
 
-        plt.title("Truck arrival distribution")
+        plt.title("Expected truck arrival pattern")
         ax.set_xticks(list(range(1, 8)))  # every day
         ax.set_xticklabels(self.days_of_the_week)
         plt.xlabel("Week day")
