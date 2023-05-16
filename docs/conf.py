@@ -182,44 +182,13 @@ nbsphinx_prolog = """
     <!-- nbsphinx prolog - end -->
 """
 
-
-# -- Setting up git lfs if Missing ---------------------------------------------
-
-
-def _install_git_lfs_on_linux_on_the_fly() -> str:
-    """
-    A dirty hack as there is no clean way how to install git lfs on Read the Docs at the moment.
-    """
-    _git_lfs_cmd = "./git-lfs"
-    if os.path.isfile(_git_lfs_cmd):
-        return _git_lfs_cmd
-
-    os.system("echo 'Installing git-lfs on-the-fly'")
-    version = 'v3.2.0'
-    file_to_download = f'git-lfs-linux-amd64-{version}.tar.gz'
-    folder_inside_file = f"git-lfs-{version[1:]}"
-    if not os.path.isfile(file_to_download):
-        os.system(
-            f'wget https://github.com/git-lfs/git-lfs/releases/download/{version}/{file_to_download}'
-        )  # download git lfs
-    os.system(f'tar xvfz {file_to_download} -C ./.tools')  # extract to ./.tools subdirectory
-    os.system(f'ls ./.tools/')
-    os.system(f'ls ./.tools/{folder_inside_file}')
-    os.system(f'cp ./.tools/{folder_inside_file}/git-lfs ./git-lfs')  # take command (don't care about readme etc.)
-    os.system('./git-lfs install')  # make lfs available in current repository
-    os.system("echo 'git-lfs is installed'")
-    return _git_lfs_cmd
-
-
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
-    git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
     os.system("echo 'Fetching sqlite databases'")
     database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"]  # List of database names to download
     for database_name in database_names:
+        os.system(f'echo "Fetching {database_name}"')
         command = \
             f'curl -O "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/{database_name}.sqlite"'
         os.system(command)
-    os.system("echo 'Start checking out the file'")
-    os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
-    os.system("echo 'Checkout finished'")
+    os.system("echo 'sqlite databases fetched'")
