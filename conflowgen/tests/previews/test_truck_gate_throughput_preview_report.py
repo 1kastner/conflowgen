@@ -267,6 +267,7 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
         self.assertIsNotNone(report)
 
     def test_text_report(self):
+        # pylint: disable=unused-variable
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
@@ -279,3 +280,5 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
         )
         report = self.preview_report.get_report_as_text()
         self.assertIsNotNone(report)
+        updated_preview = self.preview_report._get_updated_preview()
+        self.assertIsNotNone(updated_preview)
