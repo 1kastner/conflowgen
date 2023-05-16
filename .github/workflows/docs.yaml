@@ -31,7 +31,10 @@ jobs:
     - uses: actions/checkout@v3
       with:
         lfs: false
-    - run: git pull
+    - run: |
+        curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_poc.sqlite"
+        mkdir -p docs/notebooks/data/prepared_dbs
+        mv demo_poc.sqlite docs/notebooks/data/prepared_dbs/
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
