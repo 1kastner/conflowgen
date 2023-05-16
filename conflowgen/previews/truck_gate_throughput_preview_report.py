@@ -65,7 +65,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
         for time in sorted(truck_distribution):
             day = time // 24
             if day == 0:
-                count += 1
+                count += 1  # Count the number of data points in a single day
             data[day]['minimum'] = min(data[day]['minimum'], truck_distribution[time])
             data[day]['maximum'] = max(data[day]['maximum'], truck_distribution[time])
             data[day]['sum'] += truck_distribution[time]
