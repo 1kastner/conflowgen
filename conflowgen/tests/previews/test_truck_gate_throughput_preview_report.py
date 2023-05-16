@@ -75,7 +75,7 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
             start_date=now,
             end_date=now + datetime.timedelta(weeks=2)
         )  # mostly use default values
-        ARRIVAL_DISTRIBUTION = {0: 0.0,
+        arrival_distribution = {0: 0.0,
                                 1: 0.0,
                                 2: 0.0,
                                 3: 0.0,
@@ -244,7 +244,7 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
                                 166: 0.0,
                                 167: 0.0}
         truck_arrival_distribution_manager = TruckArrivalDistributionManager()
-        truck_arrival_distribution_manager.set_truck_arrival_distribution(ARRIVAL_DISTRIBUTION)
+        truck_arrival_distribution_manager.set_truck_arrival_distribution(arrival_distribution)
 
         self.preview_report = TruckGateThroughputPreviewReport()
 

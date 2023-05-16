@@ -49,7 +49,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
 
     def get_report_as_text(self, inbound: bool = True, outbound: bool = True, **kwargs) -> str:
         truck_distribution = self.preview.get_weekly_truck_arrivals(inbound, outbound)
-        DAYS_OF_THE_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        days_of_the_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         data = [
             {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Monday
             {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Tuesday
@@ -61,11 +61,11 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
             {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0}   # Total
         ]
 
-        fewestTrucksInADay = float('inf')
-        fewestTrucksDay = ''
-        mostTrucksInADay = 0
-        mostTrucksDay = ''
-        averageTrucksInADay = 0.0
+        fewest_trucks_in_a_day = float('inf')
+        fewest_trucks_day = ''
+        most_trucks_in_a_day = 0
+        most_trucks_day = ''
+        average_trucks_in_a_day = 0.0
 
         count = 0
         # Find min, max, and average for each day of the week
@@ -83,20 +83,20 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
             data[7]['minimum'] = min(data[7]['minimum'], data[day]['minimum'])
             data[7]['maximum'] = max(data[7]['maximum'], data[day]['maximum'])
             data[7]['sum'] += data[day]['sum']
-            if data[day]['sum'] < fewestTrucksInADay:
-                fewestTrucksInADay = data[day]['sum']
-                fewestTrucksDay = DAYS_OF_THE_WEEK[day]
-            if data[day]['sum'] > mostTrucksInADay:
-                mostTrucksInADay = data[day]['sum']
-                mostTrucksDay = DAYS_OF_THE_WEEK[day]
-            mostTrucksInADay = max(mostTrucksInADay, data[day]['sum'])
-            averageTrucksInADay += data[day]['sum']
+            if data[day]['sum'] < fewest_trucks_in_a_day:
+                fewest_trucks_in_a_day = data[day]['sum']
+                fewest_trucks_day = days_of_the_week[day]
+            if data[day]['sum'] > most_trucks_in_a_day:
+                most_trucks_in_a_day = data[day]['sum']
+                most_trucks_day = days_of_the_week[day]
+            most_trucks_in_a_day = max(most_trucks_in_a_day, data[day]['sum'])
+            average_trucks_in_a_day += data[day]['sum']
 
         data[7]['average'] = data[7]['sum'] / (count * 7)
-        averageTrucksInADay /= 7
+        average_trucks_in_a_day /= 7
 
         # Create a table with pandas for hourly view
-        df = pd.DataFrame(data, index=DAYS_OF_THE_WEEK + ['Total'])
+        df = pd.DataFrame(data, index=days_of_the_week + ['Total'])
         df = df.round()
         df = df.astype(int)
 
@@ -105,11 +105,13 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
             'minimum': 'Minimum (trucks/h)', 'maximum': 'Maximum (trucks/h)', 'average': 'Average (trucks/h)',
             'sum': 'Sum (trucks/24h)'})
 
-        table_string = ""
         table_string = "Hourly view:\n" + df.to_string() + "\n"
-        table_string += "Fewest trucks in a day: " + str(int(fewestTrucksInADay)) + " on " + fewestTrucksDay + "\n"
-        table_string += "Most trucks in a day: " + str(int(mostTrucksInADay)) + " on " + mostTrucksDay + "\n"
-        table_string += "Average trucks per day: " + str(int(averageTrucksInADay))
+        table_string += \
+            "Fewest trucks in a day: " + str(int(fewest_trucks_in_a_day)) + " on " + fewest_trucks_day + "\n"
+        table_string += \
+            "Most trucks in a day: " + str(int(most_trucks_in_a_day)) + " on " + most_trucks_day + "\n"
+        table_string += \
+            "Average trucks per day: " + str(int(average_trucks_in_a_day))
 
         return table_string
 

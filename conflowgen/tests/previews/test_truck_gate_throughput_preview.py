@@ -75,12 +75,12 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
             start_date=now,
             end_date=now + datetime.timedelta(weeks=2)
         )  # mostly use default values
-        ARRIVAL_DISTRIBUTION = {
+        arrival_distribution = {
             3: .2,
             4: .8
         }
         truck_arrival_distribution_manager = TruckArrivalDistributionManager()
-        truck_arrival_distribution_manager.set_truck_arrival_distribution(ARRIVAL_DISTRIBUTION)
+        truck_arrival_distribution_manager.set_truck_arrival_distribution(arrival_distribution)
 
         self.preview = TruckGateThroughputPreview(
             start_date=now.date(),
