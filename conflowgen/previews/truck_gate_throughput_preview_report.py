@@ -49,7 +49,6 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
 
     def get_report_as_text(self, inbound: bool = True, outbound: bool = True, **kwargs) -> str:
         truck_distribution = self.preview.get_weekly_truck_arrivals(inbound, outbound)
-        days_of_the_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         data = [
             {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Monday
             {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Tuesday
@@ -85,10 +84,10 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
             data[7]['sum'] += data[day]['sum']
             if data[day]['sum'] < fewest_trucks_in_a_day:
                 fewest_trucks_in_a_day = data[day]['sum']
-                fewest_trucks_day = days_of_the_week[day]
+                fewest_trucks_day = self.days_of_the_week[day]
             if data[day]['sum'] > most_trucks_in_a_day:
                 most_trucks_in_a_day = data[day]['sum']
-                most_trucks_day = days_of_the_week[day]
+                most_trucks_day = self.days_of_the_week[day]
             most_trucks_in_a_day = max(most_trucks_in_a_day, data[day]['sum'])
             average_trucks_in_a_day += data[day]['sum']
 
@@ -96,7 +95,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
         average_trucks_in_a_day /= 7
 
         # Create a table with pandas for hourly view
-        df = pd.DataFrame(data, index=days_of_the_week + ['Total'])
+        df = pd.DataFrame(data, index=self.days_of_the_week + ['Total'])
         df = df.round()
         df = df.astype(int)
 

@@ -36,6 +36,9 @@ class AbstractReport(abc.ABC):
         ModeOfTransport.truck
     ]
 
+    #: The days of the week
+    days_of_the_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
     @property
     @abc.abstractmethod
     def report_description(self) -> str:
