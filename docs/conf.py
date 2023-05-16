@@ -214,9 +214,11 @@ if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     git_lfs_cmd = _install_git_lfs_on_linux_on_the_fly()
     os.system("echo 'Fetching sqlite databases'")
-    os.system(
-        f"yes | {git_lfs_cmd} fetch -p -I '**/notebooks/data/prepared_dbs/*.sqlite'"
-    )  # download sqlite databases from remote, say yes to trusting certs
+    database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"] # List of database names to download
+    for database_name in database_names:
+        command = \
+            f'curl -O "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/{database_name}.sqlite"'
+        os.system(command)
     os.system("echo 'Start checking out the file'")
     os.system(f'{git_lfs_cmd} checkout')  # Replace SQLite database LFS references with the actual files
     os.system("echo 'Checkout finished'")
