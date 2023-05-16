@@ -187,11 +187,10 @@ if os.environ.get("IS_RTD", False):
     os.system("echo 'Fetching sqlite databases'")
     database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"]  # List of database names to download
     sqlite_databases_directory = "./data/prepared_dbs"
+    os.makedirs(sqlite_databases_directory, exist_ok=True)  # Create the destination folder if it doesn't exist
     for database_name in database_names:
         os.system(f'echo "Fetching {database_name}"')
-        file_path = os.path.join(sqlite_databases_directory, f'{database_name}.sqlite')
-        command = \
-            f'curl -o "{file_path}" ' \
-            f'"https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/{database_name}.sqlite"'
-        os.system(command)
+        file_url = f'https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/{database_name}.sqlite'
+        os.system('curl -LJO "{file_url}"')
+        os.system(f'mv "{database_name}.sqlite" "{sqlite_databases_directory}"')
     os.system("echo 'sqlite databases fetched'")
