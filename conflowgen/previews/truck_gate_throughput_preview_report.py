@@ -125,9 +125,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
 
         plt.title("Truck arrival distribution")
         ax.set_xticks(list(range(1, 8)))  # every day
-        ax.set_xticklabels(
-            ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        )
+        ax.set_xticklabels(self.days_of_the_week)
         plt.xlabel("Week day")
         plt.ylabel("Number of trucks")
 
