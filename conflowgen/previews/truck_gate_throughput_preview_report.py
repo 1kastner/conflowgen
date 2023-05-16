@@ -50,14 +50,8 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
     def get_report_as_text(self, inbound: bool = True, outbound: bool = True, **kwargs) -> str:
         truck_distribution = self.preview.get_weekly_truck_arrivals(inbound, outbound)
         data = [
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Monday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Tuesday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Wednesday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Thursday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Friday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Saturday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0},  # Sunday
-            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0}   # Total
+            {'minimum': float('inf'), 'maximum': 0, 'average': 0.0, 'sum': 0}
+            for _ in range(8)  # Monday to Sunday plus week total
         ]
 
         fewest_trucks_in_a_day = float('inf')
