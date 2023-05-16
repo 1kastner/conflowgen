@@ -22,8 +22,8 @@ jobs:
     - uses: actions/checkout@v2
     - run: |
         curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_poc.sqlite"
-        mkdir -p notebooks/data/prepared_dbs
-        mv demo_poc.sqlite notebooks/data/prepared_dbs/
+        mkdir -p docs/notebooks/data/prepared_dbs
+        mv demo_poc.sqlite docs/notebooks/data/prepared_dbs/
 
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
