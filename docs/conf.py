@@ -186,7 +186,7 @@ if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     os.system("echo 'Fetching sqlite databases'")
     database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"]  # List of database names to download
-    sqlite_databases_directory = "./data/prepared_dbs"
+    sqlite_databases_directory = "docs/notebooks/data/prepared_dbs/"
     os.makedirs(sqlite_databases_directory, exist_ok=True)  # Create the destination folder if it doesn't exist
     for database_name in database_names:
         os.system(f'echo "Fetching {database_name}"')
