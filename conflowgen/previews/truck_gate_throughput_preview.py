@@ -3,6 +3,7 @@ import typing
 from abc import ABC
 from builtins import bool
 from datetime import datetime
+from collections import namedtuple
 
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
@@ -63,16 +64,25 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
         total_outbound_containers_transported_by_truck = \
             int(math.ceil(total_outbound_truck_capacity_in_teu / teu_factor))
 
-        return total_inbound_containers_transported_by_truck, total_outbound_containers_transported_by_truck
+        total_containers_transported_by_truck_datatype = \
+            namedtuple('total_containers_transported_by_truck_datatype', 'inbound outbound')
+        total_containers_transported_by_truck = \
+            total_containers_transported_by_truck_datatype(total_inbound_containers_transported_by_truck,
+                                                           total_outbound_containers_transported_by_truck)
+
+        return total_containers_transported_by_truck
 
     def _get_number_of_trucks_per_week(self) -> typing.Tuple[float, float]:
         # Calculate average number of trucks per week
         num_weeks = (self.end_date - self.start_date).days / 7
         total_trucks = self._get_total_trucks()
-        inbound_trucks_per_week = total_trucks[1] / num_weeks
-        outbound_trucks_per_week = total_trucks[0] / num_weeks
+        inbound_trucks_per_week = total_trucks.inbound / num_weeks
+        outbound_trucks_per_week = total_trucks.outbound / num_weeks
 
-        return inbound_trucks_per_week, outbound_trucks_per_week
+        total_weekly_trucks_datatype = namedtuple('total_weekly_trucks_datatype', 'inbound outbound')
+        total_weekly_trucks = total_weekly_trucks_datatype(inbound_trucks_per_week, outbound_trucks_per_week)
+
+        return total_weekly_trucks
 
     def get_weekly_truck_arrivals(self, inbound: bool = True, outbound: bool = True) -> typing.Dict[int, int]:
 
@@ -87,8 +97,8 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
         for time, probability in truck_arrival_probability_distribution.items():
             truck_arrival_integer_distribution[time] = 0
             if inbound:
-                truck_arrival_integer_distribution[time] += int(round(probability * weekly_trucks[0]))
+                truck_arrival_integer_distribution[time] += int(round(probability * weekly_trucks.inbound))
             if outbound:
-                truck_arrival_integer_distribution[time] += int(round(probability * weekly_trucks[1]))
+                truck_arrival_integer_distribution[time] += int(round(probability * weekly_trucks.outbound))
 
         return truck_arrival_integer_distribution
