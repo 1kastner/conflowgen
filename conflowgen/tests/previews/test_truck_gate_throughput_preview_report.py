@@ -279,6 +279,21 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
             average_moved_capacity=24000
         )
         report = self.preview_report.get_report_as_text()
-        self.assertIsNotNone(report)
+        expected_report = \
+            '''Hourly view:
+                 Minimum (trucks/h)  Maximum (trucks/h)  Average (trucks/h)  Sum (trucks/24h)
+Day of the week                                                                              
+Monday                            0                  80                  36               854
+Tuesday                           8                  74                  37               894
+Wednesday                         4                  86                  39               936
+Thursday                          4                  94                  42              1016
+Friday                            8                  92                  42              1016
+Saturday                          0                  14                   4                84
+Sunday                            0                   0                   0                 0
+Total                             0                  94                  29              4800
+Fewest trucks in a day: 0 on Sunday
+Most trucks in a day: 1016 on Thursday
+Average trucks per day: 685'''
+        self.assertEqual(report, expected_report)
         updated_preview = self.preview_report._get_updated_preview()
         self.assertIsNotNone(updated_preview)
