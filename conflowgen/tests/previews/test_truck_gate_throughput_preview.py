@@ -119,6 +119,8 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
             average_moved_capacity=300
         )
         weekly_trucks = self.preview._get_number_of_trucks_per_week()
+        # 60 trucks total (from test_get_total_trucks above)
+        # 60 trucks / 2 weeks = 30 trucks per week
         self.assertEqual(weekly_trucks, (30, 30))
 
     def test_get_truck_distribution(self):
