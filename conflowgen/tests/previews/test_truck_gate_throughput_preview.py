@@ -101,6 +101,9 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
         )
         # pylint: disable=protected-access
         total_trucks = self.preview._get_total_trucks()
+        # 300 TEU arrive by feeder
+        # 300 TEU * 0.2 (from mode of transport distribution) = 60 TEU to be exported by truck
+        # Only twenty-feet containers used, so 60 TEU = 60 trucks needed
         self.assertEqual(total_trucks, (60, 60))
 
     def test_get_weekly_trucks(self):
