@@ -279,6 +279,7 @@ class TestTruckGateThroughputPreviewReport(UnitTestCaseWithMatplotlib):
             average_moved_capacity=24000
         )
         report = self.preview_report.get_report_as_text()
+        # flake8: noqa: W291 (ignore trailing whitespace in text report)
         expected_report = \
             '''Hourly view:
                  Minimum (trucks/h)  Maximum (trucks/h)  Average (trucks/h)  Sum (trucks/24h)
