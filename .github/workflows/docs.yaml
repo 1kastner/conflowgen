@@ -29,9 +29,12 @@ jobs:
         sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
     - uses: actions/checkout@v3
-      with:
-        lfs: 'true'
-    - run: git lfs pull
+    - run: |
+        curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_poc.sqlite"
+        curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_deham_cta.sqlite"
+        mkdir -p docs/notebooks/data/prepared_dbs
+        mv demo_poc.sqlite docs/notebooks/data/prepared_dbs/
+        mv demo_deham_cta.sqlite docs/notebooks/data/prepared_dbs/
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4

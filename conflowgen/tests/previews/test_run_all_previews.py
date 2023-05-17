@@ -26,7 +26,7 @@ class TestRunAllPreviews(UnitTestCaseWithMatplotlib):
     def test_with_no_data_as_text(self):
         with self.assertLogs('conflowgen', level='INFO') as context:
             run_all_previews(as_text=True)
-        self.assertEqual(len(context.output), 14)
+        self.assertEqual(len(context.output), 17)
 
         # Test only some entries. The detailed tests should be done in the unit test of the respective report.
         self.assertEqual(
@@ -46,4 +46,4 @@ class TestRunAllPreviews(UnitTestCaseWithMatplotlib):
         with unittest.mock.patch('matplotlib.pyplot.show'):
             with self.assertLogs('conflowgen', level='INFO') as context:
                 run_all_previews(as_text=False, as_graph=True, static_graphs=True)
-        self.assertEqual(len(context.output), 11)
+        self.assertEqual(len(context.output), 13)

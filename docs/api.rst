@@ -99,6 +99,12 @@ Generating previews
 .. autoclass:: conflowgen.VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
     :members:
 
+.. autoclass:: conflowgen.TruckGateThroughputPreview
+    :members:
+
+.. autoclass:: conflowgen.TruckGateThroughputPreviewReport
+    :members:
+
 Running analyses
 ================
 

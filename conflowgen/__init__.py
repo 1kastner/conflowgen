@@ -25,6 +25,8 @@ from conflowgen.previews.vehicle_capacity_exceeded_preview_report import \
     VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
 from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.previews.modal_split_preview_report import ModalSplitPreviewReport
+from conflowgen.previews.truck_gate_throughput_preview import TruckGateThroughputPreview
+from conflowgen.previews.truck_gate_throughput_preview_report import TruckGateThroughputPreviewReport
 
 # Analyses and their reports
 from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis import \

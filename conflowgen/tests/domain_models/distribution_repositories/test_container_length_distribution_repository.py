@@ -108,3 +108,53 @@ class TestContainerLengthDistributionRepository(unittest.TestCase):
                     ContainerLength.other: 0
                 }
             )
+
+    def test_get_teu_factor_all_twenty_feet(self):
+        ContainerLengthDistributionRepository.set_distribution({
+            ContainerLength.twenty_feet: 1,
+            ContainerLength.forty_feet: 0,
+            ContainerLength.forty_five_feet: 0,
+            ContainerLength.other: 0
+        })
+        teu_factor = ContainerLengthDistributionRepository.get_teu_factor()
+        self.assertEqual(teu_factor, 1, "TEU factor should be 1 when all containers are 20 feet.")
+
+    def test_get_teu_factor_when_half_of_containers_are_forty_feet(self):
+        ContainerLengthDistributionRepository.set_distribution(
+            {
+                ContainerLength.twenty_feet: 0.5,
+                ContainerLength.forty_feet: 0.5,
+                ContainerLength.forty_five_feet: 0,
+                ContainerLength.other: 0
+            }
+        )
+        teu_factor = ContainerLengthDistributionRepository.get_teu_factor()
+        self.assertEqual(
+            teu_factor, 1.5,
+            "TEU factor should be 1.5 when half of the containers are 20 feet and half are 40 feet.")
+
+    def test_get_teu_factor_all_forty_feet(self) -> None:
+        ContainerLengthDistributionRepository.set_distribution(
+            {
+                ContainerLength.twenty_feet: 0,
+                ContainerLength.forty_feet: 1,
+                ContainerLength.forty_five_feet: 0,
+                ContainerLength.other: 0
+            }
+        )
+        self.assertEqual(
+            ContainerLengthDistributionRepository.get_teu_factor(), 2,
+            "TEU factor should be 2 when all containers are 40 feet.")
+
+    def test_get_teu_factor_all_forty_five_feet(self) -> None:
+        ContainerLengthDistributionRepository.set_distribution(
+            {
+                ContainerLength.twenty_feet: 0,
+                ContainerLength.forty_feet: 0,
+                ContainerLength.forty_five_feet: 1,
+                ContainerLength.other: 0
+            }
+        )
+        self.assertEqual(
+            ContainerLengthDistributionRepository.get_teu_factor(), 2.25,
+            "TEU factor should be 2.25 when all containers are 45 feet.")
