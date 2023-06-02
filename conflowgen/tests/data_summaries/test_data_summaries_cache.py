@@ -1,3 +1,4 @@
+import random
 import unittest
 import datetime
 from functools import wraps
@@ -352,8 +353,6 @@ class TestDataSummariesCache(unittest.TestCase):
 
     def test_cache_with_non_deterministic_function(self):
         # In case someone wants to use cache to save the result of a non-deterministic function...
-        import random
-
         @DataSummariesCache.cache_result
         def random_number(seed):
             random.seed(seed)
