@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
@@ -15,6 +16,7 @@ class YardCapacityAnalysis(AbstractAnalysis):
     as it is the case with :class:`.YardCapacityAnalysisReport`.
     """
 
+    @DataSummariesCache.cache_result
     def get_used_yard_capacity_over_time(
             self,
             storage_requirement: typing.Union[str, typing.Collection, StorageRequirement] = "all",

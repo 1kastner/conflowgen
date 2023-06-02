@@ -3,6 +3,7 @@ import typing
 
 from peewee import SqliteDatabase
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.database_connection.sqlite_database_connection import SqliteDatabaseConnection
 
 
@@ -91,3 +92,4 @@ class DatabaseChooser:
         self.logger.debug("Closing current database connection.")
         self.peewee_sqlite_db.close()
         self.peewee_sqlite_db = None
+        DataSummariesCache.reset_cache()

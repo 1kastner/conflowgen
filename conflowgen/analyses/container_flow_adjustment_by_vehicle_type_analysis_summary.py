@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
@@ -42,7 +43,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
     The analysis summary returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport`.
     """
-
+    @DataSummariesCache.cache_result
     def get_summary(
             self,
             start_date: typing.Optional[datetime.datetime] = None,

@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
@@ -33,6 +34,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
         super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
+    @DataSummariesCache.cache_result
     def get_transshipment_and_hinterland_split(
             self,
             start_date: typing.Optional[datetime.datetime] = None,
@@ -75,6 +77,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
             hinterland_capacity=hinterland_capacity
         )
 
+    @DataSummariesCache.cache_result
     def get_modal_split_for_hinterland_traffic(
             self,
             inbound: bool,

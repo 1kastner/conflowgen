@@ -6,6 +6,7 @@ import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import] 
 
 import numpy as np
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -26,6 +27,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         )
 
     @staticmethod
+    @DataSummariesCache.cache_result
     def get_inbound_container_volumes_by_vehicle_type(
             start_date: typing.Optional[datetime.datetime] = None,
             end_date: typing.Optional[datetime.datetime] = None,
@@ -63,6 +65,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
             teu=inbound_container_volume_in_teu
         )
 
+    @DataSummariesCache.cache_result
     def get_outbound_container_volume_by_vehicle_type(
             self,
             start_date: typing.Optional[datetime.datetime] = None,

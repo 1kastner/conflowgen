@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
@@ -17,6 +18,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
     """
 
     @staticmethod
+    @DataSummariesCache.cache_result
     def get_initial_to_adjusted_outbound_flow(
             start_date: typing.Optional[datetime.datetime] = None,
             end_date: typing.Optional[datetime.datetime] = None,

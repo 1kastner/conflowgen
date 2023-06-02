@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_week_based_time_window, \
@@ -24,6 +25,7 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
     }
 
     @classmethod
+    @DataSummariesCache.cache_result
     def get_throughput_over_time(
             cls,
             inbound: bool = True,

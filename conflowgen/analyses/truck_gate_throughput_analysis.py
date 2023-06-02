@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -16,6 +17,7 @@ class TruckGateThroughputAnalysis(AbstractAnalysis):
     """
 
     @classmethod
+    @DataSummariesCache.cache_result
     def get_throughput_over_time(
             cls,
             inbound: bool = True,

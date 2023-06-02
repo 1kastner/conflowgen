@@ -4,7 +4,7 @@ import collections
 import datetime
 import typing
 
-
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
@@ -17,7 +17,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport`.
     """
-
+    @DataSummariesCache.cache_result
     def get_vehicle_type_adjustments_per_vehicle(
             self,
             initial_vehicle_type: ModeOfTransport | str | typing.Collection = "scheduled vehicles",
