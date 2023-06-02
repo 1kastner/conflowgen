@@ -208,7 +208,7 @@ ConFlowGen has been first presented at the International Conference on Dynamics 
 If ConFlowGen served you well in your research, and you would like to acknowledge the project in your publication,
 we would be glad if you mention our work as defined in our
 `CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
-If you just need a BibTeX entry for your citation software, this should do the job:
+If you just need a BibTeX entry for your citation software, this one should do the job:
 
 .. code-block:: bibtex
 
@@ -225,3 +225,14 @@ If you just need a BibTeX entry for your citation software, this should do the j
       title = {Container Flow Generation for Maritime Container Terminals},
       year = {2022}
    }
+
+At a second occasion, ConFlowGen has been presented at the Annual General Assembly of the
+World Association for Waterborne Transport Infrastructure (PIANC)
+in 2023 in Oslo.
+The contribution
+`Synthetically generating traffic scenarios for simulation-based container terminal planning \
+<https://www.pianc.org/uploads/files/Nieuwe-figuren/Marvin-Kastner.pdf>`_
+has been awarded with the
+`De Paepe-Willems Award <https://www.pianc.org/awards/pianc-de-paepe-willems-award>`_.
+The paper highlights how ConFlowGen can support terminal planners in designing terminal interfaces and determining
+the required yard capacity.
