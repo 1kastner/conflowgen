@@ -1,5 +1,6 @@
 import unittest
 import datetime
+from functools import wraps
 
 from conflowgen import ContainerLength, TruckArrivalDistributionManager, ModeOfTransport, TruckGateThroughputPreview
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
@@ -15,6 +16,10 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
+class TestException(Exception):
+    pass
+
+
 class TestDataSummariesCache(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -27,7 +32,7 @@ class TestDataSummariesCache(unittest.TestCase):
             ContainerFlowGenerationProperties,
             TruckArrivalDistribution
         ])
-        now = datetime.datetime.now()
+        self.now = datetime.datetime.now()
         ModeOfTransportDistributionRepository().set_mode_of_transport_distributions({
             ModeOfTransport.truck: {
                 ModeOfTransport.truck: 0.1,
@@ -72,8 +77,8 @@ class TestDataSummariesCache(unittest.TestCase):
             ContainerLength.other: 0
         })
         ContainerFlowGenerationProperties.create(
-            start_date=now,
-            end_date=now + datetime.timedelta(weeks=2)
+            start_date=self.now,
+            end_date=self.now + datetime.timedelta(weeks=2)
         )  # mostly use default values
         arrival_distribution = {
             3: .2,
@@ -82,37 +87,46 @@ class TestDataSummariesCache(unittest.TestCase):
         truck_arrival_distribution_manager = TruckArrivalDistributionManager()
         truck_arrival_distribution_manager.set_truck_arrival_distribution(arrival_distribution)
         self.preview = TruckGateThroughputPreview(
-            start_date=now.date(),
-            end_date=(now + datetime.timedelta(weeks=2)).date(),
+            start_date=self.now.date(),
+            end_date=(self.now + datetime.timedelta(weeks=2)).date(),
             transportation_buffer=0.0
         )
+        self.cache = DataSummariesCache()  # This is technically incorrect usage of the cache as it should never be
+        # instantiated, but it's the easiest way to test it
 
-    def sanity_test(self):
+    def test_sanity(self):
         # Define a function to be decorated
         @DataSummariesCache.cache_result
         def my_function(n):
             return n ** 2
 
-        # Clear the cache before running the test
-        DataSummariesCache.reset_cache()
-
         # Test case 1: Call the decorated function with argument 5
         result = my_function(5)
-        assert result == 25, "Test case 1 failed"
+        self.assertEqual(result, 25, "Result of 5^2 should be 25")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "There should be one cached result")
+        self.assertEqual(list(DataSummariesCache.cached_results.values())[0], 25, "Cached result should be 25")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'my_function': 1}, "Hit counter should be 1")
 
         # Test case 2: Call the decorated function with argument 5 again
         # This should retrieve the cached result from the previous call
         result = my_function(5)
-        assert result == 25, "Test case 2 failed"
+        self.assertEqual(result, 25, "Result of 5^2 should be 25")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "There should be one cached result")
+        self.assertEqual(list(DataSummariesCache.cached_results.values())[0], 25, "Cached result should be 25")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'my_function': 2}, "Hit counter should be 2")
 
         # Test case 3: Call the decorated function with argument 10
         result = my_function(10)
-        assert result == 100, "Test case 3 failed"
+        self.assertEqual(result, 100, "Result of 10^2 should be 100")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "There should be two cached results")
+        self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
+                        100 in list(DataSummariesCache.cached_results.values()), "Cached result should be 25")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'my_function': 3}, "Hit counter should be 3")
 
     def test_with_preview(self):
-        cache = DataSummariesCache()  # This is technically incorrect usage of the cache as it should never be
-        # instantiated, but it's the easiest way to test it
-
         two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
         Schedule.create(
             vehicle_type=ModeOfTransport.feeder,
@@ -123,10 +137,403 @@ class TestDataSummariesCache(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300
         )
-        self.preview.get_weekly_truck_arrivals(True, True)
-        self.preview.get_weekly_truck_arrivals(True, True)
-
+        preview = self.preview.get_weekly_truck_arrivals(True, True)
+        self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
+        self.assertEqual(len(DataSummariesCache.cached_results), 7, "There should be 7 cached results")
+        self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
+                        {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(len(cache.cached_results), 7)
-        # Cannot compare the entries themselves, because the keys are based on IDs of the functions, which are reset
-        # every time program is run
+        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1, '_get_total_trucks': 1,
+                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_inbound_capacity_of_vehicles': 2,
+                                                           'get_outbound_capacity_of_vehicles': 1,
+                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+
+        preview = self.preview.get_weekly_truck_arrivals(True, True)
+        self.assertEqual(preview, {3: 12, 4: 48}, "Cached result is incorrect")
+        self.assertEqual(len(DataSummariesCache.cached_results), 7, "There should be 7 cached results")
+        self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
+                        {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1, '_get_total_trucks': 1,
+                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_inbound_capacity_of_vehicles': 2,
+                                                           'get_outbound_capacity_of_vehicles': 1,
+                                                           'get_weekly_truck_arrivals': 2}, "Incorrect hit counter")
+        # Only get_weekly_truck_arrivals should be called again as the other functions are cached
+
+    def test_with_adjusted_preview(self):
+        # Create a preview, adjust input distribution, then create another preview
+        two_days_later = datetime.datetime.now() + datetime.timedelta(days=2)
+        Schedule.create(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeederService",
+            vehicle_arrives_at=two_days_later.date(),
+            vehicle_arrives_every_k_days=-1,
+            vehicle_arrives_at_time=two_days_later.time(),
+            average_vehicle_capacity=300,
+            average_moved_capacity=300
+        )
+        preview = self.preview.get_weekly_truck_arrivals(True, True)
+        self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
+        self.assertEqual(len(DataSummariesCache.cached_results), 7, "There should be 7 cached results")
+        self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
+                        {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1, '_get_total_trucks': 1,
+                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_inbound_capacity_of_vehicles': 2,
+                                                           'get_outbound_capacity_of_vehicles': 1,
+                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+
+        arrival_distribution = {
+            3: .1,
+            4: .4,
+            5: .5
+        }
+        truck_arrival_distribution_manager = TruckArrivalDistributionManager()
+        truck_arrival_distribution_manager.set_truck_arrival_distribution(arrival_distribution)
+        self.preview = TruckGateThroughputPreview(
+            start_date=self.now.date(),
+            end_date=(self.now + datetime.timedelta(weeks=2)).date(),
+            transportation_buffer=0.0
+        )
+        preview = self.preview.get_weekly_truck_arrivals(True, True)
+        self.assertEqual(preview, {3: 6, 4: 24, 5: 30}, "New result is incorrect")
+        self.assertEqual(len(DataSummariesCache.cached_results), 14, "There should be 14 cached results")
+        self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
+                        {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()) and
+                        {3: 6, 4: 24, 5: 30} in list(DataSummariesCache.cached_results.values()),
+                        "Incorrect results cached")
+        # pylint: disable=protected-access
+        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 2,
+                                                           '_get_total_trucks': 2,
+                                                           '_get_truck_capacity_for_export_containers': 4,
+                                                           'get_inbound_capacity_of_vehicles': 4,
+                                                           'get_outbound_capacity_of_vehicles': 2,
+                                                           'get_weekly_truck_arrivals': 2}, "Incorrect hit counter")
+        # All functions should be called again as the input distribution has changed
+
+    def test_cache_reset(self):
+        @DataSummariesCache.cache_result
+        def increment_counter(counter):
+            return counter + 1
+
+        # Check initial state
+        self.assertEqual(len(DataSummariesCache.cached_results), 0, "Initial cache should be empty")
+        self.assertEqual(DataSummariesCache._hit_counter, {}, "Initial hit counter should be empty")
+
+        # Call the function and check cache and hit counter
+        counter = increment_counter(5)
+        self.assertEqual(counter, 6, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(6 in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'increment_counter': 1},
+                         "Hit counter should be 1 for 'increment_counter'")
+
+        # Reset cache and check again
+        DataSummariesCache.reset_cache()
+        self.assertEqual(len(DataSummariesCache.cached_results), 0, "Cache should be empty after reset")
+        self.assertEqual(DataSummariesCache._hit_counter, {}, "Hit counter should be empty after reset")
+
+    def test_cache_with_different_function_args(self):
+        @DataSummariesCache.cache_result
+        def add_numbers(a, b):
+            return a + b
+
+        # Call the function with different arguments and check if the results are cached correctly
+        result1 = add_numbers(1, 2)
+        result2 = add_numbers(3, 4)
+        self.assertEqual(result1, 3, "Incorrect result returned")
+        self.assertEqual(result2, 7, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
+        self.assertTrue(3 in list(DataSummariesCache.cached_results.values()) and
+                        7 in list(DataSummariesCache.cached_results.values()), "Cached results should be 3 and 7")
+        self.assertEqual(DataSummariesCache._hit_counter, {'add_numbers': 2},
+                         "Hit counter should be 2 for 'add_numbers'")
+
+        # Call the function with the same arguments and check if the results are retrieved from the cache
+        result3 = add_numbers(1, 2)
+        self.assertEqual(result3, 3, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
+        self.assertTrue(3 in list(DataSummariesCache.cached_results.values()) and
+                        7 in list(DataSummariesCache.cached_results.values()), "Cached results should be 3 and 7")
+        self.assertEqual(DataSummariesCache._hit_counter, {'add_numbers': 3},
+                         "Hit counter should be 3 for 'add_numbers'")
+
+    def test_cache_with_different_functions(self):
+        @DataSummariesCache.cache_result
+        def square(n):
+            return n ** 2
+
+        @DataSummariesCache.cache_result
+        def cube(n):
+            return n ** 3
+
+        # Call the functions and check if the results are cached correctly
+        result1 = square(5)
+        result2 = cube(5)
+        self.assertEqual(result1, 25, "Incorrect result returned")
+        self.assertEqual(result2, 125, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
+        self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
+                        125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        self.assertEqual(DataSummariesCache._hit_counter, {'square': 1, 'cube': 1},
+                         "Hit counter should be 1 for both 'square' and 'cube'")
+
+        # Call the functions again and check if the results are retrieved from the cache
+        result3 = square(5)
+        result4 = cube(5)
+        self.assertEqual(result3, 25, "Incorrect result returned")
+        self.assertEqual(result4, 125, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
+        self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
+                        125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        self.assertEqual(DataSummariesCache._hit_counter, {'square': 2, 'cube': 2},
+                         "Hit counter should be 2 for both 'square' and 'cube'")
+
+    def test_cache_with_no_args(self):
+        @DataSummariesCache.cache_result
+        def get_constant():
+            return 42
+
+        # Call the function and check if the result is cached
+        constant1 = get_constant()
+        self.assertEqual(constant1, 42, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(42 in list(DataSummariesCache.cached_results.values()), "Cached result should be 42")
+        self.assertEqual(DataSummariesCache._hit_counter, {'get_constant': 1},
+                         "Hit counter should be 1 for 'get_constant'")
+
+        # Call the function again and check if the result is retrieved from the cache
+        constant2 = get_constant()
+        self.assertEqual(constant2, 42, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
+        self.assertTrue(42 in list(DataSummariesCache.cached_results.values()), "Cached result should still be 42")
+        self.assertEqual(DataSummariesCache._hit_counter, {'get_constant': 2},
+                         "Hit counter should be 2 for 'get_constant'")
+
+    def test_cache_with_default_args(self):
+        @DataSummariesCache.cache_result
+        def power(n, p=2):
+            return n ** p
+
+        # Call the function with and without default argument and check if the results are cached correctly
+        result1 = power(5)
+        result2 = power(5, 3)
+        self.assertEqual(result1, 25, "Incorrect result returned")
+        self.assertEqual(result2, 125, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
+        self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
+                        125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        self.assertEqual(DataSummariesCache._hit_counter, {'power': 2}, "Hit counter should be 2 for 'power'")
+
+        # Call the function with the same arguments and check if the results are retrieved from the cache
+        result3 = power(5)
+        result4 = power(5, 3)
+        self.assertEqual(result3, 25, "Incorrect result returned")
+        self.assertEqual(result4, 125, "Incorrect result returned")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
+        self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
+                        125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        self.assertEqual(DataSummariesCache._hit_counter, {'power': 4}, "Hit counter should be 4 for 'power'")
+
+    def test_cache_with_non_deterministic_function(self):
+        # In case someone wants to use cache to save the result of a non-deterministic function...
+        import random
+
+        @DataSummariesCache.cache_result
+        def random_number(seed):
+            random.seed(seed)
+            return random.randint(1, 100)
+
+        # Call the function and check if the result is cached
+        result1 = random_number(42)
+        self.assertTrue(1 <= result1 <= 100, "Result should be between 1 and 100")
+        first_cached_result = list(DataSummariesCache.cached_results.values())[0]
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(1 <= first_cached_result <= 100, "Cached result should be between 1 and 100")
+        self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 1},
+                         "Hit counter should be 1 for 'random_number'")
+
+        # Call the function again and check if the result is retrieved from the cache
+        result2 = random_number(42)
+        self.assertTrue(1 <= result2 <= 100, "Result should be between 1 and 100")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
+        self.assertEqual(list(DataSummariesCache.cached_results.values())[0], first_cached_result,
+                         "Cached result should be the same as the first one")
+        self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 2},
+                         "Hit counter should be 2 for 'random_number'")
+
+    def test_docstring_preservation(self):
+        @DataSummariesCache.cache_result
+        def square(n):
+            """Return the square of a number."""
+            return n ** 2
+
+        self.assertEqual(square.__doc__, "Return the square of a number.", "Docstring should be preserved")
+
+        @DataSummariesCache.cache_result
+        def cube(n):
+            """Return the cube of a number."""
+            return n ** 3
+
+        self.assertEqual(cube.__doc__, "Return the cube of a number.", "Docstring should be preserved")
+
+    def test_exception_handling(self):
+        @DataSummariesCache.cache_result
+        def raise_exception():
+            raise TestException("Test exception")
+
+        with self.assertRaises(Exception):
+            raise_exception()
+
+        # Check that the result is not cached
+        self.assertFalse(raise_exception in list(DataSummariesCache.cached_results.values()),
+                         "Exception should not be cached")
+
+    def test_cache_none(self):
+        @DataSummariesCache.cache_result
+        def return_none():
+            return None
+
+        self.assertEqual(return_none(), None, "Function should return None")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(None in list(DataSummariesCache.cached_results.values()), "None should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_none': 1})
+
+    def test_cache_float(self):
+        @DataSummariesCache.cache_result
+        def return_float():
+            return 3.14
+
+        self.assertEqual(return_float(), 3.14, "Function should return float")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(3.14 in list(DataSummariesCache.cached_results.values()), "Float should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_float': 1})
+
+    def test_cache_string(self):
+        @DataSummariesCache.cache_result
+        def return_string():
+            return "hello"
+
+        self.assertEqual(return_string(), "hello", "Function should return string")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue("hello" in list(DataSummariesCache.cached_results.values()), "String should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_string': 1})
+
+    def test_cache_list(self):
+        @DataSummariesCache.cache_result
+        def return_list():
+            return [1, 2, 3]
+
+        self.assertEqual(return_list(), [1, 2, 3], "Function should return list")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue([1, 2, 3] in list(DataSummariesCache.cached_results.values()), "List should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_list': 1})
+
+    def test_cache_dictionary(self):
+        @DataSummariesCache.cache_result
+        def return_dictionary():
+            return {"a": 1, "b": 2}
+
+        self.assertEqual(return_dictionary(), {"a": 1, "b": 2}, "Function should return dictionary")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue({"a": 1, "b": 2} in list(DataSummariesCache.cached_results.values()), "Dictionary should be "
+                                                                                              "cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_dictionary': 1})
+
+    def test_cache_custom_object(self):
+        class CustomObject:
+            pass
+
+        @DataSummariesCache.cache_result
+        def return_custom_object():
+            return CustomObject()
+
+        self.assertIsInstance(return_custom_object(), CustomObject, "Function should return custom object")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertIsInstance(list(DataSummariesCache.cached_results.values())[0], CustomObject,
+                              "Function should return an instance of CustomObject")
+        self.assertEqual(DataSummariesCache._hit_counter, {'return_custom_object': 1})
+
+    def test_large_cache(self):
+        big_number = 100000
+        for i in range(big_number):
+            @DataSummariesCache.cache_result
+            def return_me(me):
+                return me
+
+            self.assertEqual(return_me(i), i, "Function should return i")
+            self.assertEqual(len(DataSummariesCache.cached_results), i + 1, "Cache should have i + 1 results")
+            self.assertTrue(i in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+            self.assertEqual(DataSummariesCache._hit_counter, {'return_me': i + 1})
+
+        self.assertEqual(len(DataSummariesCache.cached_results), big_number, f"Cache should contain {big_number} items")
+
+    def test_nested_decorator(self):
+        def simple_decorator(f):
+            @wraps(f)
+            def wrapper(*args, **kwargs):
+                return f(*args, **kwargs)
+
+            return wrapper
+
+        @DataSummariesCache.cache_result
+        @simple_decorator
+        def add(a, b):
+            """Adds two numbers."""
+            return a + b
+
+        # Initial call
+        result = add(1, 2)
+        self.assertEqual(result, 3, "Function should return the sum of the two arguments")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(3 in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'add': 1}, "Cache should have one hit")
+
+        # Repeated call
+        result = add(1, 2)
+        self.assertEqual(result, 3, "Function should return the sum of the two arguments (from cache)")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
+        self.assertTrue(3 in list(DataSummariesCache.cached_results.values()), "Result should still be cached")
+        self.assertEqual(DataSummariesCache._hit_counter, {'add': 2}, "Cache should have two hits")
+
+        # Check function metadata
+        self.assertEqual(add.__name__, 'add', "Function name should be preserved")
+        self.assertEqual(add.__doc__.strip(), 'Adds two numbers.', "Docstring should be preserved")
+
+    def test_class_methods(self):
+        class TestClass:
+            def __init__(self):
+                self.counter = 0
+
+            @DataSummariesCache.cache_result
+            def method(self, a, b):
+                """Adds two numbers and the instance counter."""
+                self.counter = getattr(self, 'counter', 0) + 1
+                return a + b + self.counter
+
+        # Create instance and call method
+        instance = TestClass()
+        result = instance.method(1, 2)
+        self.assertEqual(result, 4, "Method should return the sum of the two arguments and the counter")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
+        self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter['method'], 1)
+
+        # Repeated call
+        result = instance.method(1, 2)
+        self.assertEqual(result, 4, "Method should return the cached result")
+        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
+        self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Result should still be cached")
+        self.assertEqual(DataSummariesCache._hit_counter['method'], 2)
+
+        # Call with different instance
+        another_instance = TestClass()
+        result = another_instance.method(1, 2)
+        self.assertEqual(result, 4,
+                         "Method should return the sum of the two arguments and the counter (from new instance)")
+        self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
+        self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Both results should be cached")
+        self.assertEqual(DataSummariesCache._hit_counter['method'], 3)
