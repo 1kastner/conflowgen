@@ -21,6 +21,7 @@ class TestException(Exception):
 
 
 class TestDataSummariesCache(unittest.TestCase):
+    # pylint: disable=too-many-public-methods
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -221,6 +222,7 @@ class TestDataSummariesCache(unittest.TestCase):
 
         # Check initial state
         self.assertEqual(len(DataSummariesCache.cached_results), 0, "Initial cache should be empty")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {}, "Initial hit counter should be empty")
 
         # Call the function and check cache and hit counter
@@ -228,12 +230,14 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(counter, 6, "Incorrect result returned")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(6 in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'increment_counter': 1},
                          "Hit counter should be 1 for 'increment_counter'")
 
         # Reset cache and check again
         DataSummariesCache.reset_cache()
         self.assertEqual(len(DataSummariesCache.cached_results), 0, "Cache should be empty after reset")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {}, "Hit counter should be empty after reset")
 
     def test_cache_with_different_function_args(self):
@@ -249,6 +253,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
         self.assertTrue(3 in list(DataSummariesCache.cached_results.values()) and
                         7 in list(DataSummariesCache.cached_results.values()), "Cached results should be 3 and 7")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'add_numbers': 2},
                          "Hit counter should be 2 for 'add_numbers'")
 
@@ -258,6 +263,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
         self.assertTrue(3 in list(DataSummariesCache.cached_results.values()) and
                         7 in list(DataSummariesCache.cached_results.values()), "Cached results should be 3 and 7")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'add_numbers': 3},
                          "Hit counter should be 3 for 'add_numbers'")
 
@@ -278,6 +284,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
         self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
                         125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'square': 1, 'cube': 1},
                          "Hit counter should be 1 for both 'square' and 'cube'")
 
@@ -289,6 +296,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
         self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
                         125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'square': 2, 'cube': 2},
                          "Hit counter should be 2 for both 'square' and 'cube'")
 
@@ -302,6 +310,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(constant1, 42, "Incorrect result returned")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(42 in list(DataSummariesCache.cached_results.values()), "Cached result should be 42")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'get_constant': 1},
                          "Hit counter should be 1 for 'get_constant'")
 
@@ -310,6 +319,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(constant2, 42, "Incorrect result returned")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
         self.assertTrue(42 in list(DataSummariesCache.cached_results.values()), "Cached result should still be 42")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'get_constant': 2},
                          "Hit counter should be 2 for 'get_constant'")
 
@@ -326,6 +336,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
         self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
                         125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'power': 2}, "Hit counter should be 2 for 'power'")
 
         # Call the function with the same arguments and check if the results are retrieved from the cache
@@ -336,6 +347,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should still have two results")
         self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
                         125 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 125")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'power': 4}, "Hit counter should be 4 for 'power'")
 
     def test_cache_with_non_deterministic_function(self):
@@ -353,6 +365,7 @@ class TestDataSummariesCache(unittest.TestCase):
         first_cached_result = list(DataSummariesCache.cached_results.values())[0]
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(1 <= first_cached_result <= 100, "Cached result should be between 1 and 100")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 1},
                          "Hit counter should be 1 for 'random_number'")
 
@@ -362,6 +375,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
         self.assertEqual(list(DataSummariesCache.cached_results.values())[0], first_cached_result,
                          "Cached result should be the same as the first one")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 2},
                          "Hit counter should be 2 for 'random_number'")
 
@@ -400,6 +414,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(return_none(), None, "Function should return None")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(None in list(DataSummariesCache.cached_results.values()), "None should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_none': 1})
 
     def test_cache_float(self):
@@ -410,6 +425,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(return_float(), 3.14, "Function should return float")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(3.14 in list(DataSummariesCache.cached_results.values()), "Float should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_float': 1})
 
     def test_cache_string(self):
@@ -420,6 +436,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(return_string(), "hello", "Function should return string")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue("hello" in list(DataSummariesCache.cached_results.values()), "String should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_string': 1})
 
     def test_cache_list(self):
@@ -430,6 +447,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(return_list(), [1, 2, 3], "Function should return list")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue([1, 2, 3] in list(DataSummariesCache.cached_results.values()), "List should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_list': 1})
 
     def test_cache_dictionary(self):
@@ -441,6 +459,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue({"a": 1, "b": 2} in list(DataSummariesCache.cached_results.values()), "Dictionary should be "
                                                                                               "cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_dictionary': 1})
 
     def test_cache_custom_object(self):
@@ -455,6 +474,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertIsInstance(list(DataSummariesCache.cached_results.values())[0], CustomObject,
                               "Function should return an instance of CustomObject")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_custom_object': 1})
 
     def test_large_cache(self):
@@ -467,6 +487,7 @@ class TestDataSummariesCache(unittest.TestCase):
             self.assertEqual(return_me(i), i, "Function should return i")
             self.assertEqual(len(DataSummariesCache.cached_results), i + 1, "Cache should have i + 1 results")
             self.assertTrue(i in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+            # pylint: disable=protected-access
             self.assertEqual(DataSummariesCache._hit_counter, {'return_me': i + 1})
 
         self.assertEqual(len(DataSummariesCache.cached_results), big_number, f"Cache should contain {big_number} items")
@@ -490,6 +511,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(result, 3, "Function should return the sum of the two arguments")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(3 in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'add': 1}, "Cache should have one hit")
 
         # Repeated call
@@ -497,6 +519,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(result, 3, "Function should return the sum of the two arguments (from cache)")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
         self.assertTrue(3 in list(DataSummariesCache.cached_results.values()), "Result should still be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'add': 2}, "Cache should have two hits")
 
         # Check function metadata
@@ -520,6 +543,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(result, 4, "Method should return the sum of the two arguments and the counter")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Result should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter['method'], 1)
 
         # Repeated call
@@ -527,6 +551,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(result, 4, "Method should return the cached result")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
         self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Result should still be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter['method'], 2)
 
         # Call with different instance
@@ -536,4 +561,5 @@ class TestDataSummariesCache(unittest.TestCase):
                          "Method should return the sum of the two arguments and the counter (from new instance)")
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "Cache should have two results")
         self.assertTrue(4 in list(DataSummariesCache.cached_results.values()), "Both results should be cached")
+        # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter['method'], 3)
