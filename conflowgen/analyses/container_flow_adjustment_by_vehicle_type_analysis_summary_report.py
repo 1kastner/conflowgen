@@ -43,9 +43,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
                 Only include containers that arrive after the given start time. Defaults to ``None``.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time. Defaults to ``None``.
-            use_cache (bool):
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
-                Defaults to ``True``.
 
         Returns:
              The report in text format (possibly spanning over several lines).
@@ -82,9 +79,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
                 Only include containers that arrive after the given start time. Defaults to ``None``.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time. Defaults to ``None``.
-            use_cache (bool):
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
-                Defaults to ``True``.
 
         Returns:
              The matplotlib axis of the pie chart.
@@ -117,11 +111,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
     def _get_analysis(self, kwargs: dict) -> ContainerFlowAdjustedToVehicleType:
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
-        use_cache = kwargs.pop("use_cache", True)
         assert len(kwargs) == 0, f"Keyword(s) {kwargs.keys()} have not been processed"
         adjusted_to = self.analysis_summary.get_summary(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
         return adjusted_to

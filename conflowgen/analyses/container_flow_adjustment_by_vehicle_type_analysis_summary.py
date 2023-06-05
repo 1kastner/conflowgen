@@ -47,8 +47,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
     def get_summary(
             self,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> ContainerFlowAdjustedToVehicleType:
         """
         Under certain circumstances (as explained in
@@ -63,14 +62,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
                 The earliest arriving container that is included. Consider all containers if :obj:`None`.
             end_date:
                 The latest departing container that is included. Consider all containers if :obj:`None`.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
-                Defaults to ``True``.
         """
         initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
 
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu

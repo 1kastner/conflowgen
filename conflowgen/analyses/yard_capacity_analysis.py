@@ -20,8 +20,7 @@ class YardCapacityAnalysis(AbstractAnalysis):
     def get_used_yard_capacity_over_time(
             self,
             storage_requirement: typing.Union[str, typing.Collection, StorageRequirement] = "all",
-            smoothen_peaks: bool = True,
-            use_cache: bool = True
+            smoothen_peaks: bool = True
     ) -> typing.Dict[datetime.datetime, float]:
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
@@ -48,8 +47,6 @@ class YardCapacityAnalysis(AbstractAnalysis):
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
             smoothen_peaks: Whether to smoothen the peaks.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
         Returns:
             A series of the used yard capacity in TEU over the time.
         """
@@ -64,8 +61,8 @@ class YardCapacityAnalysis(AbstractAnalysis):
         for container in selected_containers:
             container_stays.append(
                 (
-                    container.get_arrival_time(use_cache=use_cache),
-                    container.get_departure_time(use_cache=use_cache),
+                    container.get_arrival_time(),
+                    container.get_departure_time(),
                     container.occupied_teu
                 )
             )

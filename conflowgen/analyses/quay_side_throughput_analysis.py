@@ -31,8 +31,7 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
             inbound: bool = True,
             outbound: bool = True,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> typing.Dict[datetime.date, float]:
         """
         For each week, the containers crossing the quay are checked. Based on this, the required quay capacity in boxes
@@ -48,9 +47,6 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
             outbound: Whether to check for vessels which pick up a container on their outbound journey
             start_date: The earliest arriving container that is included. Consider all containers if :obj:`None`.
             end_date: The latest departing container that is included. Consider all containers if :obj:`None`.
-            use_cache (bool):
-                Use cache instead of re-calculating the arrival and departure time of the container.
-                Defaults to ``True``.
 
         """
 
@@ -60,9 +56,9 @@ class QuaySideThroughputAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
+            if end_date and container.get_departure_time() > end_date:
                 continue
 
             if inbound:

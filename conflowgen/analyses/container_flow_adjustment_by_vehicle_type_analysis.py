@@ -21,8 +21,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
     @DataSummariesCache.cache_result
     def get_initial_to_adjusted_outbound_flow(
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> ContainerVolumeFromOriginToDestination:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
@@ -35,9 +34,6 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
-                Defaults to ``True``.
 
         Returns:
             The data structure describes how often an initial outbound vehicle type had to be adjusted with which other
@@ -66,9 +62,9 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysis(AbstractAnalysis):
         # Iterate over all containers and count number of containers / used teu capacity
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             vehicle_type_initial = container.picked_up_by_initial
             vehicle_type_adjusted = container.picked_up_by

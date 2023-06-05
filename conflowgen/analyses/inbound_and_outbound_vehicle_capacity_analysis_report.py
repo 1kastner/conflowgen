@@ -43,8 +43,6 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
                 Only include containers that arrive after the given start time.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
              The report in text format spanning over several lines.
@@ -82,8 +80,6 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
                 Only include containers that arrive after the given start time.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
 
         Returns:
              The matplotlib axis of the bar chart.
@@ -116,19 +112,16 @@ class InboundAndOutboundVehicleCapacityAnalysisReport(AbstractReportWithMatplotl
         )
         start_date = kwargs.pop("start_date", None)
         end_date = kwargs.pop("end_date", None)
-        use_cache = kwargs.pop("use_cache", True)
 
         # gather data
         inbound_container_volume = self.analysis.get_inbound_container_volumes_by_vehicle_type(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
         outbound_container_volume, outbound_maximum_container_volume = \
             self.analysis.get_outbound_container_volume_by_vehicle_type(
                 start_date=start_date,
-                end_date=end_date,
-                use_cache=use_cache
+                end_date=end_date
             )
 
         return inbound_container_volume.teu, outbound_container_volume.teu, outbound_maximum_container_volume.teu

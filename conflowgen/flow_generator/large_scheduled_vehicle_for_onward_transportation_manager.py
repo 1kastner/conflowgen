@@ -24,10 +24,7 @@ from ..tools.continuous_distribution import ContinuousDistribution, multiply_dis
 
 
 class LargeScheduledVehicleForOnwardTransportationManager:
-
     random_seed = 1
-
-    use_cache = True
 
     def __init__(self):
         self.seeded_random = random.Random(x=self.random_seed)
@@ -257,7 +254,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
     def _get_arrival_time_of_container(self, container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """
-        return container.get_arrival_time(use_cache=self.use_cache)
+        return container.get_arrival_time()
 
     def _find_alternative_mode_of_transportation(
             self,
