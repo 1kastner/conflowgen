@@ -16,6 +16,21 @@ from .vehicle import Truck
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
+class FaultyDataException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+class NoPickupVehicleException(Exception):
+    def __init__(self, container, vehicle_type):
+        self.container = container
+        self.vehicle_type = vehicle_type
+        message = f"The container {self.container} is not picked up by any vehicle even though a vehicle of type " \
+                  f"{self.vehicle_type} should be there."
+        super().__init__(message)
+
+
 class Container(BaseModel):
     """A representation of the physical container that is moved through the yard."""
     id = AutoField()
@@ -113,7 +128,7 @@ class Container(BaseModel):
             large_scheduled_vehicle: LargeScheduledVehicle = self.delivered_by_large_scheduled_vehicle
             container_arrival_time = large_scheduled_vehicle.scheduled_arrival
         else:
-            raise Exception(f"Faulty data: {self}")
+            raise FaultyDataException(f"Faulty data: {self}")
 
         self.cached_arrival_time = container_arrival_time
         self.save()
@@ -133,8 +148,7 @@ class Container(BaseModel):
             vehicle: LargeScheduledVehicle = self.picked_up_by_large_scheduled_vehicle
             container_departure_time = vehicle.scheduled_arrival
         else:
-            raise Exception(f"The container {self} is not picked up by any vehicle even though a vehicle of type "
-                            f"{self.picked_up_by} should be there.")
+            raise NoPickupVehicleException(self, self.picked_up_by)
 
         self.cached_departure_time = container_departure_time
         self.save()
