@@ -203,19 +203,20 @@ class TestDataSummariesCache(unittest.TestCase):
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 6, 4: 24, 5: 30}, "New result is incorrect")
-        self.assertEqual(len(DataSummariesCache.cached_results), 14, "There should be 14 cached results")
+        self.assertEqual(len(DataSummariesCache.cached_results), 7, "There should be 7 cached results, because"
+                                                                    "the preview was adjusted")
         self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
-                        {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()) and
                         {3: 6, 4: 24, 5: 30} in list(DataSummariesCache.cached_results.values()),
                         "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 2,
-                                                           '_get_total_trucks': 2,
-                                                           '_get_truck_capacity_for_export_containers': 4,
-                                                           'get_inbound_capacity_of_vehicles': 4,
-                                                           'get_outbound_capacity_of_vehicles': 2,
-                                                           'get_weekly_truck_arrivals': 2}, "Incorrect hit counter")
-        # All functions should be called again as the input distribution has changed
+        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
+                                                           '_get_total_trucks': 1,
+                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_inbound_capacity_of_vehicles': 2,
+                                                           'get_outbound_capacity_of_vehicles': 1,
+                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+        # Hit counter should be the same as before, because the preview was adjusted i.e. the cache was reset and then
+        # we re-ran the same functions
 
     def test_cache_reset(self):
         @DataSummariesCache.cache_result
