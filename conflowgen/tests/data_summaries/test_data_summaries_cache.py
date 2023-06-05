@@ -124,7 +124,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(result, 100, "Result of 10^2 should be 100")
         self.assertEqual(len(DataSummariesCache.cached_results), 2, "There should be two cached results")
         self.assertTrue(25 in list(DataSummariesCache.cached_results.values()) and
-                        100 in list(DataSummariesCache.cached_results.values()), "Cached result should be 25")
+                        100 in list(DataSummariesCache.cached_results.values()), "Cached results should be 25 and 100")
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'my_function': 3}, "Hit counter should be 3")
 
