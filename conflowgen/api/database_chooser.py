@@ -46,6 +46,7 @@ class DatabaseChooser:
         if self.peewee_sqlite_db is not None:
             self._close_and_reset_db()
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
+        DataSummariesCache.reset_cache()
 
     def create_new_sqlite_database(
             self,
@@ -78,6 +79,7 @@ class DatabaseChooser:
         self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(
             file_name, create=True, reset=overwrite, **seeder_options
         )
+        DataSummariesCache.reset_cache()
 
     def close_current_connection(self) -> None:
         """
