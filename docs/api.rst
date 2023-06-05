@@ -213,3 +213,9 @@ Exporting data
 
 .. autoenum:: conflowgen.ExportFileFormat
     :members:
+
+Data summary caching
+====================
+
+.. autoclass:: conflowgen.DataSummariesCache
+    :members:

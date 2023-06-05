@@ -1,6 +1,6 @@
 import typing
 
-from conflowgen import DataSummariesCache
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.truck_arrival_distribution_repository import \
     TruckArrivalDistributionRepository

@@ -2,7 +2,7 @@ import datetime
 import logging
 import typing
 
-from conflowgen import DataSummariesCache
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.flow_generator.container_flow_generation_service import \

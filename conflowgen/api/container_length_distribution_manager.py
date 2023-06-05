@@ -1,6 +1,6 @@
 import typing
 
-from conflowgen import DataSummariesCache
+from conflowgen.data_summaries import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
     ContainerLengthDistributionRepository
