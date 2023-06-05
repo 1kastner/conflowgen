@@ -29,7 +29,7 @@ class DataSummariesCache:
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Create key from function id, name and arguments
-            key = str(id(func)) + str(args) + str(kwargs)
+            key = str(id(func)) + repr(args) + repr(kwargs)
 
             # Adjust hit counter
             function_name = func.__name__

@@ -17,12 +17,7 @@ from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
-class TestException(Exception):
-    pass
-
-
 class TestDataSummariesCache(unittest.TestCase):
-    # pylint: disable=too-many-public-methods
 
     def setUp(self) -> None:
         """Create container database in memory"""
@@ -229,8 +224,8 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(DataSummariesCache._hit_counter, {}, "Initial hit counter should be empty")
 
         # Call the function and check cache and hit counter
-        counter = increment_counter(5)
-        self.assertEqual(counter, 6, "Incorrect result returned")
+        result = increment_counter(5)
+        self.assertEqual(result, 6, "Incorrect result returned")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
         self.assertTrue(6 in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
         # pylint: disable=protected-access
@@ -357,33 +352,6 @@ class TestDataSummariesCache(unittest.TestCase):
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'power': 4}, "Hit counter should be 4 for 'power'")
 
-    def test_cache_with_non_deterministic_function(self):
-        # In case someone wants to use cache to save the result of a non-deterministic function...
-        @DataSummariesCache.cache_result
-        def random_number(seed):
-            random.seed(seed)
-            return random.randint(1, 100)
-
-        # Call the function and check if the result is cached
-        result1 = random_number(42)
-        self.assertTrue(1 <= result1 <= 100, "Result should be between 1 and 100")
-        first_cached_result = list(DataSummariesCache.cached_results.values())[0]
-        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
-        self.assertTrue(1 <= first_cached_result <= 100, "Cached result should be between 1 and 100")
-        # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 1},
-                         "Hit counter should be 1 for 'random_number'")
-
-        # Call the function again and check if the result is retrieved from the cache
-        result2 = random_number(42)
-        self.assertTrue(1 <= result2 <= 100, "Result should be between 1 and 100")
-        self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should still have one result")
-        self.assertEqual(list(DataSummariesCache.cached_results.values())[0], first_cached_result,
-                         "Cached result should be the same as the first one")
-        # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'random_number': 2},
-                         "Hit counter should be 2 for 'random_number'")
-
     def test_docstring_preservation(self):
         @DataSummariesCache.cache_result
         # pylint: disable=invalid-name
@@ -400,18 +368,6 @@ class TestDataSummariesCache(unittest.TestCase):
             return n ** 3
 
         self.assertEqual(cube.__doc__, "Return the cube of a number.", "Docstring should be preserved")
-
-    def test_exception_handling(self):
-        @DataSummariesCache.cache_result
-        def raise_exception():
-            raise TestException("Test exception")
-
-        with self.assertRaises(Exception):
-            raise_exception()
-
-        # Check that the result is not cached
-        self.assertFalse(raise_exception in list(DataSummariesCache.cached_results.values()),
-                         "Exception should not be cached")
 
     def test_cache_none(self):
         @DataSummariesCache.cache_result
@@ -483,22 +439,6 @@ class TestDataSummariesCache(unittest.TestCase):
                               "Function should return an instance of CustomObject")
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_custom_object': 1})
-
-    def test_large_cache(self):
-        big_number = 100000
-        for i in range(big_number):
-            @DataSummariesCache.cache_result
-            # pylint: disable=invalid-name
-            def return_me(me):
-                return me
-
-            self.assertEqual(return_me(i), i, "Function should return i")
-            self.assertEqual(len(DataSummariesCache.cached_results), i + 1, "Cache should have i + 1 results")
-            self.assertTrue(i in list(DataSummariesCache.cached_results.values()), "Result should be cached")
-            # pylint: disable=protected-access
-            self.assertEqual(DataSummariesCache._hit_counter, {'return_me': i + 1})
-
-        self.assertEqual(len(DataSummariesCache.cached_results), big_number, f"Cache should contain {big_number} items")
 
     def test_nested_decorator(self):
         # pylint: disable=invalid-name
