@@ -99,6 +99,7 @@ class TestDataSummariesCache(unittest.TestCase):
     def test_sanity(self):
         # Define a function to be decorated
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def my_function(n):
             return n ** 2
 
@@ -243,6 +244,7 @@ class TestDataSummariesCache(unittest.TestCase):
 
     def test_cache_with_different_function_args(self):
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def add_numbers(a, b):
             return a + b
 
@@ -270,10 +272,12 @@ class TestDataSummariesCache(unittest.TestCase):
 
     def test_cache_with_different_functions(self):
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def square(n):
             return n ** 2
 
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def cube(n):
             return n ** 3
 
@@ -326,6 +330,7 @@ class TestDataSummariesCache(unittest.TestCase):
 
     def test_cache_with_default_args(self):
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def power(n, p=2):
             return n ** p
 
@@ -380,6 +385,7 @@ class TestDataSummariesCache(unittest.TestCase):
 
     def test_docstring_preservation(self):
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def square(n):
             """Return the square of a number."""
             return n ** 2
@@ -387,6 +393,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(square.__doc__, "Return the square of a number.", "Docstring should be preserved")
 
         @DataSummariesCache.cache_result
+        # pylint: disable=invalid-name
         def cube(n):
             """Return the cube of a number."""
             return n ** 3
@@ -480,6 +487,7 @@ class TestDataSummariesCache(unittest.TestCase):
         big_number = 100000
         for i in range(big_number):
             @DataSummariesCache.cache_result
+            # pylint: disable=invalid-name
             def return_me(me):
                 return me
 
@@ -492,6 +500,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(len(DataSummariesCache.cached_results), big_number, f"Cache should contain {big_number} items")
 
     def test_nested_decorator(self):
+        # pylint: disable=invalid-name
         def simple_decorator(f):
             @wraps(f)
             def wrapper(*args, **kwargs):
@@ -501,6 +510,7 @@ class TestDataSummariesCache(unittest.TestCase):
 
         @DataSummariesCache.cache_result
         @simple_decorator
+        # pylint: disable=invalid-name
         def add(a, b):
             """Adds two numbers."""
             return a + b
@@ -531,6 +541,7 @@ class TestDataSummariesCache(unittest.TestCase):
                 self.counter = 0
 
             @DataSummariesCache.cache_result
+            # pylint: disable=invalid-name
             def method(self, a, b):
                 """Adds two numbers and the instance counter."""
                 self.counter = getattr(self, 'counter', 0) + 1
