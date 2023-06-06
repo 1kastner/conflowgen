@@ -54,7 +54,7 @@ class DataSummariesCache:
     @classmethod
     def reset_cache(cls):
         """
-            Resets the cache.
+        Resets the cache.
         """
         cls.cached_results = {}
         cls._hit_counter = {}
