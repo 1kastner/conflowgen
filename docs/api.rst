@@ -205,6 +205,9 @@ you can define them here and pass them as parameters to the aforementioned funct
 .. autoclass:: conflowgen.DisplayAsPlainText
     :members:
 
+.. autoclass:: conflowgen.DataSummariesCache
+    :members:
+
 Exporting data
 ==============
 
@@ -212,10 +215,4 @@ Exporting data
     :members:
 
 .. autoenum:: conflowgen.ExportFileFormat
-    :members:
-
-Data summary caching
-====================
-
-.. autoclass:: conflowgen.DataSummariesCache
     :members:
