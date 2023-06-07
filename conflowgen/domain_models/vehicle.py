@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime
 import uuid
+from abc import abstractmethod
 from typing import Type
 
 from peewee import AutoField, BooleanField, CharField, ForeignKeyField, DateTimeField
@@ -14,9 +15,9 @@ from peewee import IntegerField
 from conflowgen.domain_models.arrival_information import \
     TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from .base_model import BaseModel
 from .data_types.mode_of_transport import ModeOfTransport
-from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 
 
 class Truck(BaseModel):
@@ -121,12 +122,14 @@ class LargeScheduledVehicle(BaseModel):
 
 class AbstractLargeScheduledVehicle(BaseModel):
     @property
+    @abstractmethod
     def large_scheduled_vehicle(self) -> LargeScheduledVehicle:
-        raise Exception("You must pick one of the concrete subclasses, this is the common parent class.")
+        pass
 
     @staticmethod
+    @abstractmethod
     def get_mode_of_transport() -> ModeOfTransport:
-        raise Exception("You must pick one of the concrete subclasses, this is the common parent class.")
+        pass
 
     @staticmethod
     def map_mode_of_transport_to_class(

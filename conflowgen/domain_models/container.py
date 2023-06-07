@@ -4,6 +4,7 @@ from peewee import AutoField, BooleanField, DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from .arrival_information import TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from .base_model import BaseModel
 from .data_types.container_length import CONTAINER_LENGTH_TO_OCCUPIED_TEU
@@ -13,7 +14,6 @@ from .field_types.storage_requirement import StorageRequirementField
 from .large_vehicle_schedule import Destination
 from .vehicle import LargeScheduledVehicle
 from .vehicle import Truck
-from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
