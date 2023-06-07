@@ -13,6 +13,7 @@ from .field_types.storage_requirement import StorageRequirementField
 from .large_vehicle_schedule import Destination
 from .vehicle import LargeScheduledVehicle
 from .vehicle import Truck
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
@@ -115,6 +116,7 @@ class Container(BaseModel):
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
 
+    @DataSummariesCache.cache_result
     def get_arrival_time(self) -> datetime.datetime:
 
         container_arrival_time: datetime.datetime
@@ -134,6 +136,7 @@ class Container(BaseModel):
         self.save()
         return container_arrival_time
 
+    @DataSummariesCache.cache_result
     def get_departure_time(self) -> datetime.datetime:
 
         container_departure_time: datetime.datetime

@@ -9,6 +9,7 @@ import numpy as np
 # noinspection PyProtectedMember
 from peewee import fn, JOIN, ModelSelect
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
@@ -251,6 +252,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         return minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
 
+    @DataSummariesCache.cache_result
     def _get_arrival_time_of_container(self, container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """

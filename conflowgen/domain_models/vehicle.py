@@ -16,6 +16,7 @@ from conflowgen.domain_models.arrival_information import \
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 from .base_model import BaseModel
 from .data_types.mode_of_transport import ModeOfTransport
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 
 
 class Truck(BaseModel):
@@ -105,6 +106,7 @@ class LargeScheduledVehicle(BaseModel):
                   "ModeOfTransportDistribution as obviously the different information does not match."
     )
 
+    @DataSummariesCache.cache_result
     def get_arrival_time(self) -> datetime.datetime:
         """
         Returns:
