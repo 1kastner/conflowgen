@@ -3,7 +3,7 @@ import typing
 
 from peewee import SqliteDatabase
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.database_connection.sqlite_database_connection import SqliteDatabaseConnection
 
 

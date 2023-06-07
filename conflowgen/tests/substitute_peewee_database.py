@@ -1,6 +1,6 @@
 from peewee import SqliteDatabase
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.base_model import database_proxy
 
 

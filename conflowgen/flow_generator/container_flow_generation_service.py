@@ -18,7 +18,7 @@ from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
 from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 
 
 class ContainerFlowGenerationService:

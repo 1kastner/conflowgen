@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \

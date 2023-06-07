@@ -5,7 +5,7 @@ from builtins import bool
 from datetime import datetime
 from collections import namedtuple
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
 from conflowgen.api.truck_arrival_distribution_manager import TruckArrivalDistributionManager

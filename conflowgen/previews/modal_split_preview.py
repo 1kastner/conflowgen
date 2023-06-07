@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview

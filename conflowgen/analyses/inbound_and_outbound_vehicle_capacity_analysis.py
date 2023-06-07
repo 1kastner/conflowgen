@@ -6,7 +6,7 @@ import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import] 
 
 import numpy as np
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport

@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 import typing
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 

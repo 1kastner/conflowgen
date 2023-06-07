@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.large_vehicle_schedule import Schedule

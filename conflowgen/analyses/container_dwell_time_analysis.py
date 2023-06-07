@@ -7,7 +7,7 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
-from conflowgen.data_summaries import DataSummariesCache
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 
 
 class ContainerDwellTimeAnalysis(AbstractAnalysis):
