@@ -3,6 +3,7 @@ import datetime
 from typing import Dict
 import numpy as np
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
@@ -49,6 +50,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
 
         self.mode_of_transport_distribution = ModeOfTransportDistributionRepository().get_distribution()
 
+    @DataSummariesCache.cache_result
     def _get_truck_capacity_for_export_containers(
             self,
             inbound_capacity_of_vehicles: Dict[ModeOfTransport, float]
@@ -69,6 +71,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             truck_capacity += number_of_containers_to_pick_up_by_truck_from_vehicle_type
         return truck_capacity
 
+    @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
@@ -78,6 +81,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         )
         self.mode_of_transport_distribution = mode_of_transport_distribution
 
+    @DataSummariesCache.cache_result
     def get_inbound_capacity_of_vehicles(self) -> ContainerVolumeByVehicleType:
         """
         For the inbound capacity, first vehicles that adhere to a schedule are considered. Trucks, which are created
@@ -110,6 +114,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
             teu=inbound_capacity_in_teu
         )
 
+    @DataSummariesCache.cache_result
     def get_outbound_capacity_of_vehicles(self) -> OutboundUsedAndMaximumCapacity:
         """
         For the outbound capacity, both the used outbound capacity (estimated) and the maximum outbound capacity is

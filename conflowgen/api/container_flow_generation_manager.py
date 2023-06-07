@@ -2,6 +2,7 @@ import datetime
 import logging
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.flow_generator.container_flow_generation_service import \
@@ -51,6 +52,7 @@ class ContainerFlowGenerationManager:
         self.container_flow_generation_properties_repository.set_container_flow_generation_properties(
             properties
         )
+        DataSummariesCache.reset_cache()
 
     def get_properties(self) -> typing.Dict[str, typing.Union[str, datetime.date, float, int]]:
         """

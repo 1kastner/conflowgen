@@ -63,6 +63,9 @@ from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_anal
 from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_analysis_report import \
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
 
+# Cache for analyses and previews
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
+
 # Specific classes for reports
 from conflowgen.reporting.output_style import DisplayAsMarkupLanguage, DisplayAsPlainText, DisplayAsMarkdown
 

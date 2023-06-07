@@ -18,6 +18,7 @@ from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
 from conflowgen.flow_generator.truck_for_import_containers_manager import \
     TruckForImportContainersManager
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 
 
 class ContainerFlowGenerationService:
@@ -73,6 +74,8 @@ class ContainerFlowGenerationService:
         return len(Container.select().limit(1)) == 1
 
     def generate(self):
+        self.logger.info("Resetting preview and analysis cache...")
+        DataSummariesCache.reset_cache()
         self.logger.info("Remove previous data...")
         self.clear_previous_container_flow()
         self.logger.info("Reloading properties and distributions...")

@@ -1,5 +1,6 @@
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
@@ -56,3 +57,4 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         self.container_dwell_time_distribution_repository.set_distributions(
             sanitized_distribution
         )
+        DataSummariesCache.reset_cache()

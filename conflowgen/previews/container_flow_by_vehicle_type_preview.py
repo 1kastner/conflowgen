@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
@@ -49,6 +50,7 @@ class ContainerFlowByVehicleTypePreview(AbstractPreview):
             transportation_buffer=transportation_buffer
         )
 
+    @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
@@ -58,6 +60,7 @@ class ContainerFlowByVehicleTypePreview(AbstractPreview):
         )
         self.mode_of_transport_distribution = mode_of_transport_distribution
 
+    @DataSummariesCache.cache_result
     def get_inbound_to_outbound_flow(
             self
     ) -> Dict[ModeOfTransport, Dict[ModeOfTransport, float]]:

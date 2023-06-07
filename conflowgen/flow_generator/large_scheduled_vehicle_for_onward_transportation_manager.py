@@ -9,6 +9,7 @@ import numpy as np
 # noinspection PyProtectedMember
 from peewee import fn, JOIN, ModelSelect
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
@@ -24,10 +25,7 @@ from ..tools.continuous_distribution import ContinuousDistribution, multiply_dis
 
 
 class LargeScheduledVehicleForOnwardTransportationManager:
-
     random_seed = 1
-
-    use_cache = True
 
     def __init__(self):
         self.seeded_random = random.Random(x=self.random_seed)
@@ -254,10 +252,11 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         return minimum_dwell_time_in_hours, maximum_dwell_time_in_hours
 
+    @DataSummariesCache.cache_result
     def _get_arrival_time_of_container(self, container: Container) -> datetime.datetime:
         """get container arrival from correct source
         """
-        return container.get_arrival_time(use_cache=self.use_cache)
+        return container.get_arrival_time()
 
     def _find_alternative_mode_of_transportation(
             self,

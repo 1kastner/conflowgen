@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
     ContainerFlowByVehicleTypePreview
@@ -58,6 +59,7 @@ class ModalSplitPreview(AbstractPreview):
             transportation_buffer=transportation_buffer
         )
 
+    @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
@@ -66,6 +68,7 @@ class ModalSplitPreview(AbstractPreview):
             mode_of_transport_distribution
         )
 
+    @DataSummariesCache.cache_result
     def get_transshipment_and_hinterland_split(self) -> TransshipmentAndHinterlandSplit:
         """
         Returns:
@@ -90,6 +93,7 @@ class ModalSplitPreview(AbstractPreview):
             hinterland_capacity=hinterland_capacity
         )
 
+    @DataSummariesCache.cache_result
     def get_modal_split_for_hinterland(
             self,
             inbound: bool,

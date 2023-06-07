@@ -5,6 +5,7 @@ from builtins import bool
 from datetime import datetime
 from collections import namedtuple
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
 from conflowgen.api.truck_arrival_distribution_manager import TruckArrivalDistributionManager
@@ -34,6 +35,7 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
             )
         )
 
+    @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: typing.Dict[ModeOfTransport, typing.Dict[ModeOfTransport, float]]
@@ -44,6 +46,7 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
         self.inbound_and_outbound_vehicle_capacity_preview.hypothesize_with_mode_of_transport_distribution(
             mode_of_transport_distribution)
 
+    @DataSummariesCache.cache_result
     def _get_total_trucks(self) -> typing.Tuple[int, int]:
         # Calculate the truck capacity for export containers using the inbound container capacities
         inbound_used_and_maximum_capacity = self.inbound_and_outbound_vehicle_capacity_preview. \
@@ -72,6 +75,7 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
 
         return total_containers_transported_by_truck
 
+    @DataSummariesCache.cache_result
     def _get_number_of_trucks_per_week(self) -> typing.Tuple[float, float]:
         # Calculate average number of trucks per week
         num_weeks = (self.end_date - self.start_date).days / 7
@@ -84,6 +88,7 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
 
         return total_weekly_trucks
 
+    @DataSummariesCache.cache_result
     def get_weekly_truck_arrivals(self, inbound: bool = True, outbound: bool = True) -> typing.Dict[int, int]:
 
         assert inbound or outbound, "At least one of inbound or outbound must be True"

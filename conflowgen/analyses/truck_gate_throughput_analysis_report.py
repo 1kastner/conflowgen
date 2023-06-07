@@ -45,8 +45,6 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 Whether to check for trucks which deliver a container on their inbound journey
             outbound (bool):
                 Whether to check for trucks which pick up a container on their outbound journey
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
 
         Returns:
             The report in text format.
@@ -96,8 +94,6 @@ class TruckGateThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 Whether to check for trucks which deliver a container on their inbound journey
             outbound (bool):
                 Whether to check for trucks which pick up a container on their outbound journey
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
             ax (matplotlib.axis.Axis):
                 Which matplotlib axis to plot on.
 

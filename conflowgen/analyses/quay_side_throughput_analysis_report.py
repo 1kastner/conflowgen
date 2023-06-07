@@ -70,8 +70,6 @@ class QuaySideThroughputAnalysisReport(AbstractReportWithMatplotlib):
                 Only include containers that arrive after the given start time.
             end_date (datetime.datetime):
                 Only include containers that depart before the given end time.
-            use_cache (bool):
-
 
         Returns:
              The matplotlib axis of the line chart over time.

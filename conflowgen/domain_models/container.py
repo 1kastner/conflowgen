@@ -4,6 +4,7 @@ from peewee import AutoField, BooleanField, DateTimeField
 from peewee import ForeignKeyField
 from peewee import IntegerField
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from .arrival_information import TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from .base_model import BaseModel
 from .data_types.container_length import CONTAINER_LENGTH_TO_OCCUPIED_TEU
@@ -14,6 +15,21 @@ from .large_vehicle_schedule import Destination
 from .vehicle import LargeScheduledVehicle
 from .vehicle import Truck
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
+
+
+class FaultyDataException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+class NoPickupVehicleException(Exception):
+    def __init__(self, container, vehicle_type):
+        self.container = container
+        self.vehicle_type = vehicle_type
+        message = f"The container {self.container} is not picked up by any vehicle even though a vehicle of type " \
+                  f"{self.vehicle_type} should be there."
+        super().__init__(message)
 
 
 class Container(BaseModel):
@@ -100,12 +116,8 @@ class Container(BaseModel):
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
 
-    def get_arrival_time(self, use_cache: bool) -> datetime.datetime:
-
-        if use_cache:
-            if self.cached_arrival_time is not None:
-                # noinspection PyTypeChecker
-                return self.cached_arrival_time
+    @DataSummariesCache.cache_result
+    def get_arrival_time(self) -> datetime.datetime:
 
         container_arrival_time: datetime.datetime
         if self.delivered_by == ModeOfTransport.truck:
@@ -118,18 +130,14 @@ class Container(BaseModel):
             large_scheduled_vehicle: LargeScheduledVehicle = self.delivered_by_large_scheduled_vehicle
             container_arrival_time = large_scheduled_vehicle.scheduled_arrival
         else:
-            raise Exception(f"Faulty data: {self}")
+            raise FaultyDataException(f"Faulty data: {self}")
 
         self.cached_arrival_time = container_arrival_time
         self.save()
         return container_arrival_time
 
-    def get_departure_time(self, use_cache: bool) -> datetime.datetime:
-
-        if use_cache:
-            if self.cached_departure_time is not None:
-                # noinspection PyTypeChecker
-                return self.cached_departure_time
+    @DataSummariesCache.cache_result
+    def get_departure_time(self) -> datetime.datetime:
 
         container_departure_time: datetime.datetime
         if self.picked_up_by_truck is not None:
@@ -143,8 +151,7 @@ class Container(BaseModel):
             vehicle: LargeScheduledVehicle = self.picked_up_by_large_scheduled_vehicle
             container_departure_time = vehicle.scheduled_arrival
         else:
-            raise Exception(f"The container {self} is not picked up by any vehicle even though a vehicle of type "
-                            f"{self.picked_up_by} should be there.")
+            raise NoPickupVehicleException(self, self.picked_up_by)
 
         self.cached_departure_time = container_departure_time
         self.save()

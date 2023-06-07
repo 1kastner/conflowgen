@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
@@ -33,11 +34,11 @@ class ModalSplitAnalysis(AbstractAnalysis):
         super().__init__()
         self.container_flow_by_vehicle_type_analysis = ContainerFlowByVehicleTypeAnalysis()
 
+    @DataSummariesCache.cache_result
     def get_transshipment_and_hinterland_split(
             self,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> TransshipmentAndHinterlandSplit:
         """
         Args:
@@ -45,8 +46,6 @@ class ModalSplitAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
 
         Returns:
             The amount of containers in TEU dedicated for or coming from the hinterland versus the amount of containers
@@ -54,8 +53,7 @@ class ModalSplitAnalysis(AbstractAnalysis):
         """
         inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
         inbound_to_outbound_flow = inbound_to_outbound_flows.teu
 
@@ -75,13 +73,13 @@ class ModalSplitAnalysis(AbstractAnalysis):
             hinterland_capacity=hinterland_capacity
         )
 
+    @DataSummariesCache.cache_result
     def get_modal_split_for_hinterland_traffic(
             self,
             inbound: bool,
             outbound: bool,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> HinterlandModalSplit:
         """
         Args:
@@ -91,16 +89,13 @@ class ModalSplitAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
 
         Returns:
             The modal split for the hinterland in TEU.
         """
         inbound_to_outbound_flows = self.container_flow_by_vehicle_type_analysis.get_inbound_to_outbound_flow(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
         inbound_to_outbound_flow_in_teu = inbound_to_outbound_flows.teu
 

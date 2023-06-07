@@ -1,5 +1,6 @@
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -43,3 +44,4 @@ class StorageRequirementDistributionManager(AbstractDistributionManager):
             values_are_frequencies=True
         )
         self.storage_requirement_repository.set_distribution(sanitized_distribution)
+        DataSummariesCache.reset_cache()

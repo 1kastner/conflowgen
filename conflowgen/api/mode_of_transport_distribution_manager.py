@@ -1,5 +1,6 @@
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -45,3 +46,4 @@ class ModeOfTransportDistributionManager(AbstractDistributionManager):
         self.mode_of_transport_distribution_repository.set_mode_of_transport_distributions(
             sanitized_distribution
         )
+        DataSummariesCache.reset_cache()

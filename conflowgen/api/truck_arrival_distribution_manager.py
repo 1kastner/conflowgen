@@ -1,5 +1,6 @@
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.truck_arrival_distribution_repository import \
     TruckArrivalDistributionRepository
@@ -43,3 +44,4 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
             values_are_frequencies=True
         )
         self.truck_arrival_distribution_repository.set_distribution(sanitized_distribution)
+        DataSummariesCache.reset_cache()
