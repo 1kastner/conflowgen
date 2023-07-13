@@ -52,21 +52,22 @@ def setup_logger(
     if logging_directory is None:
         logging_directory = LOGGING_DEFAULT_DIR
 
-    logger = logging.getLogger("conflowgen")  # Check if logger already exists
-    if logger.handlers:
-        # Logger already has handlers, so it has already been set up
-        return logger
-
     time_prefix = str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".", maxsplit=1)[0]
 
     formatter = logging.Formatter(format_string, datefmt="%d.%m.%Y %H:%M:%S %z")
 
+    logger = logging.getLogger("conflowgen")
     logger.setLevel(logging.DEBUG)
 
-    flow_handler = logging.StreamHandler(stream=sys.stdout)
-    flow_handler.setLevel(logging.DEBUG)
-    flow_handler.setFormatter(formatter)
-    logger.addHandler(flow_handler)
+    stream_handlers = [handler for handler in logger.handlers if isinstance(handler, logging.StreamHandler)]
+    if any(handler.stream == sys.stdout for handler in stream_handlers):
+        logger.warning("Duplicate StreamHandler streaming to sys.stdout detected. "
+                       "Skipping adding another StreamHandler.")
+    else:
+        flow_handler = logging.StreamHandler(stream=sys.stdout)
+        flow_handler.setLevel(logging.DEBUG)
+        flow_handler.setFormatter(formatter)
+        logger.addHandler(flow_handler)
 
     if not os.path.isdir(logging_directory):
         logger.debug(f"Creating log directory at {logging_directory}")
