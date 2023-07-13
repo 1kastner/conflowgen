@@ -52,11 +52,15 @@ def setup_logger(
     if logging_directory is None:
         logging_directory = LOGGING_DEFAULT_DIR
 
+    logger = logging.getLogger("conflowgen")  # Check if logger already exists
+    if logger.handlers:
+        # Logger already has handlers, so it has already been set up
+        return logger
+
     time_prefix = str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".", maxsplit=1)[0]
 
     formatter = logging.Formatter(format_string, datefmt="%d.%m.%Y %H:%M:%S %z")
 
-    logger = logging.getLogger("conflowgen")
     logger.setLevel(logging.DEBUG)
 
     flow_handler = logging.StreamHandler(stream=sys.stdout)
