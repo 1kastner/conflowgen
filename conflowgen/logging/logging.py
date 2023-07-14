@@ -64,10 +64,10 @@ def setup_logger(
         logger.warning("Duplicate StreamHandler streaming to sys.stdout detected. "
                        "Skipping adding another StreamHandler.")
     else:
-        flow_handler = logging.StreamHandler(stream=sys.stdout)
-        flow_handler.setLevel(logging.DEBUG)
-        flow_handler.setFormatter(formatter)
-        logger.addHandler(flow_handler)
+        stream_handler = logging.StreamHandler(stream=sys.stdout)
+        stream_handler.setLevel(logging.DEBUG)
+        stream_handler.setFormatter(formatter)
+        logger.addHandler(stream_handler)
 
     if not os.path.isdir(logging_directory):
         logger.debug(f"Creating log directory at {logging_directory}")
