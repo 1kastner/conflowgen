@@ -30,6 +30,8 @@ Domain datatypes
 
 .. autonamedtuple:: conflowgen.VehicleIdentifier
 
+.. autonamedtuple:: conflowgen.UsedYardCapacityOverTime
+
 
 Setting up ConFlowGen
 =====================

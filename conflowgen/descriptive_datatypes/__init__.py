@@ -81,3 +81,15 @@ class VehicleIdentifier(typing.NamedTuple):
 
     #: The time of arrival of the vehicle at the terminal.
     vehicle_arrival_time: datetime.datetime
+
+
+class UsedYardCapacityOverTime(typing.NamedTuple):
+    """
+    Represents yard capacity in TEU and number of boxes.
+    """
+
+    #: The yard capacity expressed in TEU
+    teu: typing.Dict[datetime.datetime, float]
+
+    #: The yard capacity expressed in number of boxes
+    containers: typing.Dict[datetime.datetime, int]
