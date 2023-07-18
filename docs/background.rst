@@ -231,8 +231,8 @@ World Association for Waterborne Transport Infrastructure (PIANC)
 in 2023 in Oslo.
 The contribution
 `Synthetically generating traffic scenarios for simulation-based container terminal planning \
-<https://www.pianc.org/uploads/files/Nieuwe-figuren/Marvin-Kastner.pdf>`_
+<https://tore.tuhh.de/dspace-cris-server/api/core/bitstreams/1d990927-cca9-4b40-8440-19cc544cc847/content>`_
 has been awarded with the
-`De Paepe-Willems Award <https://www.pianc.org/awards/pianc-de-paepe-willems-award>`_.
+`De Paepe-Willems Award <https://www.pianc.org/award/de-paepe-willems-award/>`_.
 The paper highlights how ConFlowGen can support terminal planners in designing terminal interfaces and determining
 the required yard capacity.
