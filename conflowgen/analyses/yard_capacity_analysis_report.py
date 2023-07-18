@@ -118,4 +118,4 @@ class YardCapacityAnalysisReport(AbstractReportWithMatplotlib):
         yard_capacity_over_time = self.analysis.get_used_yard_capacity_over_time(
             storage_requirement=storage_requirement
         )
-        return storage_requirement, yard_capacity_over_time
+        return storage_requirement, yard_capacity_over_time.teu
