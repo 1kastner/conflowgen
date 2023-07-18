@@ -48,7 +48,6 @@ class YardCapacityAnalysis(AbstractAnalysis):
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
             smoothen_peaks: Whether to smoothen the peaks.
-            convert_to_teu: Whether to convert the used yard capacity to TEU.
         Returns:
             UsedYardCapacityOverTime: A namedtuple consisting of two dictionaries. The first dictionary represents the
             used yard capacity in TEU over the time. The second dictionary represents the used yard capacity

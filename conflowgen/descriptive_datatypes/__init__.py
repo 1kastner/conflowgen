@@ -87,6 +87,7 @@ class UsedYardCapacityOverTime(typing.NamedTuple):
     """
     Represents yard capacity in TEU and number of boxes.
     """
+
     #: The yard capacity expressed in TEU
     teu: typing.Dict[datetime.datetime, float]
 
