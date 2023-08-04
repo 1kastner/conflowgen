@@ -3,7 +3,10 @@ import unittest
 
 import numpy as np
 
+from conflowgen.domain_models.data_types.container_length import ContainerLength
+from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.distribution_models.container_length_distribution import ContainerLengthDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -18,7 +21,8 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
         self.sqlite_db = setup_sqlite_in_memory_db()
         self.sqlite_db.create_tables([
             Schedule,
-            ModeOfTransportDistribution
+            ModeOfTransportDistribution,
+            ContainerLengthDistribution
         ])
         now = datetime.datetime.now()
         ModeOfTransportDistributionRepository().set_mode_of_transport_distributions({
@@ -58,6 +62,17 @@ class TestVehicleCapacityExceededPreview(unittest.TestCase):
                 ModeOfTransport.deep_sea_vessel: 0.15
             }
         })
+
+        container_length_manager = ContainerLengthDistributionManager()
+        container_length_manager.set_container_length_distribution(  # Set default container length distribution
+            {
+                ContainerLength.other: 0.001,
+                ContainerLength.twenty_feet: 0.4,
+                ContainerLength.forty_feet: 0.57,
+                ContainerLength.forty_five_feet: 0.029
+            }
+        )
+
         self.preview = VehicleCapacityExceededPreview(
             start_date=now.date(),
             end_date=(now + datetime.timedelta(weeks=2)).date(),
