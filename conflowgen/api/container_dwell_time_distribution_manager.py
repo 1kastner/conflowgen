@@ -26,7 +26,7 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
     def get_container_dwell_time_distribution(
             self
     ) -> typing.Dict[ModeOfTransport, typing.Dict[
-        ModeOfTransport, typing.Dict[StorageRequirement, ContinuousDistribution]]]:
+            ModeOfTransport, typing.Dict[StorageRequirement, ContinuousDistribution]]]:
         """
 
         Returns:
@@ -87,11 +87,11 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
                 for container_length in ContainerLength:
                     for storage_requirement in StorageRequirement:
                         num_containers = inbound_vehicle_capacity.containers[delivering_vehicle_type] * \
-                                            mode_of_transport_distribution[delivering_vehicle_type][
-                                                picking_up_vehicle_type] * \
-                                            container_length_distribution[container_length] * \
-                                            container_storage_requirement_distribution[container_length][
-                                                storage_requirement]
+                                         mode_of_transport_distribution[delivering_vehicle_type][
+                                             picking_up_vehicle_type] * \
+                                         container_length_distribution[container_length] * \
+                                         container_storage_requirement_distribution[container_length][
+                                             storage_requirement]
                         total_containers += num_containers
                         average_container_dwell_time += \
                             container_dwell_time_distribution[delivering_vehicle_type][picking_up_vehicle_type][

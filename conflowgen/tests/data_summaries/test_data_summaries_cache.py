@@ -142,7 +142,7 @@ class TestDataSummariesCache(unittest.TestCase):
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
                                                            '_get_total_trucks': 1,
-                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_truck_capacity_for_export_containers': 2,
                                                            'get_inbound_capacity_of_vehicles': 3,
                                                            'get_outbound_capacity_of_vehicles': 2,
                                                            'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
@@ -155,7 +155,7 @@ class TestDataSummariesCache(unittest.TestCase):
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
                                                            '_get_total_trucks': 1,
-                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_truck_capacity_for_export_containers': 2,
                                                            'get_inbound_capacity_of_vehicles': 3,
                                                            'get_outbound_capacity_of_vehicles': 2,
                                                            'get_weekly_truck_arrivals': 2}, "Incorrect hit counter")
@@ -181,7 +181,7 @@ class TestDataSummariesCache(unittest.TestCase):
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
                                                            '_get_total_trucks': 1,
-                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_truck_capacity_for_export_containers': 2,
                                                            'get_inbound_capacity_of_vehicles': 3,
                                                            'get_outbound_capacity_of_vehicles': 2,
                                                            'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
@@ -208,7 +208,7 @@ class TestDataSummariesCache(unittest.TestCase):
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
                                                            '_get_total_trucks': 1,
-                                                           '_get_truck_capacity_for_export_containers': 2,
+                                                           'get_truck_capacity_for_export_containers': 2,
                                                            'get_inbound_capacity_of_vehicles': 3,
                                                            'get_outbound_capacity_of_vehicles': 2,
                                                            'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
