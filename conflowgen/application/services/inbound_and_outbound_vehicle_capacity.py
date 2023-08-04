@@ -18,7 +18,7 @@ class InboundAndOutboundVehicleCapacity:
 
     @staticmethod
     @DataSummariesCache.cache_result
-    def _get_truck_capacity_for_export_containers(
+    def get_truck_capacity_for_export_containers(
             inbound_capacity_of_vehicles: Dict[ModeOfTransport, float]
     ) -> float:
         """
@@ -70,7 +70,7 @@ class InboundAndOutboundVehicleCapacity:
             inbound_capacity_in_teu[schedule.vehicle_type] += total_capacity_moved_by_vessel
 
         inbound_capacity_in_teu[ModeOfTransport.truck] = \
-            InboundAndOutboundVehicleCapacity._get_truck_capacity_for_export_containers(
+            InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(
                 inbound_capacity_in_teu
             )
         containers[ModeOfTransport.truck] = \
@@ -143,7 +143,7 @@ class InboundAndOutboundVehicleCapacity:
 
         inbound_capacity = InboundAndOutboundVehicleCapacity.get_inbound_capacity_of_vehicles(start_date, end_date)
         outbound_used_capacity_in_teu[ModeOfTransport.truck] = \
-            InboundAndOutboundVehicleCapacity._get_truck_capacity_for_export_containers(
+            InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(
                 inbound_capacity.teu
             )
         outbound_used_containers[ModeOfTransport.truck] = \

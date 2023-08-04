@@ -6,8 +6,6 @@ from conflowgen.api.container_dwell_time_distribution_manager import ContainerDw
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.storage_requirement_distribution import StorageRequirementDistribution
-from conflowgen.domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
-    ContainerDwellTimeDistributionRepository
 from conflowgen.domain_models.distribution_seeders import container_dwell_time_distribution_seeder
 from conflowgen.domain_models.distribution_seeders import storage_requirement_distribution_seeder
 
@@ -150,7 +148,8 @@ class TestContainerDwellTimeDistributionManager(unittest.TestCase):
 
         container_dwell_time_distribution_manager = ContainerDwellTimeDistributionManager()
 
-        original_dwell_time_distributions = container_dwell_time_distribution_manager.get_container_dwell_time_distribution()
+        original_dwell_time_distributions = container_dwell_time_distribution_manager.\
+            get_container_dwell_time_distribution()
 
         new_container_dwell_time_distributions = {}
 
@@ -204,7 +203,8 @@ class TestContainerDwellTimeDistributionManager(unittest.TestCase):
 
         container_dwell_time_distribution_manager = ContainerDwellTimeDistributionManager()
 
-        original_dwell_time_distributions = container_dwell_time_distribution_manager.get_container_dwell_time_distribution()
+        original_dwell_time_distributions = container_dwell_time_distribution_manager.\
+            get_container_dwell_time_distribution()
 
         new_container_dwell_time_distributions = {}
 

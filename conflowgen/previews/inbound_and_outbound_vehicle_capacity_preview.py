@@ -59,7 +59,7 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         created.
         Thus, this method accounts for both import and export.
         """
-        return InboundAndOutboundVehicleCapacity._get_truck_capacity_for_export_containers(inbound_capacity_of_vehicles)
+        return InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(inbound_capacity_of_vehicles)
 
     @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
