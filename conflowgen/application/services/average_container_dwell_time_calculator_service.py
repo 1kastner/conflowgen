@@ -14,13 +14,7 @@ from conflowgen.domain_models.distribution_repositories.container_dwell_time_dis
 
 class AverageContainerDwellTimeCalculatorService:
 
-    def get_average_container_dwell_time(self, start_date: datetime.datetime, end_date: datetime.datetime) -> float:
-        """
-        Uses the inbound and outbound vehicle capacities service and the mode of transport input distribution
-        to calculate the weighted average container dwell time.
-        Returns:
-            Weighted average of all container dwell times based on inbound and outbound vehicle capacities
-        """
+    def get_average_container_dwell_time(self, start_date: datetime.date, end_date: datetime.date) -> float:
         inbound_vehicle_capacity = InboundAndOutboundVehicleCapacityCalculatorService.get_inbound_capacity_of_vehicles(
             start_date=start_date,
             end_date=end_date

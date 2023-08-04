@@ -1,4 +1,5 @@
 import typing
+import datetime
 
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
@@ -61,10 +62,15 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         )
         DataSummariesCache.reset_cache()
 
-    def get_average_container_dwell_time(self, start_date, end_date) -> float:
+    def get_average_container_dwell_time(self, start_date: datetime.date, end_date: datetime.date) -> float:
         """
-        Uses the inbound and outbound vehicle capacities service and the mode of transport input distribution
-        to calculate the weighted average container dwell time.
+        Uses :class:`.ModeOfTransportDistributionManager` to calculate the expected average container dwell time
+        based on the scheduled container flow.
+
+        Args:
+            start_date: The earliest day to consider for scheduled vehicles
+            end_date: The latest day to consider for scheduled vehicles
+
         Returns:
             Weighted average of all container dwell times based on inbound and outbound vehicle capacities
         """
