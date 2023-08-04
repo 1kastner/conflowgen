@@ -5,7 +5,8 @@ from conflowgen.api.storage_requirement_distribution_manager import StorageRequi
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.api.mode_of_transport_distribution_manager import ModeOfTransportDistributionManager
-from conflowgen.application.services.inbound_and_outbound_vehicle_capacity import InboundAndOutboundVehicleCapacity
+from conflowgen.application.services.inbound_and_outbound_vehicle_capacity_calculator_service import \
+    InboundAndOutboundVehicleCapacityCalculatorService
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
@@ -71,7 +72,7 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         Returns:
             Weighted average of all container dwell times based on inbound and outbound vehicle capacities
         """
-        inbound_vehicle_capacity = InboundAndOutboundVehicleCapacity.get_inbound_capacity_of_vehicles(
+        inbound_vehicle_capacity = InboundAndOutboundVehicleCapacityCalculatorService.get_inbound_capacity_of_vehicles(
             start_date=start_date,
             end_date=end_date
         )

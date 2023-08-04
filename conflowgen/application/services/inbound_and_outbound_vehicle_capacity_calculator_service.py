@@ -14,7 +14,7 @@ from conflowgen.domain_models.factories.fleet_factory import create_arrivals_wit
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
 
 
-class InboundAndOutboundVehicleCapacity:
+class InboundAndOutboundVehicleCapacityCalculatorService:
 
     @staticmethod
     @DataSummariesCache.cache_result
@@ -70,7 +70,7 @@ class InboundAndOutboundVehicleCapacity:
             inbound_capacity_in_teu[schedule.vehicle_type] += total_capacity_moved_by_vessel
 
         inbound_capacity_in_teu[ModeOfTransport.truck] = \
-            InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(
+            InboundAndOutboundVehicleCapacityCalculatorService.get_truck_capacity_for_export_containers(
                 inbound_capacity_in_teu
             )
         containers[ModeOfTransport.truck] = \
@@ -141,9 +141,10 @@ class InboundAndOutboundVehicleCapacity:
             outbound_maximum_containers[schedule.vehicle_type] += total_maximum_capacity_moved_by_vessel / \
                 (ContainerLengthDistributionRepository.get_teu_factor() * 20)
 
-        inbound_capacity = InboundAndOutboundVehicleCapacity.get_inbound_capacity_of_vehicles(start_date, end_date)
+        inbound_capacity = InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_inbound_capacity_of_vehicles(start_date, end_date)
         outbound_used_capacity_in_teu[ModeOfTransport.truck] = \
-            InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(
+            InboundAndOutboundVehicleCapacityCalculatorService.get_truck_capacity_for_export_containers(
                 inbound_capacity.teu
             )
         outbound_used_containers[ModeOfTransport.truck] = \

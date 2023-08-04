@@ -9,7 +9,8 @@ from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
-from conflowgen.application.services.inbound_and_outbound_vehicle_capacity import InboundAndOutboundVehicleCapacity
+from conflowgen.application.services.inbound_and_outbound_vehicle_capacity_calculator_service import \
+    InboundAndOutboundVehicleCapacityCalculatorService
 
 
 class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
@@ -59,7 +60,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         created.
         Thus, this method accounts for both import and export.
         """
-        return InboundAndOutboundVehicleCapacity.get_truck_capacity_for_export_containers(inbound_capacity_of_vehicles)
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_truck_capacity_for_export_containers(inbound_capacity_of_vehicles)
 
     @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
@@ -78,7 +80,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         depending on the outbound distribution, are created based on the assumptions of the further container flow
         generation process.
         """
-        return InboundAndOutboundVehicleCapacity.get_inbound_capacity_of_vehicles(self.start_date, self.end_date)
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_inbound_capacity_of_vehicles(self.start_date, self.end_date)
 
     @DataSummariesCache.cache_result
     def get_outbound_capacity_of_vehicles(self) -> OutboundUsedAndMaximumCapacity:
@@ -88,5 +91,5 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         redistributed to other vehicle types due to a lack of capacity. The capacities are only calculated in TEU, not
         in containers.
         """
-        return InboundAndOutboundVehicleCapacity.\
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
             get_outbound_capacity_of_vehicles(self.start_date, self.end_date, self.transportation_buffer)
