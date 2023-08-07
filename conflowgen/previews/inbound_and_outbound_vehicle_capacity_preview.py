@@ -1,7 +1,6 @@
 from __future__ import annotations
 import datetime
 from typing import Dict
-import numpy as np
 
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
@@ -10,8 +9,8 @@ from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
-from conflowgen.domain_models.factories.fleet_factory import create_arrivals_within_time_range
-from conflowgen.domain_models.large_vehicle_schedule import Schedule
+from conflowgen.application.services.inbound_and_outbound_vehicle_capacity_calculator_service import \
+    InboundAndOutboundVehicleCapacityCalculatorService
 
 
 class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
@@ -61,15 +60,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         created.
         Thus, this method accounts for both import and export.
         """
-        truck_capacity = 0
-        for vehicle_type in ModeOfTransport.get_scheduled_vehicles():
-            number_of_containers_delivered_to_terminal_by_vehicle_type = inbound_capacity_of_vehicles[vehicle_type]
-            mode_of_transport_distribution_of_vehicle_type = self.mode_of_transport_distribution[vehicle_type]
-            vehicle_to_truck_fraction = mode_of_transport_distribution_of_vehicle_type[ModeOfTransport.truck]
-            number_of_containers_to_pick_up_by_truck_from_vehicle_type = \
-                number_of_containers_delivered_to_terminal_by_vehicle_type * vehicle_to_truck_fraction
-            truck_capacity += number_of_containers_to_pick_up_by_truck_from_vehicle_type
-        return truck_capacity
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_truck_capacity_for_export_containers(inbound_capacity_of_vehicles)
 
     @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
@@ -88,31 +80,8 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         depending on the outbound distribution, are created based on the assumptions of the further container flow
         generation process.
         """
-        inbound_capacity_in_teu: Dict[ModeOfTransport, float] = {
-            vehicle_type: 0
-            for vehicle_type in ModeOfTransport
-        }
-
-        for schedule in Schedule.select():
-            arrivals = create_arrivals_within_time_range(
-                self.start_date,
-                schedule.vehicle_arrives_at,
-                self.end_date,
-                schedule.vehicle_arrives_every_k_days,
-                schedule.vehicle_arrives_at_time
-            )
-            total_capacity_moved_by_vessel = (len(arrivals)  # number of vehicles that are planned
-                                              * schedule.average_moved_capacity)  # TEU capacity of each vehicle
-            inbound_capacity_in_teu[schedule.vehicle_type] += total_capacity_moved_by_vessel
-
-        inbound_capacity_in_teu[ModeOfTransport.truck] = self._get_truck_capacity_for_export_containers(
-            inbound_capacity_in_teu
-        )
-
-        return ContainerVolumeByVehicleType(
-            containers=None,
-            teu=inbound_capacity_in_teu
-        )
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_inbound_capacity_of_vehicles(self.start_date, self.end_date)
 
     @DataSummariesCache.cache_result
     def get_outbound_capacity_of_vehicles(self) -> OutboundUsedAndMaximumCapacity:
@@ -122,57 +91,5 @@ class InboundAndOutboundVehicleCapacityPreview(AbstractPreview):
         redistributed to other vehicle types due to a lack of capacity. The capacities are only calculated in TEU, not
         in containers.
         """
-        outbound_used_capacity_in_teu: Dict[ModeOfTransport, float] = {
-            vehicle_type: 0
-            for vehicle_type in ModeOfTransport
-        }
-        outbound_maximum_capacity_in_teu: Dict[ModeOfTransport, float] = {
-            vehicle_type: 0
-            for vehicle_type in ModeOfTransport
-        }
-
-        schedule: Schedule
-        for schedule in Schedule.select():
-
-            assert schedule.average_moved_capacity <= schedule.average_vehicle_capacity, \
-                "A vehicle cannot move a larger amount of containers (in TEU) than its capacity, " \
-                f"the input data is malformed. Schedule '{schedule.service_name}' of vehicle type " \
-                f"{schedule.vehicle_type} has an average moved capacity of {schedule.average_moved_capacity} but an " \
-                f"averaged vehicle capacity of {schedule.average_vehicle_capacity}."
-
-            arrivals = create_arrivals_within_time_range(
-                self.start_date,
-                schedule.vehicle_arrives_at,
-                self.end_date,
-                schedule.vehicle_arrives_every_k_days,
-                schedule.vehicle_arrives_at_time
-            )
-
-            # If all container flows are balanced, only the average moved capacity is required
-            total_average_capacity_moved_by_vessel_in_teu = len(arrivals) * schedule.average_moved_capacity
-            outbound_used_capacity_in_teu[schedule.vehicle_type] += total_average_capacity_moved_by_vessel_in_teu
-
-            # If there are unbalanced container flows, a vehicle departs with more containers than it delivered
-            maximum_capacity_of_vehicle_in_teu = min(
-                schedule.average_moved_capacity * (1 + self.transportation_buffer),
-                schedule.average_vehicle_capacity
-            )
-            total_maximum_capacity_moved_by_vessel = len(arrivals) * maximum_capacity_of_vehicle_in_teu
-            outbound_maximum_capacity_in_teu[schedule.vehicle_type] += total_maximum_capacity_moved_by_vessel
-
-        inbound_capacity = self.get_inbound_capacity_of_vehicles()
-        outbound_used_capacity_in_teu[ModeOfTransport.truck] = self._get_truck_capacity_for_export_containers(
-            inbound_capacity.teu
-        )
-        outbound_maximum_capacity_in_teu[ModeOfTransport.truck] = np.nan  # Trucks can always be added as required
-
-        return OutboundUsedAndMaximumCapacity(
-            used=ContainerVolumeByVehicleType(
-                containers=None,
-                teu=outbound_used_capacity_in_teu
-            ),
-            maximum=ContainerVolumeByVehicleType(
-                containers=None,
-                teu=outbound_maximum_capacity_in_teu
-            )
-        )
+        return InboundAndOutboundVehicleCapacityCalculatorService.\
+            get_outbound_capacity_of_vehicles(self.start_date, self.end_date, self.transportation_buffer)

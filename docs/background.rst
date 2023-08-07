@@ -185,8 +185,7 @@ While assessing the currently available alternatives, among others we have come 
 
 - :cite:t:`briskorn2019generator`
   developed a test data generator that may be used to simulate yard crane container handling processes.
-  Their generic approach generates test examples of crane scheduling issues and is available at
-  :cite:`briskorn2019generator-software`.
+  Their generic approach generates test examples of crane scheduling issues.
 
 - A technique for the evaluation of quay crane scheduling models and solution methods is presented by
   :cite:t:`meisel2011unified`.

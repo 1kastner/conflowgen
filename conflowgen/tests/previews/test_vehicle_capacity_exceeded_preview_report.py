@@ -1,7 +1,10 @@
 import datetime
 
+from conflowgen.domain_models.data_types.container_length import ContainerLength
+from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.distribution_models.container_length_distribution import ContainerLengthDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -19,7 +22,8 @@ class TestVehicleCapacityExceededPreviewReport(UnitTestCaseWithMatplotlib):
         self.sqlite_db.create_tables([
             Schedule,
             ModeOfTransportDistribution,
-            ContainerFlowGenerationProperties
+            ContainerFlowGenerationProperties,
+            ContainerLengthDistribution
         ])
         ModeOfTransportDistributionRepository().set_mode_of_transport_distributions({
             ModeOfTransport.truck: {
@@ -58,6 +62,17 @@ class TestVehicleCapacityExceededPreviewReport(UnitTestCaseWithMatplotlib):
                 ModeOfTransport.deep_sea_vessel: 0.15
             }
         })
+
+        container_length_manager = ContainerLengthDistributionManager()
+        container_length_manager.set_container_length_distribution(  # Set default container length distribution
+            {
+                ContainerLength.other: 0.001,
+                ContainerLength.twenty_feet: 0.4,
+                ContainerLength.forty_feet: 0.57,
+                ContainerLength.forty_five_feet: 0.029
+            }
+        )
+
         now = datetime.datetime.now()
         ContainerFlowGenerationProperties.create(
             start_date=now,
