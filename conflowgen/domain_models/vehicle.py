@@ -107,7 +107,6 @@ class LargeScheduledVehicle(BaseModel):
                   "ModeOfTransportDistribution as obviously the different information does not match."
     )
 
-    @DataSummariesCache.cache_result
     def get_arrival_time(self) -> datetime.datetime:
         """
         Returns:
