@@ -169,3 +169,28 @@ class TestBarge(unittest.TestCase):
             repr(barge),
             "<Barge: 1>"
         )
+
+    def test_get_mode_of_transport(self) -> None:
+        """Check if barge can be saved"""
+        now = datetime.datetime.now()
+        schedule = Schedule.create(
+            service_name="MyTestBargeLine",
+            vehicle_type=ModeOfTransport.barge,
+            vehicle_arrives_at=now,
+            average_vehicle_capacity=1100,
+            average_moved_capacity=200
+        )
+        lsv = LargeScheduledVehicle.create(
+            vehicle_name="TestBarge1",
+            capacity_in_teu=1000,
+            moved_capacity=200,
+            scheduled_arrival=now,
+            schedule=schedule
+        )
+        barge = Barge.create(
+            large_scheduled_vehicle=lsv
+        )
+        self.assertEqual(
+            barge.get_mode_of_transport(),
+            ModeOfTransport.barge
+        )
