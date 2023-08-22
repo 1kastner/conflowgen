@@ -15,7 +15,6 @@ from peewee import IntegerField
 from conflowgen.domain_models.arrival_information import \
     TruckArrivalInformationForDelivery, TruckArrivalInformationForPickup
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
-from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from .base_model import BaseModel
 from .data_types.mode_of_transport import ModeOfTransport
 
@@ -107,7 +106,6 @@ class LargeScheduledVehicle(BaseModel):
                   "ModeOfTransportDistribution as obviously the different information does not match."
     )
 
-    @DataSummariesCache.cache_result
     def get_arrival_time(self) -> datetime.datetime:
         """
         Returns:
