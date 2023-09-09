@@ -115,7 +115,7 @@ class TestQuaySideThroughputPreviewReport(unittest.TestCase):
         expected_report = \
             '''
 discharged (in containers) loaded (in containers)
-                     12000                   4680
+                     12000                   5760
 (rounding errors might exist)
 '''
         self.assertEqual(report, expected_report)

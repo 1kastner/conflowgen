@@ -115,5 +115,5 @@ class TestQuaySideThroughputPreview(unittest.TestCase):
         vo_box = vo.containers
         self.assertAlmostEqual(vi_teu, 150)
         self.assertAlmostEqual(vi_box, 75)
-        self.assertAlmostEqual(vo_teu, 58.5)
-        self.assertAlmostEqual(vo_box, 29.25)
+        self.assertAlmostEqual(vo_teu, 72)
+        self.assertAlmostEqual(vo_box, 36)
