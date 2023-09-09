@@ -20,7 +20,10 @@ class DistributionApproximator:
     class_level_seeded_random: None | random.Random = None
 
     def __init__(self, number_instances_per_category: Dict[any, int], context_of_usage: str = "") -> None:
-        self.seeded_random = get_initialised_random_object(self.__class__.__name__ + "__" + context_of_usage)
+        self.seeded_random = get_initialised_random_object(
+            self.__class__.__name__ + "__" + context_of_usage,
+            log_loading_process=False
+        )
         self.target_distribution = np.array(
             list(number_instances_per_category.values()),
             dtype=np.int64
@@ -38,7 +41,10 @@ class DistributionApproximator:
     ) -> DistributionApproximator:
 
         if cls.class_level_seeded_random is None:
-            cls.class_level_seeded_random = get_initialised_random_object("DistributionApproximator__class")
+            cls.class_level_seeded_random = get_initialised_random_object(
+                "DistributionApproximator__class",
+                log_loading_process=False
+            )
 
         assert math.isclose(sum(distribution.values()), 1, abs_tol=.001), \
             f"All probabilities must sum to 1, but you only achieved {sum(distribution.values())}"
