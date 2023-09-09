@@ -29,6 +29,7 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
         Thus, this method accounts for both import and export.
         """
         truck_capacity = 0
+        vehicle_type: ModeOfTransport
         for vehicle_type in ModeOfTransport.get_scheduled_vehicles():
             number_of_containers_delivered_to_terminal_by_vehicle_type = inbound_capacity_of_vehicles[vehicle_type]
             mode_of_transport_distribution_of_vehicle_type = \
@@ -50,16 +51,19 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
         depending on the outbound distribution, are created based on the assumptions of the further container flow
         generation process.
         """
-        containers: Dict[ModeOfTransport, float] = {
+        inbound_container_volume_in_containers: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
-        inbound_capacity_in_teu: Dict[ModeOfTransport, float] = {
+        inbound_container_volume_in_teu: Dict[ModeOfTransport, float] = {
             vehicle_type: 0
             for vehicle_type in ModeOfTransport
         }
 
+        at_least_one_schedule_exists: bool = False
+
         for schedule in Schedule.select():
+            at_least_one_schedule_exists = True
             arrivals = create_arrivals_within_time_range(
                 start_date,
                 schedule.vehicle_arrives_at,
@@ -67,23 +71,24 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
                 schedule.vehicle_arrives_every_k_days,
                 schedule.vehicle_arrives_at_time
             )
-            total_capacity_moved_by_vessel = (len(arrivals)  # number of vehicles that are planned
-                                              * schedule.average_moved_capacity)  # TEU capacity of each vehicle
-            containers[schedule.vehicle_type] += total_capacity_moved_by_vessel / \
-                (ContainerLengthDistributionRepository.get_teu_factor() * 20)
-            inbound_capacity_in_teu[schedule.vehicle_type] += total_capacity_moved_by_vessel
+            moved_inbound_volumes = (len(arrivals)  # number of vehicles that are planned
+                                     * schedule.average_moved_capacity)  # moved TEU capacity of each vehicle
+            inbound_container_volume_in_teu[schedule.vehicle_type] += moved_inbound_volumes
+            inbound_container_volume_in_containers[schedule.vehicle_type] += moved_inbound_volumes / \
+                ContainerLengthDistributionRepository.get_teu_factor()
 
-        inbound_capacity_in_teu[ModeOfTransport.truck] = \
-            InboundAndOutboundVehicleCapacityCalculatorService.get_truck_capacity_for_export_containers(
-                inbound_capacity_in_teu
-            )
-        containers[ModeOfTransport.truck] = \
-            inbound_capacity_in_teu[ModeOfTransport.truck] / \
-            (ContainerLengthDistributionRepository.get_teu_factor() * 20)
+        if at_least_one_schedule_exists:
+            inbound_container_volume_in_teu[ModeOfTransport.truck] = \
+                InboundAndOutboundVehicleCapacityCalculatorService.get_truck_capacity_for_export_containers(
+                    inbound_container_volume_in_teu
+                )
+            inbound_container_volume_in_containers[ModeOfTransport.truck] = \
+                inbound_container_volume_in_teu[ModeOfTransport.truck] / \
+                ContainerLengthDistributionRepository.get_teu_factor()
 
         return ContainerVolumeByVehicleType(
-            containers=containers,
-            teu=inbound_capacity_in_teu
+            containers=inbound_container_volume_in_containers,
+            teu=inbound_container_volume_in_teu
         )
 
     @staticmethod
@@ -130,10 +135,10 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
             )
 
             # If all container flows are balanced, only the average moved capacity is required
-            total_average_capacity_moved_by_vessel_in_teu = len(arrivals) * schedule.average_moved_capacity
-            outbound_used_capacity_in_teu[schedule.vehicle_type] += total_average_capacity_moved_by_vessel_in_teu
-            outbound_used_containers[schedule.vehicle_type] += total_average_capacity_moved_by_vessel_in_teu / \
-                (ContainerLengthDistributionRepository.get_teu_factor() * 20)
+            container_volume_moved_by_vessels_in_teu = len(arrivals) * schedule.average_moved_capacity
+            outbound_used_capacity_in_teu[schedule.vehicle_type] += container_volume_moved_by_vessels_in_teu
+            outbound_used_containers[schedule.vehicle_type] += container_volume_moved_by_vessels_in_teu / \
+                ContainerLengthDistributionRepository.get_teu_factor()
 
             # If there are unbalanced container flows, a vehicle departs with more containers than it delivered
             maximum_capacity_of_vehicle_in_teu = min(
@@ -143,7 +148,7 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
             total_maximum_capacity_moved_by_vessel = len(arrivals) * maximum_capacity_of_vehicle_in_teu
             outbound_maximum_capacity_in_teu[schedule.vehicle_type] += total_maximum_capacity_moved_by_vessel
             outbound_maximum_containers[schedule.vehicle_type] += total_maximum_capacity_moved_by_vessel / \
-                (ContainerLengthDistributionRepository.get_teu_factor() * 20)
+                ContainerLengthDistributionRepository.get_teu_factor()
 
         inbound_capacity = InboundAndOutboundVehicleCapacityCalculatorService.\
             get_inbound_capacity_of_vehicles(start_date, end_date)
@@ -153,7 +158,7 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
             )
         outbound_used_containers[ModeOfTransport.truck] = \
             outbound_used_capacity_in_teu[ModeOfTransport.truck] / \
-            (ContainerLengthDistributionRepository.get_teu_factor() * 20)
+            ContainerLengthDistributionRepository.get_teu_factor()
 
         outbound_maximum_capacity_in_teu[ModeOfTransport.truck] = np.nan  # Trucks can always be added as required
         outbound_maximum_containers[ModeOfTransport.truck] = np.nan

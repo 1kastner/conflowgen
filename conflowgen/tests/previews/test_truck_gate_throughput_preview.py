@@ -104,7 +104,9 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
         # 300 TEU arrive by feeder
         # 300 TEU * 0.2 (from mode of transport distribution) = 60 TEU to be exported by truck
         # Only twenty-feet containers used, so 60 TEU = 60 trucks needed
-        self.assertEqual(total_trucks, (60, 60))
+        self.assertAlmostEqual(total_trucks.inbound, 60)
+        self.assertAlmostEqual(total_trucks.outbound, 60)
+        self.assertAlmostEqual(sum(total_trucks), 120)
 
     def test_get_weekly_trucks(self):
         # pylint: disable=protected-access
@@ -121,7 +123,9 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
         weekly_trucks = self.preview._get_number_of_trucks_per_week()
         # 60 trucks total (from test_get_total_trucks above)
         # 60 trucks / 2 weeks = 30 trucks per week
-        self.assertEqual(weekly_trucks, (30, 30))
+        self.assertAlmostEqual(weekly_trucks.inbound, 30)
+        self.assertAlmostEqual(weekly_trucks.outbound, 30)
+        self.assertAlmostEqual(sum(weekly_trucks), 60)
 
     def test_get_truck_distribution(self):
         # Test case 1

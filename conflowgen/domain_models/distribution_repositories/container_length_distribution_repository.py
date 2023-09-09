@@ -1,6 +1,7 @@
 import math
 from typing import Dict
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.distribution_models.container_length_distribution import ContainerLengthDistribution
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 
@@ -55,6 +56,7 @@ class ContainerLengthDistributionRepository:
             ).save()
 
     @classmethod
+    @DataSummariesCache.cache_result
     def get_teu_factor(cls) -> float:
         """
         Calculates and returns the TEU factor based on the container length distribution.
