@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import logging
 import os
 from typing import List, Tuple, Optional
@@ -7,6 +8,7 @@ from typing import List, Tuple, Optional
 from peewee import SqliteDatabase
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.base_model import database_proxy
 from conflowgen.domain_models.container import Container
@@ -52,6 +54,7 @@ class SqliteDatabaseConnection:
     )
 
     def __init__(self, sqlite_databases_directory: Optional[str] = None):
+        self.seeded_random = None
 
         if sqlite_databases_directory is None:
             sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
@@ -122,6 +125,15 @@ class SqliteDatabaseConnection:
 
         for vehicle in (DeepSeaVessel, Feeder, Barge, Train, Truck, Container):
             self.logger.debug(f"Number entries in table '{vehicle.__name__}': {vehicle.select().count()}")
+
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+        randbits = self.seeded_random.getrandbits(100)
+
+        @self.sqlite_db_connection.func('assign_random_value')
+        def convert_to_random_value(row_id):
+            h = hashlib.new('sha256')
+            h.update((randbits + row_id).to_bytes(16, 'big'))
+            return h.hexdigest()
 
         return self.sqlite_db_connection
 

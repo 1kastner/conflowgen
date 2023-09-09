@@ -81,8 +81,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         successful_assignment = 0
 
         teu_total = 0
-        for i in range(number_containers_to_allocate):
-            i += 1
+        for i in range(1, number_containers_to_allocate + 1):
             if i % 1000 == 0 or i == 1 or i == number_containers_to_allocate:
                 self.logger.info(
                     f"Progress: {i} / {number_containers_to_allocate} ({i / number_containers_to_allocate:.2%}) "
