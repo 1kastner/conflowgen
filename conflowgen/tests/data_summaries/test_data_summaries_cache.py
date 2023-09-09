@@ -136,29 +136,40 @@ class TestDataSummariesCache(unittest.TestCase):
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
-        self.assertEqual(len(DataSummariesCache.cached_results), 9, "There should be 9 cached results")
+        self.assertEqual(len(DataSummariesCache.cached_results), 10, "There should be 10 cached results")
         self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
                         {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
-                                                           '_get_total_trucks': 1,
-                                                           'get_truck_capacity_for_export_containers': 2,
-                                                           'get_inbound_capacity_of_vehicles': 3,
-                                                           'get_outbound_capacity_of_vehicles': 2,
-                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+        self.assertDictEqual(
+            DataSummariesCache._hit_counter,
+            {'_get_number_of_trucks_per_week': 1,
+             '_get_total_trucks': 1,
+             'get_truck_capacity_for_export_containers': 2,
+             'get_inbound_capacity_of_vehicles': 3,
+             'get_outbound_capacity_of_vehicles': 2,
+             'get_weekly_truck_arrivals': 1,
+             'get_teu_factor': 5,
+             }, "Incorrect hit counter"
+        )
 
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
-        self.assertEqual(len(DataSummariesCache.cached_results), 9, "There should be 9 cached results")
+        self.assertEqual(len(DataSummariesCache.cached_results), 10, "There should be 10 cached results")
         self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
                         {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
-                                                           '_get_total_trucks': 1,
-                                                           'get_truck_capacity_for_export_containers': 2,
-                                                           'get_inbound_capacity_of_vehicles': 3,
-                                                           'get_outbound_capacity_of_vehicles': 2,
-                                                           'get_weekly_truck_arrivals': 2}, "Incorrect hit counter")
+        self.assertDictEqual(
+            DataSummariesCache._hit_counter,
+            {'_get_number_of_trucks_per_week': 1,
+             '_get_total_trucks': 1,
+             'get_truck_capacity_for_export_containers': 2,
+             'get_inbound_capacity_of_vehicles': 3,
+             'get_outbound_capacity_of_vehicles': 2,
+             'get_weekly_truck_arrivals': 2,
+             'get_teu_factor': 5,
+             },
+            "Incorrect hit counter"
+        )
         # Only get_weekly_truck_arrivals should be called again as the other functions are cached
 
     def test_with_adjusted_preview(self):
@@ -175,16 +186,20 @@ class TestDataSummariesCache(unittest.TestCase):
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
-        self.assertEqual(len(DataSummariesCache.cached_results), 9, "There should be 9 cached results")
+        self.assertEqual(len(DataSummariesCache.cached_results), 10, "There should be 10 cached results")
         self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
                         {3: 12, 4: 48} in list(DataSummariesCache.cached_results.values()), "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
-                                                           '_get_total_trucks': 1,
-                                                           'get_truck_capacity_for_export_containers': 2,
-                                                           'get_inbound_capacity_of_vehicles': 3,
-                                                           'get_outbound_capacity_of_vehicles': 2,
-                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+        self.assertDictEqual(
+            DataSummariesCache._hit_counter,
+            {'_get_number_of_trucks_per_week': 1,
+             '_get_total_trucks': 1,
+             'get_truck_capacity_for_export_containers': 2,
+             'get_inbound_capacity_of_vehicles': 3,
+             'get_outbound_capacity_of_vehicles': 2,
+             'get_weekly_truck_arrivals': 1,
+             'get_teu_factor': 5,
+             }, "Incorrect hit counter")
 
         arrival_distribution = {
             3: .1,
@@ -200,18 +215,25 @@ class TestDataSummariesCache(unittest.TestCase):
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 6, 4: 24, 5: 30}, "New result is incorrect")
-        self.assertEqual(len(DataSummariesCache.cached_results), 9, "There should be 9 cached results, because"
-                                                                    "the preview was adjusted")
+        self.assertEqual(
+            len(DataSummariesCache.cached_results), 10,
+            "There should be 9 cached results, because the preview was adjusted")
         self.assertTrue(59.999999999999986 in list(DataSummariesCache.cached_results.values()) and
                         {3: 6, 4: 24, 5: 30} in list(DataSummariesCache.cached_results.values()),
                         "Incorrect results cached")
         # pylint: disable=protected-access
-        self.assertEqual(DataSummariesCache._hit_counter, {'_get_number_of_trucks_per_week': 1,
-                                                           '_get_total_trucks': 1,
-                                                           'get_truck_capacity_for_export_containers': 2,
-                                                           'get_inbound_capacity_of_vehicles': 3,
-                                                           'get_outbound_capacity_of_vehicles': 2,
-                                                           'get_weekly_truck_arrivals': 1}, "Incorrect hit counter")
+        self.assertDictEqual(
+            DataSummariesCache._hit_counter,
+            {'_get_number_of_trucks_per_week': 1,
+             '_get_total_trucks': 1,
+             'get_truck_capacity_for_export_containers': 2,
+             'get_inbound_capacity_of_vehicles': 3,
+             'get_outbound_capacity_of_vehicles': 2,
+             'get_weekly_truck_arrivals': 1,
+             'get_teu_factor': 5,
+             },
+            "Incorrect hit counter"
+        )
         # Hit counter should be the same as before, because the preview was adjusted i.e. the cache was reset, and then
         # we re-ran the same functions
 

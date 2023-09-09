@@ -26,17 +26,26 @@ class HinterlandModalSplit(typing.NamedTuple):
     truck_capacity: float
 
 
-class OutboundUsedAndMaximumCapacity(typing.NamedTuple):
+class ContainerVolume(typing.NamedTuple):
     """
-    This tuple keeps track of how much each vehicle type transports on the outbound journey and what the maximum
-    capacity is.
+    Several KPIs at container terminals can be both expressed in boxes and TEU.
     """
+    #: The container volume expressed in TEU
+    teu: float
 
-    #: The container volume that is actually transported, summarized by vehicle type.
-    used: ContainerVolumeByVehicleType
+    #: The container volume expressed in number of boxes
+    containers: float
 
-    #: The container volume that could be transported if all capacities had been used, summarized by vehicle type.
-    maximum: ContainerVolumeByVehicleType
+
+class InboundAndOutboundContainerVolume(typing.NamedTuple):
+    """
+    Note both the inbound and outbound container volume.
+    """
+    #: The container volume transported by vehicles on their inbound journey
+    inbound: ContainerVolume
+
+    #: The container volume transported by vehicles on their outbound journey
+    outbound: ContainerVolume
 
 
 class ContainerVolumeByVehicleType(typing.NamedTuple):
@@ -50,6 +59,19 @@ class ContainerVolumeByVehicleType(typing.NamedTuple):
 
     #: The container volume expressed in number of boxes
     containers: typing.Optional[typing.Dict[ModeOfTransport, float]]
+
+
+class OutboundUsedAndMaximumCapacity(typing.NamedTuple):
+    """
+    This tuple keeps track of how much each vehicle type transports on the outbound journey and what the maximum
+    capacity is.
+    """
+
+    #: The container volume that is actually transported, summarized by vehicle type.
+    used: ContainerVolumeByVehicleType
+
+    #: The container volume that could be transported if all capacities had been used, summarized by vehicle type.
+    maximum: ContainerVolumeByVehicleType
 
 
 class ContainerVolumeFromOriginToDestination(typing.NamedTuple):
@@ -93,3 +115,15 @@ class UsedYardCapacityOverTime(typing.NamedTuple):
 
     #: The yard capacity expressed in number of boxes
     containers: typing.Dict[datetime.datetime, int]
+
+
+class ContainersTransportedByTruck(typing.NamedTuple):
+    """
+    Represents the containers moved by trucks.
+    """
+
+    #: The number of containers moved on the inbound journey
+    inbound: float
+
+    #: The number of containers moved on the outbound journey
+    outbound: float

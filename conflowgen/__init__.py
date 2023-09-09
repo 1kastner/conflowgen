@@ -27,6 +27,8 @@ from conflowgen.previews.modal_split_preview import ModalSplitPreview
 from conflowgen.previews.modal_split_preview_report import ModalSplitPreviewReport
 from conflowgen.previews.truck_gate_throughput_preview import TruckGateThroughputPreview
 from conflowgen.previews.truck_gate_throughput_preview_report import TruckGateThroughputPreviewReport
+from conflowgen.previews.quay_side_throughput_preview import QuaySideThroughputPreview
+from conflowgen.previews.quay_side_throughput_preview_report import QuaySideThroughputPreviewReport
 
 # Analyses and their reports
 from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis import \
@@ -90,12 +92,13 @@ from conflowgen.previews.vehicle_capacity_exceeded_preview import RequiredAndMax
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import OutboundUsedAndMaximumCapacity
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustedToVehicleType
-from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit, ContainerVolumeFromOriginToDestination
+from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit
+from conflowgen.descriptive_datatypes import ContainerVolumeFromOriginToDestination
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from conflowgen.descriptive_datatypes import UsedYardCapacityOverTime
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    VehicleIdentifier
+from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.descriptive_datatypes import ContainerVolumeByVehicleType
+from conflowgen.descriptive_datatypes import ContainersTransportedByTruck
 
 # Add metadata constants
 from .metadata import __version__
