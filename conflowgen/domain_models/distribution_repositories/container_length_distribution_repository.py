@@ -63,5 +63,6 @@ class ContainerLengthDistributionRepository:
         container_length_weighted_average = 0.0
         container_length_distribution = cls.get_distribution()
         for container_length, fraction in container_length_distribution.items():
-            container_length_weighted_average += ContainerLength.get_factor(container_length) * fraction
+            container_length_weighted_average += ContainerLength.get_teu_factor(container_length) * fraction
+        assert 0 < container_length_weighted_average < ContainerLength.get_maximum_teu_factor()
         return container_length_weighted_average

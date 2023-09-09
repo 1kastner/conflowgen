@@ -144,6 +144,6 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             )
             container.delivered_by_truck = truck
             container.save()
-            teu_total += ContainerLength.get_factor(container.length)
+            teu_total += ContainerLength.get_teu_factor(container.length)
         self.logger.info(f"All {number_containers} trucks that deliver a container are created now, moving "
                          f"{teu_total} TEU.")

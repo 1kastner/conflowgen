@@ -122,6 +122,6 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             )
             container.picked_up_by_truck = truck
             container.save()
-            teu_total += ContainerLength.get_factor(container.length)
+            teu_total += ContainerLength.get_teu_factor(container.length)
         self.logger.info(f"All {number_containers} trucks that pick up a container have been generated, moving "
                          f"{teu_total} TEU.")

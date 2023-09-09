@@ -20,7 +20,7 @@ class ContainerLength(enum.Enum):
     other = -1  # doc: Any other length usually does not fit into the standardized slots and handling processes.
 
     @classmethod
-    def get_factor(cls, container_length: ContainerLength) -> float:
+    def get_teu_factor(cls, container_length: ContainerLength) -> float:
         """
         Each container occupies a certain amount of space when stored.
         This required space is measured in TEU.
@@ -35,6 +35,10 @@ class ContainerLength(enum.Enum):
             The TEU factor of the container
         """
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[container_length]
+
+    @classmethod
+    def get_maximum_teu_factor(cls) -> float:
+        return MAXIMUM_OCCUPIED_TEU
 
     def __str__(self) -> str:
         """
@@ -79,3 +83,5 @@ For 20', 40', and 45', the typical values are picked.
 The TEU factor for the value 'other' is chosen to be rather large because it is assumed to be difficult to find a proper
 storage position.
 """
+
+MAXIMUM_OCCUPIED_TEU = max(list(CONTAINER_LENGTH_TO_OCCUPIED_TEU.values()))

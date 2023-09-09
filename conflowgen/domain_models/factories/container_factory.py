@@ -26,7 +26,7 @@ class ContainerFactory:
     Creates containers according to the distributions which are either hard-coded or stored in the database.
     """
 
-    ignored_capacity = ContainerLength.get_factor(ContainerLength.other)
+    ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     random_seed = 1
 

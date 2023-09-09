@@ -41,7 +41,7 @@ class ScheduleRepository:
         )
 
         # Check for each of the vehicles how much it has already loaded
-        required_capacity_in_teu = ContainerLength.get_factor(required_capacity)
+        required_capacity_in_teu = ContainerLength.get_teu_factor(required_capacity)
         vehicles_with_sufficient_capacity = []
         vehicle: Type[AbstractLargeScheduledVehicle]
         for vehicle in vehicles:
