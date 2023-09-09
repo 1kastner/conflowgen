@@ -26,7 +26,7 @@ def hashable(obj: Any) -> bool:
 
 def get_convert_to_random_value(random_bits):
     def convert_to_random_value(row_id):
-        hash = hashlib.new('sha256')
-        hash.update((random_bits + row_id).to_bytes(16, 'big'))
-        return hash.hexdigest()
+        hash_value = hashlib.new('sha256')
+        hash_value.update((random_bits + row_id).to_bytes(16, 'big'))
+        return hash_value.hexdigest()
     return convert_to_random_value
