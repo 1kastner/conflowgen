@@ -66,14 +66,16 @@ class QuaySideThroughputPreview(AbstractPreview, ABC):
 
         teu_factor = ContainerLengthDistributionRepository().get_teu_factor()
 
+        epsilon = 0.1
+
         result = InboundAndOutboundContainerVolume(
             inbound=ContainerVolume(
                 teu=quayside_inbound_container_volume_in_teu,
-                containers=int(quayside_inbound_container_volume_in_teu / teu_factor)
+                containers=int((quayside_inbound_container_volume_in_teu + epsilon)// teu_factor)
             ),
             outbound=ContainerVolume(
                 teu=quayside_outbound_container_volume_in_teu,
-                containers=int(quayside_outbound_container_volume_in_teu / teu_factor)
+                containers=int((quayside_outbound_container_volume_in_teu + epsilon)/ teu_factor)
             )
         )
 
