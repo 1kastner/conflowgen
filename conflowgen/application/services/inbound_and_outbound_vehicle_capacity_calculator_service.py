@@ -1,3 +1,4 @@
+import datetime
 from typing import Dict
 
 import numpy as np
@@ -40,7 +41,10 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
 
     @staticmethod
     @DataSummariesCache.cache_result
-    def get_inbound_capacity_of_vehicles(start_date, end_date) -> ContainerVolumeByVehicleType:
+    def get_inbound_capacity_of_vehicles(
+            start_date: datetime.date,
+            end_date: datetime.date
+    ) -> ContainerVolumeByVehicleType:
         """
         For the inbound capacity, first vehicles that adhere to a schedule are considered. Trucks, which are created
         depending on the outbound distribution, are created based on the assumptions of the further container flow
