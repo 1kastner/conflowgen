@@ -39,7 +39,7 @@ class LargeScheduledVehicleCreationService:
     def create(self) -> None:
         assert self.container_flow_start_date is not None
         assert self.container_flow_end_date is not None
-        schedules = Schedule.select().orderby(
+        schedules = Schedule.select().order_by(
             fn.assign_random_value(Schedule.id)
         )
         number_schedules = schedules.count()
