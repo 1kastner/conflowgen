@@ -17,6 +17,14 @@ from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..tools.continuous_distribution import ContinuousDistribution, multiply_discretized_probability_densities
 
 
+class SumOfProbabilitiesDoesNotEqualOneException(Exception):
+    pass
+
+
+class UnknownDistributionPropertyException(Exception):
+    pass
+
+
 class AbstractTruckForContainersManager(abc.ABC):
     def __init__(self):
         self.logger = logging.getLogger("conflowgen")
@@ -128,7 +136,7 @@ class AbstractTruckForContainersManager(abc.ABC):
         )
 
         if sum(total_probabilities) == 0:  # bad circumstances, no slot available
-            raise Exception(
+            raise SumOfProbabilitiesDoesNotEqualOneException(
                 f"No truck slots available! {truck_arrival_probabilities} and {total_probabilities} just do not match."
             )
 
@@ -142,7 +150,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             elif _debug_check_distribution_property == "average":
                 selected_time_window = int(round(container_dwell_time_distribution.average))
             else:
-                raise Exception(f"Unknown: {_debug_check_distribution_property}")
+                raise UnknownDistributionPropertyException(_debug_check_distribution_property)
         else:
             selected_time_window = random.choices(
                 population=time_windows_for_truck_arrival,

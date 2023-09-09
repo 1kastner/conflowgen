@@ -10,6 +10,10 @@ from conflowgen.domain_models.distribution_validators import validate_distributi
 from conflowgen.tools.continuous_distribution import ContinuousDistribution
 
 
+class ContainerDwellTimeCouldNotBeCastedException(Exception):
+    pass
+
+
 class ContainerDwellTimeDistributionRepository:
 
     @staticmethod
@@ -68,7 +72,7 @@ class ContainerDwellTimeDistributionRepository:
                     elif isinstance(container_dwell_time_distribution, dict):
                         distribution_properties = container_dwell_time_distribution
                     else:
-                        raise Exception(
+                        raise ContainerDwellTimeCouldNotBeCastedException(
                             f"The container dwell time distribution representation "
                             f"'{container_dwell_time_distribution}' could not be casted."
                         )
