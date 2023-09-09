@@ -93,9 +93,9 @@ from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summ
 from conflowgen.descriptive_datatypes import TransshipmentAndHinterlandSplit, ContainerVolumeFromOriginToDestination
 from conflowgen.descriptive_datatypes import HinterlandModalSplit
 from conflowgen.descriptive_datatypes import UsedYardCapacityOverTime
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    VehicleIdentifier
+from conflowgen.descriptive_datatypes import VehicleIdentifier
 from conflowgen.descriptive_datatypes import ContainerVolumeByVehicleType
+from conflowgen.descriptive_datatypes import ContainersTransportedByTruck
 
 # Add metadata constants
 from .metadata import __version__

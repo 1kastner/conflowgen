@@ -1,19 +1,24 @@
-import math
 import typing
 from abc import ABC
 from builtins import bool
 from datetime import datetime
-from collections import namedtuple
 
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.previews.inbound_and_outbound_vehicle_capacity_preview import \
     InboundAndOutboundVehicleCapacityPreview
 from conflowgen.api.truck_arrival_distribution_manager import TruckArrivalDistributionManager
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
-    ContainerLengthDistributionRepository
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
+from conflowgen.descriptive_datatypes import ContainersTransportedByTruck
+
+
+class NumberTrucksPerWeek(typing.NamedTuple):
+    #: The number of containers moved on the inbound journey
+    inbound: float
+
+    #: The number of containers moved on the outbound journey
+    outbound: float
 
 
 class TruckGateThroughputPreview(AbstractPreview, ABC):
@@ -47,44 +52,37 @@ class TruckGateThroughputPreview(AbstractPreview, ABC):
             mode_of_transport_distribution)
 
     @DataSummariesCache.cache_result
-    def _get_total_trucks(self) -> typing.Tuple[int, int]:
+    def _get_total_trucks(self) -> ContainersTransportedByTruck:
         # Calculate the truck capacity for export containers using the inbound container capacities
-        inbound_used_and_maximum_capacity = self.inbound_and_outbound_vehicle_capacity_preview. \
+        inbound_used_and_maximum_capacity = self.inbound_and_outbound_vehicle_capacity_preview.\
             get_inbound_capacity_of_vehicles()
         outbound_used_and_maximum_capacity = self.inbound_and_outbound_vehicle_capacity_preview.\
             get_outbound_capacity_of_vehicles()
 
         # Get the total truck capacity in TEU
-        total_inbound_truck_capacity_in_teu = inbound_used_and_maximum_capacity.teu[ModeOfTransport.truck]
-        total_outbound_truck_capacity_in_teu = outbound_used_and_maximum_capacity.used.teu[ModeOfTransport.truck]
+        inbound_containers_transported_by_truck = inbound_used_and_maximum_capacity.containers[ModeOfTransport.truck]
+        outbound_containers_transported_by_truck = outbound_used_and_maximum_capacity.used.containers[
+            ModeOfTransport.truck]
 
-        # Calculate the TEU factor using the container length distribution
-        teu_factor = ContainerLengthDistributionRepository.get_teu_factor()
-
-        # Calculate the total number of containers transported by truck
-        total_inbound_containers_transported_by_truck = \
-            int(math.ceil(total_inbound_truck_capacity_in_teu / teu_factor))
-        total_outbound_containers_transported_by_truck = \
-            int(math.ceil(total_outbound_truck_capacity_in_teu / teu_factor))
-
-        total_containers_transported_by_truck_datatype = \
-            namedtuple('total_containers_transported_by_truck_datatype', 'inbound outbound')
-        total_containers_transported_by_truck = \
-            total_containers_transported_by_truck_datatype(total_inbound_containers_transported_by_truck,
-                                                           total_outbound_containers_transported_by_truck)
+        total_containers_transported_by_truck = ContainersTransportedByTruck(
+            inbound=inbound_containers_transported_by_truck,
+            outbound=outbound_containers_transported_by_truck
+        )
 
         return total_containers_transported_by_truck
 
     @DataSummariesCache.cache_result
-    def _get_number_of_trucks_per_week(self) -> typing.Tuple[float, float]:
+    def _get_number_of_trucks_per_week(self) -> NumberTrucksPerWeek:
         # Calculate average number of trucks per week
         num_weeks = (self.end_date - self.start_date).days / 7
         total_trucks = self._get_total_trucks()
         inbound_trucks_per_week = total_trucks.inbound / num_weeks
         outbound_trucks_per_week = total_trucks.outbound / num_weeks
 
-        total_weekly_trucks_datatype = namedtuple('total_weekly_trucks_datatype', 'inbound outbound')
-        total_weekly_trucks = total_weekly_trucks_datatype(inbound_trucks_per_week, outbound_trucks_per_week)
+        total_weekly_trucks = NumberTrucksPerWeek(
+            inbound=inbound_trucks_per_week,
+            outbound=outbound_trucks_per_week
+        )
 
         return total_weekly_trucks
 

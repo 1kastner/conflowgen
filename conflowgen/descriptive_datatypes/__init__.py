@@ -93,3 +93,15 @@ class UsedYardCapacityOverTime(typing.NamedTuple):
 
     #: The yard capacity expressed in number of boxes
     containers: typing.Dict[datetime.datetime, int]
+
+
+class ContainersTransportedByTruck(typing.NamedTuple):
+    """
+    Represents the containers moved by trucks.
+    """
+
+    #: The number of containers moved on the inbound journey
+    inbound: float
+
+    #: The number of containers moved on the outbound journey
+    outbound: float
