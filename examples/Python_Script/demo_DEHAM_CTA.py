@@ -87,7 +87,9 @@ logger = conflowgen.setup_logger()
 logger.info(__doc__)
 
 # Pick database
-database_chooser = conflowgen.DatabaseChooser()
+database_chooser = conflowgen.DatabaseChooser(
+    sqlite_databases_directory=os.path.join(this_dir, "databases")
+)
 demo_file_name = "demo_deham_cta.sqlite"
 database_chooser.create_new_sqlite_database(
     demo_file_name,

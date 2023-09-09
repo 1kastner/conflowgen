@@ -2,7 +2,6 @@ from __future__ import annotations
 import datetime
 import logging
 import math
-import random
 from typing import Tuple, List, Dict, Type, Sequence
 
 import numpy as np
@@ -10,6 +9,7 @@ import numpy as np
 from peewee import fn, JOIN, ModelSelect
 
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
+from ..application.repositories.random_seed_store_repository import get_initialised_random_object
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
@@ -25,10 +25,10 @@ from ..tools.continuous_distribution import ContinuousDistribution, multiply_dis
 
 
 class LargeScheduledVehicleForOnwardTransportationManager:
-    random_seed = 1
 
     def __init__(self):
-        self.seeded_random = random.Random(x=self.random_seed)
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+
         self.logger = logging.getLogger("conflowgen")
         self.schedule_repository = ScheduleRepository()
         self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository

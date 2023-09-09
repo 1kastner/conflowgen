@@ -3,6 +3,7 @@ import logging
 import peewee
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container
@@ -40,7 +41,8 @@ def create_tables(sql_db_connection: peewee.Database) -> peewee.Database:
         TruckArrivalInformationForPickup,
         TruckArrivalInformationForDelivery,
         StorageRequirementDistribution,
-        ContainerDwellTimeDistribution
+        ContainerDwellTimeDistribution,
+        RandomSeedStore,
     ])
     for table_with_index in (
         Destination,

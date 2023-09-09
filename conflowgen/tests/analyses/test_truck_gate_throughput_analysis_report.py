@@ -2,6 +2,7 @@ import datetime
 
 from conflowgen.analyses.truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForPickup, \
     TruckArrivalInformationForDelivery
 from conflowgen.domain_models.container import Container
@@ -92,7 +93,8 @@ class TestTruckGateThroughputAnalysisReport(UnitTestCaseWithMatplotlib):
             ModeOfTransportDistribution,
             Destination,
             ContainerFlowGenerationProperties,
-            Train
+            Train,
+            RandomSeedStore
         ])
         mode_of_transport_distribution_seeder.seed()
         ContainerFlowGenerationProperties.create(

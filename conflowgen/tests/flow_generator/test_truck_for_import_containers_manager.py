@@ -11,6 +11,7 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -46,7 +47,8 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             LargeScheduledVehicle,
             Destination,
             Schedule,
-            TruckArrivalInformationForPickup
+            TruckArrivalInformationForPickup,
+            RandomSeedStore,
         ])
         truck_arrival_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()

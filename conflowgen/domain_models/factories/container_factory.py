@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-import random
 from typing import Dict, MutableSequence, Sequence, Type
 
 from conflowgen.domain_models.container import Container
@@ -19,6 +18,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 from conflowgen.domain_models.repositories.large_scheduled_vehicle_repository import LargeScheduledVehicleRepository
 from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle, LargeScheduledVehicle
 from conflowgen.tools.distribution_approximator import DistributionApproximator
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 
 
 class ContainerFactory:
@@ -26,12 +26,10 @@ class ContainerFactory:
     Creates containers according to the distributions which are either hard-coded or stored in the database.
     """
 
-    ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
-
-    random_seed = 1
+    ignored_capacity = ContainerLength.get_maximum_teu_factor()
 
     def __init__(self):
-        self.seeded_random = random.Random(x=self.random_seed)
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
         self.mode_of_transportation_distribution: dict[ModeOfTransport, dict[ModeOfTransport, float]] | None = None
         self.container_length_distribution: dict[ContainerLength, float] | None = None
         self.container_weight_distribution:  dict[ContainerLength, dict[int, float]] | None = None
