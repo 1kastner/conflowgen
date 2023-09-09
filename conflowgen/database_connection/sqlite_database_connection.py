@@ -57,6 +57,7 @@ class SqliteDatabaseConnection:
             sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
         sqlite_databases_directory = os.path.abspath(sqlite_databases_directory)
         self.sqlite_databases_directory = sqlite_databases_directory
+        self.path_to_sqlite_database = ""
 
         self.logger = logging.getLogger("conflowgen")
 
@@ -82,16 +83,15 @@ class SqliteDatabaseConnection:
             **seeder_options
     ) -> SqliteDatabase:
         if database_name == ":memory:":
-            path_to_sqlite_database = ":memory:"
+            self.path_to_sqlite_database = ":memory:"
             sqlite_database_existed_before = False
         else:
-            path_to_sqlite_database, sqlite_database_existed_before = self._load_or_create_sqlite_file_on_hard_drive(
-                database_name=database_name, create=create, reset=reset
-            )
+            self.path_to_sqlite_database, sqlite_database_existed_before = (
+                self._load_or_create_sqlite_file_on_hard_drive(database_name=database_name, create=create, reset=reset))
 
-        self.logger.debug(f"Opening file {path_to_sqlite_database}")
+        self.logger.debug(f"Opening file {self.path_to_sqlite_database}")
         self.sqlite_db_connection = SqliteDatabase(
-            path_to_sqlite_database,
+            self.path_to_sqlite_database,
             pragmas=self.SQLITE_DEFAULT_SETTINGS
         )
         database_proxy.initialize(self.sqlite_db_connection)
@@ -103,12 +103,12 @@ class SqliteDatabaseConnection:
         self.logger.debug(f'foreign_keys: {self.sqlite_db_connection.foreign_keys}')
 
         if not sqlite_database_existed_before or reset:
-            self.logger.debug(f"Creating new database at {path_to_sqlite_database}")
+            self.logger.debug(f"Creating new database at {self.path_to_sqlite_database}")
             create_tables(self.sqlite_db_connection)
             self.logger.debug("Seed with default values...")
             seed_all_distributions(**seeder_options)
         else:
-            self.logger.debug(f"Open existing database at {path_to_sqlite_database}")
+            self.logger.debug(f"Open existing database at {self.path_to_sqlite_database}")
 
         container_flow_properties: ContainerFlowGenerationProperties | None = \
             ContainerFlowGenerationProperties.get_or_none()
