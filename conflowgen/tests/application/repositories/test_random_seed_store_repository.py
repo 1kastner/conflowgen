@@ -1,8 +1,6 @@
 import time
 import unittest
 
-import pytest
-
 from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.application.repositories.random_seed_store_repository import RandomSeedStoreRepository
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db

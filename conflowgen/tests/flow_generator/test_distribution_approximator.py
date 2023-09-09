@@ -7,7 +7,7 @@ import unittest
 
 from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.tools.distribution_approximator import DistributionApproximator, SamplerExhaustedException
-from substitute_peewee_database import setup_sqlite_in_memory_db
+from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
 class TestDistributionApproximator(unittest.TestCase):

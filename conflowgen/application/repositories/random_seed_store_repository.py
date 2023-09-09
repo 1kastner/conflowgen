@@ -3,8 +3,6 @@ import random
 import typing
 import time
 
-from unicodedata import name
-
 from conflowgen.application.models.random_seed_store import RandomSeedStore
 
 
@@ -27,13 +25,11 @@ class RandomSeedStoreRepository:
                 random_seed_store.save()
                 if log_loading_process:
                     self.logger.debug(f"Overwrite seed {previous_seed} with {random_seed} for '{seed_name}'")
-                return random_seed
             else:
                 # there is a previous seed and we should re-use it
                 random_seed = random_seed_store.random_seed
                 if log_loading_process:
                     self.logger.debug(f"Re-use seed {random_seed} for '{seed_name}'")
-                return random_seed
         else:
             # there is no previous seed available, enter the current seed and return its value
             random_seed = self._get_random_seed()
@@ -44,7 +40,7 @@ class RandomSeedStoreRepository:
             )
             if log_loading_process:
                 self.logger.debug(f"Randomly set seed {random_seed} for '{seed_name}'")
-            return random_seed
+        return random_seed
 
     @staticmethod
     def _get_random_seed() -> int:
