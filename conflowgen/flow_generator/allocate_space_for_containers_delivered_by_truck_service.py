@@ -42,9 +42,14 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         As long as the container length distribution for inbound and outbound containers are the same, using the number
         of containers should lead to the same amount of containers as if we had taken the TEU capacity which is more
         complex to calculate.
+        We do not consider the emergency pick-ups, i.e. the cases when a container was picked up by a truck just because
+        no truck was available.
+        These trucks artificially increase the import and export flows in case the container was originally a
+        transshipment container and without this correction out of the sudden we have two containers in the yard.
         """
         number_containers: int = Container.select().where(
-            Container.picked_up_by == ModeOfTransport.truck
+            (Container.picked_up_by == ModeOfTransport.truck)
+            & ~Container.emergency_pickup
         ).count()
         return number_containers
 
