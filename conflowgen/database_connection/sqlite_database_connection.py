@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import logging
 import os
 from typing import List, Tuple, Optional
@@ -14,6 +13,7 @@ from conflowgen.domain_models.base_model import database_proxy
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 from conflowgen.domain_models.vehicle import Truck, DeepSeaVessel, Feeder, Barge, Train
+from conflowgen.tools import get_convert_to_random_value
 
 
 class SqliteDatabaseIsMissingException(Exception):
@@ -127,13 +127,9 @@ class SqliteDatabaseConnection:
             self.logger.debug(f"Number entries in table '{vehicle.__name__}': {vehicle.select().count()}")
 
         self.seeded_random = get_initialised_random_object(self.__class__.__name__)
-        randbits = self.seeded_random.getrandbits(100)
-
-        @self.sqlite_db_connection.func('assign_random_value')
-        def convert_to_random_value(row_id):
-            h = hashlib.new('sha256')
-            h.update((randbits + row_id).to_bytes(16, 'big'))
-            return h.hexdigest()
+        random_bits = self.seeded_random.getrandbits(100)
+        convert_to_random_value = get_convert_to_random_value(random_bits)
+        self.sqlite_db_connection.func('assign_random_value')(convert_to_random_value)
 
         return self.sqlite_db_connection
 
