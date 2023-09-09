@@ -1,8 +1,8 @@
 from __future__ import annotations
 import logging
-import random
 from typing import Dict, Type, List
 
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -18,6 +18,8 @@ class AllocateSpaceForContainersDeliveredByTruckService:
     ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     def __init__(self):
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+
         self.logger = logging.getLogger("conflowgen")
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
         self.mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] | None = None
@@ -155,7 +157,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
             return None
 
         # pick vehicle type
-        vehicle_type: ModeOfTransport = random.choices(
+        vehicle_type: ModeOfTransport = self.seeded_random.choices(
             population=vehicle_types,
             weights=frequency_of_vehicle_types
         )[0]
@@ -178,7 +180,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                              "by trucks.")
             return None
 
-        vehicle: Type[AbstractLargeScheduledVehicle] = random.choices(
+        vehicle: Type[AbstractLargeScheduledVehicle] = self.seeded_random.choices(
             population=list(vehicle_distribution.keys()),
             weights=list(vehicle_distribution.values())
         )[0]

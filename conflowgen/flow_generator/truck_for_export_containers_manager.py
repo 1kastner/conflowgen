@@ -1,6 +1,5 @@
 from __future__ import annotations
 import datetime
-import random
 from typing import Dict, Optional
 
 from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager, \
@@ -76,7 +75,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
 
         # arrival within the last time slot
         close_to_time_window_length = self.time_window_length_in_hours - (1 / 60)
-        random_time_component: float = random.uniform(0, close_to_time_window_length)
+        random_time_component: float = self.seeded_random.uniform(0, close_to_time_window_length)
 
         if _debug_check_distribution_property is not None:
             if _debug_check_distribution_property == "minimum":

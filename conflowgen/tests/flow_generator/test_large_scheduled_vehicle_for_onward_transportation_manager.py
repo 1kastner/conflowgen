@@ -3,6 +3,7 @@ import unittest
 import unittest.mock
 from typing import Iterable
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
@@ -27,7 +28,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
     def setUp(self) -> None:
         """Create container database in memory"""
         sqlite_db = setup_sqlite_in_memory_db()
-        sqlite_db.create_tables([
+        sqlite_db.create_tables({
             Schedule,
             LargeScheduledVehicle,
             Train,
@@ -41,7 +42,8 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             Destination,
             ModeOfTransportDistribution,
             ContainerDwellTimeDistribution,
-        ])
+            RandomSeedStore,
+        })
 
         mode_of_transport_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()

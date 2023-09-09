@@ -5,10 +5,19 @@ Check if distributions are approximated.
 import collections
 import unittest
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.tools.distribution_approximator import DistributionApproximator, SamplerExhaustedException
+from substitute_peewee_database import setup_sqlite_in_memory_db
 
 
 class TestDistributionApproximator(unittest.TestCase):
+
+    def setUp(self) -> None:
+        """Create container database in memory"""
+        sqlite_db = setup_sqlite_in_memory_db()
+        sqlite_db.create_tables([
+            RandomSeedStore
+        ])
 
     def test_happy_path(self) -> None:
         """This is the happy path"""

@@ -14,7 +14,8 @@ from conflowgen.domain_models.distribution_repositories.container_dwell_time_dis
 
 class AverageContainerDwellTimeCalculatorService:
 
-    def get_average_container_dwell_time(self, start_date: datetime.date, end_date: datetime.date) -> float:
+    @staticmethod
+    def get_average_container_dwell_time(start_date: datetime.date, end_date: datetime.date) -> float:
         inbound_vehicle_capacity = InboundAndOutboundVehicleCapacityCalculatorService.get_inbound_capacity_of_vehicles(
             start_date=start_date,
             end_date=end_date
