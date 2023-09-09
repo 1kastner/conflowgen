@@ -3,6 +3,8 @@ from __future__ import annotations
 import logging
 import typing
 
+from peewee import fn
+
 from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.container_destination_distribution_repository import \
@@ -55,6 +57,8 @@ class AssignDestinationToContainerService:
                 LargeScheduledVehicle, on=Container.picked_up_by_large_scheduled_vehicle
             ).where(
                 Container.picked_up_by_large_scheduled_vehicle.schedule == schedule
+            ).order_by(
+                fn.assign_random_value(Container.id)
             )
             distribution_for_schedule = self.distribution[schedule]
             destinations = list(distribution_for_schedule.keys())

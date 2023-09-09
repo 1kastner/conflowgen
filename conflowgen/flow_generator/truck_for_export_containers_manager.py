@@ -2,6 +2,8 @@ from __future__ import annotations
 import datetime
 from typing import Dict, Optional
 
+from peewee import fn
+
 from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager, \
     UnknownDistributionPropertyException
 from ..domain_models.data_types.container_length import ContainerLength
@@ -113,6 +115,8 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
         """
         containers = Container.select().where(
             Container.delivered_by == ModeOfTransport.truck
+        ).order_by(
+            fn.assign_random_value(Container.id)
         )
         number_containers = containers.count()
         self.logger.info(

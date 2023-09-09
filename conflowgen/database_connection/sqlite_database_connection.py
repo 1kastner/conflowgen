@@ -7,11 +7,13 @@ from typing import List, Tuple, Optional
 from peewee import SqliteDatabase
 
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 from conflowgen.database_connection.create_tables import create_tables
 from conflowgen.domain_models.base_model import database_proxy
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_seeders import seed_all_distributions
 from conflowgen.domain_models.vehicle import Truck, DeepSeaVessel, Feeder, Barge, Train
+from conflowgen.tools import get_convert_to_random_value
 
 
 class SqliteDatabaseIsMissingException(Exception):
@@ -52,6 +54,7 @@ class SqliteDatabaseConnection:
     )
 
     def __init__(self, sqlite_databases_directory: Optional[str] = None):
+        self.seeded_random = None
 
         if sqlite_databases_directory is None:
             sqlite_databases_directory = self.SQLITE_DEFAULT_DIR
@@ -122,6 +125,11 @@ class SqliteDatabaseConnection:
 
         for vehicle in (DeepSeaVessel, Feeder, Barge, Train, Truck, Container):
             self.logger.debug(f"Number entries in table '{vehicle.__name__}': {vehicle.select().count()}")
+
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+        random_bits = self.seeded_random.getrandbits(100)
+        convert_to_random_value = get_convert_to_random_value(random_bits)
+        self.sqlite_db_connection.func('assign_random_value')(convert_to_random_value)
 
         return self.sqlite_db_connection
 

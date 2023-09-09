@@ -74,7 +74,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         # This way no vehicle has an advantage over another by its earlier arrival (getting better slots etc.)
         selected_containers: ModelSelect = Container.select(
         ).order_by(
-            fn.Random()
+            fn.assign_random_value(Container.id)
         ).where(
             (Container.picked_up_by << ModeOfTransport.get_scheduled_vehicles())
             & (Container.delivered_by << ModeOfTransport.get_scheduled_vehicles())
