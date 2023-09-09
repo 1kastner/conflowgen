@@ -1,6 +1,5 @@
 import unittest
 import unittest.mock
-import datetime
 
 from conflowgen.api.container_dwell_time_distribution_manager import ContainerDwellTimeDistributionManager
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \

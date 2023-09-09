@@ -48,7 +48,6 @@ class QuaySideThroughputPreview(AbstractPreview, ABC):
             mode_of_transport_distribution
         )
 
-
     @DataSummariesCache.cache_result
     def get_quay_side_throughput(self) -> InboundAndOutboundContainerVolume:
         inbound_to_outbound_flow = self.container_flow_by_vehicle_type.get_inbound_to_outbound_flow()
@@ -70,11 +69,11 @@ class QuaySideThroughputPreview(AbstractPreview, ABC):
         result = InboundAndOutboundContainerVolume(
             inbound=ContainerVolume(
                 teu=quayside_inbound_container_volume_in_teu,
-                containers=quayside_inbound_container_volume_in_teu / teu_factor
+                containers=int(quayside_inbound_container_volume_in_teu / teu_factor)
             ),
             outbound=ContainerVolume(
                 teu=quayside_outbound_container_volume_in_teu,
-                containers=quayside_outbound_container_volume_in_teu / teu_factor
+                containers=int(quayside_outbound_container_volume_in_teu / teu_factor)
             )
         )
 

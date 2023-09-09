@@ -9,6 +9,8 @@ Domain datatypes
 .. autoenum:: conflowgen.ContainerLength
     :members:
 
+.. autonamedtuple:: conflowgen.ContainersTransportedByTruck
+
 .. autonamedtuple:: conflowgen.ContainerVolumeByVehicleType
 
 .. autonamedtuple:: conflowgen.ContainerVolumeFromOriginToDestination
@@ -28,9 +30,9 @@ Domain datatypes
 
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandSplit
 
-.. autonamedtuple:: conflowgen.VehicleIdentifier
-
 .. autonamedtuple:: conflowgen.UsedYardCapacityOverTime
+
+.. autonamedtuple:: conflowgen.VehicleIdentifier
 
 
 Setting up ConFlowGen
@@ -93,6 +95,12 @@ Generating previews
 .. autoclass:: conflowgen.ModalSplitPreviewReport
     :members:
 
+.. autoclass:: conflowgen.QuaySideThroughputPreview
+    :members:
+
+.. autoclass:: conflowgen.QuaySideThroughputPreviewReport
+    :members:
+
 .. autofunction:: conflowgen.run_all_previews
 
 .. autoclass:: conflowgen.VehicleCapacityExceededPreview
@@ -106,6 +114,7 @@ Generating previews
 
 .. autoclass:: conflowgen.TruckGateThroughputPreviewReport
     :members:
+
 
 Running analyses
 ================

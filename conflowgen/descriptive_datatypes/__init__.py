@@ -74,7 +74,6 @@ class OutboundUsedAndMaximumCapacity(typing.NamedTuple):
     maximum: ContainerVolumeByVehicleType
 
 
-
 class ContainerVolumeFromOriginToDestination(typing.NamedTuple):
     """
     Several KPIs at container terminals can be both expressed in boxes per hour and TEU per hour (or a different time

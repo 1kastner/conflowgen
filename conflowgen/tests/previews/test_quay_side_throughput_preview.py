@@ -83,17 +83,17 @@ class TestQuaySideThroughputPreview(unittest.TestCase):
         )
 
     def test_empty(self):
-        v = self.preview.get_quay_side_throughput()
-        vi = v.inbound
-        vo = v.outbound
-        vi_teu = vi.teu
-        vi_box = vi.containers
-        vo_teu = vo.teu
-        vo_box = vo.containers
-        self.assertEqual(vi_teu, 0)
-        self.assertEqual(vi_box, 0)
-        self.assertEqual(vo_teu, 0)
-        self.assertEqual(vo_box, 0)
+        volume = self.preview.get_quay_side_throughput()
+        volume_i = volume.inbound
+        volume_o = volume.outbound
+        volume_i_teu = volume_i.teu
+        volume_i_box = volume_i.containers
+        volume_o_teu = volume_o.teu
+        volume_o_box = volume_o.containers
+        self.assertEqual(volume_i_teu, 0)
+        self.assertEqual(volume_i_box, 0)
+        self.assertEqual(volume_o_teu, 0)
+        self.assertEqual(volume_o_box, 0)
 
     def test_one_feeder(self):
         one_week_later = datetime.datetime.now() + datetime.timedelta(weeks=1)
@@ -106,14 +106,14 @@ class TestQuaySideThroughputPreview(unittest.TestCase):
             average_moved_capacity=150,
             vehicle_arrives_every_k_days=-1
         )
-        v = self.preview.get_quay_side_throughput()
-        vi = v.inbound
-        vo = v.outbound
-        vi_teu = vi.teu
-        vi_box = vi.containers
-        vo_teu = vo.teu
-        vo_box = vo.containers
-        self.assertAlmostEqual(vi_teu, 150)
-        self.assertAlmostEqual(vi_box, 75)
-        self.assertAlmostEqual(vo_teu, 72)
-        self.assertAlmostEqual(vo_box, 36)
+        volume = self.preview.get_quay_side_throughput()
+        volume_i = volume.inbound
+        volume_o = volume.outbound
+        volume_i_teu = volume_i.teu
+        volume_i_box = volume_i.containers
+        volume_o_teu = volume_o.teu
+        volume_o_box = volume_o.containers
+        self.assertAlmostEqual(volume_i_teu, 150)
+        self.assertAlmostEqual(volume_i_box, 75)
+        self.assertAlmostEqual(volume_o_teu, 72)
+        self.assertAlmostEqual(volume_o_box, 36)
