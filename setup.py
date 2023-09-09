@@ -55,7 +55,7 @@ setup(
             'nbconvert',
 
             # build documentation
-            'sphinx==7.1.2',  # build the documentation
+            'sphinx',  # build the documentation
             'sphinx-rtd-theme',  # adding the nice sphinx theme
             'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
             'myst-parser',  # for Contributing.md
