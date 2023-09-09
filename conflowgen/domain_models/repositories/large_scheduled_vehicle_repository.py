@@ -9,7 +9,7 @@ from conflowgen.domain_models.vehicle import LargeScheduledVehicle, AbstractLarg
 
 class LargeScheduledVehicleRepository:
 
-    ignored_capacity = ContainerLength.get_factor(ContainerLength.other)
+    ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     def __init__(self):
         self.transportation_buffer = None
@@ -44,7 +44,7 @@ class LargeScheduledVehicleRepository:
 
         # calculate new free capacity
         free_capacity_in_teu = self.free_capacity_for_inbound_journey_buffer[vehicle]
-        used_capacity_in_teu = ContainerLength.get_factor(container_length=container.length)
+        used_capacity_in_teu = ContainerLength.get_teu_factor(container_length=container.length)
         new_free_capacity_in_teu = free_capacity_in_teu - used_capacity_in_teu
         assert new_free_capacity_in_teu >= 0, f"vehicle {vehicle} is overloaded, " \
                                               f"free_capacity_in_teu: {free_capacity_in_teu}, " \
@@ -65,7 +65,7 @@ class LargeScheduledVehicleRepository:
 
         # calculate new free capacity
         free_capacity_in_teu = self.free_capacity_for_outbound_journey_buffer[vehicle]
-        used_capacity_in_teu = ContainerLength.get_factor(container_length=container.length)
+        used_capacity_in_teu = ContainerLength.get_teu_factor(container_length=container.length)
         new_free_capacity_in_teu = free_capacity_in_teu - used_capacity_in_teu
         assert new_free_capacity_in_teu >= 0, f"vehicle {vehicle} is overloaded, " \
                                               f"free_capacity_in_teu: {free_capacity_in_teu}, " \
@@ -133,10 +133,10 @@ class LargeScheduledVehicleRepository:
         loaded_other_containers = container_counter(vehicle, ContainerLength.other)
         free_capacity_in_teu = (
                 maximum_capacity
-                - loaded_20_foot_containers * ContainerLength.get_factor(ContainerLength.twenty_feet)
-                - loaded_40_foot_containers * ContainerLength.get_factor(ContainerLength.forty_feet)
-                - loaded_45_foot_containers * ContainerLength.get_factor(ContainerLength.forty_five_feet)
-                - loaded_other_containers * ContainerLength.get_factor(ContainerLength.other)
+                - loaded_20_foot_containers * ContainerLength.get_teu_factor(ContainerLength.twenty_feet)
+                - loaded_40_foot_containers * ContainerLength.get_teu_factor(ContainerLength.forty_feet)
+                - loaded_45_foot_containers * ContainerLength.get_teu_factor(ContainerLength.forty_five_feet)
+                - loaded_other_containers * ContainerLength.get_teu_factor(ContainerLength.other)
         )
         vehicle_name = vehicle.large_scheduled_vehicle.vehicle_name
         assert free_capacity_in_teu >= 0, f"vehicle {vehicle} of type {vehicle.get_mode_of_transport()} with the " \

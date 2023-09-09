@@ -3,7 +3,8 @@ import datetime
 import random
 from typing import Dict, Optional
 
-from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
+from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager, \
+    UnknownDistributionPropertyException
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForDelivery
@@ -85,7 +86,7 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             elif _debug_check_distribution_property == "average":
                 random_time_component = 0
             else:
-                raise Exception(f"Unknown: {_debug_check_distribution_property}")
+                raise UnknownDistributionPropertyException(f"Unknown: {_debug_check_distribution_property}")
 
         truck_arrival_time = (
                 # go back to the earliest time window
@@ -143,6 +144,6 @@ class TruckForExportContainersManager(AbstractTruckForContainersManager):
             )
             container.delivered_by_truck = truck
             container.save()
-            teu_total += ContainerLength.get_factor(container.length)
+            teu_total += ContainerLength.get_teu_factor(container.length)
         self.logger.info(f"All {number_containers} trucks that deliver a container are created now, moving "
                          f"{teu_total} TEU.")

@@ -15,7 +15,7 @@ from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle
 
 class AllocateSpaceForContainersDeliveredByTruckService:
 
-    ignored_capacity = ContainerLength.get_factor(ContainerLength.other)
+    ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     def __init__(self):
         self.logger = logging.getLogger("conflowgen")
@@ -131,7 +131,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     continue  # try again (possibly new vehicle type, definitely not same vehicle again)
 
                 container = self.container_factory.create_container_for_delivering_truck(vehicle)
-                teu_total += ContainerLength.get_factor(container.length)
+                teu_total += ContainerLength.get_teu_factor(container.length)
                 self.large_scheduled_vehicle_repository.block_capacity_for_outbound_journey(vehicle, container)
                 successful_assignment += 1
                 break  # success, no further looping to search for a suitable vehicle
