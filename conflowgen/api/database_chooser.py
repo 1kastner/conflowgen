@@ -45,8 +45,8 @@ class DatabaseChooser:
         """
         if self.peewee_sqlite_db is not None:
             self._close_and_reset_db()
-        self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
         DataSummariesCache.reset_cache()
+        self.peewee_sqlite_db = self.sqlite_database_connection.choose_database(file_name, create=False, reset=False)
 
     def create_new_sqlite_database(
             self,
@@ -91,7 +91,8 @@ class DatabaseChooser:
             raise NoCurrentConnectionException("You must first create a connection to an SQLite database.")
 
     def _close_and_reset_db(self):
-        self.logger.debug("Closing current database connection.")
+        path_to_sqlite_database = self.sqlite_database_connection.path_to_sqlite_database
+        self.logger.debug(f"Closing current database connection {path_to_sqlite_database}.")
         self.peewee_sqlite_db.close()
         self.peewee_sqlite_db = None
         DataSummariesCache.reset_cache()
