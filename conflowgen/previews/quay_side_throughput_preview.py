@@ -71,11 +71,11 @@ class QuaySideThroughputPreview(AbstractPreview, ABC):
         result = InboundAndOutboundContainerVolume(
             inbound=ContainerVolume(
                 teu=quayside_inbound_container_volume_in_teu,
-                containers=int((quayside_inbound_container_volume_in_teu + epsilon)// teu_factor)
+                containers=int((quayside_inbound_container_volume_in_teu + epsilon) / teu_factor)
             ),
             outbound=ContainerVolume(
                 teu=quayside_outbound_container_volume_in_teu,
-                containers=int((quayside_outbound_container_volume_in_teu + epsilon)/ teu_factor)
+                containers=int((quayside_outbound_container_volume_in_teu + epsilon) / teu_factor)
             )
         )
 
