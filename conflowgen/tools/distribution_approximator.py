@@ -14,7 +14,6 @@ class SamplerExhaustedException(Exception):
     pass
 
 
-
 class DistributionApproximator:
 
     class_level_seeded_random: None | random.Random = None

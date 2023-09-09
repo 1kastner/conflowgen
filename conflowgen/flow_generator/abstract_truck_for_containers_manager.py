@@ -45,7 +45,7 @@ class AbstractTruckForContainersManager(abc.ABC):
                     storage_requirement: None
                     for storage_requirement in StorageRequirement
                 } for vehicle in ModeOfTransport
-        }
+            }
 
         self.vehicle_factory = VehicleFactory()
         self.time_window_length_in_hours: typing.Optional[int] = None
