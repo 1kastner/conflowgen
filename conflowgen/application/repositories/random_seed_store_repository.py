@@ -8,6 +8,8 @@ from conflowgen.application.models.random_seed_store import RandomSeedStore
 
 class RandomSeedStoreRepository:
 
+    random_seed_offset = 0
+
     def __init__(self):
         self.logger = logging.getLogger("conflowgen")
 
@@ -24,7 +26,9 @@ class RandomSeedStoreRepository:
                 random_seed_store.random_seed = random_seed
                 random_seed_store.save()
                 if log_loading_process:
-                    self.logger.debug(f"Overwrite seed {previous_seed} with {random_seed} for '{seed_name}'")
+                    self.logger.debug(
+                        f"Replace seed {previous_seed} with {random_seed} for '{seed_name}' for the new round."
+                    )
             else:
                 # there is a previous seed and we should re-use it
                 random_seed = random_seed_store.random_seed
@@ -42,9 +46,10 @@ class RandomSeedStoreRepository:
                 self.logger.debug(f"Randomly set seed {random_seed} for '{seed_name}'")
         return random_seed
 
-    @staticmethod
-    def _get_random_seed() -> int:
-        return int(time.time())
+    @classmethod
+    def _get_random_seed(cls) -> int:
+        cls.random_seed_offset += 1
+        return int(time.time_ns() + cls.random_seed_offset)
 
     def fix_random_seed(
             self, seed_name: str, random_seed: typing.Optional[int], log_loading_process: bool = False

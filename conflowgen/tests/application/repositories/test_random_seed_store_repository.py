@@ -37,10 +37,20 @@ class TestRandomSeedStoreRepository(unittest.TestCase):
         RandomSeedStore.create(
             name="reuse_existing",
             random_seed=seed,
-            is_random=True
+            is_random=False
         )
         random_seed = self.repository.get_random_seed("reuse_existing", False)
         self.assertEqual(random_seed, seed)
+
+    def test_do_not_reuse_existing_random_entry(self):
+        seed = int(time.time())
+        RandomSeedStore.create(
+            name="reuse_existing",
+            random_seed=seed,
+            is_random=True
+        )
+        random_seed = self.repository.get_random_seed("reuse_existing", False)
+        self.assertNotEqual(random_seed, seed)
 
     def test_fix_and_reuse_journey(self):
         for _ in range(10):

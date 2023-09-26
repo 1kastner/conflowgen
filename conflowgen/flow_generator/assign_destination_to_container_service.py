@@ -29,10 +29,7 @@ class AssignDestinationToContainerService:
         self.logger.debug("Loading destination distribution...")
         for schedule, distribution_for_schedule in self.distribution.items():
             self.logger.debug(f"Load destination distribution for service '{schedule.service_name}' by "
-                              f"{schedule.vehicle_type}")
-            for destination, fraction in distribution_for_schedule.items():
-                self.logger.debug(f"Destination '{destination.destination_name}' is frequented by {100*fraction:.2f}% "
-                                  f"of the containers and is number {destination.sequence_id}")
+                              f"{schedule.vehicle_type} with {len(distribution_for_schedule)} destinations")
 
     def assign(self) -> None:
         """
