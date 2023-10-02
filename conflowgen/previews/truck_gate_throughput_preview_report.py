@@ -3,6 +3,8 @@ import typing
 import pandas as pd
 
 import matplotlib
+import matplotlib.ticker
+import matplotlib.axes
 from matplotlib import pyplot as plt
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -63,7 +65,7 @@ class TruckGateThroughputPreviewReport(AbstractReportWithMatplotlib, ABC):
         count = 0
         # Find min, max, and average for each day of the week
         for time in sorted(truck_distribution):
-            day = time // 24
+            day = int(time // 24)
             if day == 0:
                 count += 1  # Count the number of data points in a single day
             data[day]['minimum'] = min(data[day]['minimum'], truck_distribution[time])

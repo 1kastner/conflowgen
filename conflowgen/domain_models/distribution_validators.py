@@ -135,7 +135,7 @@ def _check_all_keys_are_of_intended_primitive_type(
     return sanitized_distribution
 
 
-SUPPORTED_PRIMITIVE_KEY_TYPES = (int, )
+SUPPORTED_PRIMITIVE_KEY_TYPES = (int, float)
 
 
 def _check_all_required_keys_are_set_in_distribution(
@@ -194,7 +194,7 @@ def _check_value_range_of_frequencies_in_distribution(
 
 def validate_distribution_with_no_dependent_variables(
         distribution: Dict[enum.Enum | int, Any],
-        key_type: Type[enum.Enum] | Type[int],
+        key_type: Type[enum.Enum] | Type[float],
         values_are_frequencies: bool
 ) -> Dict[enum.Enum | int, float]:
     sanitized_distribution = _check_all_required_keys_are_set_in_distribution(distribution, key_type)
