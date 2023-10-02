@@ -29,7 +29,7 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
         """
         return self.truck_arrival_distribution_repository.get_distribution()
 
-    def set_truck_arrival_distribution(self, distribution: typing.Dict[int, float]) -> None:
+    def set_truck_arrival_distribution(self, distribution: typing.Dict[float, float]) -> None:
         """
 
         Args:
@@ -40,7 +40,7 @@ class TruckArrivalDistributionManager(AbstractDistributionManager):
         """
         sanitized_distribution = self._normalize_and_validate_distribution_without_dependent_variables(
             distribution,
-            int,
+            float,
             values_are_frequencies=True
         )
         self.truck_arrival_distribution_repository.set_distribution(sanitized_distribution)

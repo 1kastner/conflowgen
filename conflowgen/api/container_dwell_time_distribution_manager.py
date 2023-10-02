@@ -62,7 +62,8 @@ class ContainerDwellTimeDistributionManager(AbstractDistributionManager):
         )
         DataSummariesCache.reset_cache()
 
-    def get_average_container_dwell_time(self, start_date: datetime.date, end_date: datetime.date) -> float:
+    @staticmethod
+    def get_average_container_dwell_time(start_date: datetime.date, end_date: datetime.date) -> float:
         """
         Uses :class:`.ModeOfTransportDistributionManager` to calculate the expected average container dwell time
         based on the scheduled container flow.
