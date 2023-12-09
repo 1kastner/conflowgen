@@ -35,11 +35,11 @@ jobs:
 
     - name: Use latest version of pip
       run: |
-        pip3 install --upgrade pip
+        python -m pip install --upgrade pip
 
     - name: Install Python dependencies including pylint
       run: |
-        pip3 install --user -e .[dev]
+        python -m pip install --user -e .[dev]
 
     - name: Check code quality with pylint
       run: |
