@@ -28,7 +28,7 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        conda clean
+        conda clean -ity
         conda info
         conda search conflowgen -c conda-forge --info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
@@ -61,7 +61,7 @@ jobs:
       run: |
         conda init bash
         eval "$(conda shell.bash hook)"
-        conda clean
+        conda clean -ity
         conda info
         conda search conflowgen -c conda-forge --info
         conda activate base
