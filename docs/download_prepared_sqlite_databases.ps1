@@ -10,6 +10,6 @@ $local_prepared_db_root_directory = "./notebooks/data/prepared_dbs"
 foreach ($db in $sqlite_databases) {
     $source_url = "$($web_root_directory)$($db).sqlite"
     $target_path = "$($local_prepared_db_root_directory)/$($db).sqlite"
-    Write-Host "Download $source_url and save it at $target_path"
+    Write-Output "Download $source_url and save it at $target_path"
     Invoke-WebRequest $source_url -OutFile $target_path
 }
