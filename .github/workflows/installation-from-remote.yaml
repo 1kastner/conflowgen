@@ -31,6 +31,10 @@ jobs:
         conda info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
 
+    - name: Check ConFlowGen version
+      run: |
+        conda search conflowgen -c conda-forge --info
+
     - name: Run tests
       run: |
         conda activate test-install-conflowgen
@@ -62,6 +66,10 @@ jobs:
         conda info
         conda activate base
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
+
+    - name: Check ConFlowGen version
+      run: |
+        conda search conflowgen -c conda-forge --info
 
     - name: Run tests
       run: |
