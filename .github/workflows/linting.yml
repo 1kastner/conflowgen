@@ -33,6 +33,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    - name: Use latest version of pip
+      run: |
+        pip3 install --upgrade pip
+
     - name: Install Python dependencies including pylint
       run: |
         pip3 install --user -e .[dev]
