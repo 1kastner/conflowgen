@@ -90,6 +90,9 @@ CALL docs/make clean || (
 )
 CALL docs/make html || (
     ECHO.Building the documentation failed!
+    ECHO.If you have issues with the SQLITE databases, consider running ./docs/download_prepared_sqlite_files.ps1
+    ECHO.If the issues remain, consider using your own up-to-date databases created by the demo scripts. You just need
+    ECHO.to copy those to the directories as indicated in the PowerShell script.
     EXIT /B
 )
 
