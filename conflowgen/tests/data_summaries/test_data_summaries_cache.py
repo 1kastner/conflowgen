@@ -213,7 +213,7 @@ class TestDataSummariesCache(unittest.TestCase):
         self.assertEqual(preview, {3: 6, 4: 24, 5: 30}, "New result is incorrect")
         self.assertEqual(
             len(DataSummariesCache.cached_results), 10,
-            "There should be 9 cached results, because the preview was adjusted")
+            "There should be 10 cached results, because the preview was adjusted")
         # pylint: disable=protected-access
         self.assertDictEqual(
             DataSummariesCache._hit_counter,
@@ -437,8 +437,9 @@ class TestDataSummariesCache(unittest.TestCase):
 
         self.assertEqual(return_dictionary(), {"a": 1, "b": 2}, "Function should return dictionary")
         self.assertEqual(len(DataSummariesCache.cached_results), 1, "Cache should have one result")
-        self.assertTrue({"a": 1, "b": 2} in list(DataSummariesCache.cached_results.values()), "Dictionary should be "
-                                                                                              "cached")
+        self.assertTrue(
+            {"a": 1, "b": 2} in list(DataSummariesCache.cached_results.values()),
+            "Dictionary should be cached")
         # pylint: disable=protected-access
         self.assertEqual(DataSummariesCache._hit_counter, {'return_dictionary': 1})
 
