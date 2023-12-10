@@ -71,6 +71,10 @@ setup(
             # publish at PyPI
             'wheel',  # use command 'bdist_wheel'
             'twine',  # check and upload package to PyPI
+
+            
+            # pip resolution issue - https://github.com/pypa/pip/issues/12430#issuecomment-1849059000
+            'sphinx-tabs'
         ],
         # a collection of nice-to-haves for working on Jupyter Notebooks - just a favorites list of the authors
         'jupyterlab': [
