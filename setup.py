@@ -35,7 +35,7 @@ setup(
         'peewee >=3',  # ORM mapper
 
         # documentation - decorators used for sphinx but are part of the source code delivered to customers
-        'enum_tools >=0.7',  # used for documenting enums via decorators
+        'enum_tools >=0.7',  # used for documenting enums via decorators - previous versions are not compatible with this code base
 
         # for creating the visuals
         'matplotlib',  # default plots such as bar charts, pie charts, etc.
@@ -55,11 +55,11 @@ setup(
             'nbconvert',
 
             # build documentation
-            'sphinx',  # build the documentation
+            'sphinx >=6.2',  # build the documentation - restrict version to improve pip version resolution
             'sphinx-rtd-theme',  # adding the nice sphinx theme
-            'sphinx-toolbox',  # dependency of enum_tools, we got this as a present
+            'sphinx-toolbox >=3',  # dependency of enum_tools, we got this as a present - restrict version to improve pip version resolution
             'myst-parser',  # for Contributing.md
-            'sphinxcontrib-bibtex',  # a good help for citing
+            'sphinxcontrib-bibtex >=2.4',  # a good help for citing - restrict version to improve pip version resolution
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
