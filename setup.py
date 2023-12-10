@@ -72,7 +72,6 @@ setup(
             'wheel',  # use command 'bdist_wheel'
             'twine',  # check and upload package to PyPI
 
-            
             # pip resolution issue - https://github.com/pypa/pip/issues/12430#issuecomment-1849059000
             'sphinx-tabs'
         ],
