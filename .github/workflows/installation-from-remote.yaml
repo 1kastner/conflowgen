@@ -41,6 +41,7 @@ jobs:
 
     - name: Run tests
       run: |
+        conda activate test-install-conflowgen
         python -c "import conflowgen; print(conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
 
