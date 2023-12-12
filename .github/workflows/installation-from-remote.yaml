@@ -31,10 +31,14 @@ jobs:
         conda info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
 
-    - name: Run tests
+    - name: Prepare tests
       run: |
         conda activate test-install-conflowgen
-        conda install pillow=9.0.0
+        conda install pillow>=9.0
+
+    - name: Run tests
+      run: |
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
 
   build-conda-on-linux:
@@ -67,6 +71,7 @@ jobs:
       run: |
         eval "$(conda shell.bash hook)"
         conda activate test-install-conflowgen
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
 
   build-pip:
@@ -96,4 +101,5 @@ jobs:
 
     - name: Run tests
       run: |
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
