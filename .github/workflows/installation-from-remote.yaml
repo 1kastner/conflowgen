@@ -111,5 +111,5 @@ jobs:
 
     - name: Run tests
       run: |
-        python -c "import conflowgen; print(conflowgen.__version__)"
+        python -c 'import conflowgen; print(conflowgen.__version__)'
         python -m pytest --pyargs conflowgen
