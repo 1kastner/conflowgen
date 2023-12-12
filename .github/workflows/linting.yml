@@ -35,7 +35,7 @@ jobs:
 
     - name: Use latest version of pip
       run: |
-        python -m pip install git+https://github.com/notatallshaw/pip.git@prefer-conflicting-causes
+        python -m pip install --upgrade pip
 
     - name: Install Python dependencies including pylint
       run: |
