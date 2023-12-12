@@ -26,22 +26,11 @@ jobs:
         activate-environment: true
         python-version: '3.10'
 
-    - name: Install ConFlowGen
+    - name: Install ConFlowGen and run tests
       run: |
-        conda clean -ity
         conda info
         conda search conflowgen -c conda-forge --info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
-
-    - name: Prepare tests
-      run: |
-        conda activate test-install-conflowgen
-        conda update conflowgen
-        conda install pillow>=9.0
-
-    - name: Run tests
-      run: |
-        conda activate test-install-conflowgen
         python -m pytest --pyargs conflowgen
 
   build-conda-on-linux:
@@ -62,19 +51,14 @@ jobs:
         auto-activate-base: true
         activate-environment: ""
 
-    - name: Install ConFlowGen
+    - name: Install ConFlowGen and run tests
       run: |
         conda init bash
         eval "$(conda shell.bash hook)"
-        conda clean -ity
         conda info
         conda search conflowgen -c conda-forge --info
         conda activate base
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
-
-    - name: Run tests
-      run: |
-        eval "$(conda shell.bash hook)"
         conda activate test-install-conflowgen
         python -m pytest --pyargs conflowgen
 
@@ -102,11 +86,8 @@ jobs:
       run: |
         python -m pip install --upgrade pip
 
-    - name: Install ConFlowGen
+    - name: Install ConFlowGen and run tests
       run: |
         python -m pip install conflowgen pytest
         python -m pip show --verbose conflowgen
-
-    - name: Run tests
-      run: |
         python -m pytest --pyargs conflowgen
