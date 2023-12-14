@@ -5,6 +5,7 @@ on:
     - cron: '42 23 * * 3'  # every Wednesday at 23:42
   pull_request:
     types: [opened, reopened, edited, synchronize]
+  workflow_dispatch:
 
 jobs:
   build-conda-on-windows:
