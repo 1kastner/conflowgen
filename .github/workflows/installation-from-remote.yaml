@@ -10,7 +10,7 @@ jobs:
   build-conda-on-windows:
 
     name: ConFlowGen installation via conda on Windows
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       MPLBACKEND: Agg
 
@@ -31,10 +31,15 @@ jobs:
         conda info
         conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
 
+    - name: Prepare tests
+      run: |
+        conda activate test-install-conflowgen
+        conda install pillow>=9.0
+
     - name: Run tests
       run: |
         conda activate test-install-conflowgen
-        conda install pillow=9.0.0
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
 
   build-conda-on-linux:
@@ -67,13 +72,14 @@ jobs:
       run: |
         eval "$(conda shell.bash hook)"
         conda activate test-install-conflowgen
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
 
   build-pip:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-2019]
 
     name: ConFlowGen installation via pip
     runs-on: ${{ matrix.os }}
@@ -96,4 +102,5 @@ jobs:
 
     - name: Run tests
       run: |
+        python -c "import conflowgen; print('ConFlowGen version: ', conflowgen.__version__)"
         python -m pytest --pyargs conflowgen
