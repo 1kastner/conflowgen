@@ -10,7 +10,7 @@ jobs:
   build-conda-on-windows:
 
     name: ConFlowGen installation via conda on Windows
-    runs-on: windows-latest
+    runs-on: windows-2019
     env:
       MPLBACKEND: Agg
 
@@ -78,7 +78,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-2019]
 
     name: ConFlowGen installation via pip
     runs-on: ${{ matrix.os }}
