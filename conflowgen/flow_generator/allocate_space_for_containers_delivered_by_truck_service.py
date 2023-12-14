@@ -1,8 +1,8 @@
 from __future__ import annotations
 import logging
-import random
 from typing import Dict, Type, List
 
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -15,9 +15,11 @@ from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle
 
 class AllocateSpaceForContainersDeliveredByTruckService:
 
-    ignored_capacity = ContainerLength.get_factor(ContainerLength.other)
+    ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     def __init__(self):
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+
         self.logger = logging.getLogger("conflowgen")
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
         self.mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] | None = None
@@ -40,9 +42,14 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         As long as the container length distribution for inbound and outbound containers are the same, using the number
         of containers should lead to the same amount of containers as if we had taken the TEU capacity which is more
         complex to calculate.
+        We do not consider the emergency pick-ups, i.e. the cases when a container was picked up by a truck just because
+        no truck was available.
+        These trucks artificially increase the import and export flows in case the container was originally a
+        transshipment container and without this correction out of the sudden we have two containers in the yard.
         """
         number_containers: int = Container.select().where(
-            Container.picked_up_by == ModeOfTransport.truck
+            (Container.picked_up_by == ModeOfTransport.truck)
+            & ~Container.emergency_pickup
         ).count()
         return number_containers
 
@@ -74,8 +81,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         successful_assignment = 0
 
         teu_total = 0
-        for i in range(number_containers_to_allocate):
-            i += 1
+        for i in range(1, number_containers_to_allocate + 1):
             if i % 1000 == 0 or i == 1 or i == number_containers_to_allocate:
                 self.logger.info(
                     f"Progress: {i} / {number_containers_to_allocate} ({i / number_containers_to_allocate:.2%}) "
@@ -131,7 +137,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     continue  # try again (possibly new vehicle type, definitely not same vehicle again)
 
                 container = self.container_factory.create_container_for_delivering_truck(vehicle)
-                teu_total += ContainerLength.get_factor(container.length)
+                teu_total += ContainerLength.get_teu_factor(container.length)
                 self.large_scheduled_vehicle_repository.block_capacity_for_outbound_journey(vehicle, container)
                 successful_assignment += 1
                 break  # success, no further looping to search for a suitable vehicle
@@ -155,7 +161,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
             return None
 
         # pick vehicle type
-        vehicle_type: ModeOfTransport = random.choices(
+        vehicle_type: ModeOfTransport = self.seeded_random.choices(
             population=vehicle_types,
             weights=frequency_of_vehicle_types
         )[0]
@@ -178,7 +184,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                              "by trucks.")
             return None
 
-        vehicle: Type[AbstractLargeScheduledVehicle] = random.choices(
+        vehicle: Type[AbstractLargeScheduledVehicle] = self.seeded_random.choices(
             population=list(vehicle_distribution.keys()),
             weights=list(vehicle_distribution.values())
         )[0]

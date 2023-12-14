@@ -3,7 +3,9 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
+from conflowgen.descriptive_datatypes import UsedYardCapacityOverTime
 from conflowgen.domain_models.container import Container
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis, get_hour_based_time_window, get_hour_based_range
 
@@ -15,12 +17,12 @@ class YardCapacityAnalysis(AbstractAnalysis):
     as it is the case with :class:`.YardCapacityAnalysisReport`.
     """
 
+    @DataSummariesCache.cache_result
     def get_used_yard_capacity_over_time(
             self,
             storage_requirement: typing.Union[str, typing.Collection, StorageRequirement] = "all",
             smoothen_peaks: bool = True,
-            use_cache: bool = True
-    ) -> typing.Dict[datetime.datetime, float]:
+    ) -> UsedYardCapacityOverTime:
         """
         For each hour, the containers entering and leaving the yard are checked. Based on this, the required yard
         capacity in TEU can be deduced - it is simply the maximum of these values. In addition, with the parameter
@@ -46,10 +48,10 @@ class YardCapacityAnalysis(AbstractAnalysis):
                 a collection of :class:`StorageRequirement` enum values (as a list, set, or similar), or
                 a single :class:`StorageRequirement` enum value.
             smoothen_peaks: Whether to smoothen the peaks.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
         Returns:
-            A series of the used yard capacity in TEU over the time.
+            UsedYardCapacityOverTime: A namedtuple consisting of two dictionaries. The first dictionary represents the
+            used yard capacity in TEU over the time. The second dictionary represents the used yard capacity
+            in terms of the number of boxes over the time.
         """
         selected_containers = Container.select()
 
@@ -62,14 +64,14 @@ class YardCapacityAnalysis(AbstractAnalysis):
         for container in selected_containers:
             container_stays.append(
                 (
-                    container.get_arrival_time(use_cache=use_cache),
-                    container.get_departure_time(use_cache=use_cache),
+                    container.get_arrival_time(),
+                    container.get_departure_time(),
                     container.occupied_teu
                 )
             )
 
         if len(container_stays) == 0:
-            return {}
+            return UsedYardCapacityOverTime(teu={}, containers={})
 
         first_arrival, _, _ = min(container_stays, key=lambda x: x[0])
         _, last_pickup, _ = max(container_stays, key=lambda x: x[1])
@@ -77,7 +79,14 @@ class YardCapacityAnalysis(AbstractAnalysis):
         first_time_window = get_hour_based_time_window(first_arrival) - datetime.timedelta(hours=1)
         last_time_window = get_hour_based_time_window(last_pickup) + datetime.timedelta(hours=1)
 
-        used_yard_capacity: typing.Dict[datetime.datetime, float] = {
+        used_yard_capacity_teu: typing.Dict[datetime.datetime, float] = {
+            time_window: 0
+            for time_window in get_hour_based_range(
+                first_time_window, last_time_window, include_end=(not smoothen_peaks)
+            )
+        }
+
+        used_yard_capacity_boxes: typing.Dict[datetime.datetime, int] = {
             time_window: 0
             for time_window in get_hour_based_range(
                 first_time_window, last_time_window, include_end=(not smoothen_peaks)
@@ -90,6 +99,7 @@ class YardCapacityAnalysis(AbstractAnalysis):
             for time_window in get_hour_based_range(
                     time_window_at_entering, time_window_at_leaving, include_end=(not smoothen_peaks)
             ):
-                used_yard_capacity[time_window] += teu_factor_of_container
+                used_yard_capacity_teu[time_window] += teu_factor_of_container
+                used_yard_capacity_boxes[time_window] += 1
 
-        return used_yard_capacity
+        return UsedYardCapacityOverTime(teu=used_yard_capacity_teu, containers=used_yard_capacity_boxes)

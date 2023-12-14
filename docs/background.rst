@@ -185,8 +185,7 @@ While assessing the currently available alternatives, among others we have come 
 
 - :cite:t:`briskorn2019generator`
   developed a test data generator that may be used to simulate yard crane container handling processes.
-  Their generic approach generates test examples of crane scheduling issues and is available at
-  :cite:`briskorn2019generator-software`.
+  Their generic approach generates test examples of crane scheduling issues.
 
 - A technique for the evaluation of quay crane scheduling models and solution methods is presented by
   :cite:t:`meisel2011unified`.
@@ -208,7 +207,7 @@ ConFlowGen has been first presented at the International Conference on Dynamics 
 If ConFlowGen served you well in your research, and you would like to acknowledge the project in your publication,
 we would be glad if you mention our work as defined in our
 `CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
-If you just need a BibTeX entry for your citation software, this should do the job:
+If you just need a BibTeX entry for your citation software, this one should do the job:
 
 .. code-block:: bibtex
 
@@ -225,3 +224,14 @@ If you just need a BibTeX entry for your citation software, this should do the j
       title = {Container Flow Generation for Maritime Container Terminals},
       year = {2022}
    }
+
+At a second occasion, ConFlowGen has been presented at the Annual General Assembly of the
+World Association for Waterborne Transport Infrastructure (PIANC)
+in 2023 in Oslo.
+The contribution
+`Synthetically generating traffic scenarios for simulation-based container terminal planning \
+<https://tore.tuhh.de/dspace-cris-server/api/core/bitstreams/1d990927-cca9-4b40-8440-19cc544cc847/content>`_
+has been awarded with the
+`De Paepe-Willems Award <https://www.pianc.org/award/de-paepe-willems-award/>`_.
+The paper highlights how ConFlowGen can support terminal planners in designing terminal interfaces and determining
+the required yard capacity.

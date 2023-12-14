@@ -36,6 +36,9 @@ class AbstractReport(abc.ABC):
         ModeOfTransport.truck
     ]
 
+    #: The days of the week
+    days_of_the_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
     @property
     @abc.abstractmethod
     def report_description(self) -> str:
@@ -141,7 +144,7 @@ class AbstractReportWithMatplotlib(AbstractReport, metaclass=abc.ABCMeta):
         kwargs.pop("static", None)
         kwargs.pop("display_as_ipython_svg", None)
 
-        with plt.style.context('seaborn-colorblind'):
+        with plt.style.context('seaborn-v0_8-colorblind'):
             self.get_report_as_graph(**kwargs)
             plt.show(block=True)
 

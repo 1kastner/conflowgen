@@ -2,10 +2,10 @@ from __future__ import annotations
 import abc
 import logging
 import math
-import random
-from typing import List, Tuple, Union, Optional, Dict, Sequence
+import typing
 
 from conflowgen.tools.weekly_distribution import WeeklyDistribution
+from ..application.repositories.random_seed_store_repository import get_initialised_random_object
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.container import Container
 from ..domain_models.distribution_repositories.container_dwell_time_distribution_repository import \
@@ -17,19 +17,30 @@ from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 from ..tools.continuous_distribution import ContinuousDistribution, multiply_discretized_probability_densities
 
 
+class SumOfProbabilitiesDoesNotEqualOneException(Exception):
+    pass
+
+
+class UnknownDistributionPropertyException(Exception):
+    pass
+
+
 class AbstractTruckForContainersManager(abc.ABC):
     def __init__(self):
         self.logger = logging.getLogger("conflowgen")
 
+        self.seeded_random = get_initialised_random_object(self.__class__.__name__)
+
         self.container_dwell_time_distribution_repository = ContainerDwellTimeDistributionRepository()
         self.container_dwell_time_distributions: \
-            Dict[ModeOfTransport, Dict[ModeOfTransport, Dict[StorageRequirement, ContinuousDistribution]]] | None \
+            typing.Dict[ModeOfTransport, typing.Dict[
+                ModeOfTransport, typing.Dict[StorageRequirement, ContinuousDistribution]]] | None \
             = None
 
         self.truck_arrival_distribution_repository = TruckArrivalDistributionRepository()
 
         self.truck_arrival_distributions: \
-            Dict[ModeOfTransport, Dict[StorageRequirement, WeeklyDistribution | None]] = {
+            typing.Dict[ModeOfTransport, typing.Dict[StorageRequirement, WeeklyDistribution | None]] = {
                 vehicle: {
                     storage_requirement: None
                     for storage_requirement in StorageRequirement
@@ -37,7 +48,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             }
 
         self.vehicle_factory = VehicleFactory()
-        self.time_window_length_in_hours: Optional[int] = None
+        self.time_window_length_in_hours: typing.Optional[int] = None
 
     @abc.abstractmethod
     def _get_container_dwell_time_distribution(
@@ -56,7 +67,7 @@ class AbstractTruckForContainersManager(abc.ABC):
             self
     ) -> None:
         # noinspection PyTypeChecker
-        hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]] = \
+        hour_of_the_week_fraction_pairs: typing.List[typing.Union[typing.Tuple[int, float], typing.Tuple[int, int]]] = \
             list(self.truck_arrival_distribution_repository.get_distribution().items())
         self.time_window_length_in_hours = hour_of_the_week_fraction_pairs[1][0] - hour_of_the_week_fraction_pairs[0][0]
 
@@ -65,7 +76,7 @@ class AbstractTruckForContainersManager(abc.ABC):
 
     def _update_truck_arrival_and_container_dwell_time_distributions(
             self,
-            hour_of_the_week_fraction_pairs: List[Union[Tuple[int, float], Tuple[int, int]]]
+            hour_of_the_week_fraction_pairs: typing.List[typing.Union[typing.Tuple[int, float], typing.Tuple[int, int]]]
     ) -> None:
         for vehicle_type in ModeOfTransport:
             for storage_requirement in StorageRequirement:
@@ -103,14 +114,15 @@ class AbstractTruckForContainersManager(abc.ABC):
         return container_dwell_time_distribution, truck_arrival_distribution
 
     @abc.abstractmethod
-    def _get_truck_arrival_distributions(self, container: Container) -> Dict[StorageRequirement, WeeklyDistribution]:
+    def _get_truck_arrival_distributions(self, container: Container) -> typing.Dict[
+            StorageRequirement, WeeklyDistribution]:
         pass
 
     def _get_time_window_of_truck_arrival(
             self,
             container_dwell_time_distribution: ContinuousDistribution,
-            truck_arrival_distribution_slice: Dict[int, float],
-            _debug_check_distribution_property: Optional[str] = None
+            truck_arrival_distribution_slice: typing.Dict[int, float],
+            _debug_check_distribution_property: typing.Optional[str] = None
     ) -> int:
         """
         Returns:
@@ -128,7 +140,7 @@ class AbstractTruckForContainersManager(abc.ABC):
         )
 
         if sum(total_probabilities) == 0:  # bad circumstances, no slot available
-            raise Exception(
+            raise SumOfProbabilitiesDoesNotEqualOneException(
                 f"No truck slots available! {truck_arrival_probabilities} and {total_probabilities} just do not match."
             )
 
@@ -142,9 +154,9 @@ class AbstractTruckForContainersManager(abc.ABC):
             elif _debug_check_distribution_property == "average":
                 selected_time_window = int(round(container_dwell_time_distribution.average))
             else:
-                raise Exception(f"Unknown: {_debug_check_distribution_property}")
+                raise UnknownDistributionPropertyException(_debug_check_distribution_property)
         else:
-            selected_time_window = random.choices(
+            selected_time_window = self.seeded_random.choices(
                 population=time_windows_for_truck_arrival,
                 weights=total_probabilities
             )[0]
@@ -170,7 +182,7 @@ class AbstractTruckForContainersManager(abc.ABC):
         return selected_time_window
 
     @staticmethod
-    def _drop_where_zero(sequence: Sequence, filter_sequence: Sequence) -> list:
+    def _drop_where_zero(sequence: typing.Sequence, filter_sequence: typing.Sequence) -> list:
         new_sequence = []
         for element, filter_element in zip(sequence, filter_sequence):
             if filter_element:

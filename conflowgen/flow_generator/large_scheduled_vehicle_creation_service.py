@@ -2,6 +2,8 @@ import datetime
 from typing import List, Type
 import logging
 
+from peewee import fn
+
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.factories.container_factory import ContainerFactory
 from conflowgen.domain_models.factories.fleet_factory import FleetFactory
@@ -37,7 +39,9 @@ class LargeScheduledVehicleCreationService:
     def create(self) -> None:
         assert self.container_flow_start_date is not None
         assert self.container_flow_end_date is not None
-        schedules = Schedule.select()
+        schedules = Schedule.select().order_by(
+            fn.assign_random_value(Schedule.id)
+        )
         number_schedules = schedules.count()
         for i, schedule in enumerate(schedules):
             i += 1

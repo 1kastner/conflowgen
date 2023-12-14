@@ -6,6 +6,7 @@ import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import] 
 
 import numpy as np
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.descriptive_datatypes import OutboundUsedAndMaximumCapacity, ContainerVolumeByVehicleType
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -26,10 +27,10 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         )
 
     @staticmethod
+    @DataSummariesCache.cache_result
     def get_inbound_container_volumes_by_vehicle_type(
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> ContainerVolumeByVehicleType:
         """
         This is the used capacity of all vehicles separated by vehicle type on their inbound journey in TEU.
@@ -39,8 +40,6 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
         """
         inbound_container_volume_in_teu: typing.Dict[ModeOfTransport, float] = {
             vehicle_type: 0
@@ -50,9 +49,9 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             inbound_vehicle_type = container.delivered_by
             inbound_container_volume_in_teu[inbound_vehicle_type] += container.occupied_teu
@@ -63,11 +62,11 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
             teu=inbound_container_volume_in_teu
         )
 
+    @DataSummariesCache.cache_result
     def get_outbound_container_volume_by_vehicle_type(
             self,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> OutboundUsedAndMaximumCapacity:
         """
         This is the used and the maximum capacity of all vehicles separated by vehicle type on their outbound journey
@@ -81,8 +80,6 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use internally cached values. Please set this to false if data are altered between analysis runs.
         Returns:
             Both the used and maximum outbound capacities grouped by vehicle type.
         """
@@ -101,9 +98,9 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
 
         container: Container
         for container in Container.select():
-            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
+            if end_date and container.get_departure_time() > end_date:
                 continue
             outbound_vehicle_type: ModeOfTransport = container.picked_up_by
             outbound_actually_moved_container_volume_in_teu[outbound_vehicle_type] += container.occupied_teu

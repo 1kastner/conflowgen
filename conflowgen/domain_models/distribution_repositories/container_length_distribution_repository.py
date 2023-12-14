@@ -1,6 +1,7 @@
 import math
 from typing import Dict
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.distribution_models.container_length_distribution import ContainerLengthDistribution
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 
@@ -53,3 +54,17 @@ class ContainerLengthDistributionRepository:
                 container_length=container_length,
                 fraction=fraction
             ).save()
+
+    @classmethod
+    @DataSummariesCache.cache_result
+    def get_teu_factor(cls) -> float:
+        """
+        Calculates and returns the TEU factor based on the container length distribution.
+        """
+        # Loop through container lengths and calculate weighted average of all container lengths
+        container_length_weighted_average = 0.0
+        container_length_distribution = cls.get_distribution()
+        for container_length, fraction in container_length_distribution.items():
+            container_length_weighted_average += ContainerLength.get_teu_factor(container_length) * fraction
+        assert 0 < container_length_weighted_average < ContainerLength.get_maximum_teu_factor()
+        return container_length_weighted_average

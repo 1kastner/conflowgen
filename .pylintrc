@@ -185,18 +185,17 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,
-           j,
-           k,
-           ex,
-           Run,
-           _,
-           df,
-           ax,
-           x,
-           xs,
-           mu,
-           gs
+good-names=i,  # typical counter variable
+           j,  # typical counter variable
+           k,  # typical counter variable
+           _,  # typical discard result indicator
+           df,  # pandas DataFrame
+           ax,  # matplotlib axis
+           gs,  # matplotlib gridspec
+           x,  # one element on the x axis
+           xs,  # collection of elements on the x axis
+           mu,  # mu of, e.g., a normal distribution
+           sd,  # standard deviation of, e.g., a normal distribution
 
 # Good variable names regexes, separated by a comma. If names match any regex,
 # they will always be accepted
@@ -547,5 +546,5 @@ preferred-modules=
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "BaseException, Exception".
-overgeneral-exceptions=BaseException,
-                       Exception
+overgeneral-exceptions=builtins.BaseException,
+                       builtins.Exception

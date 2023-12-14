@@ -1,6 +1,7 @@
 import unittest
 
 from conflowgen import ContainerLength, StorageRequirement
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
@@ -23,7 +24,8 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             Schedule,
             Destination,
             Truck,
-            LargeScheduledVehicle
+            LargeScheduledVehicle,
+            RandomSeedStore,
         ])
         mode_of_transport_distribution_seeder.seed()
         self.container_flow_generator_service = ContainerFlowGenerationService()

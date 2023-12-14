@@ -28,7 +28,7 @@ IF "%CONDA_PREFIX%" NEQ "" (
 )
 
 ECHO.It seems like you are not in an isolated development environment. In a later step, the current version of
-ECHO.ConFlowgen will be installed as a library. Please abort if you do not want to clutter your Python installation.
+ECHO.ConFlowGen will be installed as a library. Please abort if you do not want to clutter your Python installation.
 ECHO.If you actually are in an isolated development environment, feel free to improve this check.
 
 :AGAIN

@@ -9,6 +9,8 @@ Domain datatypes
 .. autoenum:: conflowgen.ContainerLength
     :members:
 
+.. autonamedtuple:: conflowgen.ContainersTransportedByTruck
+
 .. autonamedtuple:: conflowgen.ContainerVolumeByVehicleType
 
 .. autonamedtuple:: conflowgen.ContainerVolumeFromOriginToDestination
@@ -27,6 +29,8 @@ Domain datatypes
     :members:
 
 .. autonamedtuple:: conflowgen.TransshipmentAndHinterlandSplit
+
+.. autonamedtuple:: conflowgen.UsedYardCapacityOverTime
 
 .. autonamedtuple:: conflowgen.VehicleIdentifier
 
@@ -91,6 +95,12 @@ Generating previews
 .. autoclass:: conflowgen.ModalSplitPreviewReport
     :members:
 
+.. autoclass:: conflowgen.QuaySideThroughputPreview
+    :members:
+
+.. autoclass:: conflowgen.QuaySideThroughputPreviewReport
+    :members:
+
 .. autofunction:: conflowgen.run_all_previews
 
 .. autoclass:: conflowgen.VehicleCapacityExceededPreview
@@ -98,6 +108,13 @@ Generating previews
 
 .. autoclass:: conflowgen.VehicleCapacityUtilizationOnOutboundJourneyPreviewReport
     :members:
+
+.. autoclass:: conflowgen.TruckGateThroughputPreview
+    :members:
+
+.. autoclass:: conflowgen.TruckGateThroughputPreviewReport
+    :members:
+
 
 Running analyses
 ================
@@ -197,6 +214,9 @@ you can define them here and pass them as parameters to the aforementioned funct
     :members:
 
 .. autoclass:: conflowgen.DisplayAsPlainText
+    :members:
+
+.. autoclass:: conflowgen.DataSummariesCache
     :members:
 
 Exporting data

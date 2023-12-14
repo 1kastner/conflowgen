@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.flow_generator.assign_destination_to_container_service import \
     AssignDestinationToContainerService
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
@@ -33,7 +34,8 @@ class TestAssignDestinationToContainerService(unittest.TestCase):
             Truck,
             Feeder,
             DeepSeaVessel,
-            ModeOfTransportDistribution
+            ModeOfTransportDistribution,
+            RandomSeedStore,
         ])
         self.repository = ContainerDestinationDistributionRepository()
         self.service = AssignDestinationToContainerService()

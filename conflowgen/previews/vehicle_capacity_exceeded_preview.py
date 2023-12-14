@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 from typing import Dict, NamedTuple
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.distribution_validators import validate_distribution_with_one_dependent_variable
 from conflowgen.previews.abstract_preview import AbstractPreview
 from conflowgen.previews.container_flow_by_vehicle_type_preview import \
@@ -74,6 +75,7 @@ class VehicleCapacityExceededPreview(AbstractPreview):
             transportation_buffer=transportation_buffer
         )
 
+    @DataSummariesCache.cache_result
     def hypothesize_with_mode_of_transport_distribution(
             self,
             mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]]
@@ -88,6 +90,7 @@ class VehicleCapacityExceededPreview(AbstractPreview):
             mode_of_transport_distribution
         )
 
+    @DataSummariesCache.cache_result
     def compare(
             self
     ) -> Dict[ModeOfTransport, RequiredAndMaximumCapacityComparison]:

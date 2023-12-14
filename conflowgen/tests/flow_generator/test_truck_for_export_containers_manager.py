@@ -11,6 +11,7 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery
 from conflowgen.flow_generator.truck_for_export_containers_manager import \
     TruckForExportContainersManager
@@ -46,7 +47,8 @@ class TestTruckForExportContainersManager(unittest.TestCase):
             Truck,
             LargeScheduledVehicle,
             Schedule,
-            TruckArrivalInformationForDelivery
+            TruckArrivalInformationForDelivery,
+            RandomSeedStore,
         ])
         truck_arrival_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()
@@ -362,9 +364,9 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         maximum = datetime.datetime(2021, 8, 8, 12) - datetime.timedelta(hours=467)
         self.assertEqual(maximum, delivery_time)
 
-        containder_dwell_time = (container_departure_time - maximum).total_seconds() / 3600
-        self.assertGreater(distribution_1.maximum, containder_dwell_time)
-        self.assertLess(distribution_1.minimum, containder_dwell_time)
+        container_dwell_time = (container_departure_time - maximum).total_seconds() / 3600
+        self.assertGreater(distribution_1.maximum, container_dwell_time)
+        self.assertLess(distribution_1.minimum, container_dwell_time)
 
     def test_delivery_time_average(self):
         container_departure_time = datetime.datetime(
@@ -389,7 +391,7 @@ class TestTruckForExportContainersManager(unittest.TestCase):
         self.assertEqual(156, distribution.average)
         self.assertEqual(468, distribution.maximum)
 
-        # the distribution is inversed and the random_time_component is set to zero. Actually, the value can rise close
+        # the distribution is inverted and the random_time_component is set to zero. Actually, the value can rise close
         # to one, meaning that the last `-1` would be much smaller.
         average = datetime.datetime(2021, 8, 8, 12) - datetime.timedelta(hours=(468 - 156 - 1))
         self.assertEqual(average, delivery_time)

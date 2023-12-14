@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis import \
     ContainerFlowAdjustmentByVehicleTypeAnalysis
@@ -42,12 +43,11 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
     The analysis summary returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport`.
     """
-
+    @DataSummariesCache.cache_result
     def get_summary(
             self,
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> ContainerFlowAdjustedToVehicleType:
         """
         Under certain circumstances (as explained in
@@ -62,14 +62,10 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummary(ContainerFlowAdjustmen
                 The earliest arriving container that is included. Consider all containers if :obj:`None`.
             end_date:
                 The latest departing container that is included. Consider all containers if :obj:`None`.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
-                Defaults to ``True``.
         """
         initial_to_adjusted_outbound_flow = self.get_initial_to_adjusted_outbound_flow(
             start_date=start_date,
-            end_date=end_date,
-            use_cache=use_cache
+            end_date=end_date
         )
 
         initial_to_adjusted_outbound_flow_in_teu = initial_to_adjusted_outbound_flow.teu

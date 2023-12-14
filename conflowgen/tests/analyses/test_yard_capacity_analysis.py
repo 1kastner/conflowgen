@@ -37,7 +37,7 @@ class TestYardCapacityAnalysis(unittest.TestCase):
 
     def test_with_no_data(self):
         """If no schedules are provided, no capacity is needed"""
-        empty_yard = self.analysis.get_used_yard_capacity_over_time()
+        empty_yard = self.analysis.get_used_yard_capacity_over_time().teu
         self.assertEqual(empty_yard, {})
 
     def test_with_single_container(self):
@@ -80,11 +80,11 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False).teu
         self.assertEqual(len(used_yard_over_time), 28)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True).teu
         self.assertEqual(len(used_yard_over_time), 27)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1})
 
@@ -147,11 +147,11 @@ class TestYardCapacityAnalysis(unittest.TestCase):
             picked_up_by_truck=truck_2
         )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False).teu
         self.assertEqual(len(used_yard_over_time), 28)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True).teu
         self.assertEqual(len(used_yard_over_time), 27)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 1, 3})
 
@@ -194,13 +194,13 @@ class TestYardCapacityAnalysis(unittest.TestCase):
                 picked_up_by_large_scheduled_vehicle=feeder_lsv_2
             )
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=False).teu
         self.assertEqual(len(used_yard_over_time), 75)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
         self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))
         self.assertListEqual(list(used_yard_over_time.values()), [0] + [20] * 73 + [0])
 
-        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True)
+        used_yard_over_time = self.analysis.get_used_yard_capacity_over_time(smoothen_peaks=True).teu
         self.assertEqual(len(used_yard_over_time), 74)
         self.assertSetEqual(set(used_yard_over_time.values()), {0, 20})
         self.assertIn(now.replace(minute=0, second=0, microsecond=0), set(used_yard_over_time.keys()))

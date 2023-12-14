@@ -3,6 +3,7 @@ import unittest
 import unittest.mock
 from typing import Iterable
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
@@ -27,7 +28,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
     def setUp(self) -> None:
         """Create container database in memory"""
         sqlite_db = setup_sqlite_in_memory_db()
-        sqlite_db.create_tables([
+        sqlite_db.create_tables({
             Schedule,
             LargeScheduledVehicle,
             Train,
@@ -41,7 +42,8 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             Destination,
             ModeOfTransportDistribution,
             ContainerDwellTimeDistribution,
-        ])
+            RandomSeedStore,
+        })
 
         mode_of_transport_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()
@@ -171,7 +173,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.large_scheduled_vehicle.moved_capacity = 10  # in TEU
         containers = [self._create_container_for_truck(truck) for _ in range(10)]
         self.assertEqual(Container.select().count(), 10)
-        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
         self.assertGreaterEqual(teu_generated, 10, "Generating 10 containers with each at least 1 TEU must result in a "
                                                    "total TEU of more than 10 TEU")
 
@@ -185,7 +187,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         teu_loaded = 0
         for container in containers_reloaded:  # pylint: disable=E1133
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
-            teu_loaded += ContainerLength.get_factor(container.length)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
         self.assertLessEqual(teu_loaded, 10, "Feeder must not be loaded with more than 10 TEU")
 
     def test_do_not_overload_feeder_with_train_traffic(self):
@@ -200,7 +202,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 90)
-        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 90)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -213,7 +215,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         teu_loaded = 0
         for container in containers_reloaded:  # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
-            teu_loaded += ContainerLength.get_factor(container.length)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
 
     def test_do_not_load_if_the_time_span_is_too_long(self):
@@ -228,7 +230,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 90)
-        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 90)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -256,7 +258,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)
-        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 180)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -269,7 +271,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         teu_loaded = 0
         for container in containers_reloaded:   # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
-            teu_loaded += ContainerLength.get_factor(container.length)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
 
     def test_do_not_overload_feeder_with_train_traffic_of_two_vehicles_and_changing_container_lengths(self):
@@ -293,7 +295,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)
-        teu_generated = sum((ContainerLength.get_factor(container.length) for container in containers))
+        teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
         self.assertEqual(teu_generated, 270)
 
         self.manager.choose_departing_vehicle_for_containers()
@@ -306,7 +308,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         teu_loaded = 0
         for container in containers_reloaded:  # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
-            teu_loaded += ContainerLength.get_factor(container.length)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
 
     def test_nothing_to_do(self):

@@ -3,6 +3,7 @@ import unittest
 
 from conflowgen import PortCallManager
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.database_connection.create_tables import create_tables
@@ -29,7 +30,8 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             ModeOfTransportDistribution,
             Schedule,
             StorageRequirementDistribution,
-            ContainerDwellTimeDistribution
+            ContainerDwellTimeDistribution,
+            RandomSeedStore,
         ])
         mode_of_transport_distribution_seeder.seed()
         container_dwell_time_distribution_seeder.seed()

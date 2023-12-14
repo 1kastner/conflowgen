@@ -1,6 +1,7 @@
 """
 A collection of tools for which no nicer name has been found yet.
 """
+import hashlib
 from typing import Callable, Any, TypeVar
 
 DecoratedType = TypeVar('DecoratedType')  # pylint: disable=invalid-name
@@ -21,3 +22,11 @@ def hashable(obj: Any) -> bool:
     except TypeError:
         return False
     return True
+
+
+def get_convert_to_random_value(random_bits):
+    def convert_to_random_value(row_id):
+        hash_value = hashlib.new('sha256')
+        hash_value.update((random_bits + row_id).to_bytes(16, 'big'))
+        return hash_value.hexdigest()
+    return convert_to_random_value

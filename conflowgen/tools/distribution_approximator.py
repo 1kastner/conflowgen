@@ -6,6 +6,8 @@ from typing import Dict
 
 import numpy as np
 
+from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
+
 
 class SamplerExhaustedException(Exception):
     """No more samples can be sampled from the sampler"""
@@ -14,14 +16,13 @@ class SamplerExhaustedException(Exception):
 
 class DistributionApproximator:
 
-    random_seed = 1
+    class_level_seeded_random: None | random.Random = None
 
-    def __init__(self, number_instances_per_category: Dict[any, int]) -> None:
-        """
-        Args:
-            number_instances_per_category: For each key (category) the number of instances to draw is given
-        """
-        self.seeded_random = random.Random(x=self.random_seed)
+    def __init__(self, number_instances_per_category: Dict[any, int], context_of_usage: str = "") -> None:
+        self.seeded_random = get_initialised_random_object(
+            self.__class__.__name__ + "__" + context_of_usage,
+            log_loading_process=False
+        )
         self.target_distribution = np.array(
             list(number_instances_per_category.values()),
             dtype=np.int64
@@ -34,8 +35,16 @@ class DistributionApproximator:
     def from_distribution(
             cls,
             distribution: Dict[any, float],
-            number_items: int
+            number_items: int,
+            context_of_usage: str = ""
     ) -> DistributionApproximator:
+
+        if cls.class_level_seeded_random is None:
+            cls.class_level_seeded_random = get_initialised_random_object(
+                "DistributionApproximator__class",
+                log_loading_process=False
+            )
+
         assert math.isclose(sum(distribution.values()), 1, abs_tol=.001), \
             f"All probabilities must sum to 1, but you only achieved {sum(distribution.values())}"
 
@@ -49,9 +58,8 @@ class DistributionApproximator:
         # Thus, we need to fill the missing items by randomly drawing some of them.
         number_items_in_category_estimation = sum(probability_based_instance_estimation.values())
         if number_items_in_category_estimation < number_items:
-            seeded_random = random.Random(x=cls.random_seed)
             items_lost_to_rounding = number_items - number_items_in_category_estimation
-            randomly_chosen_categories = seeded_random.choices(
+            randomly_chosen_categories = cls.class_level_seeded_random.choices(
                 population=list(distribution.keys()),
                 weights=list(distribution.values()),
                 k=items_lost_to_rounding
@@ -59,7 +67,8 @@ class DistributionApproximator:
             for category in randomly_chosen_categories:
                 probability_based_instance_estimation[category] += 1
         distribution_approximator = DistributionApproximator(
-            probability_based_instance_estimation
+            probability_based_instance_estimation,
+            context_of_usage=context_of_usage
         )
         return distribution_approximator
 

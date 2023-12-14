@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.arrival_information import TruckArrivalInformationForDelivery, \
     TruckArrivalInformationForPickup
 from conflowgen.domain_models.container import Container
@@ -38,7 +39,8 @@ class TestContainerFactory(unittest.TestCase):
             TruckArrivalInformationForPickup,
             ContainerLengthDistribution,
             Destination,
-            StorageRequirementDistribution
+            StorageRequirementDistribution,
+            RandomSeedStore
         ])
         mode_of_transport_distribution_seeder.seed()
         container_weight_distribution_seeder.seed()

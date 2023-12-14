@@ -1,5 +1,6 @@
 import typing
 
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.api import AbstractDistributionManager
 from conflowgen.domain_models.distribution_repositories.container_weight_distribution_repository import \
     ContainerWeightDistributionRepository
@@ -41,3 +42,4 @@ class ContainerWeightDistributionManager(AbstractDistributionManager):
             values_are_frequencies=True
         )
         self.container_weight_repository.set_distribution(sanitized_distribution)
+        DataSummariesCache.reset_cache()

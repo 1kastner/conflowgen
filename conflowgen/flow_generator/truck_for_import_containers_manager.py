@@ -1,8 +1,10 @@
 import datetime
-import random
 from typing import Dict, Optional
 
-from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager
+from peewee import fn
+
+from .abstract_truck_for_containers_manager import AbstractTruckForContainersManager, \
+    UnknownDistributionPropertyException
 from ..domain_models.data_types.container_length import ContainerLength
 from ..domain_models.data_types.storage_requirement import StorageRequirement
 from ..domain_models.arrival_information import TruckArrivalInformationForPickup
@@ -57,7 +59,7 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
 
         # arrival within the last time slot
         close_to_time_window_length = self.time_window_length_in_hours - (1 / 60)
-        random_time_component: float = random.uniform(0, close_to_time_window_length)
+        random_time_component: float = self.seeded_random.uniform(0, close_to_time_window_length)
 
         if _debug_check_distribution_property is not None:
             if _debug_check_distribution_property == "minimum":
@@ -67,7 +69,7 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             elif _debug_check_distribution_property == "average":
                 random_time_component = 1
             else:
-                raise Exception(f"Unknown: {_debug_check_distribution_property}")
+                raise UnknownDistributionPropertyException(f"Unknown: {_debug_check_distribution_property}")
 
         truck_arrival_time = (
             container_arrival_time.replace(minute=0, second=0, microsecond=0)
@@ -88,6 +90,8 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
     def generate_trucks_for_picking_up(self):
         containers = Container.select().where(
             Container.picked_up_by == ModeOfTransport.truck
+        ).order_by(
+            fn.assign_random_value(Container.id)
         )
         number_containers = containers.count()
         self.logger.info(
@@ -121,6 +125,6 @@ class TruckForImportContainersManager(AbstractTruckForContainersManager):
             )
             container.picked_up_by_truck = truck
             container.save()
-            teu_total += ContainerLength.get_factor(container.length)
+            teu_total += ContainerLength.get_teu_factor(container.length)
         self.logger.info(f"All {number_containers} trucks that pick up a container have been generated, moving "
                          f"{teu_total} TEU.")

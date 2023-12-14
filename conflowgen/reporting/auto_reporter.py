@@ -61,6 +61,7 @@ class AutoReporter:
                     )
                 else:
                     report_as_text = report_instance.get_report_as_text()
+                assert report_as_text, "Report should not be empty"
                 self.output.display_verbatim(report_as_text)
             if self.as_graph:
                 try:

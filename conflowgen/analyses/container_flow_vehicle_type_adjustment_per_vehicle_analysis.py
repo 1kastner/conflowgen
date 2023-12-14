@@ -4,7 +4,7 @@ import collections
 import datetime
 import typing
 
-
+from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.analyses.abstract_analysis import AbstractAnalysis
@@ -17,14 +17,13 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
     as it is the case with :class:`.ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport`.
     """
-
+    @DataSummariesCache.cache_result
     def get_vehicle_type_adjustments_per_vehicle(
             self,
             initial_vehicle_type: ModeOfTransport | str | typing.Collection = "scheduled vehicles",
             adjusted_vehicle_type: ModeOfTransport | str | typing.Collection = "scheduled vehicles",
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None,
-            use_cache: bool = True
+            end_date: typing.Optional[datetime.datetime] = None
     ) -> typing.Dict[VehicleIdentifier, int]:
         """
         When containers are generated, in order to obey the maximum dwell time, the vehicle type that is used for
@@ -45,9 +44,6 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
                 Only include containers that arrive after the given start time.
             end_date:
                 Only include containers that depart before the given end time.
-            use_cache:
-                Use cache instead of re-calculating the arrival and departure time of the container.
-                Defaults to ``True``.
         Returns:
             The data structure describes how often an initial outbound vehicle type had to be adjusted over time
             in relation to the total container flows.
@@ -73,9 +69,9 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
 
         container: Container
         for container in selected_containers:
-            if start_date and container.get_arrival_time(use_cache=use_cache) < start_date:
+            if start_date and container.get_arrival_time() < start_date:
                 continue
-            if end_date and container.get_departure_time(use_cache=use_cache) > end_date:
+            if end_date and container.get_departure_time() > end_date:
                 continue
 
             vehicle_identifier = self._get_vehicle_identifier_for_vehicle_picking_up_the_container(container)
@@ -104,14 +100,14 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
         if container.picked_up_by == ModeOfTransport.truck:
             vehicle_identifier = VehicleIdentifier(
                 mode_of_transport=ModeOfTransport.truck,
-                vehicle_arrival_time=container.get_departure_time(use_cache=True),
+                vehicle_arrival_time=container.get_departure_time(),
                 service_name=None,
                 vehicle_name=None
             )
         else:
             vehicle_identifier = VehicleIdentifier(
                 mode_of_transport=container.picked_up_by,
-                vehicle_arrival_time=container.get_departure_time(use_cache=True),
+                vehicle_arrival_time=container.get_departure_time(),
                 service_name=container.picked_up_by_large_scheduled_vehicle.schedule.service_name,
                 vehicle_name=container.picked_up_by_large_scheduled_vehicle.vehicle_name
             )

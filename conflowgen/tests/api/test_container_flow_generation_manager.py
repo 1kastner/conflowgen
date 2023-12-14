@@ -4,6 +4,7 @@ import unittest.mock
 
 from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
+from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
@@ -18,7 +19,8 @@ class TestContainerFlowGenerationManager(unittest.TestCase):
         sqlite_db.create_tables([
             ContainerFlowGenerationProperties,
             ModeOfTransportDistribution,
-            Schedule
+            Schedule,
+            RandomSeedStore
         ])
         mode_of_transport_distribution_seeder.seed()
         self.container_flow_generation_manager = ContainerFlowGenerationManager()
