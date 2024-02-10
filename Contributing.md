@@ -58,14 +58,14 @@ Each new feature should be covered by tests unless there are very good reasons w
 
 For generating the documentation, 
 [sphinx](https://www.sphinx-doc.org/)
-is used - mostly the default settings are maintained.
-The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
-To generate the documentation, move to the directory `<project-root>/docs`.
+is used and mostly the default settings are maintained.
+
+To generate the documentation, change your working directory to `<project-root>/docs`.
 First, please make sure that you have up-to-date prepared sqlite databases in 
 `<project-root>/docs/notebooks/data/prepared_dbs/`.
 The sqlite databases compatible with the latest version of ConFlowGen are available at
 https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/.
-In `./docs/download_prepared_sqlite_databases.ps1`, you find the instructions for how to download the latest databases
+In `<project-root>/docs/download_prepared_sqlite_databases.ps1`, you find the instructions for how to download the latest databases
 and where to store them.
 In case you have updated the sqlite scheme, you might need to create these databases on your own with your latest
 adaptions.
@@ -74,8 +74,11 @@ This is achieved by running the scripts stored in
 and copy the resulting sqlite database into
 `<project-root>/docs/notebooks/data/prepared_dbs/`.
 
-Once the prepared databases are in place, the documentation can be created.
-As a Windows user you run `.\make.bat html` from the PowerShell or CMD.
+Once the prepared databases are in place, the documentation can be built.
+The documentation generation process is based on the sphinx boilerplate and the `make` process is unchanged.
+For more information on that, see the
+[Sphinx documentation on the build process](https://www.sphinx-doc.org/en/master/usage/quickstart.html#running-the-build).
+As a Windows user, you run `.\make.bat html` from the PowerShell or CMD inside the directory `<project-root>/docs`.
 Linux users invoke `make html` instead.
 The landing page of the documentation is created at `<project-root>/docs/_build/html/index.html`.
 It is advised to use a strict approach by using the additional argument `SPHINXOPTS="-W --keep-going`
