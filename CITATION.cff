@@ -3,6 +3,7 @@
 
 cff-version: 1.2.0
 title: ConFlowGen
+abstract: A generator for synthetic container flows at maritime container terminals with a focus on yard operations
 message: >-
   Please cite this software using the metadata from
   'preferred-citation'.
