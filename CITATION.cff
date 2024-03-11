@@ -51,8 +51,8 @@ preferred-citation:
       name: "LDIC 2022"
       city: Bremen
       country: DE
-      date-start: "2022-02-23"
-      date-end: "2022-02-25"
+      date-start: 2022-02-23
+      date-end: 2022-02-25
   editors:
     - family-names: Freitag
       given-names: Michael
