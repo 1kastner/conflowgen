@@ -3,6 +3,12 @@
 
 cff-version: 1.2.0
 title: ConFlowGen
+abstract: A generator for synthetic container flows at maritime container terminals with a focus on yard operations
+contact:
+  - affiliation: "Institute of Maritime Logistics, Hamburg University of Technology (TUHH)"
+    email: marvin.kastner@tuhh.de
+    family-names: Kastner
+    given-names: Marvin
 message: >-
   Please cite this software using the metadata from
   'preferred-citation'.
@@ -47,7 +53,7 @@ preferred-citation:
       country: DE
       date-start: 2022-02-23
       date-end: 2022-02-25
-  editors-series:
+  editors:
     - family-names: Freitag
       given-names: Michael
     - family-names: Kinra
