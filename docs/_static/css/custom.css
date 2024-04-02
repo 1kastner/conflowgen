@@ -21,12 +21,12 @@ div.wy-nav-content {
   - https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#bullet-lists-and-enumerated-lists
   - https://github.com/mcmtroffaes/sphinxcontrib-bibtex/issues/8#issuecomment-300141183 for more details.
   */
-dl.citation dt.label {
+div.citation span.label {
     display: none !important;
 }
 
-dl.citation dd {
-    display: list-item;
+div.citation {
+    display: list-item !important;
     list-style-type: arabic;
 }
 
