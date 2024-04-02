@@ -203,7 +203,8 @@ We are more than pleased to discuss the topic and add it to the list if suitable
 Presentation of ConFlowGen
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ConFlowGen has been first presented at the International Conference on Dynamics in Logistics in February 2022.
+ConFlowGen has been first presented at the International Conference on Dynamics in Logistics in February 2022
+:cite:`kastner2022conflowgen`.
 If ConFlowGen served you well in your research, and you would like to acknowledge the project in your publication,
 we would be glad if you mention our work as defined in our
 `CITATION.cff <https://raw.githubusercontent.com/1kastner/conflowgen/main/CITATION.cff>`_.
@@ -225,13 +226,17 @@ If you just need a BibTeX entry for your citation software, this one should do t
       year = {2022}
    }
 
-At a second occasion, ConFlowGen has been presented at the Annual General Assembly of the
-World Association for Waterborne Transport Infrastructure (PIANC)
-in 2023 in Oslo.
-The contribution
-`Synthetically generating traffic scenarios for simulation-based container terminal planning \
-<https://tore.tuhh.de/dspace-cris-server/api/core/bitstreams/1d990927-cca9-4b40-8440-19cc544cc847/content>`_
-has been awarded with the
-`De Paepe-Willems Award <https://www.pianc.org/award/de-paepe-willems-award/>`_.
-The paper highlights how ConFlowGen can support terminal planners in designing terminal interfaces and determining
-the required yard capacity.
+If you are curious about what else has been achieved with ConFlowGen, these selected papers might be of interest for you:
+
+- ConFlowGen can support terminal planners in designing the seaside and landside of terminals as well as determining
+  the required yard capacity
+  :cite:`kastner2023synthetically`.
+  In 2023, the publication has been awarded with the
+  `De Paepe-Willems Award <https://www.pianc.org/award/de-paepe-willems-award/>`_
+  of the
+  World Association for Waterborne Transport Infrastructure (PIANC).
+
+- ConFlowGen can be used to estimate the variations in yard utilization over time
+  :cite:`edes2024estimating`.
+  The arrival patterns of actual sailing lists are used to estimate seaside throughput variations over several weeks.
+  These, in turn, affect the yard throughput and yard utilization.
