@@ -43,6 +43,12 @@ class ContainerFlowGenerationService:
         self.container_flow_end_date: datetime.date = container_flow_generation_properties.end_date
         assert self.container_flow_start_date < self.container_flow_end_date
 
+        ramp_up_period = container_flow_generation_properties.ramp_up_period
+        ramp_down_period = container_flow_generation_properties.ramp_down_period
+        self.ramp_up_period_end = self.container_flow_start_date + datetime.timedelta(days=ramp_up_period)
+        self.ramp_down_period_start = self.container_flow_end_date - datetime.timedelta(days=ramp_down_period)
+        assert self.ramp_up_period_end <= self.ramp_down_period_start
+
         self.transportation_buffer: float = container_flow_generation_properties.transportation_buffer
         assert -1 < self.transportation_buffer
 

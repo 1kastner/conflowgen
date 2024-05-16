@@ -1,4 +1,7 @@
+import datetime
+import enum
 import logging
+import typing
 from typing import Dict, List, Callable, Type
 
 from conflowgen.domain_models.container import Container
@@ -7,12 +10,19 @@ from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTranspor
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, AbstractLargeScheduledVehicle
 
 
+class _Direction(enum.Enum):
+    inbound = 0
+    outbound = 1
+
+
 class LargeScheduledVehicleRepository:
 
     ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
     def __init__(self):
         self.transportation_buffer = None
+        self.ramp_up_period_end = None
+        self.ramp_down_period_start = None
         self.free_capacity_for_outbound_journey_buffer: Dict[Type[AbstractLargeScheduledVehicle], float] = {}
         self.free_capacity_for_inbound_journey_buffer: Dict[Type[AbstractLargeScheduledVehicle], float] = {}
         self.logger = logging.getLogger("conflowgen")
@@ -20,6 +30,14 @@ class LargeScheduledVehicleRepository:
     def set_transportation_buffer(self, transportation_buffer: float):
         assert -1 < transportation_buffer
         self.transportation_buffer = transportation_buffer
+
+    def set_ramp_up_and_down_times(
+            self,
+            ramp_up_period_end: typing.Optional[datetime.datetime],
+            ramp_down_period_start: typing.Optional[datetime.datetime]
+    ):
+        self.ramp_up_period_end = ramp_up_period_end
+        self.ramp_down_period_start = ramp_down_period_start
 
     def reset_cache(self):
         self.free_capacity_for_outbound_journey_buffer = {}
@@ -87,7 +105,8 @@ class LargeScheduledVehicleRepository:
         free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_inbound_transportation_in_teu,
-            container_counter=self._get_number_containers_for_inbound_journey
+            container_counter=self._get_number_containers_for_inbound_journey,
+            direction=_Direction.inbound
         )
         self.free_capacity_for_inbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
@@ -115,7 +134,8 @@ class LargeScheduledVehicleRepository:
         free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_onward_transportation_in_teu,
-            container_counter=self._get_number_containers_for_outbound_journey
+            container_counter=self._get_number_containers_for_outbound_journey,
+            direction=_Direction.outbound
         )
         self.free_capacity_for_outbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
@@ -125,7 +145,8 @@ class LargeScheduledVehicleRepository:
     def _get_free_capacity_in_teu(
             vehicle: Type[AbstractLargeScheduledVehicle],
             maximum_capacity: int,
-            container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int]
+            container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int],
+            direction: _Direction
     ) -> float:
         loaded_20_foot_containers = container_counter(vehicle, ContainerLength.twenty_feet)
         loaded_40_foot_containers = container_counter(vehicle, ContainerLength.forty_feet)
@@ -148,6 +169,13 @@ class LargeScheduledVehicleRepository:
                                           f"loaded_40_foot_containers: {loaded_40_foot_containers}, " \
                                           f"loaded_45_foot_containers: {loaded_45_foot_containers} and " \
                                           f"loaded_other_containers: {loaded_other_containers}"
+
+        arrival_time: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+        if direction == _Direction.outbound and arrival_time < ramp_up_period_end:
+            free_capacity_in_teu = maximum_capacity * 0.1
+        elif direction == _Direction.inbound and arrival_time >= ramp_down_period_start:
+            free_capacity_in_teu = maximum_capacity * 0.1
+
         return free_capacity_in_teu
 
     @classmethod

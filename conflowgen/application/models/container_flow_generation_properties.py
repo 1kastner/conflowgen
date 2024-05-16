@@ -27,6 +27,16 @@ class ContainerFlowGenerationProperties(BaseModel):
         help_text="The last day of the generated container flow"
     )
 
+    ramp_up_period= FloatField(
+        default=0,
+        help_text="Number of days for the ramp-up period"
+    )
+
+    ramp_down_period = FloatField(
+        default=0,
+        help_text="Number of days for the ramp-down period"
+    )
+
     generated_at = DateTimeField(
         default=lambda: datetime.datetime.now().replace(microsecond=0),
         help_text="The date the these properties have been created"

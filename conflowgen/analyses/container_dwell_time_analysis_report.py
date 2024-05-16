@@ -33,7 +33,7 @@ class ContainerDwellTimeAnalysisReport(AbstractReportWithMatplotlib):
 
     def get_report_as_text(self, **kwargs) -> str:
         """
-        The report as a text is represented as a table suitable for logging.
+        The report as a text is represented as a table suitable for log.
         It uses a human-readable formatting style.
         For the exact interpretation of the parameter, check
         :meth:`.ContainerDwellTimeAnalysis.get_container_dwell_times`.

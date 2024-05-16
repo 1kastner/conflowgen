@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 import logging
 import math
+import typing
 from typing import Tuple, List, Dict, Type, Sequence
 
 import numpy as np
@@ -42,10 +43,13 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
     def reload_properties(
             self,
-            transportation_buffer: float
+            transportation_buffer: float,
+            ramp_up_period_end: typing.Optional[datetime.datetime],
+            ramp_down_period_start: typing.Optional[datetime.datetime],
     ):
         assert -1 < transportation_buffer
         self.schedule_repository.set_transportation_buffer(transportation_buffer)
+
         self.logger.debug(f"Using transportation buffer of {transportation_buffer} when choosing the departing "
                           f"vehicles that adhere a schedule.")
 
