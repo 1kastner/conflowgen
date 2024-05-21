@@ -7,6 +7,7 @@ from dataclasses import dataclass
 
 from peewee import IntegrityError
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container, FaultyDataException, NoPickupVehicleException
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -150,3 +151,29 @@ class TestContainer(unittest.TestCase):
 
         with self.assertRaises(NoPickupVehicleException):
             container.get_departure_time()
+
+    def test_occupied_teu(self):
+        """Test whether the container size is correctly converted to TEU"""
+        container = Container.create(
+            weight=10,
+            delivered_by=ModeOfTransport.barge,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        self.assertEqual(2, container.occupied_teu)
+        ...  # TODO: also test other cases: 20', 45', other
+
+    def test_flow_direction(self):
+        """Test whether all flow directions are detected correctly"""
+        container = Container.create(
+            weight=10,
+            delivered_by=ModeOfTransport.deep_sea_vessel,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.truck,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        self.assertEqual(FlowDirection.import_flow, container.flow_direction)
+        ...  # TODO: also test other cases: export, transshipment, undefined
