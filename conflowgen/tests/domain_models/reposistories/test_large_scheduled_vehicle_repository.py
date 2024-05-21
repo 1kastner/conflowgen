@@ -38,15 +38,13 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
         self.train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=3,
+            moved_capacity=30,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        self.train_lsv.save()
         self.train = Train.create(
             large_scheduled_vehicle=self.train_lsv
         )
-        self.train.save()
 
     def test_free_capacity_for_one_teu(self):
         Container.create(
@@ -62,7 +60,43 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
             self.train, FlowDirection.undefined
         )
-        self.assertEqual(free_capacity_in_teu, 2)
+        self.assertEqual(free_capacity_in_teu, 29)
+
+    def test_free_capacity_during_ramp_down_period_for_one_teu(self):
+        Container.create(
+            weight=20,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.truck,
+            picked_up_by=ModeOfTransport.train,
+            picked_up_by_initial=ModeOfTransport.feeder,
+            picked_up_by_large_scheduled_vehicle=self.train_lsv,
+        )
+        self.lsv_repository.set_ramp_up_and_down_times(
+            ramp_up_period_end=datetime.datetime(year=2021, month=8, day=8, hour=13, minute=15)  # one day after the train
+        )
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
+            self.train, FlowDirection.transshipment_flow
+        )
+        self.assertAlmostEquals(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
+
+    def test_free_capacity_during_ramp_up_period_for_one_teu(self):
+        Container.create(
+            weight=20,
+            length=ContainerLength.twenty_feet,
+            storage_requirement=StorageRequirement.standard,
+            delivered_by=ModeOfTransport.train,
+            picked_up_by=ModeOfTransport.feeder,
+            picked_up_by_initial=ModeOfTransport.feeder,
+            delivered_by_large_scheduled_vehicle=self.train_lsv,
+        )
+        self.lsv_repository.set_ramp_up_and_down_times(
+            ramp_down_period_start=datetime.datetime(year=2021, month=8, day=6, hour=13, minute=15)  # one day before the train
+        )
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_inbound_journey(
+            self.train
+        )
+        self.assertAlmostEquals(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
 
     def test_free_capacity_for_one_ffe(self):
         Container.create(
