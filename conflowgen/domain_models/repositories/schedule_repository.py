@@ -1,7 +1,9 @@
 import datetime
+import typing
 from typing import List, Type
 import logging
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -18,12 +20,23 @@ class ScheduleRepository:
     def set_transportation_buffer(self, transportation_buffer: float):
         self.large_scheduled_vehicle_repository.set_transportation_buffer(transportation_buffer)
 
+    def set_ramp_up_and_down_times(
+            self,
+            ramp_up_period_end: typing.Optional[datetime.datetime] = None,
+            ramp_down_period_start: typing.Optional[datetime.datetime] = None
+    ):
+        self.large_scheduled_vehicle_repository.set_ramp_up_and_down_times(
+            ramp_up_period_end=ramp_up_period_end,
+            ramp_down_period_start=ramp_down_period_start
+        )
+
     def get_departing_vehicles(
             self,
             start: datetime.datetime,
             end: datetime.datetime,
             vehicle_type: ModeOfTransport,
-            required_capacity: ContainerLength
+            required_capacity: ContainerLength,
+            flow_direction: FlowDirection
     ) -> List[Type[AbstractLargeScheduledVehicle]]:
         """Gets the available vehicles for the required capacity of the required type and within the time range.
         """
@@ -46,7 +59,7 @@ class ScheduleRepository:
         vehicle: Type[AbstractLargeScheduledVehicle]
         for vehicle in vehicles:
             free_capacity_in_teu = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
-                vehicle
+                vehicle, flow_direction
             )
             if free_capacity_in_teu >= required_capacity_in_teu:
                 vehicles_with_sufficient_capacity.append(vehicle)

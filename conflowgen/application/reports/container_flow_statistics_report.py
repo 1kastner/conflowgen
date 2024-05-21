@@ -4,6 +4,7 @@ import logging
 import statistics
 from typing import List, Type, Dict
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.repositories.large_scheduled_vehicle_repository import LargeScheduledVehicleRepository
 from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle, LargeScheduledVehicle
@@ -44,7 +45,8 @@ class ContainerFlowStatisticsReport:
                     vehicle
                 )
                 free_capacity_outbound = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
-                    vehicle
+                    vehicle,
+                    FlowDirection.undefined
                 )
                 assert free_capacity_inbound <= large_scheduled_vehicle.capacity_in_teu, \
                     f"A vehicle can only load at maximum its capacity, but for vehicle {vehicle} the free capacity " \

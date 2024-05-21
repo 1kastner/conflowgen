@@ -3,6 +3,7 @@ import logging
 from typing import Dict, Type, List
 
 from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -115,7 +116,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     continue  # try again with another vehicle type (refers to while loop)
 
                 free_capacity_of_vehicle = self.large_scheduled_vehicle_repository.\
-                    get_free_capacity_for_outbound_journey(vehicle, flow_direction="export")
+                    get_free_capacity_for_outbound_journey(vehicle, flow_direction=FlowDirection.export_flow)
 
                 if free_capacity_of_vehicle <= self.ignored_capacity:
 
@@ -175,7 +176,8 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         # Make it more likely that a container ends up on a large vessel than on a smaller one
         vehicle: Type[AbstractLargeScheduledVehicle]
         vehicle_distribution: Dict[Type[AbstractLargeScheduledVehicle], float] = {
-            vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+            vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
+                vehicle, FlowDirection.export_flow)
             for vehicle in vehicles_of_type
         }
         all_free_capacities = list(vehicle_distribution.values())

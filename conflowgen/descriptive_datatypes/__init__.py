@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import enum
 import typing
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -127,3 +128,18 @@ class ContainersTransportedByTruck(typing.NamedTuple):
 
     #: The number of containers moved on the outbound journey
     outbound: float
+
+
+class FlowDirection(enum.Enum):
+    """
+    Represents the flow direction based on the terminology of
+    *Handbook of Terminal Planning*, edited by Jürgen W. Böse (https://link.springer.com/book/10.1007/978-3-030-39990-0)
+    """
+
+    import_flow = "import"
+
+    export_flow = "export"
+
+    transshipment_flow = "transshipment"
+
+    undefined = "undefined"

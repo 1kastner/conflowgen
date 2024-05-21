@@ -54,8 +54,15 @@ class ContainerFlowGenerationManager:
         properties.start_date = start_date
         properties.end_date = end_date
 
-        properties.ramp_up_period = ramp_up_period.total_seconds() / 86400  # in days as float
-        properties.ramp_down_period = ramp_down_period.total_seconds() / 86400 # in days as float
+        if ramp_up_period:
+            properties.ramp_up_period = ramp_up_period.total_seconds() / 86400  # in days as float
+        else:
+            properties.ramp_up_period = 0
+
+        if ramp_down_period:
+            properties.ramp_down_period = ramp_down_period.total_seconds() / 86400  # in days as float
+        else:
+            properties.ramp_down_period = 0
 
         if transportation_buffer is not None:
             properties.transportation_buffer = transportation_buffer

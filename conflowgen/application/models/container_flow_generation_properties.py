@@ -27,7 +27,7 @@ class ContainerFlowGenerationProperties(BaseModel):
         help_text="The last day of the generated container flow"
     )
 
-    ramp_up_period= FloatField(
+    ramp_up_period = FloatField(
         default=0,
         help_text="Number of days for the ramp-up period"
     )

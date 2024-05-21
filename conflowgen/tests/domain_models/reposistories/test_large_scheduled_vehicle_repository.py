@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -58,7 +59,9 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             picked_up_by_large_scheduled_vehicle=self.train_lsv,
         )
 
-        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(self.train)
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
+            self.train, FlowDirection.undefined
+        )
         self.assertEqual(free_capacity_in_teu, 2)
 
     def test_free_capacity_for_one_ffe(self):
@@ -72,7 +75,9 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             picked_up_by_large_scheduled_vehicle=self.train_lsv,
         )
 
-        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(self.train)
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
+            self.train, FlowDirection.undefined
+        )
         self.assertEqual(free_capacity_in_teu, 1)
 
     def test_free_capacity_for_45_foot_container(self):
@@ -86,7 +91,9 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             picked_up_by_large_scheduled_vehicle=self.train_lsv,
         )
 
-        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(self.train)
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
+            self.train, FlowDirection.undefined
+        )
         self.assertEqual(free_capacity_in_teu, 0.75)
 
     def test_free_capacity_for_other_container(self):
@@ -100,5 +107,7 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             picked_up_by_large_scheduled_vehicle=self.train_lsv,
         )
 
-        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(self.train)
+        free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
+            self.train, FlowDirection.undefined
+        )
         self.assertEqual(free_capacity_in_teu, 0.5)
