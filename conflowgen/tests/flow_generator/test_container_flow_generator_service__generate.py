@@ -73,3 +73,44 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
         create_tables(self.sqlite_db)
         seed_all_distributions()
         self.container_flow_generator_service.generate()
+
+    def test_happy_path_no_mocking_with_ramp_up_and_ramp_down(self):
+        create_tables(self.sqlite_db)
+        seed_all_distributions()
+
+        container_flow_generation_properties_manager = ContainerFlowGenerationPropertiesRepository()
+        properties: ContainerFlowGenerationProperties = (container_flow_generation_properties_manager
+                                                         .get_container_flow_generation_properties())
+        properties.ramp_up_period = 5
+        properties.ramp_down_period = 5
+        container_flow_generation_properties_manager.set_container_flow_generation_properties(properties)
+
+        port_call_manager = PortCallManager()
+        port_call_manager.add_vehicle(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name="TestFeeder",
+            vehicle_arrives_at=properties.start_date + datetime.timedelta(days=3),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=100,
+            next_destinations=None
+        )
+        port_call_manager.add_vehicle(
+            vehicle_type=ModeOfTransport.deep_sea_vessel,
+            service_name="TestDeepSeaVessel",
+            vehicle_arrives_at=properties.start_date + datetime.timedelta(days=8),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=100,
+            next_destinations=None
+        )
+        port_call_manager.add_vehicle(
+            vehicle_type=ModeOfTransport.deep_sea_vessel,
+            service_name="TestDeepSeaVessel2",
+            vehicle_arrives_at=properties.end_date - datetime.timedelta(days=2),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=800,
+            average_moved_capacity=100,
+            next_destinations=None
+        )
+        self.container_flow_generator_service.generate()
