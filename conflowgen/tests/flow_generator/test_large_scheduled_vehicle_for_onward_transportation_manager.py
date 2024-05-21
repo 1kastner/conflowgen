@@ -316,3 +316,9 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
                 self.manager.schedule_repository, "get_departing_vehicles", return_value=None) as get_vehicles_method:
             self.manager.choose_departing_vehicle_for_containers()
         get_vehicles_method.assert_not_called()
+
+    def test_behavior_during_ramp_up_period(self):
+        ...  # TODO!
+
+    def test_behavior_during_ramp_down_period(self):
+        ...  # TODO!
