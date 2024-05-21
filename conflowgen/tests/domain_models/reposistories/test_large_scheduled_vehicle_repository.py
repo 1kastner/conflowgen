@@ -73,7 +73,8 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             picked_up_by_large_scheduled_vehicle=self.train_lsv,
         )
         self.lsv_repository.set_ramp_up_and_down_times(
-            ramp_up_period_end=datetime.datetime(year=2021, month=8, day=8, hour=13, minute=15)  # one day after the train
+            # one day after the train
+            ramp_up_period_end=datetime.datetime(year=2021, month=8, day=8, hour=13, minute=15)
         )
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
             self.train, FlowDirection.transshipment_flow
@@ -91,7 +92,8 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
             delivered_by_large_scheduled_vehicle=self.train_lsv,
         )
         self.lsv_repository.set_ramp_up_and_down_times(
-            ramp_down_period_start=datetime.datetime(year=2021, month=8, day=6, hour=13, minute=15)  # one day before the train
+            # one day before the train
+            ramp_down_period_start=datetime.datetime(year=2021, month=8, day=6, hour=13, minute=15)
         )
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_inbound_journey(
             self.train

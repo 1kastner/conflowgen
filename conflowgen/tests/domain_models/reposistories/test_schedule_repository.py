@@ -93,7 +93,7 @@ class TestScheduleRepository(unittest.TestCase):
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        train = Train.create(
+        Train.create(
             large_scheduled_vehicle=train_lsv
         )
 
