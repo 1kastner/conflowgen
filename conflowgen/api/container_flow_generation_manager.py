@@ -40,10 +40,11 @@ class ContainerFlowGenerationManager:
             name: The name of the generated synthetic container flow which helps to distinguish different scenarios.
             transportation_buffer: Determines how many percent more of the inbound journey capacity is used at most to
                 transport containers on the outbound journey.
-            ramp_up_period: The period at the beginning during which operations gradually increases to full capacity.
-                This simulates the initial phase where container flow and terminal activities are scaled up.
-            ramp_down_period: The period at the end during which operations gradually decrease from full capacity.
-                This simulates the final phase where container flow and terminal activities are scaled down.
+            ramp_up_period: The period at the beginning during which yard occupancy gradually increases.
+                During the ramp-up period, the share of transshipment containers on outbound journey is reduced.
+            ramp_down_period: The period at the end during which operations gradually fade out.
+                During the ramp-down period, inbound container volumes are scaled down, reducing the number of new
+                import, export, and transshipment containers in the yard during this period..
         """
 
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
