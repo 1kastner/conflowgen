@@ -71,7 +71,6 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300,
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
@@ -79,11 +78,9 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        feeder_lsv.save()
         feeder = Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
         return feeder
 
     @staticmethod
@@ -96,7 +93,6 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             average_vehicle_capacity=90,
             average_moved_capacity=90,
         )
-        schedule.save()
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=96,
@@ -104,11 +100,9 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        train_lsv.save()
         train = Train.create(
             large_scheduled_vehicle=train_lsv
         )
-        train.save()
         return train
 
     @staticmethod
@@ -151,7 +145,6 @@ class TestAllocateSpaceForContainersDeliveredByTruckService(unittest.TestCase):
             picked_up_by=ModeOfTransport.feeder,
             picked_up_by_initial=ModeOfTransport.feeder
         )
-        container.save()
         return container
 
     def test_does_nothing_if_no_vehicle_is_available(self):
