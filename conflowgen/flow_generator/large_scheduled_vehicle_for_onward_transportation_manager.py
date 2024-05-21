@@ -197,8 +197,12 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             return available_vehicles[0]
 
         vehicles_and_their_respective_free_capacity = {}
+        
         for vehicle in available_vehicles:
-            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+
+            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
+                vehicle, container.flow_direction
+            )
             if free_capacity >= ContainerLength.get_teu_factor(ContainerLength.other):
                 vehicles_and_their_respective_free_capacity[vehicle] = free_capacity
 

@@ -115,7 +115,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     continue  # try again with another vehicle type (refers to while loop)
 
                 free_capacity_of_vehicle = self.large_scheduled_vehicle_repository.\
-                    get_free_capacity_for_outbound_journey(vehicle)
+                    get_free_capacity_for_outbound_journey(vehicle, flow_direction="export")
 
                 if free_capacity_of_vehicle <= self.ignored_capacity:
 

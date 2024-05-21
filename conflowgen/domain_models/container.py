@@ -116,6 +116,17 @@ class Container(BaseModel):
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
 
+    @property
+    def flow_direction(self) -> str:
+        if (self.delivered_by in [ModeOfTransport.truck, ModeOfTransport.train, ModeOfTransport.barge]
+                and self.picked_up_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]):
+            return "export"
+        if (self.picked_up_by in [ModeOfTransport.truck, ModeOfTransport.train, ModeOfTransport.barge]
+                and self.delivered_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]):
+            return "import"
+        else:
+            return "transshipment"
+
     def get_arrival_time(self) -> datetime.datetime:
 
         if self.cached_arrival_time is not None:

@@ -111,7 +111,10 @@ class LargeScheduledVehicleRepository:
         self.free_capacity_for_inbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
 
-    def get_free_capacity_for_outbound_journey(self, vehicle: Type[AbstractLargeScheduledVehicle]) -> float:
+    def get_free_capacity_for_outbound_journey(
+            self, vehicle: Type[AbstractLargeScheduledVehicle],
+            flow_direction: str
+    ) -> float:
         """Get the free capacity for the outbound journey on a vehicle that moves according to a schedule in TEU.
         """
         assert self.transportation_buffer is not None, "First set the value!"
@@ -135,7 +138,8 @@ class LargeScheduledVehicleRepository:
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_onward_transportation_in_teu,
             container_counter=self._get_number_containers_for_outbound_journey,
-            direction=_Direction.outbound
+            direction=_Direction.outbound,
+            flow_direction=flow_direction
         )
         self.free_capacity_for_outbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
@@ -146,7 +150,8 @@ class LargeScheduledVehicleRepository:
             vehicle: Type[AbstractLargeScheduledVehicle],
             maximum_capacity: int,
             container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int],
-            direction: _Direction
+            direction: _Direction,
+            flow_direction: str
     ) -> float:
         loaded_20_foot_containers = container_counter(vehicle, ContainerLength.twenty_feet)
         loaded_40_foot_containers = container_counter(vehicle, ContainerLength.forty_feet)
@@ -171,6 +176,8 @@ class LargeScheduledVehicleRepository:
                                           f"loaded_other_containers: {loaded_other_containers}"
 
         arrival_time: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+
+        #TODO use flow_direction
         if direction == _Direction.outbound and arrival_time < ramp_up_period_end:
             free_capacity_in_teu = maximum_capacity * 0.1
         elif direction == _Direction.inbound and arrival_time >= ramp_down_period_start:
