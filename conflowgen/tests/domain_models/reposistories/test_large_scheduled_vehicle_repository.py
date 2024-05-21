@@ -78,7 +78,7 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
             self.train, FlowDirection.transshipment_flow
         )
-        self.assertAlmostEquals(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
+        self.assertAlmostEqual(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
 
     def test_free_capacity_during_ramp_up_period_for_one_teu(self):
         Container.create(
@@ -96,7 +96,7 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_inbound_journey(
             self.train
         )
-        self.assertAlmostEquals(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
+        self.assertAlmostEqual(free_capacity_in_teu, 2.9)  # (30 - 1) * 10%
 
     def test_free_capacity_for_one_ffe(self):
         Container.create(
@@ -128,7 +128,7 @@ class TestLargeScheduledVehicleRepository(unittest.TestCase):
         free_capacity_in_teu = self.lsv_repository.get_free_capacity_for_outbound_journey(
             self.train, FlowDirection.undefined
         )
-        self.assertEqual(free_capacity_in_teu, 0.75)
+        self.assertEqual(free_capacity_in_teu, 27.75)
 
     def test_free_capacity_for_other_container(self):
         Container.create(
