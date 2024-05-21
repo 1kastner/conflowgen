@@ -93,11 +93,9 @@ class TestScheduleRepository(unittest.TestCase):
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        train_lsv.save()
         train = Train.create(
             large_scheduled_vehicle=train_lsv
         )
-        train.save()
 
         vehicles = self.schedule_repository.get_departing_vehicles(
             start=datetime.datetime(year=2021, month=8, day=5, hour=0, minute=0),
@@ -186,11 +184,9 @@ class TestScheduleRepository(unittest.TestCase):
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        train_lsv.save()
         train = Train.create(
             large_scheduled_vehicle=train_lsv
         )
-        train.save()
 
         # This container is already loaded on the train
         container = Container.create(
@@ -230,11 +226,9 @@ class TestScheduleRepository(unittest.TestCase):
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        train_lsv.save()
-        train = Train.create(
+        Train.create(
             large_scheduled_vehicle=train_lsv
         )
-        train.save()
 
         # This container is already loaded on the train
         container = Container.create(
@@ -273,7 +267,6 @@ class TestScheduleRepository(unittest.TestCase):
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
-        train_lsv.save()
         train = Train.create(
             large_scheduled_vehicle=train_lsv
         )
@@ -301,3 +294,16 @@ class TestScheduleRepository(unittest.TestCase):
                 flow_direction=container.flow_direction
             )
         mock_method.assert_called_once_with(train, FlowDirection.undefined)
+
+    def test_set_ramp_up_and_down_period(self):
+        with unittest.mock.patch.object(
+            self.schedule_repository.large_scheduled_vehicle_repository,
+                'set_ramp_up_and_down_times',
+                return_value=None) as mock_method:
+            self.schedule_repository.set_ramp_up_and_down_times(
+                datetime.datetime(2023, 1, 1), datetime.datetime(2024, 1, 1)
+            )
+        mock_method.assert_called_once_with(
+            ramp_up_period_end=datetime.datetime(2023, 1, 1),
+            ramp_down_period_start=datetime.datetime(2024, 1, 1)
+        )
