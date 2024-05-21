@@ -190,7 +190,7 @@ class LargeScheduledVehicleRepository:
         ):
             # keep transshipment containers in the yard longer during the ramp-up period to fill the yard faster
             # by offering less transport capacity on the outbound journey of deep sea vessels and feeders
-            free_capacity_in_teu = maximum_capacity * 0.1
+            free_capacity_in_teu *= 0.1
 
         elif (
                 journey_direction == JourneyDirection.inbound
@@ -199,7 +199,7 @@ class LargeScheduledVehicleRepository:
         ):
             # decrease number of inbound containers (any direction) during the ramp-down period
             # by offering less transport capacity on the inbound journey (all types of vehicles, excluding trucks)
-            free_capacity_in_teu = maximum_capacity * 0.1
+            free_capacity_in_teu *= 0.1
 
         return free_capacity_in_teu
 
