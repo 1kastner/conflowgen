@@ -77,7 +77,6 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        feeder_lsv.save()
         feeder = Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
@@ -316,26 +315,46 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         get_vehicles_method.assert_not_called()
 
     def test_behavior_during_ramp_up_period(self):
-        feeder = self._create_feeder(datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 100  # in TEU
-        feeder.save()
+        """During ramp-up, the capacity of vessels is artificially reduced"""
+
+        # the
+        feeder_1 = self._create_feeder(
+            datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15), "1"
+        )
+
+        feeder_2 = self._create_feeder(
+            datetime.datetime(year=2021, month=8, day=10, hour=15, minute=0), "2"
+        )
+
+        feeder_1.large_scheduled_vehicle.moved_capacity = 100  # in TEU
+        feeder_1.save()
+
+        containers = [
+            self._create_container_for_large_scheduled_vehicle(feeder_1)
+            for _ in range(feeder_1.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+        ]
+
         self.manager.reload_properties(
             transportation_buffer=0,
-            ramp_up_period_end=datetime.date(2022, 8, 8)
+            ramp_up_period_end=datetime.date(2021, 8, 12)
         )
 
         # run actual function
         self.manager.choose_departing_vehicle_for_containers()
 
         containers_reloaded: Iterable[Container] = Container.select().where(
-            Container.picked_up_by_large_scheduled_vehicle == feeder
+            Container.picked_up_by_large_scheduled_vehicle == feeder_2
         )
+        self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
+                                                                            "containers")
+
         teu_loaded = 0
         for container in containers_reloaded:  # pylint: disable=not-an-iterable
-            self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
+            self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder_2.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_teu_factor(container.length)
-        self.assertLessEqual(teu_loaded, 10, "Feeder must have loaded much less containers because this is the"
+        self.assertLessEqual(teu_loaded, 30, "Feeder must have loaded much less containers because this is the"
                                              "ramp-up period!")
 
     def test_behavior_during_ramp_down_period(self):
+        """During ramp-down, transshipment flows should not be affected!"""
         ...  # TODO!
