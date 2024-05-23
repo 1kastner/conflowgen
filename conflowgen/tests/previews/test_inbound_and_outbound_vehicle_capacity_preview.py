@@ -82,7 +82,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
     def test_inbound_with_no_schedules(self):
         """If no schedules are provided, no capacity is needed"""
-        empty_capacity = self.preview.get_inbound_capacity_of_vehicles().teu
+        empty_capacity: dict = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(empty_capacity.keys()))
         for mode_of_transport in ModeOfTransport:
             capacity_in_teu = empty_capacity[mode_of_transport]

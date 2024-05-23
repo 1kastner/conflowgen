@@ -2,6 +2,7 @@ from __future__ import annotations
 import datetime
 import logging
 import math
+import typing
 from typing import Tuple, List, Dict, Type, Sequence
 
 import numpy as np
@@ -42,10 +43,18 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
     def reload_properties(
             self,
-            transportation_buffer: float
+            transportation_buffer: float,
+            ramp_up_period_end: typing.Optional[datetime.datetime] = None,
+            ramp_down_period_start: typing.Optional[datetime.datetime] = None,
     ):
         assert -1 < transportation_buffer
         self.schedule_repository.set_transportation_buffer(transportation_buffer)
+
+        self.schedule_repository.set_ramp_up_and_down_times(
+            ramp_up_period_end=ramp_up_period_end,
+            ramp_down_period_start=ramp_down_period_start
+        )
+
         self.logger.debug(f"Using transportation buffer of {transportation_buffer} when choosing the departing "
                           f"vehicles that adhere a schedule.")
 
@@ -125,7 +134,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                 start=(container_arrival + datetime.timedelta(hours=minimum_dwell_time_in_hours)),
                 end=(container_arrival + datetime.timedelta(hours=maximum_dwell_time_in_hours)),
                 vehicle_type=initial_departing_vehicle_type,
-                required_capacity=container.length
+                required_capacity=container.length,
+                flow_direction=container.flow_direction
             )
 
             if len(available_vehicles) > 0:
@@ -193,8 +203,12 @@ class LargeScheduledVehicleForOnwardTransportationManager:
             return available_vehicles[0]
 
         vehicles_and_their_respective_free_capacity = {}
+
         for vehicle in available_vehicles:
-            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+
+            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
+                vehicle, container.flow_direction
+            )
             if free_capacity >= ContainerLength.get_teu_factor(ContainerLength.other):
                 vehicles_and_their_respective_free_capacity[vehicle] = free_capacity
 
@@ -313,7 +327,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                 start=(container_arrival + datetime.timedelta(hours=minimum_dwell_time_in_hours)),
                 end=(container_arrival + datetime.timedelta(hours=maximum_dwell_time_in_hours)),
                 vehicle_type=vehicle_type,
-                required_capacity=container.length
+                required_capacity=container.length,
+                flow_direction=container.flow_direction
             )
             if len(available_vehicles) > 0:  # There is a vehicle of a new type available, so it is picked
                 vehicle = self._pick_vehicle_for_container(available_vehicles, container)

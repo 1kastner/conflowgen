@@ -27,7 +27,9 @@ class ContainerFlowGenerationManager:
             start_date: datetime.date,
             end_date: datetime.date,
             name: typing.Optional[str] = None,
-            transportation_buffer: typing.Optional[float] = None
+            transportation_buffer: typing.Optional[float] = None,
+            ramp_up_period: typing.Optional[datetime.timedelta] = None,
+            ramp_down_period: typing.Optional[datetime.timedelta] = None,
     ) -> None:
         """
         Args:
@@ -38,7 +40,13 @@ class ContainerFlowGenerationManager:
             name: The name of the generated synthetic container flow which helps to distinguish different scenarios.
             transportation_buffer: Determines how many percent more of the inbound journey capacity is used at most to
                 transport containers on the outbound journey.
+            ramp_up_period: The period at the beginning during which yard occupancy gradually increases.
+                During the ramp-up period, the share of transshipment containers on outbound journey is reduced.
+            ramp_down_period: The period at the end during which operations gradually fade out.
+                During the ramp-down period, inbound container volumes are scaled down, reducing the number of new
+                import, export, and transshipment containers in the yard during this period..
         """
+
         properties = self.container_flow_generation_properties_repository.get_container_flow_generation_properties()
 
         if name is not None:
@@ -46,6 +54,16 @@ class ContainerFlowGenerationManager:
 
         properties.start_date = start_date
         properties.end_date = end_date
+
+        if ramp_up_period:
+            properties.ramp_up_period = ramp_up_period.total_seconds() / 86400  # in days as float
+        else:
+            properties.ramp_up_period = 0
+
+        if ramp_down_period:
+            properties.ramp_down_period = ramp_down_period.total_seconds() / 86400  # in days as float
+        else:
+            properties.ramp_down_period = 0
 
         if transportation_buffer is not None:
             properties.transportation_buffer = transportation_buffer
@@ -67,6 +85,8 @@ class ContainerFlowGenerationManager:
             'start_date': properties.start_date,
             'end_date': properties.end_date,
             'transportation_buffer': properties.transportation_buffer,
+            'ramp_up_period': properties.ramp_up_period,
+            'ramp_down_period': properties.ramp_down_period,
         }
 
     def container_flow_data_exists(self) -> bool:
