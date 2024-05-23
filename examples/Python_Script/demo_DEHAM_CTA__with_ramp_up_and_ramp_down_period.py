@@ -319,7 +319,10 @@ logger.info("Start data export...")
 # Export important entries from SQL to CSV so that it can be further processed, e.g., by a simulation software
 export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_container_flow_manager.export(
-    folder_name="demo-DEHAM-of-day--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0],
+    folder_name=(
+            "demo-DEHAM-inc-ramp-up-and-down-of-day--"
+            + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
+    ),
     path_to_export_folder=os.path.join(this_dir, "export"),
     file_format=conflowgen.ExportFileFormat.csv
 )
