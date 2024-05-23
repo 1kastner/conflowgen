@@ -70,7 +70,6 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             average_vehicle_capacity=300,
             average_moved_capacity=300,
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
@@ -82,7 +81,6 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         feeder = Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
         return feeder
 
     @staticmethod
@@ -318,7 +316,26 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         get_vehicles_method.assert_not_called()
 
     def test_behavior_during_ramp_up_period(self):
-        ...  # TODO!
+        feeder = self._create_feeder(datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15))
+        feeder.large_scheduled_vehicle.moved_capacity = 100  # in TEU
+        feeder.save()
+        self.manager.reload_properties(
+            transportation_buffer=0,
+            ramp_up_period_end=datetime.date(2022, 8, 8)
+        )
+
+        # run actual function
+        self.manager.choose_departing_vehicle_for_containers()
+
+        containers_reloaded: Iterable[Container] = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == feeder
+        )
+        teu_loaded = 0
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
+            self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
+        self.assertLessEqual(teu_loaded, 10, "Feeder must have loaded much less containers because this is the"
+                                             "ramp-up period!")
 
     def test_behavior_during_ramp_down_period(self):
         ...  # TODO!

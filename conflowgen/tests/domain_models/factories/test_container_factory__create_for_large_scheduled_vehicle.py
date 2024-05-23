@@ -14,7 +14,7 @@ from conflowgen.domain_models.factories.container_factory import ContainerFactor
 from conflowgen.domain_models.factories.fleet_factory import FleetFactory
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.large_vehicle_schedule import Destination
-from conflowgen.domain_models.vehicle import Feeder, LargeScheduledVehicle, Schedule, Truck
+from conflowgen.domain_models.vehicle import Feeder, LargeScheduledVehicle, Schedule, Truck, DeepSeaVessel
 from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_db
 
 
@@ -25,6 +25,7 @@ class TestContainerFactory(unittest.TestCase):
         sqlite_db = setup_sqlite_in_memory_db()
         sqlite_db.create_tables([
             Feeder,
+            DeepSeaVessel,
             LargeScheduledVehicle,
             Schedule,
             Container,
@@ -81,3 +82,69 @@ class TestContainerFactory(unittest.TestCase):
             feeder_1.large_scheduled_vehicle
         )
         self.assertIsNone(containers[0].delivered_by_truck)
+
+    def test_create_containers_for_single_deep_sea_vessel_during_ramp_up_period(self):
+        schedule = Schedule.create(
+            service_name="SunExpress",
+            vehicle_type=ModeOfTransport.deep_sea_vessel,
+            vehicle_arrives_at=datetime.date(2021, 7, 9),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=24000,
+            average_moved_capacity=3000
+        )
+        vessels = FleetFactory().create_deep_sea_vessel_fleet(
+            schedule=schedule,
+            first_at=datetime.date(2021, 7, 8),
+            latest_at=datetime.date(2021, 7, 10)
+        )
+        self.assertEqual(
+            len(vessels),
+            1
+        )
+        vessel = vessels[0]
+
+        self.container_factory.set_ramp_up_and_down_times(
+            ramp_up_period_end=datetime.datetime(2021, 7, 10),
+            ramp_down_period_start=None
+        )
+
+        # noinspection PyTypeChecker
+        containers = self.container_factory.create_containers_for_large_scheduled_vehicle(vessel)
+
+        container_volume = sum([c.occupied_teu for c in containers])
+
+        self.assertGreater(container_volume, 2900, "A bit less than 3000 is acceptable but common!")
+        self.assertLess(container_volume, 3100, "A bit more than 3000 is acceptable but common!")
+
+    def test_create_containers_for_single_deep_sea_vessel_during_ramp_down_period(self):
+        schedule = Schedule.create(
+            service_name="SunExpress",
+            vehicle_type=ModeOfTransport.deep_sea_vessel,
+            vehicle_arrives_at=datetime.date(2021, 7, 9),
+            vehicle_arrives_at_time=datetime.time(11),
+            average_vehicle_capacity=24000,
+            average_moved_capacity=3000
+        )
+        vessels = FleetFactory().create_deep_sea_vessel_fleet(
+            schedule=schedule,
+            first_at=datetime.date(2021, 7, 8),
+            latest_at=datetime.date(2021, 7, 10)
+        )
+        self.assertEqual(
+            len(vessels),
+            1
+        )
+        vessel = vessels[0]
+
+        self.container_factory.set_ramp_up_and_down_times(
+            ramp_up_period_end=None,
+            ramp_down_period_start=datetime.datetime(2021, 7, 8)
+        )
+
+        # noinspection PyTypeChecker
+        containers = self.container_factory.create_containers_for_large_scheduled_vehicle(vessel)
+
+        container_volume = sum([c.occupied_teu for c in containers])
+
+        self.assertGreater(container_volume, 290, "A bit less than 3000 is acceptable but common!")
+        self.assertLess(container_volume, 310, "A bit more than 3000 is acceptable but common!")

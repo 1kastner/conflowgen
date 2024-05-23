@@ -43,8 +43,8 @@ class LargeScheduledVehicleForOnwardTransportationManager:
     def reload_properties(
             self,
             transportation_buffer: float,
-            ramp_up_period_end: Optional[datetime.datetime] = None,
-            ramp_down_period_start: Optional[datetime.datetime] = None,
+            ramp_up_period_end: Optional[datetime.datetime | datetime.date] = None,
+            ramp_down_period_start: Optional[datetime.datetime | datetime.date] = None,
     ):
         assert -1 < transportation_buffer
         self.schedule_repository.set_transportation_buffer(transportation_buffer)

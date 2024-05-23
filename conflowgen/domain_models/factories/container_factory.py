@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import datetime
 import math
+import typing
 from typing import Dict, MutableSequence, Sequence, Type
 
 from conflowgen.domain_models.container import Container
@@ -35,6 +37,16 @@ class ContainerFactory:
         self.container_weight_distribution:  dict[ContainerLength, dict[int, float]] | None = None
         self.storage_requirement_distribution:  dict[ContainerLength, dict[StorageRequirement, float]] | None = None
         self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
+
+    def set_ramp_up_and_down_times(
+            self,
+            ramp_up_period_end: typing.Optional[datetime.datetime],
+            ramp_down_period_start: typing.Optional[datetime.datetime],
+    ) -> None:
+        self.large_scheduled_vehicle_repository.set_ramp_up_and_down_times(
+            ramp_up_period_end=ramp_up_period_end,
+            ramp_down_period_start=ramp_down_period_start
+        )
 
     def reload_distributions(self):
         """The user might change the distributions at any time, so reload them at a meaningful point of time!"""

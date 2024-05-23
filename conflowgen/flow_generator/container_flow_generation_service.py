@@ -53,17 +53,24 @@ class ContainerFlowGenerationService:
         assert -1 < self.transportation_buffer
 
         self.large_scheduled_vehicle_for_onward_transportation_manager.reload_properties(
-            transportation_buffer=self.transportation_buffer
+            transportation_buffer=self.transportation_buffer,
+            ramp_up_period_end=self.ramp_up_period_end,
+            ramp_down_period_start=self.ramp_down_period_start,
         )
         self.allocate_space_for_containers_delivered_by_truck_service.reload_distribution(
             transportation_buffer=self.transportation_buffer
         )
+
         self.truck_for_import_containers_manager.reload_distributions()
         self.truck_for_export_containers_manager.reload_distributions()
+
         self.large_scheduled_vehicle_creation_service.reload_properties(
             container_flow_start_date=self.container_flow_start_date,
-            container_flow_end_date=self.container_flow_end_date
+            container_flow_end_date=self.container_flow_end_date,
+            ramp_up_period_end=self.ramp_up_period_end,
+            ramp_down_period_start=self.ramp_down_period_start,
         )
+
         self.assign_destination_to_container_service.reload_distributions()
 
     @staticmethod
