@@ -20,6 +20,10 @@ class LargeScheduledVehicleRepository:
 
     ignored_capacity = ContainerLength.get_teu_factor(ContainerLength.other)
 
+    downscale_factor_during_ramp_up_for_outbound_transshipment = 0.1
+
+    downscale_factor_during_ramp_down_for_inbound_all_kinds = 0.1
+
     def __init__(self):
         self.transportation_buffer = None
         self.ramp_up_period_end = None
@@ -96,34 +100,51 @@ class LargeScheduledVehicleRepository:
 
     # noinspection PyTypeChecker
     def get_free_capacity_for_inbound_journey(self, vehicle: Type[AbstractLargeScheduledVehicle]) -> float:
-        """Get the free capacity for the inbound journey on a vehicle that moves according to a schedule in TEU.
+        """
+        Get the free capacity for the inbound journey on a vehicle that moves according to a schedule in TEU.
+        During the ramp-down period (if existent), all inbound traffic is scaled down, no matter what.
         """
         if vehicle in self.free_capacity_for_inbound_journey_buffer:
             return self.free_capacity_for_inbound_journey_buffer[vehicle]
 
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
         total_moved_capacity_for_inbound_transportation_in_teu = large_scheduled_vehicle.moved_capacity
-        free_capacity_in_teu = self._get_free_capacity_in_teu(
+        factored_free_capacity_in_teu, free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_inbound_transportation_in_teu,
             container_counter=self._get_number_containers_for_inbound_journey,
             journey_direction=JourneyDirection.inbound,
             flow_direction=FlowDirection.undefined
         )
-        self.free_capacity_for_inbound_journey_buffer[vehicle] = free_capacity_in_teu
-        return free_capacity_in_teu
+        self.free_capacity_for_inbound_journey_buffer[vehicle] = factored_free_capacity_in_teu
+        return factored_free_capacity_in_teu
 
     def get_free_capacity_for_outbound_journey(
             self, vehicle: Type[AbstractLargeScheduledVehicle],
             flow_direction: FlowDirection
     ) -> float:
-        """Get the free capacity for the outbound journey on a vehicle that moves according to a schedule in TEU.
+        """
+        Get the free capacity for the outbound journey on a vehicle that moves according to a schedule in TEU.
+        During the ramp-up period (if existent), all outbound traffic that constitutes transshipment, is scaled down.
         """
         assert self.transportation_buffer is not None, "First set the value!"
         assert -1 < self.transportation_buffer, "Must be larger than -1"
 
         if vehicle in self.free_capacity_for_outbound_journey_buffer:
+            if flow_direction == FlowDirection.transshipment_flow and self.ramp_up_period_end is not None:
+
+                # noinspection PyUnresolvedReferences
+                arrival_time: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+
+                if arrival_time < self.ramp_up_period_end:
+                    return (  # factored capacity
+                            self.free_capacity_for_outbound_journey_buffer[vehicle]
+                            * self.downscale_factor_during_ramp_up_for_outbound_transshipment
+                    )
+            # capacity without factor
             return self.free_capacity_for_outbound_journey_buffer[vehicle]
+
+        # if not yet buffered:
 
         # noinspection PyTypeChecker
         large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
@@ -136,15 +157,19 @@ class LargeScheduledVehicleRepository:
             maximum_capacity_of_vehicle
         )
 
-        free_capacity_in_teu = self._get_free_capacity_in_teu(
+        factored_free_capacity_in_teu, free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_onward_transportation_in_teu,
             container_counter=self._get_number_containers_for_outbound_journey,
             journey_direction=JourneyDirection.outbound,
             flow_direction=flow_direction
         )
+
+        # always cache the free capacity without a factor, as it only applies in some situations
         self.free_capacity_for_outbound_journey_buffer[vehicle] = free_capacity_in_teu
-        return free_capacity_in_teu
+
+        # always report the factored capacity to the user of this class
+        return factored_free_capacity_in_teu
 
     def _get_free_capacity_in_teu(
             self,
@@ -153,7 +178,7 @@ class LargeScheduledVehicleRepository:
             container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int],
             journey_direction: JourneyDirection,
             flow_direction: FlowDirection
-    ) -> float:
+    ) -> (float, float):
         loaded_20_foot_containers = container_counter(vehicle, ContainerLength.twenty_feet)
         loaded_40_foot_containers = container_counter(vehicle, ContainerLength.forty_feet)
         loaded_45_foot_containers = container_counter(vehicle, ContainerLength.forty_five_feet)
@@ -182,6 +207,8 @@ class LargeScheduledVehicleRepository:
         # noinspection PyUnresolvedReferences
         arrival_time: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
 
+        factored_free_capacity_in_teu = free_capacity_in_teu
+
         if (
                 journey_direction == JourneyDirection.outbound
                 and flow_direction == FlowDirection.transshipment_flow
@@ -190,7 +217,9 @@ class LargeScheduledVehicleRepository:
         ):
             # keep transshipment containers in the yard longer during the ramp-up period to fill the yard faster
             # by offering less transport capacity on the outbound journey of deep sea vessels and feeders
-            free_capacity_in_teu *= 0.1
+            factored_free_capacity_in_teu = (
+                    free_capacity_in_teu * self.downscale_factor_during_ramp_up_for_outbound_transshipment
+            )
 
         elif (
                 journey_direction == JourneyDirection.inbound
@@ -199,9 +228,11 @@ class LargeScheduledVehicleRepository:
         ):
             # decrease number of inbound containers (any direction) during the ramp-down period
             # by offering less transport capacity on the inbound journey (all types of vehicles, excluding trucks)
-            free_capacity_in_teu *= 0.1
+            factored_free_capacity_in_teu = (
+                    free_capacity_in_teu * self.downscale_factor_during_ramp_down_for_inbound_all_kinds
+            )
 
-        return free_capacity_in_teu
+        return factored_free_capacity_in_teu, free_capacity_in_teu
 
     @classmethod
     def _get_number_containers_for_outbound_journey(
