@@ -7,6 +7,7 @@ from conflowgen.application.models.random_seed_store import RandomSeedStore
 from conflowgen.application.repositories.container_flow_generation_properties_repository import \
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.database_connection.create_tables import create_tables
+from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_models.container_dwell_time_distribution import \
     ContainerDwellTimeDistribution
 from conflowgen.domain_models.distribution_models.mode_of_transport_distribution import ModeOfTransportDistribution
@@ -14,6 +15,7 @@ from conflowgen.domain_models.distribution_models.storage_requirement_distributi
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, \
     seed_all_distributions, container_dwell_time_distribution_seeder
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
+from conflowgen.domain_models.vehicle import Feeder, DeepSeaVessel
 from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
@@ -100,8 +102,8 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             service_name="TestDeepSeaVessel",
             vehicle_arrives_at=properties.start_date + datetime.timedelta(days=8),
             vehicle_arrives_at_time=datetime.time(11),
-            average_vehicle_capacity=800,
-            average_moved_capacity=100,
+            average_vehicle_capacity=12000,
+            average_moved_capacity=1000,
             next_destinations=None
         )
         port_call_manager.add_vehicle(
@@ -109,8 +111,59 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             service_name="TestDeepSeaVessel2",
             vehicle_arrives_at=properties.end_date - datetime.timedelta(days=2),
             vehicle_arrives_at_time=datetime.time(11),
-            average_vehicle_capacity=800,
-            average_moved_capacity=100,
+            average_vehicle_capacity=12000,
+            average_moved_capacity=1000,
             next_destinations=None
         )
         self.container_flow_generator_service.generate()
+
+        reference = list(Container.select())
+
+        # Vehicle 1 - inbound during ramp-up untouched
+        feeder = Feeder.select().where(
+            Feeder.large_scheduled_vehicle.name == "TestFeeder"
+        )
+        feeder_instance = list(feeder)[0]
+        number_containers_during_ramp_up = Container.select().where(
+            Container.delivered_by_large_scheduled_vehicle == feeder
+        ).count()
+        self.assertLess(
+            number_containers_during_ramp_up,
+            100
+        )
+        self.assertGreater(
+            number_containers_during_ramp_up,
+            50
+        )
+
+        # Vehicle 2 - no effect
+        deep_sea_vessel_1 = DeepSeaVessel.select().where(
+            DeepSeaVessel.large_scheduled_vehicle.name == "TestDeepSeaVessel"
+        )
+        number_containers_in_normal_phase = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == deep_sea_vessel_1
+        ).count()
+        self.assertLess(
+            number_containers_in_normal_phase,
+            1000
+        )
+        self.assertGreater(
+            number_containers_in_normal_phase,
+            500
+        )
+
+        # Vehicle 3 - inbound volume during ramp-down throttled
+        deep_sea_vessel_2 = DeepSeaVessel.select().where(
+            DeepSeaVessel.large_scheduled_vehicle.name == "TestDeepSeaVessel2"
+        )
+        number_containers_during_ramp_down = Container.select().where(
+            Container.delivered_by_large_scheduled_vehicle == deep_sea_vessel_2
+        ).count()
+        self.assertLess(
+            number_containers_during_ramp_down,
+            1000
+        )
+        self.assertGreater(
+            number_containers_during_ramp_down,
+            500
+        )
