@@ -2,8 +2,8 @@ import datetime
 import unittest
 
 from conflowgen.descriptive_datatypes import VehicleIdentifier
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysis
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysis
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -29,7 +29,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             Destination
         ])
         mode_of_transport_distribution_seeder.seed()
-        self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysis(
+        self.analysis = OutboundToInboundVehicleCapacityUtilizationAnalysis(
             transportation_buffer=0.2
         )
 
@@ -82,7 +82,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         self.assertEqual(len(capacities_with_one_feeder), 1, "There is only one vehicle")
 
         key_of_entry: VehicleIdentifier = list(capacities_with_one_feeder.keys())[0]
-        self.assertEqual(len(key_of_entry), 4, "Key consists of four components")
+        self.assertEqual(len(key_of_entry), 5, "Key consists of five components")
         self.assertEqual(key_of_entry.mode_of_transport, ModeOfTransport.feeder)
         self.assertEqual(key_of_entry.service_name, "TestFeederService")
         self.assertEqual(key_of_entry.vehicle_name, "TestFeeder1")

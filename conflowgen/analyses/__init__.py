@@ -7,12 +7,13 @@ from .container_flow_adjustment_by_vehicle_type_analysis_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport
 from .container_flow_adjustment_by_vehicle_type_analysis_summary_report import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
+from .container_flow_by_vehicle_instance_analysis_report import ContainerFlowByVehicleInstanceAnalysisReport
 from .container_flow_by_vehicle_type_analysis_report import ContainerFlowByVehicleTypeAnalysisReport
 from .container_flow_vehicle_type_adjustment_per_vehicle_analysis_report import \
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
 from .inbound_and_outbound_vehicle_capacity_analysis_report import InboundAndOutboundVehicleCapacityAnalysisReport
-from .inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from .outbound_to_inbound_vehicle_capacity_utilization_analysis_report import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysisReport
 from .modal_split_analysis_report import ModalSplitAnalysisReport
 from .quay_side_throughput_analysis_report import QuaySideThroughputAnalysisReport
 from .truck_gate_throughput_analysis_report import TruckGateThroughputAnalysisReport
@@ -26,6 +27,7 @@ logger = logging.getLogger("conflowgen")
 reports: typing.Iterable[typing.Type[AbstractReport]] = [
     InboundAndOutboundVehicleCapacityAnalysisReport,
     ContainerFlowByVehicleTypeAnalysisReport,
+    ContainerFlowByVehicleInstanceAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisReport,
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport,
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport,
@@ -34,7 +36,7 @@ reports: typing.Iterable[typing.Type[AbstractReport]] = [
     QuaySideThroughputAnalysisReport,
     TruckGateThroughputAnalysisReport,
     YardCapacityAnalysisReport,
-    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+    OutboundToInboundVehicleCapacityUtilizationAnalysisReport
 ]
 
 

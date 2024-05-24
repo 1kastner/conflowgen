@@ -1,7 +1,7 @@
 import datetime
 
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis_report import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -66,7 +66,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(UnitTestCaseWithMat
             start_date=datetime.date(2021, 12, 15),
             end_date=datetime.date(2021, 12, 17)
         )
-        self.report = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
+        self.report = OutboundToInboundVehicleCapacityUtilizationAnalysisReport()
 
     def test_with_no_data(self):
         actual_report = self.report.get_report_as_text()
