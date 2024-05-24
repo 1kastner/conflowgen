@@ -23,7 +23,7 @@ class InboundAndOutboundCapacity(typing.NamedTuple):
     outbound_capacity: float
 
 
-class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
+class OutboundToInboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
     """
     This analysis can be run after the synthetic data has been generated.
     The analysis returns a data structure that can be used for generating reports (e.g., in text or as a figure)
@@ -87,6 +87,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
                 used_capacity_on_outbound_journey += container.occupied_teu
 
             vehicle_id = VehicleIdentifier(
+                id=vehicle.id,
                 mode_of_transport=mode_of_transport,
                 service_name=service_name,
                 vehicle_name=vehicle_name,

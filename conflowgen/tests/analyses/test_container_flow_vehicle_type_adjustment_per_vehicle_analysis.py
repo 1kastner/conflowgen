@@ -91,6 +91,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         self.assertListEqual(list(no_adjustment.values()), [0])
         vehicle_identifier = list(no_adjustment.keys())[0]
         self.assertEqual(vehicle_identifier, VehicleIdentifier(
+            id=outbound_feeder_lsv.id,
             mode_of_transport=ModeOfTransport.feeder,
             vehicle_arrival_time=vessel_arrival,
             service_name="TestFeederService",
@@ -243,6 +244,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         vehicle_identifier = list(no_adjustment.keys())[0]
 
         self.assertEqual(vehicle_identifier, VehicleIdentifier(
+            id=feeder_lsv.id,
             mode_of_transport=ModeOfTransport.feeder,
             vehicle_arrival_time=feeder_arrival,
             service_name="TestFeederService",
