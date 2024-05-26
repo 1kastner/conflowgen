@@ -120,6 +120,7 @@ container_length_distribution_manager.set_container_length_distribution({
     conflowgen.ContainerLength.other: 0
 })
 
+
 # Add vehicles that frequently visit the terminal.
 port_call_manager = conflowgen.PortCallManager()
 
@@ -165,9 +166,8 @@ for i, row in df_feeders.iterrows():
         service_name=feeder_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
-        average_vehicle_capacity=capacity,
-        average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        vehicle_capacity=capacity,
+        inbound_container_volume=moved_capacity,
         next_destinations=next_ports
     )
 logger.info("Feeder vessels are imported")
@@ -215,9 +215,8 @@ for i, row in df_deep_sea_vessels.iterrows():
         service_name=deep_sea_vessel_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
-        average_vehicle_capacity=capacity,
-        average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        vehicle_capacity=capacity,
+        inbound_container_volume=moved_capacity,
         next_destinations=next_ports
     )
 logger.info("Deep sea vessels are imported")
@@ -249,9 +248,8 @@ for i, row in df_barges.iterrows():
         service_name=barge_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
-        average_vehicle_capacity=capacity,
-        average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1  # single arrival, no frequent schedule
+        vehicle_capacity=capacity,
+        inbound_container_volume=moved_capacity,
     )
 logger.info("Barges are imported")
 
@@ -276,14 +274,13 @@ for i, row in df_trains.iterrows():
     vehicle_arrives_at_time_as_delta = earliest_time_as_delta + datetime.timedelta(hours=0.5 * drawn_slot)
     vehicle_arrives_at_time = (datetime.datetime.min + vehicle_arrives_at_time_as_delta).time()
     logger.info(f"Add train '{train_vehicle_name}' to database")
-    port_call_manager.add_vehicle(
+    port_call_manager.add_service_that_calls_terminal(
         vehicle_type=conflowgen.ModeOfTransport.train,
         service_name=train_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vehicle_arrives_at_time,
         average_vehicle_capacity=capacity,
-        average_moved_capacity=capacity,  # discharge everything
-        vehicle_arrives_every_k_days=7  # weekly arrival
+        average_inbound_container_volume=capacity,
     )
 
 logger.info("All trains are imported")

@@ -168,9 +168,8 @@ for i, row in df_feeders.iterrows():
         service_name=feeder_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
-        average_vehicle_capacity=capacity,
-        average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        vehicle_capacity=capacity,
+        inbound_container_volume=moved_capacity,
         next_destinations=next_ports
     )
 logger.info("Feeder vessels are imported")

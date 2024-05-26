@@ -66,8 +66,8 @@ port_call_manager.add_vehicle(
     service_name=feeder_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 9),
     vehicle_arrives_at_time=datetime.time(11),
-    average_vehicle_capacity=800,
-    average_moved_capacity=100,
+    vehicle_capacity=800,
+    inbound_container_volume=100,
     next_destinations=[
         ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
         ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
@@ -81,8 +81,8 @@ port_call_manager.add_vehicle(
     service_name=train_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 12),
     vehicle_arrives_at_time=datetime.time(17),
-    average_vehicle_capacity=90,
-    average_moved_capacity=90,
+    vehicle_capacity=90,
+    inbound_container_volume=90,
     next_destinations=None  # Here we don't have containers that need to be grouped by destination
 )
 
@@ -93,8 +93,8 @@ port_call_manager.add_vehicle(
     service_name=deep_sea_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 10),
     vehicle_arrives_at_time=datetime.time(19),
-    average_vehicle_capacity=16000,
-    average_moved_capacity=150,  # for faster demo
+    vehicle_capacity=16000,
+    inbound_container_volume=150,  # for faster demo
     next_destinations=[
         ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
         ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
