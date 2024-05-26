@@ -14,6 +14,7 @@ The intention of this demo is further explained in the logs it generated.
 import datetime
 import os
 import sys
+import subprocess
 
 try:
     import conflowgen
@@ -24,6 +25,7 @@ try:
 except ImportError as exc:
     print("Please first install ConFlowGen, e.g. with conda or pip")
     raise exc
+
 
 this_dir = os.path.dirname(__file__)
 
@@ -137,4 +139,9 @@ export_container_flow_manager.export(
 # Gracefully close everything
 database_chooser.close_current_connection()
 logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was used.")
+try:
+    last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())
+    logger.info("Used git commit: " + last_git_commit[2:-1])
+except:
+    logger.debug("The last git commit of this repository could not be retrieved, skip this.")
 logger.info("Demo 'demo_poc' finished successfully.")
