@@ -13,7 +13,6 @@ The intention of this demo is further explained in the logs it generated.
 
 import datetime
 import os.path
-import random
 import sys
 import subprocess
 
