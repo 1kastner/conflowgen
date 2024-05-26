@@ -63,13 +63,13 @@ port_call_manager = conflowgen.PortCallManager()
 # Add vehicles that frequently visit the terminal.
 feeder_service_name = "LX050"
 logger.info(f"Add feeder service '{feeder_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.feeder,
     service_name=feeder_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 9),
     vehicle_arrives_at_time=datetime.time(11),
-    vehicle_capacity=800,
-    inbound_container_volume=100,
+    average_vehicle_capacity=800,
+    average_inbound_container_volume=100,
     next_destinations=[
         ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
         ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
@@ -78,25 +78,25 @@ port_call_manager.add_vehicle(
 
 train_service_name = "JR03A"
 logger.info(f"Add train service '{train_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.train,
     service_name=train_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 12),
     vehicle_arrives_at_time=datetime.time(17),
-    vehicle_capacity=90,
-    inbound_container_volume=90,
+    average_vehicle_capacity=90,
+    average_inbound_container_volume=90,
     next_destinations=None  # Here we don't have containers that need to be grouped by destination
 )
 
 deep_sea_service_name = "LX050"
 logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
     service_name=deep_sea_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 10),
     vehicle_arrives_at_time=datetime.time(19),
-    vehicle_capacity=16000,
-    inbound_container_volume=150,  # for faster demo
+    average_vehicle_capacity=16000,
+    average_inbound_container_volume=150,  # for faster demo
     next_destinations=[
         ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
         ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
