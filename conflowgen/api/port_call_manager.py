@@ -2,7 +2,6 @@ from __future__ import annotations
 import datetime
 import typing
 import uuid
-import warnings
 
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.factories.schedule_factory import ScheduleFactory
@@ -115,7 +114,7 @@ class PortCallManager:
             vehicle_capacity: int,
             inbound_container_volume: int,
             next_destinations: typing.Optional[typing.List[typing.Tuple[str, float]]] = None,
-            service_name: typing.Optional[str] = None
+            service_name: typing.Optional[str] = None,
     ) -> None:
         r"""
         Add a service that frequently calls the terminal, both on the seaside and landside.
@@ -129,7 +128,8 @@ class PortCallManager:
                 :class:`ModeOfTransport.barge`, or
                 :class:`ModeOfTransport.train`
             service_name:
-                The name of the service, i.e., the shipping line or rail freight line
+                The name of the service, i.e., the shipping line or rail freight line.
+                Defaults to a randomly generated id.
             vehicle_arrives_at:
                 A date the service would arrive at the terminal. This can, e.g., point at the week day for weekly
                 services. In any case, this is combined with the parameter ``vehicle_arrives_every_k_days`` and only
@@ -162,6 +162,7 @@ class PortCallManager:
             next_destinations:
                 Pairs of destination and frequency of the destination being chosen.
         """
+
         return self.add_service_that_calls_terminal(
             vehicle_type=vehicle_type,
             service_name=service_name if service_name is not None else str(uuid.uuid4()),
