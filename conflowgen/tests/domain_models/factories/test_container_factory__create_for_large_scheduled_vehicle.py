@@ -111,7 +111,7 @@ class TestContainerFactory(unittest.TestCase):
         # noinspection PyTypeChecker
         containers = self.container_factory.create_containers_for_large_scheduled_vehicle(vessel)
 
-        container_volume = sum([c.occupied_teu for c in containers])
+        container_volume = sum(c.occupied_teu for c in containers)
 
         self.assertGreater(container_volume, 2900, "A bit less than 3000 is acceptable but common!")
         self.assertLess(container_volume, 3100, "A bit more than 3000 is acceptable but common!")
@@ -144,7 +144,7 @@ class TestContainerFactory(unittest.TestCase):
         # noinspection PyTypeChecker
         containers = self.container_factory.create_containers_for_large_scheduled_vehicle(vessel)
 
-        container_volume_in_teu = sum([c.occupied_teu for c in containers])
+        container_volume_in_teu = sum(c.occupied_teu for c in containers)
 
         self.assertGreater(container_volume_in_teu, 500, "A bit less than 600 is acceptable but common!")
         self.assertLess(container_volume_in_teu, 700, "A bit more than 600 is acceptable but common!")

@@ -7,8 +7,8 @@ import datetime
 import os.path
 import random
 import sys
-import pandas as pd
 import subprocess
+import pandas as pd
 
 try:
     import conflowgen
@@ -198,8 +198,8 @@ database_chooser.close_current_connection()
 
 logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was used.")
 try:
-    last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())
+    last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())  # pylint: disable=B607
     logger.info("Used git commit: " + last_git_commit[2:-1])
-except:
+except:  # pylint: disable=bare-except
     logger.debug("The last git commit of this repository could not be retrieved, no further version specification.")
 logger.info("Demo 'demo_continental_gateway' finished successfully.")
