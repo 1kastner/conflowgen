@@ -48,7 +48,7 @@ class TestContainerFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=3
+            average_inbound_container_volume=3
         )
         self.feeders = FleetFactory().create_feeder_fleet(
             schedule=schedule,
@@ -90,7 +90,7 @@ class TestContainerFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=24000,
-            average_moved_capacity=3000
+            average_inbound_container_volume=3000
         )
         vessels = FleetFactory().create_deep_sea_vessel_fleet(
             schedule=schedule,
@@ -120,15 +120,15 @@ class TestContainerFactory(unittest.TestCase):
         schedule = Schedule.create(
             service_name="SunExpress",
             vehicle_type=ModeOfTransport.deep_sea_vessel,
-            vehicle_arrives_at=datetime.date(2021, 7, 9),
+            vehicle_arrives_at=datetime.date(2024, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=24000,
-            average_moved_capacity=3000
+            average_inbound_container_volume=3000
         )
         vessels = FleetFactory().create_deep_sea_vessel_fleet(
             schedule=schedule,
-            first_at=datetime.date(2021, 7, 8),
-            latest_at=datetime.date(2021, 7, 10)
+            first_at=datetime.date(2024, 7, 8),
+            latest_at=datetime.date(2024, 7, 10)
         )
         self.assertEqual(
             len(vessels),
@@ -138,13 +138,13 @@ class TestContainerFactory(unittest.TestCase):
 
         self.container_factory.set_ramp_up_and_down_times(
             ramp_up_period_end=None,
-            ramp_down_period_start=datetime.datetime(2021, 7, 8)
+            ramp_down_period_start=datetime.datetime(2024, 7, 8)
         )
 
         # noinspection PyTypeChecker
         containers = self.container_factory.create_containers_for_large_scheduled_vehicle(vessel)
 
-        container_volume = sum([c.occupied_teu for c in containers])
+        container_volume_in_teu = sum([c.occupied_teu for c in containers])
 
-        self.assertGreater(container_volume, 290, "A bit less than 3000 is acceptable but common!")
-        self.assertLess(container_volume, 310, "A bit more than 3000 is acceptable but common!")
+        self.assertGreater(container_volume_in_teu, 500, "A bit less than 600 is acceptable but common!")
+        self.assertLess(container_volume_in_teu, 700, "A bit more than 600 is acceptable but common!")

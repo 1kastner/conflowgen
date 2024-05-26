@@ -53,7 +53,7 @@ class TestContainerFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=1
+            average_inbound_container_volume=1
         )
         feeders = FleetFactory().create_feeder_fleet(
             schedule=schedule,

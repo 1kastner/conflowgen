@@ -19,7 +19,7 @@ class ScheduleFactory:
             vehicle_arrives_at: datetime.date,
             vehicle_arrives_at_time: datetime.time,
             average_vehicle_capacity: int,
-            average_moved_capacity: int,
+            average_inbound_container_volume: int,
             next_destinations: Optional[List[Tuple[str, float]]],
             vehicle_arrives_every_k_days: Optional[int] = None
     ) -> None:
@@ -31,7 +31,7 @@ class ScheduleFactory:
             vehicle_arrives_at: date of day
             vehicle_arrives_at_time: time of the day
             average_vehicle_capacity: in TEU
-            average_moved_capacity: in TEU
+            average_inbound_container_volume: in TEU
             next_destinations: distribution
             vehicle_arrives_every_k_days: Be aware of special meaning of None and -1!
         """
@@ -44,7 +44,7 @@ class ScheduleFactory:
             vehicle_arrives_at=vehicle_arrives_at,
             vehicle_arrives_at_time=vehicle_arrives_at_time,
             average_vehicle_capacity=average_vehicle_capacity,
-            average_moved_capacity=average_moved_capacity
+            average_inbound_container_volume=average_inbound_container_volume
         )
         # if it is None, use the default set in peewee, otherwise overwrite
         if vehicle_arrives_every_k_days is not None:

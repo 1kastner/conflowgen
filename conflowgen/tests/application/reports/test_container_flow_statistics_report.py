@@ -46,12 +46,12 @@ class TestContainerFlowStatisticsReport(unittest.TestCase):
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
@@ -135,7 +135,7 @@ Stddev:  0.00
     def test_empty_ship_using_buffer_as_maximum(self):
         now = datetime.datetime.now()
         feeder = self._create_feeder(scheduled_arrival=now)
-        feeder.large_scheduled_vehicle.moved_capacity = 20
+        feeder.large_scheduled_vehicle.inbound_container_volume = 20
         feeder.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
         self._create_container_delivered_by_truck(truck)
@@ -160,7 +160,7 @@ Stddev:  0.00
     def test_inbound_loaded_ship_using_capacity_as_maximum(self):
         now = datetime.datetime.now()
         feeder = self._create_feeder(scheduled_arrival=now)
-        feeder.large_scheduled_vehicle.moved_capacity = 20
+        feeder.large_scheduled_vehicle.inbound_container_volume = 20
         feeder.large_scheduled_vehicle.save()
         self._create_container_delivered_by_large_scheduled_vehicle(feeder)
         self.report.generate()
@@ -184,7 +184,7 @@ Stddev:  0.00
     def test_outbound_loaded_ship_using_buffer_as_maximum(self):
         now = datetime.datetime.now()
         feeder = self._create_feeder(scheduled_arrival=now)
-        feeder.large_scheduled_vehicle.moved_capacity = 20
+        feeder.large_scheduled_vehicle.inbound_container_volume = 20
         feeder.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
         container = self._create_container_delivered_by_truck(truck)
@@ -214,7 +214,7 @@ Stddev:  0.00
         now = datetime.datetime.now()
         feeder = self._create_feeder(scheduled_arrival=now)
         feeder.large_scheduled_vehicle.capacity_in_teu = 20
-        feeder.large_scheduled_vehicle.moved_capacity = 20
+        feeder.large_scheduled_vehicle.inbound_container_volume = 20
         feeder.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
         container = self._create_container_delivered_by_truck(truck)
@@ -244,11 +244,11 @@ Stddev:  0.00
         now = datetime.datetime.now()
         feeder_1 = self._create_feeder(scheduled_arrival=now, service_name_suffix="1")
         feeder_1.large_scheduled_vehicle.capacity_in_teu = 20
-        feeder_1.large_scheduled_vehicle.moved_capacity = 20
+        feeder_1.large_scheduled_vehicle.inbound_container_volume = 20
         feeder_1.large_scheduled_vehicle.save()
         feeder_2 = self._create_feeder(scheduled_arrival=now, service_name_suffix="2")
         feeder_2.large_scheduled_vehicle.capacity_in_teu = 20
-        feeder_2.large_scheduled_vehicle.moved_capacity = 20
+        feeder_2.large_scheduled_vehicle.inbound_container_volume = 20
         feeder_2.large_scheduled_vehicle.save()
 
         self._create_container_delivered_by_large_scheduled_vehicle(feeder_1)
@@ -276,11 +276,11 @@ Stddev:  0.00
         now = datetime.datetime.now()
         feeder_1 = self._create_feeder(scheduled_arrival=now, service_name_suffix="1")
         feeder_1.large_scheduled_vehicle.capacity_in_teu = 20
-        feeder_1.large_scheduled_vehicle.moved_capacity = 20
+        feeder_1.large_scheduled_vehicle.inbound_container_volume = 20
         feeder_1.large_scheduled_vehicle.save()
         feeder_2 = self._create_feeder(scheduled_arrival=now, service_name_suffix="2")
         feeder_2.large_scheduled_vehicle.capacity_in_teu = 20
-        feeder_2.large_scheduled_vehicle.moved_capacity = 20
+        feeder_2.large_scheduled_vehicle.inbound_container_volume = 20
         feeder_2.large_scheduled_vehicle.save()
         truck = self._create_truck(arrival=now)
 

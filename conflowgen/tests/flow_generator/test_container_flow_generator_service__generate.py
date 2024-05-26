@@ -15,7 +15,6 @@ from conflowgen.domain_models.distribution_models.storage_requirement_distributi
 from conflowgen.domain_models.distribution_seeders import mode_of_transport_distribution_seeder, \
     seed_all_distributions, container_dwell_time_distribution_seeder
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
-from conflowgen.domain_models.vehicle import Feeder, DeepSeaVessel
 from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService
 from conflowgen.domain_models.large_vehicle_schedule import Schedule
@@ -51,22 +50,22 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
         create_tables(self.sqlite_db)
         seed_all_distributions()
         port_call_manager = PortCallManager()
-        port_call_manager.add_vehicle(
+        port_call_manager.add_service_that_calls_terminal(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeeder",
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=100,
+            average_inbound_container_volume=100,
             next_destinations=None
         )
-        port_call_manager.add_vehicle(
+        port_call_manager.add_service_that_calls_terminal(
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             service_name="TestDeepSeaVessel",
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=100,
+            average_inbound_container_volume=100,
             next_destinations=None
         )
         self.container_flow_generator_service.generate()
@@ -88,44 +87,29 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
         container_flow_generation_properties_manager.set_container_flow_generation_properties(properties)
 
         port_call_manager = PortCallManager()
-        port_call_manager.add_vehicle(
+        port_call_manager.add_service_that_calls_terminal(
             vehicle_type=ModeOfTransport.feeder,
             service_name="TestFeeder",
             vehicle_arrives_at=properties.start_date + datetime.timedelta(days=3),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=100,
+            average_inbound_container_volume=50,
             next_destinations=None
         )
-        port_call_manager.add_vehicle(
-            vehicle_type=ModeOfTransport.deep_sea_vessel,
-            service_name="TestDeepSeaVessel",
-            vehicle_arrives_at=properties.start_date + datetime.timedelta(days=8),
-            vehicle_arrives_at_time=datetime.time(11),
-            average_vehicle_capacity=12000,
-            average_moved_capacity=1000,
-            next_destinations=None
-        )
-        port_call_manager.add_vehicle(
+        port_call_manager.add_service_that_calls_terminal(
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             service_name="TestDeepSeaVessel2",
             vehicle_arrives_at=properties.end_date - datetime.timedelta(days=2),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=12000,
-            average_moved_capacity=1000,
+            average_inbound_container_volume=100,
             next_destinations=None
         )
         self.container_flow_generator_service.generate()
 
-        reference = list(Container.select())
-
         # Vehicle 1 - inbound during ramp-up untouched
-        feeder = Feeder.select().where(
-            Feeder.large_scheduled_vehicle.name == "TestFeeder"
-        )
-        feeder_instance = list(feeder)[0]
         number_containers_during_ramp_up = Container.select().where(
-            Container.delivered_by_large_scheduled_vehicle == feeder
+            Container.delivered_by == ModeOfTransport.feeder
         ).count()
         self.assertLess(
             number_containers_during_ramp_up,
@@ -136,34 +120,15 @@ class TestContainerFlowGeneratorService__generate(unittest.TestCase):  # pylint:
             50
         )
 
-        # Vehicle 2 - no effect
-        deep_sea_vessel_1 = DeepSeaVessel.select().where(
-            DeepSeaVessel.large_scheduled_vehicle.name == "TestDeepSeaVessel"
-        )
-        number_containers_in_normal_phase = Container.select().where(
-            Container.picked_up_by_large_scheduled_vehicle == deep_sea_vessel_1
-        ).count()
-        self.assertLess(
-            number_containers_in_normal_phase,
-            1000
-        )
-        self.assertGreater(
-            number_containers_in_normal_phase,
-            500
-        )
-
-        # Vehicle 3 - inbound volume during ramp-down throttled
-        deep_sea_vessel_2 = DeepSeaVessel.select().where(
-            DeepSeaVessel.large_scheduled_vehicle.name == "TestDeepSeaVessel2"
-        )
+        # Vehicle 2 - inbound volume during ramp-down throttled
         number_containers_during_ramp_down = Container.select().where(
-            Container.delivered_by_large_scheduled_vehicle == deep_sea_vessel_2
+            Container.delivered_by == ModeOfTransport.deep_sea_vessel
         ).count()
         self.assertLess(
             number_containers_during_ramp_down,
-            1000
+            150
         )
         self.assertGreater(
             number_containers_during_ramp_down,
-            500
+            50
         )

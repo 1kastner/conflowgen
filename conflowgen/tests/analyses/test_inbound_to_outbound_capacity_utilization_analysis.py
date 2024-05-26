@@ -53,14 +53,14 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=250,
+            average_inbound_container_volume=250,
             vehicle_arrives_every_k_days=-1
         )
         now = datetime.datetime.now()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=now,
             schedule=schedule
         )

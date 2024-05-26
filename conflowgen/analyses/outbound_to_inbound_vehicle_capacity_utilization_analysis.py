@@ -66,7 +66,7 @@ class OutboundToInboundVehicleCapacityUtilizationAnalysis(AbstractAnalysis):
             # vehicle properties
             vehicle_name = vehicle.vehicle_name
             vehicle_arrival_time = vehicle.get_arrival_time()
-            used_capacity_on_inbound_journey = vehicle.moved_capacity
+            used_capacity_on_inbound_journey = vehicle.inbound_container_volume
 
             if start_date and vehicle_arrival_time < start_date:
                 continue

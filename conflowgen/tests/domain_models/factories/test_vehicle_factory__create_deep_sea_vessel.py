@@ -25,11 +25,11 @@ class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):  # pylint: 
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         self.vehicle_factory.create_deep_sea_vessel(
             capacity_in_teu=800,
-            moved_capacity=50,
+            inbound_container_volume=50,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -40,26 +40,26 @@ class TestVehicleFactory__create_deep_sea_vessel(unittest.TestCase):  # pylint: 
             vehicle_type=ModeOfTransport.deep_sea_vessel,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_deep_sea_vessel(
                 capacity_in_teu=-1,
-                moved_capacity=1,
+                inbound_container_volume=1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_deep_sea_vessel(
                 capacity_in_teu=1,
-                moved_capacity=-1,
+                inbound_container_volume=-1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_deep_sea_vessel(
                 capacity_in_teu=50,
-                moved_capacity=100,
+                inbound_container_volume=100,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )

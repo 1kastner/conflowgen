@@ -109,7 +109,7 @@ class InboundAndOutboundVehicleCapacityAnalysis(AbstractAnalysis):
         large_scheduled_vehicle: LargeScheduledVehicle
         for large_scheduled_vehicle in LargeScheduledVehicle.select():
             maximum_capacity_of_vehicle = min(
-                int(large_scheduled_vehicle.moved_capacity * (1 + self.transportation_buffer)),
+                int(large_scheduled_vehicle.inbound_container_volume * (1 + self.transportation_buffer)),
                 large_scheduled_vehicle.capacity_in_teu
             )
             vehicle_type: ModeOfTransport = large_scheduled_vehicle.schedule.vehicle_type

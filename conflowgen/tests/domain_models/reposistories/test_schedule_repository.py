@@ -50,13 +50,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity,
+            inbound_container_volume=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -83,13 +83,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity,
+            inbound_container_volume=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -115,13 +115,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=4,
-            average_moved_capacity=2,
+            average_inbound_container_volume=2,
         )
         train_moves_this_capacity = 7
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=8,
-            moved_capacity=train_moves_this_capacity,
+            inbound_container_volume=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -146,13 +146,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
         )
         train_moves_this_capacity = 7
         LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity,
+            inbound_container_volume=train_moves_this_capacity,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -174,13 +174,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=90,
+            average_inbound_container_volume=90,
         )
         train_moves_this_capacity_in_teu = 2
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity_in_teu,
+            inbound_container_volume=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -216,13 +216,13 @@ class TestScheduleRepository(unittest.TestCase):
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=90,
+            average_inbound_container_volume=90,
         )
         train_moves_this_capacity_in_teu = 3
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity_in_teu,
+            inbound_container_volume=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -250,20 +250,20 @@ class TestScheduleRepository(unittest.TestCase):
 
         self.assertEqual(len(vehicles), 1)
 
-    def test_use_lsv_repository(self):
+    def test_use_vehicle_capacity_manager(self):
         schedule = Schedule.create(
             vehicle_type=ModeOfTransport.train,
             service_name="TestService",
             vehicle_arrives_at=datetime.date(year=2021, month=8, day=7),
             vehicle_arrives_at_time=datetime.time(hour=13, minute=15),
             average_vehicle_capacity=90,
-            average_moved_capacity=90,
+            average_inbound_container_volume=90,
         )
         train_moves_this_capacity_in_teu = 3
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=90,
-            moved_capacity=train_moves_this_capacity_in_teu,
+            inbound_container_volume=train_moves_this_capacity_in_teu,
             scheduled_arrival=datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15),
             schedule=schedule
         )
@@ -283,7 +283,7 @@ class TestScheduleRepository(unittest.TestCase):
         )
 
         with unittest.mock.patch.object(
-                self.schedule_repository.large_scheduled_vehicle_repository,
+                self.schedule_repository.vehicle_capacity_manager,
                 'get_free_capacity_for_outbound_journey',
                 return_value=1) as mock_method:
             self.schedule_repository.get_departing_vehicles(
@@ -297,7 +297,7 @@ class TestScheduleRepository(unittest.TestCase):
 
     def test_set_ramp_up_and_down_period(self):
         with unittest.mock.patch.object(
-            self.schedule_repository.large_scheduled_vehicle_repository,
+            self.schedule_repository.vehicle_capacity_manager,
                 'set_ramp_up_and_down_times',
                 return_value=None) as mock_method:
             self.schedule_repository.set_ramp_up_and_down_times(

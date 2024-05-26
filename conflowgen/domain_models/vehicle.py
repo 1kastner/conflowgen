@@ -63,10 +63,9 @@ class LargeScheduledVehicle(BaseModel):
         help_text="This is the vehicle capacity. It can be used, e.g., to determine how many cranes can serve it in "
                   "the subsequent model that reads in this data."
     )
-    moved_capacity = IntegerField(
+    inbound_container_volume = IntegerField(
         null=False,
-        help_text="This is the actually moved container volume in TEU for a single terminal visit on the inbound "
-                  "journey."
+        help_text="This is the actually moved container volume in TEU for a single terminal visit on the inbound journey."
     )
     scheduled_arrival = DateTimeField(
         null=False,

@@ -78,7 +78,7 @@ class VehicleFactory:
     def _create_large_vehicle(
             self,
             capacity_in_teu: int,
-            moved_capacity: int,
+            inbound_container_volume: int,
             scheduled_arrival: datetime.datetime,
             realized_arrival: datetime.datetime,
             schedule: Schedule,
@@ -91,13 +91,13 @@ class VehicleFactory:
         if capacity_in_teu < 0:
             raise UnrealisticValuesException(f"Vehicle capacity must be positive but it was {capacity_in_teu}")
 
-        if moved_capacity < 0:
-            raise UnrealisticValuesException(f"Vehicle must move positive amount but it was {moved_capacity}")
+        if inbound_container_volume < 0:
+            raise UnrealisticValuesException(f"Vehicle must move positive amount but it was {inbound_container_volume}")
 
-        if moved_capacity > capacity_in_teu:
+        if inbound_container_volume > capacity_in_teu:
             raise UnrealisticValuesException(
                 f"Vehicle can't move more than its capacity but for the vehicle with an overall capacity of "
-                f"{capacity_in_teu} the moved capacity was set to {moved_capacity}"
+                f"{capacity_in_teu} the moved capacity was set to {inbound_container_volume}"
             )
 
         if vehicle_name is None:
@@ -106,7 +106,7 @@ class VehicleFactory:
         lsv = LargeScheduledVehicle.create(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
-            moved_capacity=moved_capacity,
+            inbound_container_volume=inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             realized_arrival=realized_arrival,
             schedule=schedule
@@ -116,7 +116,7 @@ class VehicleFactory:
     def create_feeder(
             self,
             capacity_in_teu: int,
-            moved_capacity: int,
+            inbound_container_volume: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Optional[str] = None
@@ -126,7 +126,7 @@ class VehicleFactory:
         lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
-            moved_capacity=moved_capacity,
+            inbound_container_volume=inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             realized_arrival=scheduled_arrival,
             schedule=schedule
@@ -139,7 +139,7 @@ class VehicleFactory:
     def create_deep_sea_vessel(
             self,
             capacity_in_teu: int,
-            moved_capacity: int,
+            inbound_container_volume: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Optional[str] = None
@@ -149,7 +149,7 @@ class VehicleFactory:
         lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
-            moved_capacity=moved_capacity,
+            inbound_container_volume=inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             realized_arrival=scheduled_arrival,
             schedule=schedule
@@ -162,7 +162,7 @@ class VehicleFactory:
     def create_train(
             self,
             capacity_in_teu: int,
-            moved_capacity: int,
+            inbound_container_volume: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Optional[str] = None
@@ -172,7 +172,7 @@ class VehicleFactory:
         lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
-            moved_capacity=moved_capacity,
+            inbound_container_volume=inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             realized_arrival=scheduled_arrival,
             schedule=schedule
@@ -185,7 +185,7 @@ class VehicleFactory:
     def create_barge(
             self,
             capacity_in_teu: int,
-            moved_capacity: int,
+            inbound_container_volume: int,
             scheduled_arrival: datetime.datetime,
             schedule: Schedule,
             vehicle_name: Optional[str] = None
@@ -195,7 +195,7 @@ class VehicleFactory:
         lsv = self._create_large_vehicle(
             vehicle_name=vehicle_name,
             capacity_in_teu=capacity_in_teu,
-            moved_capacity=moved_capacity,
+            inbound_container_volume=inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             realized_arrival=scheduled_arrival,
             schedule=schedule
