@@ -91,7 +91,6 @@ class TestVehicleCapacityManager(unittest.TestCase):
         )
         self.assertEqual(free_capacity_on_feeder, 600)
 
-
     @parameterized.parameterized.expand([
         [FlowDirection.import_flow, 30, 600],
         [FlowDirection.export_flow, 30, 600],

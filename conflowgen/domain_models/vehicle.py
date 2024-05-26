@@ -65,7 +65,8 @@ class LargeScheduledVehicle(BaseModel):
     )
     inbound_container_volume = IntegerField(
         null=False,
-        help_text="This is the actually moved container volume in TEU for a single terminal visit on the inbound journey."
+        help_text="This is the actually moved container volume in TEU for a single terminal visit on the inbound "
+                  "journey."
     )
     scheduled_arrival = DateTimeField(
         null=False,

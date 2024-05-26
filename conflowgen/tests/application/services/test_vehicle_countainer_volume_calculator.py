@@ -85,7 +85,6 @@ class TestVehicleContainerVolumeCalculator(unittest.TestCase):
         scaled_moved_container_volume, unscaled_moved_container_volume = deep_sea_vessel_calc
         self.assertEqual(scaled_moved_container_volume, 3000)
 
-
     @parameterized.parameterized.expand([
         [FlowDirection.import_flow, 600, 3000],  # normal values
         [FlowDirection.export_flow, 600, 3000],  # normal values
@@ -137,7 +136,6 @@ class TestVehicleContainerVolumeCalculator(unittest.TestCase):
         )
         scaled_moved_container_volume, unscaled_moved_container_volume = deep_sea_volume_calc
         self.assertEqual(scaled_moved_container_volume, deep_sea_volume)
-
 
     def test_get_transported_container_volume_on_inbound_journey_and_no_ramp_down_period(self):
         """

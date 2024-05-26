@@ -121,13 +121,15 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
 
         schedule: Schedule
         for schedule in Schedule.select():
-            assert (
-                schedule.average_inbound_container_volume <= schedule.average_vehicle_capacity,
-                "A vehicle cannot move a larger amount of containers (in TEU) than its capacity, "
-                f"the input data is malformed. Schedule '{schedule.service_name}' of vehicle type "
-                f"{schedule.vehicle_type} has an average moved capacity of {schedule.average_inbound_container_volume} "
-                f"but an averaged vehicle capacity of {schedule.average_vehicle_capacity}."
-            )
+            assert \
+                schedule.average_inbound_container_volume <= schedule.average_vehicle_capacity, \
+                (
+                    "A vehicle cannot move a larger amount of containers (in TEU) than its capacity, "
+                    f"the input data is malformed. Schedule '{schedule.service_name}' of vehicle type "
+                    f"{schedule.vehicle_type} has an average moved capacity of "
+                    f"{schedule.average_inbound_container_volume} but an averaged vehicle capacity of "
+                    f"{schedule.average_vehicle_capacity}."
+                )
 
             arrivals = create_arrivals_within_time_range(
                 start_date,

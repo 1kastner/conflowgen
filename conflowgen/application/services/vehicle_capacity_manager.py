@@ -195,7 +195,6 @@ class VehicleCapacityManager:
         ).count()
         return number_loaded_containers
 
-
     @classmethod
     def _get_number_containers_for_inbound_journey(
             cls,

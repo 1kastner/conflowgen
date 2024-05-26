@@ -69,7 +69,8 @@ class PortCallManager:
                 .. math::
 
                     min(
-                        \text{average_inbound_container_volume} \cdot \text{transportation_buffer},\text{average_vehicle_capacity}
+                        \text{average_inbound_container_volume} \cdot \text{transportation_buffer},
+                        \text{average_vehicle_capacity}
                     )
 
                 If you have calibrated the aforementioned distribution accordingly, the actual number of containers on
@@ -152,7 +153,8 @@ class PortCallManager:
                 .. math::
 
                     min(
-                        \text{average_inbound_container_volume} \cdot \text{transportation_buffer},\text{average_vehicle_capacity}
+                        \text{average_inbound_container_volume} \cdot \text{transportation_buffer},
+                        \text{average_vehicle_capacity}
                     )
 
                 If you have calibrated the aforementioned distribution accordingly, the actual number of containers on
