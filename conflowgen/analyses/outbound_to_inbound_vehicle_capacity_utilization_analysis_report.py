@@ -25,7 +25,7 @@ class OutboundToInboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
     and creates a comprehensible representation for the user, either as text or as a graph.
     The visual and table are expected to approximately look like in the
     `example InboundToOutboundVehicleCapacityUtilizationAnalysisReport \
-    <notebooks/analyses.ipynb#Inbound-To-Outbound-Vehicle-Capacity-Utilization-Analysis-Report>`_.
+    <notebooks/analyses.ipynb#Outbound-To-Inbound-Vehicle-Capacity-Utilization-Analysis-Report>`_.
     """
 
     report_description = """
