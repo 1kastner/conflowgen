@@ -3,6 +3,7 @@ import typing
 from typing import List, Type
 import logging
 
+from conflowgen.application.services.vehicle_capacity_manager import VehicleCapacityManager
 from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -16,16 +17,17 @@ class ScheduleRepository:
     def __init__(self):
         self.logger = logging.getLogger("conflowgen")
         self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
+        self.vehicle_capacity_manager = VehicleCapacityManager()
 
     def set_transportation_buffer(self, transportation_buffer: float):
-        self.large_scheduled_vehicle_repository.set_transportation_buffer(transportation_buffer)
+        self.vehicle_capacity_manager.set_transportation_buffer(transportation_buffer)
 
     def set_ramp_up_and_down_times(
             self,
             ramp_up_period_end: typing.Optional[datetime.datetime] = None,
             ramp_down_period_start: typing.Optional[datetime.datetime] = None
     ):
-        self.large_scheduled_vehicle_repository.set_ramp_up_and_down_times(
+        self.vehicle_capacity_manager.set_ramp_up_and_down_times(
             ramp_up_period_end=ramp_up_period_end,
             ramp_down_period_start=ramp_down_period_start
         )
@@ -58,9 +60,11 @@ class ScheduleRepository:
         vehicles_with_sufficient_capacity = []
         vehicle: Type[AbstractLargeScheduledVehicle]
         for vehicle in vehicles:
-            free_capacity_in_teu = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
-                vehicle, flow_direction
-            )
+            free_capacity_in_teu = self.vehicle_capacity_manager.\
+                get_free_capacity_for_outbound_journey(
+                    vehicle, flow_direction
+                )
+
             if free_capacity_in_teu >= required_capacity_in_teu:
                 vehicles_with_sufficient_capacity.append(vehicle)
             assert free_capacity_in_teu >= 0, f"Vehicle {vehicle} is overloaded, checking for " \
@@ -73,11 +77,11 @@ class ScheduleRepository:
     def block_capacity_for_outbound_journey(
             self,
             vehicle: Type[AbstractLargeScheduledVehicle],
-            container: Container
+            container: Container,
     ) -> bool:
         """Updates the cache for faster execution
         """
-        return self.large_scheduled_vehicle_repository.block_capacity_for_outbound_journey(
+        return self.vehicle_capacity_manager.block_capacity_for_outbound_journey(
             vehicle=vehicle,
             container=container
         )

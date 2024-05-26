@@ -31,7 +31,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         self.logger = logging.getLogger("conflowgen")
         self.schedule_repository = ScheduleRepository()
-        self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository
+        self.vehicle_capacity_manager = self.schedule_repository.vehicle_capacity_manager
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
         self.mode_of_transport_distribution = self.mode_of_transport_distribution_repository.get_distribution()
 
@@ -58,7 +58,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
                           f"vehicles that adhere a schedule.")
 
         self.container_dwell_time_distributions = self.container_dwell_time_distribution_repository.get_distributions()
-        self.large_scheduled_vehicle_repository = self.schedule_repository.large_scheduled_vehicle_repository
+        self.vehicle_capacity_manager = self.schedule_repository.vehicle_capacity_manager
         self.mode_of_transport_distribution = self.mode_of_transport_distribution_repository.get_distribution()
 
     def choose_departing_vehicle_for_containers(self) -> None:
@@ -74,7 +74,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
         number_assigned_containers = 0
         number_not_assignable_containers = 0
 
-        self.large_scheduled_vehicle_repository.reset_cache()
+        self.vehicle_capacity_manager.reset_cache()
 
         self.logger.info("Assign containers to departing vehicles that move according to a schedule...")
 
@@ -205,7 +205,7 @@ class LargeScheduledVehicleForOnwardTransportationManager:
 
         for vehicle in available_vehicles:
 
-            free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
+            free_capacity = self.vehicle_capacity_manager.get_free_capacity_for_outbound_journey(
                 vehicle, container.flow_direction
             )
             if free_capacity >= ContainerLength.get_teu_factor(ContainerLength.other):

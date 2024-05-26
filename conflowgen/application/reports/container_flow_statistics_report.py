@@ -4,6 +4,7 @@ import logging
 import statistics
 from typing import List, Type, Dict
 
+from conflowgen.application.services.vehicle_capacity_manager import VehicleCapacityManager
 from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.repositories.large_scheduled_vehicle_repository import LargeScheduledVehicleRepository
@@ -13,6 +14,7 @@ from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle, Larg
 class ContainerFlowStatisticsReport:
     def __init__(self, transportation_buffer=None):
         self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
+        self.vehicle_capacity_manager = VehicleCapacityManager()
         self.logger = logging.getLogger("conflowgen")
         self.free_capacity_inbound_statistics = {}
         self.free_capacity_outbound_statistics = {}
@@ -20,7 +22,7 @@ class ContainerFlowStatisticsReport:
             self.set_transportation_buffer(transportation_buffer=transportation_buffer)
 
     def set_transportation_buffer(self, transportation_buffer: float) -> None:
-        self.large_scheduled_vehicle_repository.set_transportation_buffer(transportation_buffer)
+        self.vehicle_capacity_manager.set_transportation_buffer(transportation_buffer)
         self.logger.info(f"Use transportation buffer of {transportation_buffer} for reporting statistics.")
 
     def generate(self) -> None:
@@ -31,7 +33,7 @@ class ContainerFlowStatisticsReport:
         self._generate_free_capacity_statistics(vehicles_of_types)
 
     def _generate_free_capacity_statistics(self, vehicles_of_types):
-        buffer_factor = 1 + self.large_scheduled_vehicle_repository.transportation_buffer
+        buffer_factor = 1 + self.vehicle_capacity_manager.vehicle_container_volume_calculator.transportation_buffer
         free_capacities_inbound = {}
         free_capacities_outbound = {}
         vehicle_type: ModeOfTransport
@@ -41,10 +43,10 @@ class ContainerFlowStatisticsReport:
                 # noinspection PyTypeChecker
                 large_scheduled_vehicle: LargeScheduledVehicle = vehicle.large_scheduled_vehicle
 
-                free_capacity_inbound = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
+                free_capacity_inbound = self.vehicle_capacity_manager.get_free_capacity_for_inbound_journey(
                     vehicle
                 )
-                free_capacity_outbound = self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(
+                free_capacity_outbound = self.vehicle_capacity_manager.get_free_capacity_for_outbound_journey(
                     vehicle,
                     FlowDirection.undefined
                 )
@@ -57,11 +59,11 @@ class ContainerFlowStatisticsReport:
                     f"of {free_capacity_outbound} for outbound does not match with the capacity of the vehicle of " \
                     f"{large_scheduled_vehicle.capacity_in_teu} TEU"
 
-                assert (free_capacity_inbound <= large_scheduled_vehicle.moved_capacity), \
+                assert (free_capacity_inbound <= large_scheduled_vehicle.inbound_container_volume), \
                     f"A vehicle must not exceed its moved capacity, but for vehicle {vehicle} the free " \
                     f"capacity of {free_capacity_inbound} TEU for inbound does not match with the moved capacity " \
-                    f"of {large_scheduled_vehicle.moved_capacity}"
-                moved_capacity_with_outbound_buffer = (large_scheduled_vehicle.moved_capacity * buffer_factor)
+                    f"of {large_scheduled_vehicle.inbound_container_volume}"
+                moved_capacity_with_outbound_buffer = (large_scheduled_vehicle.inbound_container_volume * buffer_factor)
                 assert (free_capacity_outbound <= moved_capacity_with_outbound_buffer), \
                     f"A vehicle must not exceed its transportation buffer, but for vehicle {vehicle} the free " \
                     f"capacity of {free_capacity_outbound} for outbound does not match with the moved capacity " \

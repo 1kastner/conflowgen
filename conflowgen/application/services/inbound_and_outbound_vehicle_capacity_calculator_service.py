@@ -62,6 +62,7 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
 
         at_least_one_schedule_exists: bool = False
 
+        schedule: Schedule
         for schedule in Schedule.select():
             at_least_one_schedule_exists = True
             arrivals = create_arrivals_within_time_range(
@@ -72,7 +73,7 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
                 schedule.vehicle_arrives_at_time
             )
             moved_inbound_volumes = (len(arrivals)  # number of vehicles that are planned
-                                     * schedule.average_moved_capacity)  # moved TEU capacity of each vehicle
+                                     * schedule.average_inbound_container_volume)  # moved TEU capacity of each vehicle
             inbound_container_volume_in_teu[schedule.vehicle_type] += moved_inbound_volumes
             inbound_container_volume_in_containers[schedule.vehicle_type] += moved_inbound_volumes / \
                 ContainerLengthDistributionRepository.get_teu_factor()
@@ -120,11 +121,13 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
 
         schedule: Schedule
         for schedule in Schedule.select():
-            assert schedule.average_moved_capacity <= schedule.average_vehicle_capacity, \
-                "A vehicle cannot move a larger amount of containers (in TEU) than its capacity, " \
-                f"the input data is malformed. Schedule '{schedule.service_name}' of vehicle type " \
-                f"{schedule.vehicle_type} has an average moved capacity of {schedule.average_moved_capacity} but an " \
-                f"averaged vehicle capacity of {schedule.average_vehicle_capacity}."
+            assert (
+                schedule.average_inbound_container_volume <= schedule.average_vehicle_capacity,
+                "A vehicle cannot move a larger amount of containers (in TEU) than its capacity, "
+                f"the input data is malformed. Schedule '{schedule.service_name}' of vehicle type "
+                f"{schedule.vehicle_type} has an average moved capacity of {schedule.average_inbound_container_volume} "
+                f"but an averaged vehicle capacity of {schedule.average_vehicle_capacity}."
+            )
 
             arrivals = create_arrivals_within_time_range(
                 start_date,
@@ -135,14 +138,14 @@ class InboundAndOutboundVehicleCapacityCalculatorService:
             )
 
             # If all container flows are balanced, only the average moved capacity is required
-            container_volume_moved_by_vessels_in_teu = len(arrivals) * schedule.average_moved_capacity
+            container_volume_moved_by_vessels_in_teu = len(arrivals) * schedule.average_inbound_container_volume
             outbound_used_capacity_in_teu[schedule.vehicle_type] += container_volume_moved_by_vessels_in_teu
             outbound_used_containers[schedule.vehicle_type] += container_volume_moved_by_vessels_in_teu / \
                 ContainerLengthDistributionRepository.get_teu_factor()
 
             # If there are unbalanced container flows, a vehicle departs with more containers than it delivered
             maximum_capacity_of_vehicle_in_teu = min(
-                schedule.average_moved_capacity * (1 + transportation_buffer),
+                schedule.average_inbound_container_volume * (1 + transportation_buffer),
                 schedule.average_vehicle_capacity
             )
             total_maximum_capacity_moved_by_vessel = len(arrivals) * maximum_capacity_of_vehicle_in_teu
