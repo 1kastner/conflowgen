@@ -136,4 +136,5 @@ export_container_flow_manager.export(
 
 # Gracefully close everything
 database_chooser.close_current_connection()
+logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was used.")
 logger.info("Demo 'demo_poc' finished successfully.")
