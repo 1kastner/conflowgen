@@ -61,7 +61,7 @@ class ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(AbstractAnalysis):
             )
 
         if adjusted_vehicle_type is not None and adjusted_vehicle_type != "all":
-            selected_containers = self._restrict_container_picked_up_by_vehicle_type(
+            selected_containers, list_of_vehicle_types = self._restrict_container_picked_up_by_vehicle_type(
                 selected_containers, adjusted_vehicle_type
             )
 
