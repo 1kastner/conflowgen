@@ -18,8 +18,8 @@ class ModalSplitAnalysisReport(AbstractReportWithMatplotlib):
     """
 
     report_description = """
-    Analyze the amount of containers dedicated for or coming from the hinterland compared to the amount of containers
-    that are transshipment.
+    Analyze how many containers are delivered and picked up by which type of vehicle.
+    This counts the containers in the yard, i.e., transshipment containers are *not* counted twice.
     """
 
     def __init__(self):
