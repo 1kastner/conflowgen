@@ -2,8 +2,8 @@ import datetime
 import unittest
 
 from conflowgen.descriptive_datatypes import VehicleIdentifier
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysis
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysis
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -29,7 +29,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             Destination
         ])
         mode_of_transport_distribution_seeder.seed()
-        self.analysis = InboundToOutboundVehicleCapacityUtilizationAnalysis(
+        self.analysis = OutboundToInboundVehicleCapacityUtilizationAnalysis(
             transportation_buffer=0.2
         )
 
@@ -53,14 +53,14 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=250,
+            average_inbound_container_volume=250,
             vehicle_arrives_every_k_days=-1
         )
         now = datetime.datetime.now()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=now,
             schedule=schedule
         )
@@ -82,7 +82,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysis(unittest.TestCase):
         self.assertEqual(len(capacities_with_one_feeder), 1, "There is only one vehicle")
 
         key_of_entry: VehicleIdentifier = list(capacities_with_one_feeder.keys())[0]
-        self.assertEqual(len(key_of_entry), 4, "Key consists of four components")
+        self.assertEqual(len(key_of_entry), 5, "Key consists of five components")
         self.assertEqual(key_of_entry.mode_of_transport, ModeOfTransport.feeder)
         self.assertEqual(key_of_entry.service_name, "TestFeederService")
         self.assertEqual(key_of_entry.vehicle_name, "TestFeeder1")

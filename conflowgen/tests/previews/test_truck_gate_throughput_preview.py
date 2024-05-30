@@ -97,7 +97,7 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         # pylint: disable=protected-access
         total_trucks = self.preview._get_total_trucks()
@@ -118,7 +118,7 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         weekly_trucks = self.preview._get_number_of_trucks_per_week()
         # 60 trucks total (from test_get_total_trucks above)
@@ -137,7 +137,7 @@ class TestTruckGateThroughputPreview(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         weekly_truck_distribution = self.preview.get_weekly_truck_arrivals(True, False)
         self.assertEqual(weekly_truck_distribution, {3: 6, 4: 24})

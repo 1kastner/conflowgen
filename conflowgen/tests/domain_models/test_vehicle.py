@@ -74,12 +74,12 @@ class TestFeeder(unittest.TestCase):
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=now,
             average_vehicle_capacity=1100,
-            average_moved_capacity=200
+            average_inbound_container_volume=200
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=1000,
-            moved_capacity=200,
+            inbound_container_volume=200,
             scheduled_arrival=now,
             schedule=schedule
         )
@@ -95,12 +95,12 @@ class TestFeeder(unittest.TestCase):
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=now,
             average_vehicle_capacity=1100,
-            average_moved_capacity=200
+            average_inbound_container_volume=200
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=1000,
-            moved_capacity=200,
+            inbound_container_volume=200,
             scheduled_arrival=now,
             schedule=schedule
         )
@@ -132,12 +132,12 @@ class TestBarge(unittest.TestCase):
             vehicle_type=ModeOfTransport.barge,
             vehicle_arrives_at=now,
             average_vehicle_capacity=1100,
-            average_moved_capacity=200
+            average_inbound_container_volume=200
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestBarge1",
             capacity_in_teu=1000,
-            moved_capacity=200,
+            inbound_container_volume=200,
             scheduled_arrival=now,
             schedule=schedule
         )
@@ -153,12 +153,12 @@ class TestBarge(unittest.TestCase):
             vehicle_type=ModeOfTransport.barge,
             vehicle_arrives_at=now,
             average_vehicle_capacity=1100,
-            average_moved_capacity=200
+            average_inbound_container_volume=200
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestBarge1",
             capacity_in_teu=1000,
-            moved_capacity=200,
+            inbound_container_volume=200,
             scheduled_arrival=now,
             schedule=schedule
         )
@@ -177,13 +177,13 @@ class TestBarge(unittest.TestCase):
             service_name="MyTestBargeLine",
             vehicle_type=ModeOfTransport.barge,
             vehicle_arrives_at=now,
-            average_vehicle_capacity=1100,
-            average_moved_capacity=200
+            average_vehicle_capacity=110,
+            average_inbound_container_volume=100
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestBarge1",
-            capacity_in_teu=1000,
-            moved_capacity=200,
+            capacity_in_teu=110,
+            inbound_container_volume=100,
             scheduled_arrival=now,
             schedule=schedule
         )

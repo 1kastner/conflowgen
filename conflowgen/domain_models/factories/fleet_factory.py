@@ -77,12 +77,12 @@ class FleetFactory:
         )
 
         for i, arrival in enumerate(arrivals):
-            moved_capacity = schedule.average_moved_capacity  # here we can add randomness later
+            inbound_container_volume = schedule.average_inbound_container_volume  # here we can add randomness later
             vehicle_name = f"{i + 1}"
             feeder = self.vehicle_factory.create_feeder(
                 vehicle_name=vehicle_name,
                 capacity_in_teu=schedule.average_vehicle_capacity,
-                moved_capacity=moved_capacity,
+                inbound_container_volume=inbound_container_volume,
                 scheduled_arrival=arrival,
                 schedule=schedule
             )
@@ -112,13 +112,13 @@ class FleetFactory:
         )
 
         for i, arrival in enumerate(arrivals):
-            moved_capacity = schedule.average_moved_capacity  # here we can add randomness later
+            inbound_container_volume = schedule.average_inbound_container_volume  # here we can add randomness later
             vehicle_name = f"{i + 1}"
 
             deep_sea_vessel = self.vehicle_factory.create_deep_sea_vessel(
                 vehicle_name=vehicle_name,
                 capacity_in_teu=schedule.average_vehicle_capacity,
-                moved_capacity=moved_capacity,
+                inbound_container_volume=inbound_container_volume,
                 scheduled_arrival=arrival,
                 schedule=schedule
             )
@@ -146,13 +146,13 @@ class FleetFactory:
         )
 
         for i, arrival in enumerate(arrivals):
-            moved_capacity = schedule.average_moved_capacity  # here we can add randomness later
+            inbound_container_volume = schedule.average_inbound_container_volume  # here we can add randomness later
             vehicle_name = f"{i + 1}"
 
             train = self.vehicle_factory.create_train(
                 vehicle_name=vehicle_name,
                 capacity_in_teu=schedule.average_vehicle_capacity,
-                moved_capacity=moved_capacity,
+                inbound_container_volume=inbound_container_volume,
                 scheduled_arrival=arrival,
                 schedule=schedule
             )
@@ -180,13 +180,13 @@ class FleetFactory:
         )
 
         for i, arrival in enumerate(arrivals):
-            moved_capacity = schedule.average_moved_capacity  # here we can add randomness later
+            inbound_container_volume = schedule.average_inbound_container_volume  # here we can add randomness later
             vehicle_name = f"{i + 1}"
 
             barge = self.vehicle_factory.create_barge(
                 vehicle_name=vehicle_name,
                 capacity_in_teu=schedule.average_vehicle_capacity,
-                moved_capacity=moved_capacity,
+                inbound_container_volume=inbound_container_volume,
                 scheduled_arrival=arrival,
                 schedule=schedule
             )

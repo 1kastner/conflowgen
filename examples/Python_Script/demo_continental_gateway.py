@@ -7,6 +7,7 @@ import datetime
 import os.path
 import random
 import sys
+import subprocess
 import pandas as pd
 
 try:
@@ -168,9 +169,8 @@ for i, row in df_feeders.iterrows():
         service_name=feeder_vehicle_name,
         vehicle_arrives_at=vessel_arrives_at_as_datetime_type.date(),
         vehicle_arrives_at_time=vessel_arrives_at_as_datetime_type.time(),
-        average_vehicle_capacity=capacity,
-        average_moved_capacity=moved_capacity,
-        vehicle_arrives_every_k_days=-1,  # single arrival, no frequent schedule
+        vehicle_capacity=capacity,
+        inbound_container_volume=moved_capacity,
         next_destinations=next_ports
     )
 logger.info("Feeder vessels are imported")
@@ -196,4 +196,10 @@ logger.info("For a better understanding of the data, it is advised to study the 
 # Gracefully close everything
 database_chooser.close_current_connection()
 
+logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was used.")
+try:
+    last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())  # nosec B607
+    logger.info("Used git commit: " + last_git_commit[2:-1])
+except:  # pylint: disable=bare-except
+    logger.debug("The last git commit of this repository could not be retrieved, no further version specification.")
 logger.info("Demo 'demo_continental_gateway' finished successfully.")

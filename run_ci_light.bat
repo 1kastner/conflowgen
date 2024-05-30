@@ -49,6 +49,7 @@ python -m pip install -e .[dev] || (
 )
 
 REM run tests
+set MPLBACKEND=agg
 python -m pytest --exitfirst --verbose --failed-first --cov="./conflowgen" --cov-report html || (
     ECHO.Tests failed!
     EXIT /B

@@ -11,8 +11,49 @@ class TestPortCallManager(unittest.TestCase):
     def setUp(self) -> None:
         self.port_call_manager = PortCallManager()
 
-    def test_add_vehicle(self):
+    def test_add_service_that_calls_terminal(self):
         feeder_service_name = "LX050"
+        arrives_at = datetime.date(2021, 7, 9)
+        time_of_the_day = datetime.time(hour=11)
+        total_capacity = 100
+        moved_capacity = 3
+        next_destinations = [
+            ("DEBRV", 0.6),  # 60% of the containers (in boxes) go here...
+            ("RULED", 0.4)  # and the other 40% of the containers (in boxes) go here.
+        ]
+        with unittest.mock.patch.object(
+                self.port_call_manager.schedule_factory,
+                'add_schedule',
+                return_value=None) as mock_add_schedule:
+            with unittest.mock.patch.object(
+                    self.port_call_manager,
+                    'has_schedule',
+                    return_value=False) as mock_has_schedule:
+                self.port_call_manager.add_service_that_calls_terminal(
+                    vehicle_type=ModeOfTransport.feeder,
+                    service_name=feeder_service_name,
+                    vehicle_arrives_at=arrives_at,
+                    vehicle_arrives_at_time=time_of_the_day,
+                    average_vehicle_capacity=total_capacity,
+                    average_inbound_container_volume=moved_capacity,
+                    next_destinations=next_destinations
+                )
+        mock_has_schedule.assert_called_once_with(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name=feeder_service_name,
+        )
+        mock_add_schedule.assert_called_once_with(
+            vehicle_type=ModeOfTransport.feeder,
+            service_name=feeder_service_name,
+            vehicle_arrives_at=arrives_at,
+            vehicle_arrives_at_time=time_of_the_day,
+            average_vehicle_capacity=total_capacity,
+            average_inbound_container_volume=moved_capacity,
+            next_destinations=next_destinations,
+            vehicle_arrives_every_k_days=7
+        )
+
+    def test_add_vehicle(self):
         arrives_at = datetime.date(2021, 7, 9)
         time_of_the_day = datetime.time(hour=11)
         total_capacity = 100
@@ -31,26 +72,25 @@ class TestPortCallManager(unittest.TestCase):
                     return_value=False) as mock_has_schedule:
                 self.port_call_manager.add_vehicle(
                     vehicle_type=ModeOfTransport.feeder,
-                    service_name=feeder_service_name,
                     vehicle_arrives_at=arrives_at,
                     vehicle_arrives_at_time=time_of_the_day,
-                    average_vehicle_capacity=total_capacity,
-                    average_moved_capacity=moved_capacity,
+                    vehicle_capacity=total_capacity,
+                    inbound_container_volume=moved_capacity,
                     next_destinations=next_destinations
                 )
         mock_has_schedule.assert_called_once_with(
             vehicle_type=ModeOfTransport.feeder,
-            service_name=feeder_service_name,
+            service_name=unittest.mock.ANY,
         )
         mock_add_schedule.assert_called_once_with(
             vehicle_type=ModeOfTransport.feeder,
-            service_name=feeder_service_name,
+            service_name=unittest.mock.ANY,
             vehicle_arrives_at=arrives_at,
             vehicle_arrives_at_time=time_of_the_day,
             average_vehicle_capacity=total_capacity,
-            average_moved_capacity=moved_capacity,
+            average_inbound_container_volume=moved_capacity,
             next_destinations=next_destinations,
-            vehicle_arrives_every_k_days=None
+            vehicle_arrives_every_k_days=-1
         )
 
     def test_get(self):

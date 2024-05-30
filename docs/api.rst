@@ -143,6 +143,12 @@ Running analyses
 .. autoclass:: conflowgen.ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport
     :members:
 
+.. autoclass:: conflowgen.ContainerFlowByVehicleInstanceAnalysis
+    :members:
+
+.. autoclass:: conflowgen.ContainerFlowByVehicleInstanceAnalysisReport
+    :members:
+
 .. autoclass:: conflowgen.ContainerFlowByVehicleTypeAnalysis
     :members:
 
@@ -155,10 +161,10 @@ Running analyses
 .. autoclass:: conflowgen.InboundAndOutboundVehicleCapacityAnalysisReport
     :members:
 
-.. autoclass:: conflowgen.InboundToOutboundVehicleCapacityUtilizationAnalysis
+.. autoclass:: conflowgen.OutboundToInboundVehicleCapacityUtilizationAnalysis
     :members:
 
-.. autoclass:: conflowgen.InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+.. autoclass:: conflowgen.OutboundToInboundVehicleCapacityUtilizationAnalysisReport
     :members:
 
 .. autoclass:: conflowgen.ModalSplitAnalysis

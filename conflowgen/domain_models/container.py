@@ -14,6 +14,7 @@ from .large_vehicle_schedule import Destination
 from .vehicle import LargeScheduledVehicle
 from .vehicle import Truck
 from .data_types.storage_requirement import StorageRequirement
+from ..descriptive_datatypes import FlowDirection
 from ..domain_models.data_types.mode_of_transport import ModeOfTransport
 
 
@@ -115,6 +116,19 @@ class Container(BaseModel):
     @property
     def occupied_teu(self) -> float:
         return CONTAINER_LENGTH_TO_OCCUPIED_TEU[self.length]
+
+    @property
+    def flow_direction(self) -> FlowDirection:
+        if (self.delivered_by in [ModeOfTransport.truck, ModeOfTransport.train, ModeOfTransport.barge]
+                and self.picked_up_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]):
+            return FlowDirection.export_flow
+        if (self.picked_up_by in [ModeOfTransport.truck, ModeOfTransport.train, ModeOfTransport.barge]
+                and self.delivered_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]):
+            return FlowDirection.import_flow
+        if (self.picked_up_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]
+                and self.delivered_by in [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel]):
+            return FlowDirection.transshipment_flow
+        return FlowDirection.undefined
 
     def get_arrival_time(self) -> datetime.datetime:
 

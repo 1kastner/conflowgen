@@ -28,7 +28,7 @@ class TestScheduleFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
             next_destinations=[
                 ("DEBRV", 0.6),
                 ("CNSHG", 0.4)
@@ -39,7 +39,7 @@ class TestScheduleFactory(unittest.TestCase):
         self.assertEqual(schedule.vehicle_type, ModeOfTransport.feeder)
         self.assertEqual(schedule.vehicle_arrives_at, datetime.date(2021, 7, 9))
         self.assertEqual(schedule.average_vehicle_capacity, 800)
-        self.assertEqual(schedule.average_moved_capacity, 1)
+        self.assertEqual(schedule.average_inbound_container_volume, 1)
         next_destinations = Destination.select().where(Destination.belongs_to_schedule == schedule)
         next_destinations = list(next_destinations)
         self.assertEqual(len(next_destinations), 2)
@@ -54,7 +54,7 @@ class TestScheduleFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
             next_destinations=[
                 ("DEBRV", 0.6),
                 ("CNSHG", 0.4)
@@ -67,7 +67,7 @@ class TestScheduleFactory(unittest.TestCase):
                 vehicle_arrives_at=datetime.date(2021, 7, 10),
                 vehicle_arrives_at_time=datetime.time(11),
                 average_vehicle_capacity=800,
-                average_moved_capacity=1,
+                average_inbound_container_volume=1,
                 next_destinations=[
                     ("DEBRV", 0.6),
                     ("CNSHG", 0.4)
@@ -82,7 +82,7 @@ class TestScheduleFactory(unittest.TestCase):
             vehicle_arrives_at=datetime.date(2021, 7, 9),
             vehicle_arrives_at_time=datetime.time(11),
             average_vehicle_capacity=800,
-            average_moved_capacity=1,
+            average_inbound_container_volume=1,
             next_destinations=[
                 ("DEBRV", 0.6),
                 ("CNSHG", 0.4)
@@ -93,7 +93,7 @@ class TestScheduleFactory(unittest.TestCase):
         self.assertEqual(schedule.vehicle_type, ModeOfTransport.feeder)
         self.assertEqual(schedule.vehicle_arrives_at, datetime.date(2021, 7, 9))
         self.assertEqual(schedule.average_vehicle_capacity, 800)
-        self.assertEqual(schedule.average_moved_capacity, 1)
+        self.assertEqual(schedule.average_inbound_container_volume, 1)
         next_destinations = Destination.select().where(Destination.belongs_to_schedule == schedule)
         next_destinations = list(next_destinations)
         self.assertEqual(len(next_destinations), 2)
