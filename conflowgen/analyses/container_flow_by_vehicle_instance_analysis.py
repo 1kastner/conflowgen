@@ -3,6 +3,8 @@ from __future__ import annotations
 import datetime
 import typing
 
+from peewee import ModelSelect
+
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -17,27 +19,34 @@ class ContainerFlowByVehicleInstanceAnalysis(AbstractAnalysis):
     as it is the case with :class:`.ContainerFlowByVehicleInstanceAnalysisReport`.
     """
 
-    @staticmethod
     @DataSummariesCache.cache_result
     def get_container_flow_by_vehicle(
+            self,
+            vehicle_types: typing.Collection[ModeOfTransport] = (
+                ModeOfTransport.train,
+                ModeOfTransport.feeder,
+                ModeOfTransport.deep_sea_vessel,
+                ModeOfTransport.barge
+            ),
             start_date: typing.Optional[datetime.datetime] = None,
-            end_date: typing.Optional[datetime.datetime] = None
-    ) -> typing.Dict[
+            end_date: typing.Optional[datetime.datetime] = None,
+    ) -> [
         ModeOfTransport, typing.Dict[VehicleIdentifier, typing.Dict[FlowDirection, (int, int)]]
     ]:
         """
-        This shows for each of the vehicles
-
         Args:
+            vehicle_types: A collection of vehicle types, e.g., passed as a :class:`list` or :class:`set`.
+                Only the vehicles that correspond to the provided vehicle type(s) are considered in the analysis.
             start_date:
                 The earliest arriving container that is included. Consider all containers if :obj:`None`.
             end_date:
                 The latest departing container that is included. Consider all containers if :obj:`None`.
 
         Returns:
-            Grouped by vehicle type and vehicle instance, how much import, export, and transshipment is unloaded and
-            loaded.
+            Grouped by vehicle type and vehicle instance, how many import, export, and transshipment containers are
+            unloaded and loaded (measured in TEU).
         """
+
         container_flow_by_vehicle: typing.Dict[
             ModeOfTransport, typing.Dict[VehicleIdentifier,
                                          typing.Dict[FlowDirection, typing.Dict[str, int]]]] = {
@@ -47,8 +56,12 @@ class ContainerFlowByVehicleInstanceAnalysis(AbstractAnalysis):
 
         vehicle_identifier_cache = {}
 
+        selected_containers: ModelSelect = Container.select().where(
+            (Container.delivered_by.in_(vehicle_types) | Container.picked_up_by.in_(vehicle_types))
+        )
+
         container: Container
-        for container in Container.select():
+        for container in selected_containers:
             if start_date and container.get_arrival_time() < start_date:
                 continue
             if end_date and container.get_departure_time() > end_date:
@@ -77,7 +90,8 @@ class ContainerFlowByVehicleInstanceAnalysis(AbstractAnalysis):
                         for flow_direction in FlowDirection
                     }
                 container_flow_by_vehicle[
-                    container.delivered_by][vehicle_id_inbound][container.flow_direction]["inbound"] += 1
+                    container.delivered_by
+                ][vehicle_id_inbound][container.flow_direction]["inbound"] += container.occupied_teu
 
             if container.picked_up_by_large_scheduled_vehicle is not None:  # if not transported by truck
 
@@ -103,5 +117,9 @@ class ContainerFlowByVehicleInstanceAnalysis(AbstractAnalysis):
                     }
                 container_flow_by_vehicle[
                     container.picked_up_by][vehicle_id_outbound][container.flow_direction]["outbound"] += 1
+
+        for skipped_vehicle_type in set(ModeOfTransport) - set(vehicle_types):
+            assert len(container_flow_by_vehicle[skipped_vehicle_type]) == 0
+            del container_flow_by_vehicle[skipped_vehicle_type]
 
         return container_flow_by_vehicle
