@@ -1,10 +1,19 @@
+import datetime
+import enum
 import logging
+import typing
 from typing import Dict, List, Callable, Type
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.vehicle import LargeScheduledVehicle, AbstractLargeScheduledVehicle
+
+
+class JourneyDirection(enum.Enum):
+    inbound = "inbound"
+    outbound = "outbound"
 
 
 class LargeScheduledVehicleRepository:
@@ -13,6 +22,8 @@ class LargeScheduledVehicleRepository:
 
     def __init__(self):
         self.transportation_buffer = None
+        self.ramp_up_period_end = None
+        self.ramp_down_period_start = None
         self.free_capacity_for_outbound_journey_buffer: Dict[Type[AbstractLargeScheduledVehicle], float] = {}
         self.free_capacity_for_inbound_journey_buffer: Dict[Type[AbstractLargeScheduledVehicle], float] = {}
         self.logger = logging.getLogger("conflowgen")
@@ -20,6 +31,14 @@ class LargeScheduledVehicleRepository:
     def set_transportation_buffer(self, transportation_buffer: float):
         assert -1 < transportation_buffer
         self.transportation_buffer = transportation_buffer
+
+    def set_ramp_up_and_down_times(
+            self,
+            ramp_up_period_end: typing.Optional[datetime.datetime] = None,
+            ramp_down_period_start: typing.Optional[datetime.datetime] = None
+    ) -> None:
+        self.ramp_up_period_end = ramp_up_period_end
+        self.ramp_down_period_start = ramp_down_period_start
 
     def reset_cache(self):
         self.free_capacity_for_outbound_journey_buffer = {}
@@ -87,12 +106,17 @@ class LargeScheduledVehicleRepository:
         free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_inbound_transportation_in_teu,
-            container_counter=self._get_number_containers_for_inbound_journey
+            container_counter=self._get_number_containers_for_inbound_journey,
+            journey_direction=JourneyDirection.inbound,
+            flow_direction=FlowDirection.undefined
         )
         self.free_capacity_for_inbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
 
-    def get_free_capacity_for_outbound_journey(self, vehicle: Type[AbstractLargeScheduledVehicle]) -> float:
+    def get_free_capacity_for_outbound_journey(
+            self, vehicle: Type[AbstractLargeScheduledVehicle],
+            flow_direction: FlowDirection
+    ) -> float:
         """Get the free capacity for the outbound journey on a vehicle that moves according to a schedule in TEU.
         """
         assert self.transportation_buffer is not None, "First set the value!"
@@ -115,17 +139,20 @@ class LargeScheduledVehicleRepository:
         free_capacity_in_teu = self._get_free_capacity_in_teu(
             vehicle=vehicle,
             maximum_capacity=total_moved_capacity_for_onward_transportation_in_teu,
-            container_counter=self._get_number_containers_for_outbound_journey
+            container_counter=self._get_number_containers_for_outbound_journey,
+            journey_direction=JourneyDirection.outbound,
+            flow_direction=flow_direction
         )
         self.free_capacity_for_outbound_journey_buffer[vehicle] = free_capacity_in_teu
         return free_capacity_in_teu
 
-    # noinspection PyUnresolvedReferences
-    @staticmethod
     def _get_free_capacity_in_teu(
+            self,
             vehicle: Type[AbstractLargeScheduledVehicle],
             maximum_capacity: int,
-            container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int]
+            container_counter: Callable[[Type[AbstractLargeScheduledVehicle], ContainerLength], int],
+            journey_direction: JourneyDirection,
+            flow_direction: FlowDirection
     ) -> float:
         loaded_20_foot_containers = container_counter(vehicle, ContainerLength.twenty_feet)
         loaded_40_foot_containers = container_counter(vehicle, ContainerLength.forty_feet)
@@ -138,7 +165,10 @@ class LargeScheduledVehicleRepository:
                 - loaded_45_foot_containers * ContainerLength.get_teu_factor(ContainerLength.forty_five_feet)
                 - loaded_other_containers * ContainerLength.get_teu_factor(ContainerLength.other)
         )
+
+        # noinspection PyUnresolvedReferences
         vehicle_name = vehicle.large_scheduled_vehicle.vehicle_name
+
         assert free_capacity_in_teu >= 0, f"vehicle {vehicle} of type {vehicle.get_mode_of_transport()} with the " \
                                           f"name '{vehicle_name}' " \
                                           f"is overloaded, " \
@@ -148,6 +178,29 @@ class LargeScheduledVehicleRepository:
                                           f"loaded_40_foot_containers: {loaded_40_foot_containers}, " \
                                           f"loaded_45_foot_containers: {loaded_45_foot_containers} and " \
                                           f"loaded_other_containers: {loaded_other_containers}"
+
+        # noinspection PyUnresolvedReferences
+        arrival_time: datetime.datetime = vehicle.large_scheduled_vehicle.scheduled_arrival
+
+        if (
+                journey_direction == JourneyDirection.outbound
+                and flow_direction == FlowDirection.transshipment_flow
+                and self.ramp_up_period_end is not None
+                and arrival_time < self.ramp_up_period_end
+        ):
+            # keep transshipment containers in the yard longer during the ramp-up period to fill the yard faster
+            # by offering less transport capacity on the outbound journey of deep sea vessels and feeders
+            free_capacity_in_teu = maximum_capacity * 0.1
+
+        elif (
+                journey_direction == JourneyDirection.inbound
+                and self.ramp_down_period_start is not None
+                and arrival_time >= self.ramp_down_period_start
+        ):
+            # decrease number of inbound containers (any direction) during the ramp-down period
+            # by offering less transport capacity on the inbound journey (all types of vehicles, excluding trucks)
+            free_capacity_in_teu = maximum_capacity * 0.1
+
         return free_capacity_in_teu
 
     @classmethod
