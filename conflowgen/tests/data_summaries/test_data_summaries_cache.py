@@ -132,7 +132,7 @@ class TestDataSummariesCache(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")
@@ -179,7 +179,7 @@ class TestDataSummariesCache(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         preview = self.preview.get_weekly_truck_arrivals(True, True)
         self.assertEqual(preview, {3: 12, 4: 48}, "Uncached result is incorrect")

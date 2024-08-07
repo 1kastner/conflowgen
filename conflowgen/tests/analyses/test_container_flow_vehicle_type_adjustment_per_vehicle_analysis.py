@@ -48,13 +48,13 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         inbound_feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -64,7 +64,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         inbound_feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -72,7 +72,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         outbound_feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder2",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=vessel_arrival,
             schedule=schedule
         )
@@ -91,6 +91,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         self.assertListEqual(list(no_adjustment.values()), [0])
         vehicle_identifier = list(no_adjustment.keys())[0]
         self.assertEqual(vehicle_identifier, VehicleIdentifier(
+            id=outbound_feeder_lsv.id,
             mode_of_transport=ModeOfTransport.feeder,
             vehicle_arrival_time=vessel_arrival,
             service_name="TestFeederService",
@@ -105,13 +106,13 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -149,13 +150,13 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -203,14 +204,14 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         feeder_arrival = datetime.datetime.now()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=feeder_arrival,
             schedule=schedule
         )
@@ -243,6 +244,7 @@ class TestContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis(unittest.TestCase
         vehicle_identifier = list(no_adjustment.keys())[0]
 
         self.assertEqual(vehicle_identifier, VehicleIdentifier(
+            id=feeder_lsv.id,
             mode_of_transport=ModeOfTransport.feeder,
             vehicle_arrival_time=feeder_arrival,
             service_name="TestFeederService",

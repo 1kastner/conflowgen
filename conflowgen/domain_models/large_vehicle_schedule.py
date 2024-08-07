@@ -26,7 +26,7 @@ class Schedule(BaseModel):
                   "This determines the number of ship-to-shore gantry cranes that can serve the vessel "
                   "or the length of the train that must be served by portal cranes in the subsequent model."
     )
-    average_moved_capacity = IntegerField(
+    average_inbound_container_volume = IntegerField(
         null=False,
         help_text="All vehicles moving according to this schedule move approx. this amount of TEU. "
                   "The actual amount of moved TEU might deviate if necessary to realize the provided modal split."

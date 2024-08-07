@@ -64,3 +64,4 @@ examples/Python_Script/databases/
 # Ignore local changes as they happen with every execution. If something changes, the commit must be forced.
 conflowgen/data/tools/
 docs/notebooks/data/prepared_dbs/
+.tools/

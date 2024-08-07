@@ -113,7 +113,7 @@ trains (in TEU):        0.0 (-%)
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=400,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         actual_report = self.preview_report.get_report_as_text()
@@ -154,7 +154,7 @@ trains (in TEU):      120.0 (44.44%)
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=400,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         axes = self.preview_report.get_report_as_graph()

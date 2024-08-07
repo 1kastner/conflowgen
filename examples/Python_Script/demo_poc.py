@@ -12,8 +12,9 @@ The intention of this demo is further explained in the logs it generated.
 """
 
 import datetime
-import os
+import os.path
 import sys
+import subprocess
 
 try:
     import conflowgen
@@ -24,6 +25,7 @@ try:
 except ImportError as exc:
     print("Please first install ConFlowGen, e.g. with conda or pip")
     raise exc
+
 
 this_dir = os.path.dirname(__file__)
 
@@ -61,13 +63,13 @@ port_call_manager = conflowgen.PortCallManager()
 # Add vehicles that frequently visit the terminal.
 feeder_service_name = "LX050"
 logger.info(f"Add feeder service '{feeder_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.feeder,
     service_name=feeder_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 9),
     vehicle_arrives_at_time=datetime.time(11),
     average_vehicle_capacity=800,
-    average_moved_capacity=100,
+    average_inbound_container_volume=100,
     next_destinations=[
         ("DEBRV", 0.4),  # 50% of the containers (in boxes) go here...
         ("RULED", 0.6)   # and the other 50% of the containers (in boxes) go here.
@@ -76,25 +78,25 @@ port_call_manager.add_vehicle(
 
 train_service_name = "JR03A"
 logger.info(f"Add train service '{train_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.train,
     service_name=train_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 12),
     vehicle_arrives_at_time=datetime.time(17),
     average_vehicle_capacity=90,
-    average_moved_capacity=90,
+    average_inbound_container_volume=90,
     next_destinations=None  # Here we don't have containers that need to be grouped by destination
 )
 
 deep_sea_service_name = "LX050"
 logger.info(f"Add deep sea vessel service '{deep_sea_service_name}' to database")
-port_call_manager.add_vehicle(
+port_call_manager.add_service_that_calls_terminal(
     vehicle_type=conflowgen.ModeOfTransport.deep_sea_vessel,
     service_name=deep_sea_service_name,
     vehicle_arrives_at=datetime.date(2021, 7, 10),
     vehicle_arrives_at_time=datetime.time(19),
     average_vehicle_capacity=16000,
-    average_moved_capacity=150,  # for faster demo
+    average_inbound_container_volume=150,  # for faster demo
     next_destinations=[
         ("ZADUR", 0.3),  # 30% of the containers (in boxes) go here...
         ("CNSHG", 0.7)   # and the other 70% of the containers (in boxes) go here.
@@ -136,4 +138,10 @@ export_container_flow_manager.export(
 
 # Gracefully close everything
 database_chooser.close_current_connection()
+logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was used.")
+try:
+    last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())  # nosec B607
+    logger.info("Used git commit: " + last_git_commit[2:-1])
+except:  # pylint: disable=bare-except
+    logger.debug("The last git commit of this repository could not be retrieved, skip this.")
 logger.info("Demo 'demo_poc' finished successfully.")

@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import datetime
+import typing
 from typing import List, Type
 import logging
 
@@ -29,11 +32,17 @@ class LargeScheduledVehicleCreationService:
     def reload_properties(
             self,
             container_flow_start_date: datetime.date,
-            container_flow_end_date: datetime.date
+            container_flow_end_date: datetime.date,
+            ramp_up_period_end: typing.Optional[datetime.datetime | datetime.date],
+            ramp_down_period_start: typing.Optional[datetime.datetime | datetime.date],
     ):
         assert container_flow_start_date < container_flow_end_date
         self.container_flow_start_date = container_flow_start_date
         self.container_flow_end_date = container_flow_end_date
+        self.container_factory.set_ramp_up_and_down_times(
+            ramp_up_period_end=ramp_up_period_end,
+            ramp_down_period_start=ramp_down_period_start
+        )
         self.container_factory.reload_distributions()
 
     def create(self) -> None:

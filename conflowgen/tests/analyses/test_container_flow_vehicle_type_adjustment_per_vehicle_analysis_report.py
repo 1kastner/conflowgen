@@ -25,13 +25,13 @@ def setup_feeder_data():
         vehicle_arrives_at=when.date(),
         vehicle_arrives_at_time=when.time(),
         average_vehicle_capacity=300,
-        average_moved_capacity=300,
+        average_inbound_container_volume=300,
         vehicle_arrives_every_k_days=-1
     )
     inbound_feeder_lsv = LargeScheduledVehicle.create(
         vehicle_name="TestFeeder1",
         capacity_in_teu=300,
-        moved_capacity=schedule.average_moved_capacity,
+        inbound_container_volume=schedule.average_inbound_container_volume,
         scheduled_arrival=datetime.datetime.now(),
         schedule=schedule
     )
@@ -42,7 +42,7 @@ def setup_feeder_data():
     outbound_feeder_lsv = LargeScheduledVehicle.create(
         vehicle_name="TestFeeder2",
         capacity_in_teu=300,
-        moved_capacity=schedule.average_moved_capacity,
+        inbound_container_volume=schedule.average_inbound_container_volume,
         scheduled_arrival=vessel_arrival,
         schedule=schedule
     )

@@ -98,35 +98,39 @@ class AbstractAnalysis(abc.ABC):
     @staticmethod
     def _restrict_container_delivered_by_vehicle_type(
             selected_containers: ModelSelect, container_delivered_by_vehicle_type: typing.Any
-    ) -> ModelSelect:
+    ) -> (ModelSelect, list[ModeOfTransport]):
         if hashable(container_delivered_by_vehicle_type) \
                 and container_delivered_by_vehicle_type in set(ModeOfTransport):
             selected_containers = selected_containers.where(
                 Container.delivered_by == container_delivered_by_vehicle_type
             )
+            list_of_vehicle_types = [container_delivered_by_vehicle_type]
         else:  # assume it is some kind of collection (list, set, ...)
             selected_containers = selected_containers.where(
                 Container.delivered_by << container_delivered_by_vehicle_type
             )
-        return selected_containers
+            list_of_vehicle_types = list(container_delivered_by_vehicle_type)
+        return selected_containers, list_of_vehicle_types
 
     @staticmethod
     def _restrict_container_picked_up_by_vehicle_type(
             selected_containers: ModelSelect, container_picked_up_by_vehicle_type: typing.Any
-    ) -> ModelSelect:
+    ) -> (ModelSelect, list[ModeOfTransport]):
         if container_picked_up_by_vehicle_type == "scheduled vehicles":
             container_picked_up_by_vehicle_type = ModeOfTransport.get_scheduled_vehicles()
-
+            list_of_vehicle_types = container_picked_up_by_vehicle_type
         if hashable(container_picked_up_by_vehicle_type) \
                 and container_picked_up_by_vehicle_type in set(ModeOfTransport):
             selected_containers = selected_containers.where(
                 Container.picked_up_by == container_picked_up_by_vehicle_type
             )
+            list_of_vehicle_types = [container_picked_up_by_vehicle_type]
         else:  # assume it is some kind of collection (list, set, ...)
             selected_containers = selected_containers.where(
                 Container.picked_up_by << container_picked_up_by_vehicle_type
             )
-        return selected_containers
+            list_of_vehicle_types = list(container_picked_up_by_vehicle_type)
+        return selected_containers, list_of_vehicle_types
 
     @staticmethod
     def _restrict_container_picked_up_by_initial_vehicle_type(

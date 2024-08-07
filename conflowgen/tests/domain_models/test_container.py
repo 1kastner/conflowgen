@@ -5,8 +5,10 @@ Check if containers can be stored in the database, i.e., the ORM model is workin
 import unittest
 from dataclasses import dataclass
 
+import parameterized
 from peewee import IntegrityError
 
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container, FaultyDataException, NoPickupVehicleException
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -19,6 +21,7 @@ from conflowgen.tests.substitute_peewee_database import setup_sqlite_in_memory_d
 class TestContainer(unittest.TestCase):
     """
     Rudimentarily check if peewee can handle container entries in the database.
+    Also check whether the class properties work.
     """
 
     def setUp(self) -> None:
@@ -150,3 +153,63 @@ class TestContainer(unittest.TestCase):
 
         with self.assertRaises(NoPickupVehicleException):
             container.get_departure_time()
+
+    @parameterized.parameterized.expand([
+        [ContainerLength.twenty_feet, 1],
+        [ContainerLength.forty_feet, 2],
+        [ContainerLength.forty_five_feet, 2.25],
+        [ContainerLength.other, 2.5]
+    ])
+    def test_occupied_teu(self, container_size, teu):
+        """Test whether the container size is correctly converted to TEU"""
+        container = Container.create(
+            weight=10,
+            delivered_by=ModeOfTransport.barge,
+            picked_up_by=ModeOfTransport.truck,
+            picked_up_by_initial=ModeOfTransport.deep_sea_vessel,
+            length=container_size,
+            storage_requirement=StorageRequirement.standard
+        )
+        self.assertEqual(teu, container.occupied_teu)
+
+    @parameterized.parameterized.expand([
+        [ModeOfTransport.deep_sea_vessel, ModeOfTransport.deep_sea_vessel, FlowDirection.transshipment_flow],
+        [ModeOfTransport.deep_sea_vessel, ModeOfTransport.feeder, FlowDirection.transshipment_flow],
+        [ModeOfTransport.feeder, ModeOfTransport.deep_sea_vessel, FlowDirection.transshipment_flow],
+        [ModeOfTransport.feeder, ModeOfTransport.feeder, FlowDirection.transshipment_flow],
+
+        [ModeOfTransport.deep_sea_vessel, ModeOfTransport.truck, FlowDirection.import_flow],
+        [ModeOfTransport.deep_sea_vessel, ModeOfTransport.barge, FlowDirection.import_flow],
+        [ModeOfTransport.deep_sea_vessel, ModeOfTransport.train, FlowDirection.import_flow],
+        [ModeOfTransport.feeder, ModeOfTransport.truck, FlowDirection.import_flow],
+        [ModeOfTransport.feeder, ModeOfTransport.barge, FlowDirection.import_flow],
+        [ModeOfTransport.feeder, ModeOfTransport.train, FlowDirection.import_flow],
+
+        [ModeOfTransport.truck, ModeOfTransport.deep_sea_vessel, FlowDirection.export_flow],
+        [ModeOfTransport.truck, ModeOfTransport.feeder, FlowDirection.export_flow],
+        [ModeOfTransport.barge, ModeOfTransport.deep_sea_vessel, FlowDirection.export_flow],
+        [ModeOfTransport.barge, ModeOfTransport.feeder, FlowDirection.export_flow],
+        [ModeOfTransport.train, ModeOfTransport.deep_sea_vessel, FlowDirection.export_flow],
+        [ModeOfTransport.train, ModeOfTransport.feeder, FlowDirection.export_flow],
+
+        [ModeOfTransport.truck, ModeOfTransport.truck, FlowDirection.undefined],
+        [ModeOfTransport.truck, ModeOfTransport.barge, FlowDirection.undefined],
+        [ModeOfTransport.truck, ModeOfTransport.train, FlowDirection.undefined],
+        [ModeOfTransport.barge, ModeOfTransport.truck, FlowDirection.undefined],
+        [ModeOfTransport.barge, ModeOfTransport.barge, FlowDirection.undefined],
+        [ModeOfTransport.barge, ModeOfTransport.train, FlowDirection.undefined],
+        [ModeOfTransport.train, ModeOfTransport.truck, FlowDirection.undefined],
+        [ModeOfTransport.train, ModeOfTransport.barge, FlowDirection.undefined],
+        [ModeOfTransport.train, ModeOfTransport.train, FlowDirection.undefined],
+    ])
+    def test_flow_direction(self, delivered_by, picked_up_by, container_flow):
+        """Test whether all flow directions are detected correctly"""
+        container: Container = Container.create(
+            weight=10,
+            delivered_by=delivered_by,
+            picked_up_by=picked_up_by,
+            picked_up_by_initial=ModeOfTransport.truck,
+            length=ContainerLength.forty_feet,
+            storage_requirement=StorageRequirement.standard
+        )
+        self.assertEqual(container_flow, container.flow_direction)

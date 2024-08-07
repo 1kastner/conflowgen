@@ -1,7 +1,7 @@
 import datetime
 
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis_report import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysisReport
 from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.data_types.container_length import ContainerLength
@@ -23,13 +23,13 @@ def setup_feeder_data():
         vehicle_arrives_at=one_week_later.date(),
         vehicle_arrives_at_time=one_week_later.time(),
         average_vehicle_capacity=300,
-        average_moved_capacity=250,
+        average_inbound_container_volume=250,
         vehicle_arrives_every_k_days=-1
     )
     feeder_lsv = LargeScheduledVehicle.create(
         vehicle_name="TestFeeder1",
         capacity_in_teu=schedule.average_vehicle_capacity,
-        moved_capacity=schedule.average_moved_capacity,
+        inbound_container_volume=schedule.average_inbound_container_volume,
         scheduled_arrival=datetime.datetime.now(),
         schedule=schedule
     )
@@ -66,7 +66,7 @@ class TestInboundToOutboundCapacityUtilizationAnalysisReport(UnitTestCaseWithMat
             start_date=datetime.date(2021, 12, 15),
             end_date=datetime.date(2021, 12, 17)
         )
-        self.report = InboundToOutboundVehicleCapacityUtilizationAnalysisReport()
+        self.report = OutboundToInboundVehicleCapacityUtilizationAnalysisReport()
 
     def test_with_no_data(self):
         actual_report = self.report.get_report_as_text()
