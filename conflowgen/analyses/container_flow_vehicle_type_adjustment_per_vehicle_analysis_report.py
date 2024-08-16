@@ -3,8 +3,8 @@ from __future__ import annotations
 import datetime
 import typing
 
-import matplotlib.axes
 import pandas as pd
+import matplotlib.axes
 from matplotlib import pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
