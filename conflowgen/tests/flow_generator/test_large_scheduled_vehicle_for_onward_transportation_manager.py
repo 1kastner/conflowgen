@@ -266,7 +266,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
                                                                             "containers")
         teu_loaded = 0
-        for container in containers_reloaded:   # pylint: disable=not-an-iterable
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
             self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder.large_scheduled_vehicle)
             teu_loaded += ContainerLength.get_teu_factor(container.length)
         self.assertLessEqual(teu_loaded, 80, "Feeder must not be loaded with more than what it can carry")
@@ -359,11 +359,11 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
 
         # Create feeders (vessels) with specific departure times
         feeder_1 = self._create_feeder(
-            datetime.datetime(year=2023, month=8, day=15, hour=10, minute=0), "1"
+            datetime.datetime(year=2024, month=8, day=15, hour=10, minute=0), "1"
         )
 
         feeder_2 = self._create_feeder(
-            datetime.datetime(year=2022, month=8, day=16, hour=14, minute=30), "2"
+            datetime.datetime(year=2024, month=8, day=16, hour=14, minute=30), "2"
         )
 
         # Set inbound container volume for feeder_1
@@ -379,8 +379,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         # Set system properties to simulate a ramp-down period
         self.manager.reload_properties(
             transportation_buffer=0,
-            ramp_down_period_start=datetime.date(2023, 8, 15),
-
+            ramp_down_period_start=datetime.date(2023, 8, 14),
         )
 
         # Run the function responsible for choosing the departing vehicle
@@ -404,10 +403,45 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.assertEqual(teu_loaded, feeder_1.large_scheduled_vehicle.inbound_container_volume,
                          "Feeder 2 must have loaded all containers from feeder 1 during the ramp-down period!")
 
-    def test_behavior_during_ramp_down_period(self):
-        """During ramp-down, transshipment flows should not be affected!"""
-        ...  # TODO!
+    def test_ramp_down_period_only_10_percent_unloaded(self):
+        """During ramp-down, only 10% of containers should be unloaded from the incoming vessel."""
 
-#    def test_behavior_during_ramp_down_period(self):
-        """During ramp-down, transshipment flows should not be affected!"""
-        ...  # TODO!
+        # Create an incoming deep-sea vessel with a scheduled arrival time
+        feeder = self._create_feeder(
+            datetime.datetime(year=2023, month=8, day=15, hour=8, minute=0)
+        )
+
+        # Set inbound container volume for the deep-sea vessel
+        feeder.inbound_container_volume = 100  # in TEU
+        feeder.save()
+
+        # Create containers associated with the deep-sea vessel
+        containers = [
+            self._create_container_for_large_scheduled_vehicle(feeder)
+            for _ in range(feeder.inbound_container_volume)
+        ]
+
+        # Set system properties to simulate a ramp-down period
+        self.manager.reload_properties(
+            transportation_buffer=0,
+            ramp_down_period_start=datetime.date(2023, 8, 15),
+        )
+
+        # Run the function responsible for unloading containers during ramp-down
+        self.manager.choose_departing_vehicle_for_containers()
+
+        # Query the containers that were unloaded
+        containers_departed: Iterable[Container] = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == feeder
+        )
+
+        # Validate that only the expected containers are unloaded
+        self.assertTrue(set(containers_departed).issubset(set(containers)),
+                        "Only containers from the deep-sea vessel should be unloaded during ramp-down.")
+
+        # Calculate the expected number of containers to be departed (90% of total)
+        expected_departed_containers = int(feeder.inbound_container_volume * 0.9)
+
+        # Ensure that the number of departed containers is 90% of the total inbound container volume
+        self.assertEqual(Container.delivered_by_large_scheduled_vehicle, expected_departed_containers,
+                         "During ramp-down, exactly 10% of containers should be unloaded.")

@@ -6,8 +6,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.axis
 
-
-
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummary, ContainerFlowAdjustedToVehicleType
 from conflowgen.reporting import AbstractReportWithMatplotlib
