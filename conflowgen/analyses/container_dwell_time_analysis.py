@@ -64,12 +64,12 @@ class ContainerDwellTimeAnalysis(AbstractAnalysis):
             )
 
         if container_delivered_by_vehicle_type != "all":
-            selected_containers = self._restrict_container_delivered_by_vehicle_type(
+            selected_containers, vehicle_types = self._restrict_container_delivered_by_vehicle_type(
                 selected_containers, container_delivered_by_vehicle_type
             )
 
         if container_picked_up_by_vehicle_type != "all":
-            selected_containers = self._restrict_container_picked_up_by_vehicle_type(
+            selected_containers, vehicle_types = self._restrict_container_picked_up_by_vehicle_type(
                 selected_containers, container_picked_up_by_vehicle_type
             )
 

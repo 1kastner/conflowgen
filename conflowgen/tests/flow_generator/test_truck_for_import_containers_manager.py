@@ -275,12 +275,12 @@ class TestTruckForImportContainersManager(unittest.TestCase):
             vehicle_arrives_at=container_arrival_time.date(),
             vehicle_arrives_at_time=container_arrival_time.time(),
             average_vehicle_capacity=5000,
-            average_moved_capacity=1200,
+            average_inbound_container_volume=1200,
         )
         lsv = LargeScheduledVehicle.create(
             vehicle_name="TestDeepSeaVessel",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=container_arrival_time,
             schedule=schedule
         )

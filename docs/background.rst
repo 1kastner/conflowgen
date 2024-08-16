@@ -220,7 +220,8 @@ If you just need a BibTeX entry for your citation software, this one should do t
       doi = {10.1007/978-3-031-05359-7_11},
       month = {2},
       pages = {133--143},
-      publisher = {Springer Cham},
+      publisher = {Springer International Publishing},
+      address = {Cham, CH},
       series = {Lecture Notes in Logistics},
       title = {Container Flow Generation for Maritime Container Terminals},
       year = {2022}

@@ -92,7 +92,7 @@ class TestQuaySideThroughputPreviewReport(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=400,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         axes = self.preview_report.get_report_as_graph()
@@ -108,7 +108,7 @@ class TestQuaySideThroughputPreviewReport(unittest.TestCase):
             vehicle_arrives_every_k_days=-1,
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=24000,
-            average_moved_capacity=24000
+            average_inbound_container_volume=24000
         )
         report = self.preview_report.get_report_as_text()
         # flake8: noqa: W291 (ignore trailing whitespace in text report)

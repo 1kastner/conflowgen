@@ -8,6 +8,7 @@ from conflowgen.application.repositories.container_flow_generation_properties_re
     ContainerFlowGenerationPropertiesRepository
 from conflowgen.flow_generator.container_flow_generation_service import \
     ContainerFlowGenerationService
+from conflowgen.metadata import __version__
 
 
 class ContainerFlowGenerationManager:
@@ -68,6 +69,8 @@ class ContainerFlowGenerationManager:
         if transportation_buffer is not None:
             properties.transportation_buffer = transportation_buffer
 
+        properties.conflowgen_version = __version__
+
         self.container_flow_generation_properties_repository.set_container_flow_generation_properties(
             properties
         )
@@ -87,6 +90,7 @@ class ContainerFlowGenerationManager:
             'transportation_buffer': properties.transportation_buffer,
             'ramp_up_period': properties.ramp_up_period,
             'ramp_down_period': properties.ramp_down_period,
+            'conflowgen_version': properties.conflowgen_version
         }
 
     def container_flow_data_exists(self) -> bool:

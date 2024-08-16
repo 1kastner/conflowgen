@@ -24,12 +24,12 @@ def setup_feeder_data():
         vehicle_arrives_at=now.date(),
         vehicle_arrives_at_time=now.time(),
         average_vehicle_capacity=300,
-        average_moved_capacity=300,
+        average_inbound_container_volume=300,
     )
     feeder_lsv = LargeScheduledVehicle.create(
         vehicle_name="TestFeeder1",
         capacity_in_teu=300,
-        moved_capacity=schedule.average_moved_capacity,
+        inbound_container_volume=schedule.average_inbound_container_volume,
         scheduled_arrival=now,
         schedule=schedule
     )

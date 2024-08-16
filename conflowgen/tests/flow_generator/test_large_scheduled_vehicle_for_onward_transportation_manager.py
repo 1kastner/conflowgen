@@ -68,21 +68,18 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
         )
-        schedule.save()
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
-        feeder_lsv.save()
         feeder = Feeder.create(
             large_scheduled_vehicle=feeder_lsv
         )
-        feeder.save()
         return feeder
 
     @staticmethod
@@ -93,12 +90,12 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=90,
-            average_moved_capacity=90,
+            average_inbound_container_volume=90,
         )
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=96,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
@@ -170,7 +167,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
     def test_do_not_overload_feeder_with_truck_traffic(self):
         truck = self._create_truck(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
         feeder = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 10  # in TEU
+        feeder.large_scheduled_vehicle.inbound_container_volume = 10  # in TEU
         containers = [self._create_container_for_truck(truck) for _ in range(10)]
         self.assertEqual(Container.select().count(), 10)
         teu_generated = sum((ContainerLength.get_teu_factor(container.length) for container in containers))
@@ -194,11 +191,11 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         train = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
         containers = [
             self._create_container_for_large_scheduled_vehicle(train)
-            for _ in range(train.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
 
         feeder = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 80  # in TEU
+        feeder.large_scheduled_vehicle.inbound_container_volume = 80  # in TEU
         feeder.save()
 
         self.assertEqual(Container.select().count(), 90)
@@ -222,11 +219,11 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         train = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=9, minute=0))
         containers = [
             self._create_container_for_large_scheduled_vehicle(train)
-            for _ in range(train.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
 
         feeder = self._create_feeder(datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 80  # in TEU
+        feeder.large_scheduled_vehicle.inbound_container_volume = 80  # in TEU
         feeder.save()
 
         self.assertEqual(Container.select().count(), 90)
@@ -245,16 +242,16 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0), "2")
         containers_1 = [
             self._create_container_for_large_scheduled_vehicle(train_1)
-            for _ in range(train_1.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train_1.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
         containers_2 = [
             self._create_container_for_large_scheduled_vehicle(train_2)
-            for _ in range(train_2.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train_2.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
         containers = containers_1 + containers_2
 
         feeder = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 80  # in TEU
+        feeder.large_scheduled_vehicle.inbound_container_volume = 80  # in TEU
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)
@@ -279,11 +276,11 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         train_2 = self._create_train(datetime.datetime(year=2021, month=8, day=5, hour=15, minute=0), "2")
         containers_1 = [
             self._create_container_for_large_scheduled_vehicle(train_1)
-            for _ in range(train_1.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train_1.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
         containers_2 = [
             self._create_container_for_large_scheduled_vehicle(train_2)
-            for _ in range(train_2.large_scheduled_vehicle.moved_capacity)  # here only 20' containers
+            for _ in range(train_2.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
         ]
         for container in containers_2:
             container.length = ContainerLength.forty_feet
@@ -291,7 +288,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         containers = containers_1 + containers_2
 
         feeder = self._create_feeder(datetime.datetime(year=2021, month=8, day=7, hour=13, minute=15))
-        feeder.large_scheduled_vehicle.moved_capacity = 80  # in TEU
+        feeder.large_scheduled_vehicle.inbound_container_volume = 80  # in TEU
         feeder.save()
 
         self.assertEqual(Container.select().count(), 180)

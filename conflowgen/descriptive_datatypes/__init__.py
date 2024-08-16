@@ -93,13 +93,16 @@ class VehicleIdentifier(typing.NamedTuple):
     A vehicle identifier is a composition of the vehicle type, its service name, and the actual vehicle name
     """
 
+    #: The vehicle identifier as it is used in the CSV export.
+    id: typing.Optional[int]
+
     #: The vehicle type, e.g., 'deep_sea_vessel' or 'truck'.
     mode_of_transport: ModeOfTransport
 
     #: The service name, such as the name of the container service the vessel operates in. Not set for trucks.
     service_name: typing.Optional[str]
 
-    #: The name of the vehicle if given.
+    #: The name of the vehicle if given. Not set for trucks.
     vehicle_name: typing.Optional[str]
 
     #: The time of arrival of the vehicle at the terminal.
@@ -143,3 +146,7 @@ class FlowDirection(enum.Enum):
     transshipment_flow = "transshipment"
 
     undefined = "undefined"
+
+    def __str__(self) -> str:
+        # noinspection PyTypeChecker
+        return f"{self.value}"
