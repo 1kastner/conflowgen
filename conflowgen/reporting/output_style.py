@@ -49,7 +49,7 @@ class DisplayAsMarkupLanguage(abc.ABC):
 class DisplayAsPlainText(DisplayAsMarkupLanguage):
     """
     With this style, the output is simply returned in a plain manner.
-    This is, e.g., helpful when log the text.
+    This is, e.g., helpful when logging the text.
     """
 
     DESIRED_LINE_LENGTH = 80  # doc: The console width used for wrapping output to new lines. This is not mandatory.

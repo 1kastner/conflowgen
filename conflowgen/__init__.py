@@ -83,7 +83,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 
 # List of functions
-from conflowgen.log.log import setup_logger
+from conflowgen.logger.logger import setup_logger
 from conflowgen.analyses import run_all_analyses
 from conflowgen.previews import run_all_previews
 

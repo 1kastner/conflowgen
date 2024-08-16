@@ -52,7 +52,7 @@ class InboundToOutboundVehicleCapacityUtilizationAnalysisReport(AbstractReportWi
 
     def get_report_as_text(self, **kwargs) -> str:
         """
-        The report as a text is represented as a table suitable for log. It uses a human-readable formatting style.
+        The report as a text is represented as a table suitable for logging. It uses a human-readable formatting style.
 
         Keyword Args:
             vehicle_type (:py:obj:`Any`): Either ``"scheduled vehicles"``, a single vehicle of type

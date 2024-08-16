@@ -35,7 +35,7 @@ class ContainerFlowAdjustmentByVehicleTypeAnalysisSummaryReport(AbstractReportWi
             self, **kwargs
     ) -> str:
         """
-        The report as a text is represented as a table suitable for log.
+        The report as a text is represented as a table suitable for logging.
         It uses a human-readable formatting style.
 
         Keyword Args:

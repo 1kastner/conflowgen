@@ -67,7 +67,7 @@ class AbstractReport(abc.ABC):
     @abc.abstractmethod
     def get_report_as_text(self, **kwargs) -> str:
         """
-        The report as a text is represented as a table suitable for log.
+        The report as a text is represented as a table suitable for logging.
         It uses a human-readable formatting style.
         The additional keyword arguments are passed to the analysis instance in case it accepts them.
 
