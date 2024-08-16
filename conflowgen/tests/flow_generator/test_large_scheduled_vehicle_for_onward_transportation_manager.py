@@ -380,7 +380,7 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         self.manager.reload_properties(
             transportation_buffer=0,
             ramp_down_period_start=datetime.date(2023, 8, 15),
-            ramp_down_period_end=datetime.date(2023, 8, 31)
+
         )
 
         # Run the function responsible for choosing the departing vehicle
@@ -405,5 +405,9 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
                          "Feeder 2 must have loaded all containers from feeder 1 during the ramp-down period!")
 
     def test_behavior_during_ramp_down_period(self):
+        """During ramp-down, transshipment flows should not be affected!"""
+        ...  # TODO!
+
+#    def test_behavior_during_ramp_down_period(self):
         """During ramp-down, transshipment flows should not be affected!"""
         ...  # TODO!
