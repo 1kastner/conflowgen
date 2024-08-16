@@ -408,6 +408,3 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
         """During ramp-down, transshipment flows should not be affected!"""
         ...  # TODO!
 
-#    def test_behavior_during_ramp_down_period(self):
-        """During ramp-down, transshipment flows should not be affected!"""
-        ...  # TODO!
