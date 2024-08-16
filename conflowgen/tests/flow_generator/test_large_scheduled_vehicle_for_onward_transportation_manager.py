@@ -316,3 +316,97 @@ class TestLargeScheduledVehicleForExportContainersManager(unittest.TestCase):
                 self.manager.schedule_repository, "get_departing_vehicles", return_value=None) as get_vehicles_method:
             self.manager.choose_departing_vehicle_for_containers()
         get_vehicles_method.assert_not_called()
+
+    def test_behavior_during_ramp_up_period(self):
+        """During ramp-up, the capacity of vessels is artificially reduced"""
+
+        # the
+        feeder_1 = self._create_feeder(
+            datetime.datetime(year=2022, month=8, day=7, hour=13, minute=15), "1"
+        )
+
+        feeder_2 = self._create_feeder(
+            datetime.datetime(year=2021, month=8, day=10, hour=15, minute=0), "2"
+        )
+
+        feeder_1.large_scheduled_vehicle.inbound_container_volume = 100  # in TEU
+        feeder_1.save()
+
+        containers = [
+            self._create_container_for_large_scheduled_vehicle(feeder_1)
+            for _ in range(feeder_1.large_scheduled_vehicle.inbound_container_volume)  # here only 20' containers
+        ]
+
+        self.manager.reload_properties(
+            transportation_buffer=0,
+            ramp_up_period_end=datetime.date(2021, 8, 12)
+        )
+
+        # run actual function
+        self.manager.choose_departing_vehicle_for_containers()
+
+        containers_reloaded: Iterable[Container] = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == feeder_2
+        )
+        self.assertTrue(set(containers_reloaded).issubset(set(containers)), "Feeder must only load generated "
+                                                                            "containers")
+
+        teu_loaded = 0
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
+            self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder_2.large_scheduled_vehicle)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
+        self.assertLessEqual(teu_loaded, 30, "Feeder must have loaded much less containers because this is the"
+                                             "ramp-up period!")
+
+    def test_outbound_flow_unaffected_during_ramp_down_period(self):
+
+        # Create feeders (vessels) with specific departure times
+        feeder_1 = self._create_feeder(
+            datetime.datetime(year=2023, month=8, day=15, hour=10, minute=0), "1"
+        )
+
+        feeder_2 = self._create_feeder(
+            datetime.datetime(year=2022, month=8, day=16, hour=14, minute=30), "2"
+        )
+
+        # Set inbound container volume for feeder_1
+        feeder_1.large_scheduled_vehicle.inbound_container_volume = 50  # in TEU
+        feeder_1.save()
+
+        # Create containers associated with feeder_1
+        containers = [
+            self._create_container_for_large_scheduled_vehicle(feeder_1)
+            for _ in range(feeder_1.large_scheduled_vehicle.inbound_container_volume)
+        ]
+
+        # Set system properties to simulate a ramp-down period
+        self.manager.reload_properties(
+            transportation_buffer=0,
+            ramp_down_period_start=datetime.date(2023, 8, 15),
+            ramp_down_period_end=datetime.date(2023, 8, 31)
+        )
+
+        # Run the function responsible for choosing the departing vehicle
+        self.manager.choose_departing_vehicle_for_containers()
+
+        # Query the containers that were picked up by feeder_2
+        containers_reloaded: Iterable[Container] = Container.select().where(
+            Container.picked_up_by_large_scheduled_vehicle == feeder_2
+        )
+
+        # Ensure that all containers from feeder_1 are transshipped to feeder_2 without issues
+        self.assertTrue(set(containers_reloaded).issubset(set(containers)),
+                        "Transshipment flows should not be affected during ramp-down period!")
+
+        teu_loaded = 0
+        for container in containers_reloaded:  # pylint: disable=not-an-iterable
+            self.assertEqual(container.picked_up_by_large_scheduled_vehicle, feeder_2.large_scheduled_vehicle)
+            teu_loaded += ContainerLength.get_teu_factor(container.length)
+
+        # Assert that the TEU loaded on feeder_2 is as expected, meaning no transshipment disruptions
+        self.assertEqual(teu_loaded, feeder_1.large_scheduled_vehicle.inbound_container_volume,
+                         "Feeder 2 must have loaded all containers from feeder 1 during the ramp-down period!")
+
+    def test_behavior_during_ramp_down_period(self):
+        """During ramp-down, transshipment flows should not be affected!"""
+        ...  # TODO!
