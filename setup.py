@@ -24,7 +24,7 @@ setup(
     python_requires='>=3.8',
     install_requires=[
         # working with distributions and statistics
-        'scipy',  # used for, e.g., the lognorm distribution
+        "scipy >=1.10.0-rc1",  # used for, e.g., the lognorm distribution, version fixed due to CVE-2023-25399
 
         # data export
         'numpy',  # used in combination with pandas for column types
