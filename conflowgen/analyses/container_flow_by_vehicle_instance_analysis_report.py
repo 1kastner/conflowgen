@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import typing
 
 import matplotlib.figure
 import matplotlib.pyplot as plt
