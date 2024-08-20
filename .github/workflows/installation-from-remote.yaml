@@ -32,7 +32,7 @@ jobs:
         conda info
         conda update conda
         conda info
-        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
+        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest parameterized
 
     - name: Prepare tests
       run: |
@@ -71,7 +71,7 @@ jobs:
         conda update conda
         conda info
         conda activate base
-        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest
+        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest parameterized
 
     - name: Run tests
       run: |
@@ -102,7 +102,7 @@ jobs:
 
     - name: Install ConFlowGen
       run: |
-        python -m pip install conflowgen pytest
+        python -m pip install conflowgen pytest parameterized
         python -m pip show --verbose conflowgen
 
     - name: Run tests
