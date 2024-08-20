@@ -3,6 +3,8 @@ import logging
 from typing import Dict, Type, List
 
 from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
+from conflowgen.application.services.vehicle_capacity_manager import VehicleCapacityManager
+from conflowgen.descriptive_datatypes import FlowDirection
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.mode_of_transport_distribution_repository import \
     ModeOfTransportDistributionRepository
@@ -24,11 +26,12 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         self.mode_of_transport_distribution_repository = ModeOfTransportDistributionRepository()
         self.mode_of_transport_distribution: Dict[ModeOfTransport, Dict[ModeOfTransport, float]] | None = None
         self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
+        self.vehicle_capacity_manager = VehicleCapacityManager()
         self.container_factory = ContainerFactory()
 
     def reload_distribution(self, transportation_buffer: float):
         self.mode_of_transport_distribution = self.mode_of_transport_distribution_repository.get_distribution()
-        self.large_scheduled_vehicle_repository.set_transportation_buffer(
+        self.vehicle_capacity_manager.set_transportation_buffer(
             transportation_buffer=transportation_buffer
         )
         self.logger.info(f"Use transport buffer of {transportation_buffer} for allocating containers delivered by "
@@ -62,7 +65,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         if truck_to_other_vehicle_distribution[ModeOfTransport.truck] > 0:
             raise NotImplementedError("Truck to truck traffic is not supported.")
 
-        self.large_scheduled_vehicle_repository.reset_cache()
+        self.vehicle_capacity_manager.reset_cache()
 
         number_containers_to_allocate = self._get_number_containers_to_allocate()
 
@@ -114,8 +117,8 @@ class AllocateSpaceForContainersDeliveredByTruckService:
                     del truck_to_other_vehicle_distribution[selected_mode_of_transport]  # drop this type
                     continue  # try again with another vehicle type (refers to while loop)
 
-                free_capacity_of_vehicle = self.large_scheduled_vehicle_repository.\
-                    get_free_capacity_for_outbound_journey(vehicle)
+                free_capacity_of_vehicle = self.vehicle_capacity_manager.\
+                    get_free_capacity_for_outbound_journey(vehicle, flow_direction=FlowDirection.export_flow)
 
                 if free_capacity_of_vehicle <= self.ignored_capacity:
 
@@ -138,7 +141,7 @@ class AllocateSpaceForContainersDeliveredByTruckService:
 
                 container = self.container_factory.create_container_for_delivering_truck(vehicle)
                 teu_total += ContainerLength.get_teu_factor(container.length)
-                self.large_scheduled_vehicle_repository.block_capacity_for_outbound_journey(vehicle, container)
+                self.vehicle_capacity_manager.block_capacity_for_outbound_journey(vehicle, container)
                 successful_assignment += 1
                 break  # success, no further looping to search for a suitable vehicle
 
@@ -175,7 +178,8 @@ class AllocateSpaceForContainersDeliveredByTruckService:
         # Make it more likely that a container ends up on a large vessel than on a smaller one
         vehicle: Type[AbstractLargeScheduledVehicle]
         vehicle_distribution: Dict[Type[AbstractLargeScheduledVehicle], float] = {
-            vehicle: self.large_scheduled_vehicle_repository.get_free_capacity_for_outbound_journey(vehicle)
+            vehicle: self.vehicle_capacity_manager.get_free_capacity_for_outbound_journey(
+                vehicle, FlowDirection.export_flow)
             for vehicle in vehicles_of_type
         }
         all_free_capacities = list(vehicle_distribution.values())

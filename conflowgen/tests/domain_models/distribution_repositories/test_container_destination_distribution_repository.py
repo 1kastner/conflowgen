@@ -31,7 +31,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         Schedule.create(
@@ -40,7 +40,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         destination_1 = Destination.create(
@@ -77,7 +77,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         schedule.save()
@@ -87,7 +87,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         ).save()
         destination_1 = Destination.create(
@@ -121,7 +121,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         schedule_2 = Schedule.create(
@@ -130,7 +130,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=12000,
-            average_moved_capacity=1000,
+            average_inbound_container_volume=1000,
             vehicle_arrives_every_k_days=-1
         )
         destination_1 = Destination.create(
@@ -180,7 +180,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         Schedule.create(
@@ -189,7 +189,7 @@ class TestContainerDestinationDistributionRepository(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         destination_1 = Destination.create(

@@ -25,11 +25,11 @@ class TestVehicleFactory__create_barge(unittest.TestCase):  # pylint: disable=in
             vehicle_type=ModeOfTransport.barge,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=60,
-            average_moved_capacity=30
+            average_inbound_container_volume=30
         )
         self.vehicle_factory.create_barge(
             capacity_in_teu=60,
-            moved_capacity=30,
+            inbound_container_volume=30,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -40,19 +40,19 @@ class TestVehicleFactory__create_barge(unittest.TestCase):  # pylint: disable=in
             vehicle_type=ModeOfTransport.barge,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_barge(
                 capacity_in_teu=-1,
-                moved_capacity=1,
+                inbound_container_volume=1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_barge(
                 capacity_in_teu=1,
-                moved_capacity=-1,
+                inbound_container_volume=-1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )

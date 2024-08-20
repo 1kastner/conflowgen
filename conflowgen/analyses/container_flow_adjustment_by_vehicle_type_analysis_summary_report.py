@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
-import matplotlib.axis
-import numpy as np
 import pandas as pd
+import numpy as np
+import matplotlib.axis
 
 from conflowgen.analyses.container_flow_adjustment_by_vehicle_type_analysis_summary import \
     ContainerFlowAdjustmentByVehicleTypeAnalysisSummary, ContainerFlowAdjustedToVehicleType

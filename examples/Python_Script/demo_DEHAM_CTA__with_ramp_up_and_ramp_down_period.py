@@ -1,6 +1,6 @@
 """
-Demo for DEHAM CTA
-==================
+Demo for DEHAM CTA with ramp-up and ramp-down period
+====================================================
 
 This is a demo based on some publicly available figures, some educated guesses, and some random assumptions due to the
 lack of information regarding the Container Terminal Altenwerder (CTA) in the port of Hamburg. While this demo only
@@ -91,7 +91,7 @@ logger.info(__doc__)
 database_chooser = conflowgen.DatabaseChooser(
     sqlite_databases_directory=os.path.join(this_dir, "databases")
 )
-demo_file_name = "demo_deham_cta.sqlite"
+demo_file_name = "demo_deham_cta__with_ramp_up_and_ramp_down_period.sqlite"
 database_chooser.create_new_sqlite_database(
     demo_file_name,
     assume_tas=True,
@@ -109,7 +109,9 @@ container_flow_end_date = datetime.date(year=2021, month=7, day=31)
 container_flow_generation_manager.set_properties(
     name="Demo DEHAM CTA",
     start_date=container_flow_start_date,
-    end_date=container_flow_end_date
+    end_date=container_flow_end_date,
+    ramp_up_period=datetime.timedelta(days=10),
+    ramp_down_period=datetime.timedelta(days=10),
 )
 
 # Set some general assumptions regarding the container properties
@@ -120,7 +122,6 @@ container_length_distribution_manager.set_container_length_distribution({
     conflowgen.ContainerLength.forty_five_feet: 0,
     conflowgen.ContainerLength.other: 0
 })
-
 
 # Add vehicles that frequently visit the terminal.
 port_call_manager = conflowgen.PortCallManager()
@@ -315,7 +316,10 @@ logger.info("Start data export...")
 # Export important entries from SQL to CSV so that it can be further processed, e.g., by a simulation software
 export_container_flow_manager = conflowgen.ExportContainerFlowManager()
 export_container_flow_manager.export(
-    folder_name="demo-DEHAM-of-day--" + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0],
+    folder_name=(
+            "demo-DEHAM-inc-ramp-up-and-down-of-day--"
+            + str(datetime.datetime.now()).replace(":", "-").replace(" ", "--").split(".")[0]
+    ),
     path_to_export_folder=os.path.join(this_dir, "export"),
     file_format=conflowgen.ExportFileFormat.csv
 )
@@ -328,4 +332,4 @@ try:
     logger.info("Used git commit: " + last_git_commit[2:-1])
 except:  # pylint: disable=bare-except
     logger.debug("The last git commit of this repository could not be retrieved, no further version specification.")
-logger.info("Demo 'demo_DEHAM_CTA' finished successfully.")
+logger.info("Demo 'demo_DEHAM_CTA_with_ramp_up_and_down_period' finished successfully.")
