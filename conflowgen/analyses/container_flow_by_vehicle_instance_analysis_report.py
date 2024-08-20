@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging
-import typing
 
 import matplotlib.figure
 import matplotlib.pyplot as plt
@@ -36,7 +35,6 @@ class ContainerFlowByVehicleInstanceAnalysisReport(AbstractReportWithMatplotlib)
 
     def get_report_as_text(
             self,
-            vehicle_types: ModeOfTransport | str | typing.Collection = "scheduled vehicles",
             **kwargs
     ) -> str:
         """
@@ -99,7 +97,10 @@ class ContainerFlowByVehicleInstanceAnalysisReport(AbstractReportWithMatplotlib)
 
         return plain_table, vehicle_types
 
-    def get_report_as_graph(self, **kwargs) -> matplotlib.figure.Figure:
+    def get_report_as_graph(
+            self,
+            **kwargs
+    ) -> matplotlib.figure.Figure:
         """
         Keyword Args:
             vehicle_types (typing.Collection[ModeOfTransport]): A collection of vehicle types, e.g., passed as a
