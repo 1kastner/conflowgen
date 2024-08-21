@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import datetime
 import math
+import typing
 from typing import Dict, MutableSequence, Sequence, Type
 
+from conflowgen.application.services.vehicle_capacity_manager import VehicleCapacityManager
 from conflowgen.domain_models.container import Container
 from conflowgen.domain_models.distribution_repositories.container_length_distribution_repository import \
     ContainerLengthDistributionRepository
@@ -15,7 +18,6 @@ from conflowgen.domain_models.distribution_repositories.storage_requirement_dist
 from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
-from conflowgen.domain_models.repositories.large_scheduled_vehicle_repository import LargeScheduledVehicleRepository
 from conflowgen.domain_models.vehicle import AbstractLargeScheduledVehicle, LargeScheduledVehicle
 from conflowgen.tools.distribution_approximator import DistributionApproximator
 from conflowgen.application.repositories.random_seed_store_repository import get_initialised_random_object
@@ -34,7 +36,17 @@ class ContainerFactory:
         self.container_length_distribution: dict[ContainerLength, float] | None = None
         self.container_weight_distribution:  dict[ContainerLength, dict[int, float]] | None = None
         self.storage_requirement_distribution:  dict[ContainerLength, dict[StorageRequirement, float]] | None = None
-        self.large_scheduled_vehicle_repository = LargeScheduledVehicleRepository()
+        self.vehicle_capacity_manager = VehicleCapacityManager()
+
+    def set_ramp_up_and_down_times(
+            self,
+            ramp_up_period_end: typing.Optional[datetime.datetime],
+            ramp_down_period_start: typing.Optional[datetime.datetime],
+    ) -> None:
+        self.vehicle_capacity_manager.set_ramp_up_and_down_times(
+            ramp_up_period_end=ramp_up_period_end,
+            ramp_down_period_start=ramp_down_period_start
+        )
 
     def reload_distributions(self):
         """The user might change the distributions at any time, so reload them at a meaningful point of time!"""
@@ -51,7 +63,7 @@ class ContainerFactory:
         Creates all containers a large vehicle delivers to a terminal.
         """
 
-        self.large_scheduled_vehicle_repository.reset_cache()
+        self.vehicle_capacity_manager.reset_cache()
 
         created_containers: MutableSequence[Container] = []
 
@@ -60,7 +72,7 @@ class ContainerFactory:
         # noinspection PyTypeChecker
         large_scheduled_vehicle: LargeScheduledVehicle = large_scheduled_vehicle_as_subtype.large_scheduled_vehicle
 
-        free_capacity_in_teu = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
+        free_capacity_in_teu = self.vehicle_capacity_manager.get_free_capacity_for_inbound_journey(
             large_scheduled_vehicle_as_subtype
         )
 
@@ -68,22 +80,25 @@ class ContainerFactory:
         maximum_number_of_containers = int(math.ceil(free_capacity_in_teu))
         self._load_distribution_approximators(maximum_number_of_containers, delivered_by)
 
-        while (self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
-                large_scheduled_vehicle_as_subtype
-        ) > self.ignored_capacity):
+        while free_capacity_in_teu > self.ignored_capacity:
             container = self._create_single_container_for_large_scheduled_vehicle(
                 delivered_by_large_scheduled_vehicle_as_subtype=large_scheduled_vehicle_as_subtype
             )
             created_containers.append(container)
-            is_exhausted = self.large_scheduled_vehicle_repository.block_capacity_for_inbound_journey(
+            is_exhausted = self.vehicle_capacity_manager.block_capacity_for_inbound_journey(
                 vehicle=large_scheduled_vehicle_as_subtype,
                 container=container
             )
             if is_exhausted and not large_scheduled_vehicle.capacity_exhausted_while_determining_onward_transportation:
                 large_scheduled_vehicle.capacity_exhausted_while_determining_onward_transportation = True
                 large_scheduled_vehicle.save()
+                break
 
-        free_capacity = self.large_scheduled_vehicle_repository.get_free_capacity_for_inbound_journey(
+            free_capacity_in_teu = self.vehicle_capacity_manager.get_free_capacity_for_inbound_journey(
+                large_scheduled_vehicle_as_subtype
+            )
+
+        free_capacity = self.vehicle_capacity_manager.get_free_capacity_for_inbound_journey(
             large_scheduled_vehicle_as_subtype
         )
 

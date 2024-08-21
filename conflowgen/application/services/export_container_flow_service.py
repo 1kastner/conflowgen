@@ -149,7 +149,7 @@ class ExportContainerFlowService:
         # extract data from sql database
         data = list(model.select().dicts())
 
-        if type(model) == ModelSelect:  # pylint: disable=unidiomatic-typecheck  # TODO: check if isinstance works
+        if isinstance(model, ModelSelect):
             model = model.model
 
         foreign_keys_to_resolve = {}

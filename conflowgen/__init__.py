@@ -35,10 +35,10 @@ from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis import \
     InboundAndOutboundVehicleCapacityAnalysis
 from conflowgen.analyses.inbound_and_outbound_vehicle_capacity_analysis_report import \
     InboundAndOutboundVehicleCapacityAnalysisReport
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysis
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis_report import \
-    InboundToOutboundVehicleCapacityUtilizationAnalysisReport
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysis
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis_report import \
+    OutboundToInboundVehicleCapacityUtilizationAnalysisReport
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis import ContainerFlowByVehicleTypeAnalysis
 from conflowgen.analyses.container_flow_by_vehicle_type_analysis_report import \
     ContainerFlowByVehicleTypeAnalysisReport
@@ -64,6 +64,9 @@ from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_anal
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis
 from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_analysis_report import \
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysisReport
+from conflowgen.analyses.container_flow_by_vehicle_instance_analysis import ContainerFlowByVehicleInstanceAnalysis
+from conflowgen.analyses.container_flow_by_vehicle_instance_analysis_report import (
+    ContainerFlowByVehicleInstanceAnalysisReport)
 
 # Cache for analyses and previews
 from conflowgen.data_summaries.data_summaries_cache import DataSummariesCache
@@ -83,7 +86,7 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 
 # List of functions
-from conflowgen.logging.logging import setup_logger
+from conflowgen.logger.logger import setup_logger
 from conflowgen.analyses import run_all_analyses
 from conflowgen.previews import run_all_previews
 

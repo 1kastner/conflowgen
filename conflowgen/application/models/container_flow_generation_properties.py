@@ -4,6 +4,7 @@ from peewee import AutoField, CharField, DateField, TimestampField, DateTimeFiel
 
 from conflowgen.domain_models.seeders import DEFAULT_TRANSPORTATION_BUFFER
 from conflowgen.domain_models.base_model import BaseModel
+from conflowgen.metadata import __version__
 
 
 class ContainerFlowGenerationProperties(BaseModel):
@@ -14,7 +15,7 @@ class ContainerFlowGenerationProperties(BaseModel):
 
     name = CharField(
         null=True,
-        help_text="The name of the generated container flow, e.g. a scenario"
+        help_text="The name of the generated container flow, e.g., describing the scenario"
     )
 
     start_date = DateField(
@@ -25,6 +26,16 @@ class ContainerFlowGenerationProperties(BaseModel):
     end_date = DateField(
         null=True,
         help_text="The last day of the generated container flow"
+    )
+
+    ramp_up_period = FloatField(
+        default=0,
+        help_text="Number of days for the ramp-up period"
+    )
+
+    ramp_down_period = FloatField(
+        default=0,
+        help_text="Number of days for the ramp-down period"
     )
 
     generated_at = DateTimeField(
@@ -38,4 +49,8 @@ class ContainerFlowGenerationProperties(BaseModel):
 
     transportation_buffer = FloatField(
         default=DEFAULT_TRANSPORTATION_BUFFER,
+    )
+
+    conflowgen_version = CharField(
+        default=__version__
     )

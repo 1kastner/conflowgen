@@ -4,8 +4,9 @@ import datetime
 import statistics
 import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
-import matplotlib.axis
 import pandas as pd
+import matplotlib.axis
+
 
 from conflowgen.analyses.container_dwell_time_analysis import ContainerDwellTimeAnalysis
 from conflowgen.reporting import AbstractReportWithMatplotlib

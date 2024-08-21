@@ -25,11 +25,11 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):  # pylint: disable=i
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         self.vehicle_factory.create_feeder(
             capacity_in_teu=800,
-            moved_capacity=50,
+            inbound_container_volume=50,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -40,12 +40,12 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):  # pylint: disable=i
             vehicle_type=ModeOfTransport.feeder,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_feeder(
                 capacity_in_teu=-1,
-                moved_capacity=1,
+                inbound_container_volume=1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )
@@ -53,7 +53,7 @@ class TestVehicleFactory__create_feeder(unittest.TestCase):  # pylint: disable=i
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_feeder(
                 capacity_in_teu=1,
-                moved_capacity=-1,
+                inbound_container_volume=-1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )

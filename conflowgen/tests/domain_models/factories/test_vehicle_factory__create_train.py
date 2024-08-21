@@ -25,11 +25,11 @@ class TestVehicleFactory__create_train(unittest.TestCase):  # pylint: disable=in
             vehicle_type=ModeOfTransport.train,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=90,
-            average_moved_capacity=90
+            average_inbound_container_volume=90
         )
         self.vehicle_factory.create_train(
             capacity_in_teu=90,
-            moved_capacity=90,
+            inbound_container_volume=90,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -40,12 +40,12 @@ class TestVehicleFactory__create_train(unittest.TestCase):  # pylint: disable=in
             vehicle_type=ModeOfTransport.train,
             vehicle_arrives_at=datetime.datetime.now(),
             average_vehicle_capacity=800,
-            average_moved_capacity=50
+            average_inbound_container_volume=50
         )
         with self.assertRaises(UnrealisticValuesException):
             self.vehicle_factory.create_train(
                 capacity_in_teu=-1,
-                moved_capacity=1,
+                inbound_container_volume=1,
                 scheduled_arrival=datetime.datetime.now(),
                 schedule=schedule
             )

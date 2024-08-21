@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import enum
 import typing
 
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
@@ -92,13 +93,16 @@ class VehicleIdentifier(typing.NamedTuple):
     A vehicle identifier is a composition of the vehicle type, its service name, and the actual vehicle name
     """
 
+    #: The vehicle identifier as it is used in the CSV export.
+    id: typing.Optional[int]
+
     #: The vehicle type, e.g., 'deep_sea_vessel' or 'truck'.
     mode_of_transport: ModeOfTransport
 
     #: The service name, such as the name of the container service the vessel operates in. Not set for trucks.
     service_name: typing.Optional[str]
 
-    #: The name of the vehicle if given.
+    #: The name of the vehicle if given. Not set for trucks.
     vehicle_name: typing.Optional[str]
 
     #: The time of arrival of the vehicle at the terminal.
@@ -127,3 +131,22 @@ class ContainersTransportedByTruck(typing.NamedTuple):
 
     #: The number of containers moved on the outbound journey
     outbound: float
+
+
+class FlowDirection(enum.Enum):
+    """
+    Represents the flow direction based on the terminology of
+    *Handbook of Terminal Planning*, edited by Jürgen W. Böse (https://link.springer.com/book/10.1007/978-3-030-39990-0)
+    """
+
+    import_flow = "import"
+
+    export_flow = "export"
+
+    transshipment_flow = "transshipment"
+
+    undefined = "undefined"
+
+    def __str__(self) -> str:
+        # noinspection PyTypeChecker
+        return f"{self.value}"

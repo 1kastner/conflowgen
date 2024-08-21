@@ -3,14 +3,14 @@ from __future__ import annotations
 import datetime
 import typing
 
-import matplotlib.axes
 import pandas as pd
+import matplotlib.axes
 from matplotlib import pyplot as plt
 from matplotlib.ticker import FuncFormatter
 
 from conflowgen.analyses.container_flow_vehicle_type_adjustment_per_vehicle_analysis import \
     ContainerFlowVehicleTypeAdjustmentPerVehicleAnalysis
-from conflowgen.analyses.inbound_to_outbound_vehicle_capacity_utilization_analysis import VehicleIdentifier
+from conflowgen.analyses.outbound_to_inbound_vehicle_capacity_utilization_analysis import VehicleIdentifier
 from conflowgen.reporting import AbstractReportWithMatplotlib
 from conflowgen.reporting.no_data_plot import no_data_graph
 

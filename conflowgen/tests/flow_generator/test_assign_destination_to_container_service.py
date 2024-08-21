@@ -48,12 +48,12 @@ class TestAssignDestinationToContainerService(unittest.TestCase):
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=schedule.average_vehicle_capacity,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )
@@ -70,12 +70,12 @@ class TestAssignDestinationToContainerService(unittest.TestCase):
             vehicle_arrives_at=scheduled_arrival.date(),
             vehicle_arrives_at_time=scheduled_arrival.time(),
             average_vehicle_capacity=90,
-            average_moved_capacity=90,
+            average_inbound_container_volume=90,
         )
         train_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestTrain1",
             capacity_in_teu=96,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=scheduled_arrival,
             schedule=schedule
         )

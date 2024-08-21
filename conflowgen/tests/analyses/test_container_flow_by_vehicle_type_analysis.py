@@ -61,13 +61,13 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=datetime.datetime.now(),
             schedule=schedule
         )
@@ -105,13 +105,13 @@ class TestContainerFlowByVehicleTypeAnalysis(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         feeder_lsv = LargeScheduledVehicle.create(
             vehicle_name="TestFeeder1",
             capacity_in_teu=300,
-            moved_capacity=schedule.average_moved_capacity,
+            inbound_container_volume=schedule.average_inbound_container_volume,
             scheduled_arrival=one_week_later,
             schedule=schedule
         )

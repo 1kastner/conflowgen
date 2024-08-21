@@ -1,0 +1,36 @@
+name: Validate CITATION.cff
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, edited, synchronize]
+
+jobs:
+  build:
+    name: Validate CITATION.cff
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Skip Duplicate Actions
+      uses: fkirc/skip-duplicate-actions@v5
+
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.8
+
+    - name: Install cffconvert
+      run: |
+        pip3 install --user cffconvert
+        cffconvert --version
+
+    - name: Validate schema
+      run: |
+        cffconvert --validate -i CITATION.cff

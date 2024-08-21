@@ -221,7 +221,7 @@ if os.environ.get("IS_RTD", False):
     database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"]  # List of database names to download
     sqlite_databases_directory = "notebooks/data/prepared_dbs/"
     os.system("echo 'Current directory:'")
-    os.system("pwd") # Print current directory; we expect to be in the docs folder
+    os.system("pwd")  # Print current directory; we expect to be in the docs folder
     os.makedirs(sqlite_databases_directory, exist_ok=True)  # Create the destination folder if it doesn't exist
     for database_name in database_names:
         os.system(f'echo "Fetching {database_name}"')

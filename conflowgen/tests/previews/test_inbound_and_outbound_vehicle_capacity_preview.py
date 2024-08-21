@@ -82,7 +82,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
 
     def test_inbound_with_no_schedules(self):
         """If no schedules are provided, no capacity is needed"""
-        empty_capacity = self.preview.get_inbound_capacity_of_vehicles().teu
+        empty_capacity: dict = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(empty_capacity.keys()))
         for mode_of_transport in ModeOfTransport:
             capacity_in_teu = empty_capacity[mode_of_transport]
@@ -96,7 +96,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             vehicle_arrives_at=one_week_later.date(),
             vehicle_arrives_at_time=one_week_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300,
+            average_inbound_container_volume=300,
             vehicle_arrives_every_k_days=-1
         )
         capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles().teu
@@ -124,7 +124,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             vehicle_arrives_at=two_days_later.date(),
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         capacity_with_one_feeder = self.preview.get_inbound_capacity_of_vehicles().teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
@@ -151,7 +151,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             vehicle_arrives_at=two_days_later.date(),
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=300,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         capacities = self.preview.get_outbound_capacity_of_vehicles()
         capacity_with_one_feeder = capacities.used.teu
@@ -183,7 +183,7 @@ class TestInboundAndOutboundVehicleCapacityPreview(unittest.TestCase):
             vehicle_arrives_at=two_days_later.date(),
             vehicle_arrives_at_time=two_days_later.time(),
             average_vehicle_capacity=400,
-            average_moved_capacity=300
+            average_inbound_container_volume=300
         )
         capacity_with_one_feeder = self.preview.get_outbound_capacity_of_vehicles().maximum.teu
         self.assertSetEqual(set(ModeOfTransport), set(capacity_with_one_feeder.keys()))
