@@ -35,7 +35,7 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-author = 'Marvin Kastner and Ole Grasse'
+author = 'Marvin Kastner, Ole Grasse, and Shubhangi Gupta'
 current_year = datetime.datetime.now().year
 project_copyright = f'{current_year}, {author}'
 
