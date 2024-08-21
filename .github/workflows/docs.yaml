@@ -27,7 +27,7 @@ jobs:
     - name: Update Ubuntu and install pandoc
       run: |
         sudo apt-get update && sudo apt-get upgrade
-        sudo apt-get install pandoc texlive texlive-publishers texlive-science texlive-latex-recommended `
+        sudo apt-get install pandoc texlive texlive-publishers texlive-science texlive-latex-recommended \
             texlive-fonts-extra latexmk
 
     - uses: actions/checkout@v3
