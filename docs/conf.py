@@ -119,7 +119,7 @@ mathjax3_config = {
 
 # -- Options for LaTeX -------------------------------------------------------
 
-latex_engine = 'lualatex'
+latex_engine = 'pdflatex'  # 'lualatex'
 
 latex_elements = {
     'extrapackages':
