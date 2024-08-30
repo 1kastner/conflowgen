@@ -62,6 +62,7 @@ setup(
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
+            'sphinx-last-updated-by-git',  # add information about latest modification of a file
 
             # checking code quality
             'pylint',  # lint Python code
