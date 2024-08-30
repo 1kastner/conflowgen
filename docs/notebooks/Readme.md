@@ -1,5 +1,5 @@
 To launch analyses.ipynb - [![Binder](https://img.shields.io/badge/launch-analyses-blue
-)](https://mybinder.org/v2/gh/HarshithaPrabhuswamy/conflowgen/main?labpath=docs%2Fnotebooks%2Fanalyses.ipynb)
+)](https://mybinder.org/v2/gh/1kastner/conflowgen/main?labpath=docs%2Fnotebooks%2Fanalyses.ipynb)
 
 To launch first_steps-ipynb - [![Binder](https://img.shields.io/badge/launch-first_steps-orange)](https://mybinder.org/v2/gh/HarshithaPrabhuswamy/conflowgen/main?labpath=docs%2Fnotebooks%2Ffirst_steps.ipynb)
 
