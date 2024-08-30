@@ -59,6 +59,8 @@ extensions = [
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
+
+    'sphinx_last_updated_by_git',  # Add usage of git stamp to documentation
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -89,6 +91,10 @@ python_use_unqualified_type_names = True  # workaround, see https://github.com/s
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "sphinx_rtd_theme"
+
+# -- Options for html date format for the last updated information-------------------------------------------------
+
+html_last_updated_fmt = "%b %d, %Y"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
