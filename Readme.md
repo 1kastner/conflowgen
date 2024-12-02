@@ -73,3 +73,23 @@ The next steps are described
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
 https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.
+
+<h1>Jupyter Notebook Tools for Sphinx</h1>
+
+nbsphinx is a Sphinx extension that provides a source parser for *.ipynb files. Custom Sphinx directives are used to show Jupyter Notebook code cells (and of course their results) in both HTML and LaTeX output. Un-evaluated notebooks -- i.e. notebooks without stored output cells -- will be automatically executed during the Sphinx build process.
+
+<b><i>Quick Start:</i></b>
+
+1. Install nbsphinx
+2. Edit your conf.py and add 'nbsphinx' to extensions.
+3. Edit your index.rst and add the names of your *.ipynb files to the toctree.
+4. Run Sphinx!
+
+<b><i>Online documentation (and example of use):</i></b>
+https://nbsphinx.readthedocs.io/
+
+<b><i>Source code repository (and issue tracker):</i></b>
+https://github.com/spatialaudio/nbsphinx/
+
+<b><i>License:</i></b>
+MIT -- see the file LICENSE for details.
