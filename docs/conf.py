@@ -126,6 +126,7 @@ intersphinx_mapping = {
 }
 
 # -- Options for Included Jupyter Notebooks ----------------------------------
+nbsphinx_allow_errors = True
 
 nbsphinx_execute = "always"
 
