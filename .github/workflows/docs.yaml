@@ -52,3 +52,8 @@ jobs:
     - name: Check links
       run: |
         python -m sphinx -W --keep-going ./docs/ ./docs/_build/linkcheck/ -b linkcheck
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Fetch all history for all branches and tags
