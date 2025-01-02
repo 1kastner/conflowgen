@@ -73,3 +73,8 @@ The next steps are described
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
 https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=1kastner/conflowgen&type=Date)](https://star-history.com/#1kastner/conflowgen&Date)
+
