@@ -219,8 +219,6 @@ nbsphinx_prolog = r"""
         <!-- nbsphinx prolog - end -->
 """
 
-nbsphinx_allow_errors = True
-
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     os.system("echo 'Fetching sqlite databases'")
