@@ -149,7 +149,7 @@ numfig = True
 # -- Style nbsphinx notebook rendering ----------------------------------------
 
 nbsphinx_prolog = r"""
-{% set docname = 'doc/' + env.doc2path(env.docname, base=None)|string %}
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None)|string %}
 .. raw:: html
 
     <!-- nbsphinx prolog - start -->
@@ -185,30 +185,30 @@ nbsphinx_prolog = r"""
 
     </style>
     
-    # This is processed by Jinja2 and inserted before each notebook
+    <div class="admonition note">
+    This page was generated from
+    <a class="reference external" href="https://github.com/1kastner/conflowgen/blob/main{{ env.config.release|e }}/{{ docname|e }}">{{ docname|e }}</a>.
+    Interactive online version:
+    <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/1kastner/conflowgen/main{{ env.config.release|e }}?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
+    <a href="{{ env.docname.split('/')|last|e + '.ipynb' }}" class="reference download internal" download>Download notebook</a>.
+    <script>
+        if (document.location.host) {
+        let nbviewer_link = document.createElement('a');
+        nbviewer_link.setAttribute('href',
+            'https://nbviewer.org/url' +
+            (window.location.protocol == 'https:' ? 's/' : '/') +
+            window.location.host +
+            window.location.pathname.slice(0, -4) +
+            'ipynb');
+        nbviewer_link.innerHTML = 'Or view it on <em>nbviewer</em>';
+        nbviewer_link.classList.add('reference');
+        nbviewer_link.classList.add('external');
+        document.currentScript.replaceWith(nbviewer_link, '.');
+        }
+    </script>
+    </div>
 
-        <div class="admonition note">
-        This page was generated from
-        <a class="reference external" href="https://github.com/1kastner/conflowgen/{{ env.config.release|e }}/{{ docname|e }}">{{ docname|e }}</a>.
-        Interactive online version:
-        <span style="white-space: nowrap;"><a href="https://github.com/1kastner/conflowgen/{{ env.config.release|e }}?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
-        <a href="{{ env.docname.split('/')|last|e + '.ipynb' }}" class="reference download internal" download>Download notebook</a>.
-        <script>
-            if (document.location.host) {
-            let nbviewer_link = document.createElement('a');
-            nbviewer_link.setAttribute('href',
-                'https://nbviewer.org/url' +
-                (window.location.protocol == 'https:' ? 's/' : '/') +
-                window.location.host +
-                window.location.pathname.slice(0, -4) +
-                'ipynb');
-            nbviewer_link.innerHTML = 'Or view it on <em>nbviewer</em>';
-            nbviewer_link.classList.add('reference');
-            nbviewer_link.classList.add('external');
-            document.currentScript.replaceWith(nbviewer_link, '.');
-            }
-        </script>
-        </div>
+.. only:: latex
 
     .. raw:: latex
 
@@ -217,8 +217,9 @@ nbsphinx_prolog = r"""
         \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
         
         <!-- nbsphinx prolog - end -->
-
 """
+
+nbsphinx_allow_errors = True
 
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
