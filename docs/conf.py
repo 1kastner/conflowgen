@@ -35,7 +35,7 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-author = 'Marvin Kastner and Ole Grasse'
+author = 'Marvin Kastner, Ole Grasse, and Shubhangi Gupta'
 current_year = datetime.datetime.now().year
 project_copyright = f'{current_year}, {author}'
 
@@ -54,11 +54,13 @@ extensions = [
     'sphinx.ext.autosectionlabel',  # create reference for each section
     'sphinx.ext.viewcode',  # create html page for each source file and link between it and the docs
 
+    'sphinxcontrib.cairosvgconverter',  # allow PDF creation
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
+    'sphinx_simplepdf',  # create PDFs
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -113,6 +115,31 @@ mathjax3_config = {
         'inlineMath': [["\\(", "\\)"]],
         'displayMath': [["\\[", "\\]"]],
     },
+}
+
+# -- Options for LaTeX -------------------------------------------------------
+
+latex_engine = 'pdflatex'  # 'lualatex'
+
+latex_elements = {
+    'extrapackages':
+        r'''
+        % START: LaTeX extra packages set through conf.py
+        
+        \usepackage{newunicodechar}  % allows to use ≤, see later preamble
+        \usepackage{underscore}  % auto-escape underscore characters
+        
+        % END: LaTeX extra packages set through conf.py
+        ''',
+
+    'preamble':
+        r'''
+            % START: LaTeX preamble document setup through conf.py
+            
+            \newunicodechar{≤}{\ensuremath{\leq}}
+            
+            % END: LaTeX preamble document setup through conf.py
+        '''
 }
 
 # -- Options for Linking  ----------------------------------------------------
@@ -204,6 +231,7 @@ nbsphinx_prolog = r"""
         <!-- nbsphinx prolog - end -->
 """
 
+simplepdf_debug = True
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     os.system("echo 'Fetching sqlite databases'")
