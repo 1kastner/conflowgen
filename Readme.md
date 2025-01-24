@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/latest/?badge=latest)
 [![documentation built](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml)
 [![CITATION.cff valid](https://github.com/1kastner/conflowgen/actions/workflows/citation.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/citation.yml)
 
