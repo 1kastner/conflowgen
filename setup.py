@@ -61,6 +61,7 @@ setup(
             'sphinx-toolbox >=3',  # additional dependency of enum_tools - restrict version to improve pip resolution
             'myst-parser',  # for Contributing.md
             'sphinxcontrib-bibtex >=2.4',  # a good help for citing - restrict version to improve pip resolution
+            'sphinx-last-updated-by-git',
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
@@ -77,7 +78,7 @@ setup(
             # pip resolution issue - https://github.com/pypa/pip/issues/12430#issuecomment-1849059000
             'sphinx-tabs',
 
-            'sphinx-last-updated-by-git'
+            
         ],
         # a collection of nice-to-haves for working on Jupyter Notebooks - just a favorites list of the authors
         'jupyterlab': [
