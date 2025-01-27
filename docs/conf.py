@@ -59,6 +59,7 @@ extensions = [
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
+    'sphinx_last_updated_by_git', # Extension to display the last update timestamp and author in the documentation
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -219,3 +220,4 @@ if os.environ.get("IS_RTD", False):
         os.system(f'echo \'mv "{database_name}.sqlite" "{sqlite_databases_directory}"\'')
         os.system(f'mv "{database_name}.sqlite" "{sqlite_databases_directory}"')
     os.system("echo 'sqlite databases fetched'")
+
