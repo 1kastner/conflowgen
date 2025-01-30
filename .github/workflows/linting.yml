@@ -43,9 +43,12 @@ jobs:
         pylint setup.py
         pylint conflowgen.tests
 
-    - name: Check code quality with flake8 and flake8_nb
+    - name: Check code quality with flake8
       run: |
         flake8 --version
         flake8
+
+    - name: Check code quality with flake8_nb
+      run: |
         flake8_nb --version
         flake8_nb
