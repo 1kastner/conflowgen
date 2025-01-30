@@ -28,12 +28,12 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         lfs: false
+        fetch-depth: 0
 
     - run: |
-        git fetch --unshallow || true
         curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_poc.sqlite"
         curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_deham_cta.sqlite"
         mkdir -p docs/notebooks/data/prepared_dbs
