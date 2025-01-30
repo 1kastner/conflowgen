@@ -69,7 +69,6 @@ setup(
             # checking code quality
             'pylint',  # lint Python code
             'flake8',  # lint Python code
-            'flake8_nb',  # lint code in Jupyter Notebooks
 
             # publish at PyPI
             'wheel',  # use command 'bdist_wheel'

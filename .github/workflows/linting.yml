@@ -48,7 +48,4 @@ jobs:
         flake8 --version
         flake8
 
-    - name: Check code quality with flake8_nb
-      run: |
-        flake8_nb --version
-        flake8_nb
+    - uses: mhitza/flake8-jupyter-notebook@v1
