@@ -49,3 +49,5 @@ jobs:
         flake8
 
     - uses: mhitza/flake8-jupyter-notebook@v1
+      with:
+        debug: 'true'
