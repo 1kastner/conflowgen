@@ -1,5 +1,3 @@
-# requirements.txt
-
 # This file installs the package defined in setup.py and its dependencies.
 # The single dot (.) below refers to the current directory, indicating
 # that pip should install the package specified in setup.py.

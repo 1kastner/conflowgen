@@ -207,7 +207,7 @@ class Uniform(ContinuousDistribution, short_name="uniform"):
 
 def multiply_discretized_probability_densities(*probabilities: typing.Collection[float]) -> typing.Sequence[float]:
     assert len({len(p) for p in probabilities}) == 1, "All probability vectors have the same length, but found these:" \
-                                                      f"'{ [len(p) for p in probabilities] } "
+                                                      f"'{[len(p) for p in probabilities]}"
     for i, probability_vector in enumerate(probabilities):
         assert not np.isnan(probability_vector).any(), \
             f"All probability vector should contain only numbers, but found a NaN in vector {i}: {probability_vector}"

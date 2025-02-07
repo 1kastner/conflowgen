@@ -52,8 +52,6 @@ class ContainerDestinationDistributionRepository:
     @classmethod
     def get_distribution(cls) -> Dict[Schedule, Dict[Destination, float]]:
         """Loads a distribution for all schedules that have destinations associated with them"""
-        destination: Destination
-        schedule: Schedule
         distributions = {
             schedule: {
                 destination: cls._get_fraction(
