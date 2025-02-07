@@ -48,6 +48,11 @@ jobs:
         flake8 --version
         flake8
 
-    - uses: mhitza/flake8-jupyter-notebook@v1
-      with:
-        debug: 'true'
+    - name: Install flake8_nb - this downgrades flake8 as of 07.02.2025!
+      run: |
+        pip3 install --user flake8_nb
+
+    - name: Check code quality with flake8_nb
+      run: |
+        flake8_nb --version
+        flake8_nb
