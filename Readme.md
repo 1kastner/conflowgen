@@ -1,4 +1,4 @@
-[![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/conflowgen/badge/?version=latest)](https://conflowgen.readthedocs.io/latest/?badge=latest)
 [![documentation built](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/docs.yaml)
 [![CITATION.cff valid](https://github.com/1kastner/conflowgen/actions/workflows/citation.yml/badge.svg)](https://github.com/1kastner/conflowgen/actions/workflows/citation.yml)
 
@@ -73,3 +73,8 @@ The next steps are described
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
 https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=1kastner/conflowgen&type=Date)](https://star-history.com/#1kastner/conflowgen&Date)
+

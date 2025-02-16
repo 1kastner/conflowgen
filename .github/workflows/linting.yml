@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, "3.10"]
+        python-version: [3.9, "3.10", "3.12"]
 
     steps:
 
@@ -43,9 +43,16 @@ jobs:
         pylint setup.py
         pylint conflowgen.tests
 
-    - name: Check code quality with flake8 and flake8_nb
+    - name: Check code quality with flake8
       run: |
         flake8 --version
         flake8
+
+    - name: Install flake8_nb - this downgrades flake8 as of 07.02.2025!
+      run: |
+        pip3 install --user flake8_nb
+
+    - name: Check code quality with flake8_nb
+      run: |
         flake8_nb --version
         flake8_nb

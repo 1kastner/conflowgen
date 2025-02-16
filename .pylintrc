@@ -54,6 +54,7 @@ disable=
     W0612, # pylint cannot detect that some variables are type-hinted before a for-loop
     R0903, # too-few-public-methods -- this hits e.g. the peewee BaseModels
     R0913, # too-many-arguments -- leave it up to the programmers to decide this
+    R0917, # too-many-positional-arguments -- leave it up to the programmers to decide this
     W0107, # unnecessary-pass -- leave it up to the programmers to decide this
     R1710, # inconsistent-return-statements -- leave it up to the programmers to decide this
     W0511, # fixme - allow todos in the code -- this should be eventually changed but it is not top priority

@@ -14,6 +14,12 @@ import datetime
 import os
 import sys
 
+from docutils import nodes
+from sphinx.addnodes import pending_xref
+from sphinx.application import Sphinx
+from sphinx.environment import BuildEnvironment
+from sphinx.ext.intersphinx import missing_reference
+
 # import matplotlib here to avoid that the cache is built while the Jupyter Notebooks that are part of this
 # documentation are executed. Because whenever matplotlib is imported in a Jupyter Notebook for the first time,
 # it leaves the message "Matplotlib is building the font cache; this may take a moment." which is not looking nice.
@@ -54,12 +60,14 @@ extensions = [
     'sphinx.ext.autosectionlabel',  # create reference for each section
     'sphinx.ext.viewcode',  # create html page for each source file and link between it and the docs
 
+    # sphinx extensions from other Python packages
     'sphinxcontrib.cairosvgconverter',  # allow PDF creation
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
+    'sphinx_last_updated_by_git',  # Extension to display the last update timestamp and author in the documentation
     'sphinx_simplepdf',  # create PDFs
 ]
 
@@ -175,7 +183,8 @@ numfig = True
 
 # -- Style nbsphinx notebook rendering ----------------------------------------
 
-nbsphinx_prolog = """
+nbsphinx_prolog = r"""
+{% set docname = 'docs/' + env.doc2path(env.docname, base=None)|string %}
 .. raw:: html
 
     <!-- nbsphinx prolog - start -->
@@ -211,10 +220,94 @@ nbsphinx_prolog = """
 
     </style>
     
-    <!-- nbsphinx prolog - end -->
+    <div class="admonition note">
+        This page was generated from
+        <a class="reference external" href="https://github.com/1kastner/conflowgen/blob/main{{ env.config.release|e }}/{{ docname|e }}">
+            {{ docname|e }}
+        </a>.
+    
+        Interactive online version:
+        <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/1kastner/conflowgen/main{{ env.config.release|e }}?filepath={{ docname|e }}">
+            <img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.
+        </span>
+    
+        <a href="{{ env.docname.split('/')|last|e + '.ipynb' }}" class="reference download internal" download>
+            Download notebook
+        </a>.
+    </div>
+
+.. only:: latex
+
+    .. raw:: latex
+
+        \nbsphinxstartnotebook{\scriptsize\noindent\strut
+        \textcolor{gray}{The following section was generated from
+        \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
+        
+        <!-- nbsphinx prolog - end -->
 """
 
+
+def fix_reference(
+    app: Sphinx,
+        env: BuildEnvironment,
+        node: pending_xref,
+        contnode: nodes.TextElement,
+) -> nodes.reference | None:
+    """
+    Fix some intersphinx references that are broken.
+    """
+
+    if node["refdomain"] == "py":
+
+        # Replace plotly.graph_objs._figure.Figure with plotly.graph_objects.Figure
+        if node["reftarget"] == "plotly.graph_objs._figure.Figure":
+            node["reftarget"] = "plotly.graph_objects.Figure"
+
+        return missing_reference(app, env, node, contnode)
+
+    return None
+
+
+def setup(app: Sphinx) -> None:
+    """
+    Force sphinx to fix additional things on setup.
+    """
+    app.connect("missing-reference", fix_reference)
+
+
+
+def fix_reference(
+    app: Sphinx,
+        env: BuildEnvironment,
+        node: pending_xref,
+        contnode: nodes.TextElement,
+) -> nodes.reference | None:
+    """
+    Fix some intersphinx references that are broken.
+    """
+
+    if node["refdomain"] == "py":
+
+        # Replace plotly.graph_objs._figure.Figure with plotly.graph_objects.Figure
+        if node["reftarget"] == "plotly.graph_objs._figure.Figure":
+            node["reftarget"] = "plotly.graph_objects.Figure"
+
+        return missing_reference(app, env, node, contnode)
+
+    return None
+
+
+def setup(app: Sphinx) -> None:
+    """
+    Force sphinx to fix additional things on setup.
+    """
+    app.connect("missing-reference", fix_reference)
+
+
 simplepdf_debug = True
+
+
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
     os.system("echo 'Fetching sqlite databases'")

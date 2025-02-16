@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, "3.10"]  # Check the oldest and newest currently supported Python versions
+        python-version: [3.9, "3.10", "3.13"]  # Check the oldest and newest currently supported Python versions
 
     steps:
 
@@ -30,7 +30,11 @@ jobs:
         sudo apt-get install pandoc texlive texlive-publishers texlive-science texlive-latex-recommended \
             texlive-fonts-extra latexmk
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        lfs: false
+        fetch-depth: 0
+
     - run: |
         curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_poc.sqlite"
         curl -LJO "https://media.tuhh.de/mls/software/conflowgen/docs/data/prepared_dbs/demo_deham_cta.sqlite"
