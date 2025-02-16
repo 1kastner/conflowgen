@@ -65,6 +65,7 @@ setup(
             'nbsphinx',  # use Jupyter Notebooks in the documentation
             'ipython',  # for setting up the pygments_lexer
             'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
+            'docutils',  # for typehinting inside conf.py
 
             # checking code quality
             'pylint',  # lint Python code
