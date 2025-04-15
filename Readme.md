@@ -69,7 +69,7 @@ database_chooser.create_new_sqlite_database("new_example.sqlite")
 ```
 
 The next steps are described
-[in the documentation](https://conflowgen.readthedocs.io/en/latest/).
+[in the documentation](https://conflowgen.readthedocs.io/latest/notebooks/first_steps.html).
 
 If you use ConFlowGen and decide to publish your results, we would be glad if you mention our work as defined at
 https://conflowgen.readthedocs.io/en/latest/background.html#presentation-of-conflowgen.
