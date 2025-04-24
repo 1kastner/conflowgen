@@ -9,7 +9,6 @@ dynamic = [
     "license",
     "description",
     "readme",
-    "requires-python",
 ]
 authors = [
   {name = "Marvin Kastner", email = "marvin.kastner@tuhh.de"},
