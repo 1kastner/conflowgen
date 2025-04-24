@@ -92,7 +92,7 @@ The invocation should be equivalent to `python -m sphinx -W --keep-going ./docs 
 For checking the code quality, pylint, flake8, and flake8_nb are used.
 Pylint is run by executing `pylint conflowgen` and `pylint setup.py` on the project root level.
 For flake8, simply invoke `flake8` at the same level.
-Likewise, `flake8_nb` is invoked in the same manner.
+Likewise, `ruff check` lints the whole project, including the Jupyter notebooks.
 
 ## Tracking dependencies
 
@@ -112,7 +112,6 @@ This way, past setups can be recreated in the future.
 
 The project is published at the following places:
 - [PyPI](https://pypi.org/project/conflowgen/)
-- [anaconda](https://anaconda.org/mkastner/conflowgen)
 - [conda-forge](https://github.com/conda-forge/conflowgen-feedstock)
 - [GitHub](https://github.com/1kastner/conflowgen/releases)
 - [zenodo](https://zenodo.org/record/6280381)

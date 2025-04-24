@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+import typing  # noqa: F401, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 import matplotlib.axes
 
 from conflowgen.analyses.modal_split_analysis import ModalSplitAnalysis
