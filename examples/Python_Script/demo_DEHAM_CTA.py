@@ -326,6 +326,7 @@ logger.info(f"ConFlowGen {conflowgen.__version__} from {conflowgen.__file__} was
 try:
     last_git_commit = str(subprocess.check_output(["git", "log", "-1"]).strip())  # nosec B607
     logger.info("Used git commit: " + last_git_commit[2:-1])
-except:  # pylint: disable=bare-except
+except CalledProcessError as e:
+    logger.error(e, exc_info=True)
     logger.debug("The last git commit of this repository could not be retrieved, no further version specification.")
 logger.info("Demo 'demo_DEHAM_CTA' finished successfully.")
