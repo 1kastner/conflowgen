@@ -9,11 +9,11 @@ dynamic = [
     "license",
     "description",
     "readme",
-    "requires-python",
 ]
 authors = [
   {name = "Marvin Kastner", email = "marvin.kastner@tuhh.de"},
 ]
+requires-python = ">=3.9"
 dependencies = [
     # working with distributions and statistics
     "scipy >=1.10.0-rc1",  # used for, e.g., the lognorm distribution, version fixed due to CVE-2023-25399
@@ -63,6 +63,7 @@ dev = [
     # checking code quality
     'pylint',  # lint Python code
     'flake8',  # lint Python code
+    'ruff',  # lint Python code, also inside Jupyter notebooks
 
     # publish at PyPI
     'wheel',  # use command 'bdist_wheel'
