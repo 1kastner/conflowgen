@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 import datetime
-import typing  # noqa, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
+import typing  # noqa: F401, pylint: disable=unused-import  # lgtm [py/unused-import]  # used in the docstring
 
 import numpy as np
 
