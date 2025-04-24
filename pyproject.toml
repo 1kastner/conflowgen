@@ -63,6 +63,7 @@ dev = [
     # checking code quality
     'pylint',  # lint Python code
     'flake8',  # lint Python code
+    'ruff',  # lint Python code, also inside Jupyter notebooks
 
     # publish at PyPI
     'wheel',  # use command 'bdist_wheel'
