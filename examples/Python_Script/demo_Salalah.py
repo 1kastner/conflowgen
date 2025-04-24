@@ -59,7 +59,7 @@ database_chooser.create_new_sqlite_database(
 # Set settings
 container_flow_generation_manager = conflowgen.ContainerFlowGenerationManager()
 container_flow_generation_manager.set_properties(
-    name=f"Salalah April_May 2024",
+    name= "Salalah April_May 2024",
     start_date=datetime.datetime(2024, 4, 16),
     end_date=datetime.datetime(2024, 5, 15),
     ramp_up_period=datetime.timedelta(days=7),
@@ -165,7 +165,7 @@ for index, row in df.iterrows():
     elif casted_vessel_type == conflowgen.ModeOfTransport.deep_sea_vessel:
         moved_inbound_volume_by_deep_sea_vessel += containers_moved_on_journey
     else:
-        raise Exception(f"{vessel_type=}")
+        raise Exception(f"Unknown vessel type: {vessel_type=}")
 
     port_call_manager.add_vehicle(
         vehicle_type=casted_vessel_type,
