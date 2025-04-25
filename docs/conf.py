@@ -250,38 +250,9 @@ nbsphinx_prolog = r"""
 
 def fix_reference(
     app: Sphinx,
-        env: BuildEnvironment,
-        node: pending_xref,
-        contnode: nodes.TextElement,
-) -> nodes.reference | None:
-    """
-    Fix some intersphinx references that are broken.
-    """
-
-    if node["refdomain"] == "py":
-
-        # Replace plotly.graph_objs._figure.Figure with plotly.graph_objects.Figure
-        if node["reftarget"] == "plotly.graph_objs._figure.Figure":
-            node["reftarget"] = "plotly.graph_objects.Figure"
-
-        return missing_reference(app, env, node, contnode)
-
-    return None
-
-
-def setup(app: Sphinx) -> None:
-    """
-    Force sphinx to fix additional things on setup.
-    """
-    app.connect("missing-reference", fix_reference)
-
-
-
-def fix_reference(
-    app: Sphinx,
-        env: BuildEnvironment,
-        node: pending_xref,
-        contnode: nodes.TextElement,
+    env: BuildEnvironment,
+    node: pending_xref,
+    contnode: nodes.TextElement,
 ) -> nodes.reference | None:
     """
     Fix some intersphinx references that are broken.
