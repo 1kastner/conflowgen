@@ -60,6 +60,7 @@ dev = [
     'ipython',  # for setting up the pygments_lexer
     'ipykernel',  # for allowing nbsphinx to execute the Jupyter Notebooks
     'docutils',  # for typehinting inside conf.py
+    'sphinx_simplepdf',
 
     # checking code quality
     'pylint',  # lint Python code
