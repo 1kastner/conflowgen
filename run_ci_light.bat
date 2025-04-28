@@ -64,8 +64,8 @@ flake8 || (
     EXIT /B
 )
 
-flake8_nb || (
-    ECHO.While linting, flake8_nb failed!
+ruff check || (
+    ECHO.While linting, ruff failed!
     EXIT /B
 )
 
