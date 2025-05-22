@@ -41,7 +41,7 @@ sys.path.insert(
 # -- Project information -----------------------------------------------------
 
 project = 'ConFlowGen'
-author = 'Marvin Kastner and Ole Grasse'
+author = 'Marvin Kastner, Ole Grasse, and Shubhangi Gupta'
 current_year = datetime.datetime.now().year
 project_copyright = f'{current_year}, {author}'
 
@@ -61,12 +61,14 @@ extensions = [
     'sphinx.ext.viewcode',  # create html page for each source file and link between it and the docs
 
     # sphinx extensions from other Python packages
+    'sphinxcontrib.cairosvgconverter',  # allow PDF creation
     'sphinxcontrib.bibtex',  # allow bib style citation
     'myst_parser',  # allow Markdown text, e.g., for documents from the GitHub repository
     'enum_tools.autoenum',  # automatically document enums
     'sphinx_toolbox.more_autodoc.autonamedtuple',  # automatically document namedtuples
     'nbsphinx',  # use Jupyter notebooks to add programmatically created visuals
     'sphinx_last_updated_by_git',  # Extension to display the last update timestamp and author in the documentation
+    'sphinx_simplepdf',  # create PDFs
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -121,6 +123,31 @@ mathjax3_config = {
         'inlineMath': [["\\(", "\\)"]],
         'displayMath': [["\\[", "\\]"]],
     },
+}
+
+# -- Options for LaTeX -------------------------------------------------------
+
+latex_engine = 'pdflatex'  # 'lualatex'
+
+latex_elements = {
+    'extrapackages':
+        r'''
+        % START: LaTeX extra packages set through conf.py
+        
+        \usepackage{newunicodechar}  % allows to use ≤, see later preamble
+        \usepackage{underscore}  % auto-escape underscore characters
+        
+        % END: LaTeX extra packages set through conf.py
+        ''',
+
+    'preamble':
+        r'''
+            % START: LaTeX preamble document setup through conf.py
+            
+            \newunicodechar{≤}{\ensuremath{\leq}}
+            
+            % END: LaTeX preamble document setup through conf.py
+        '''
 }
 
 # -- Options for Linking  ----------------------------------------------------
@@ -223,9 +250,9 @@ nbsphinx_prolog = r"""
 
 def fix_reference(
     app: Sphinx,
-        env: BuildEnvironment,
-        node: pending_xref,
-        contnode: nodes.TextElement,
+    env: BuildEnvironment,
+    node: pending_xref,
+    contnode: nodes.TextElement,
 ) -> nodes.reference | None:
     """
     Fix some intersphinx references that are broken.
@@ -247,6 +274,9 @@ def setup(app: Sphinx) -> None:
     Force sphinx to fix additional things on setup.
     """
     app.connect("missing-reference", fix_reference)
+
+
+simplepdf_debug = True
 
 
 if os.environ.get("IS_RTD", False):
