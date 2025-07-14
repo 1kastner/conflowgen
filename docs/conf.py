@@ -269,4 +269,4 @@ if os.environ.get("IS_RTD", False):
     # Either download and install Chrome yourself following Google's instructions for your operating system,
     # or install it from your terminal by running:
     os.system("echo 'Install chrome....'")
-    os.system("plotly_get_chrome")
+    os.system("plotly_get_chrome -y")
