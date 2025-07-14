@@ -264,3 +264,8 @@ if os.environ.get("IS_RTD", False):
         os.system(f'echo \'mv "{database_name}.sqlite" "{sqlite_databases_directory}"\'')
         os.system(f'mv "{database_name}.sqlite" "{sqlite_databases_directory}"')
     os.system("echo 'sqlite databases fetched'")
+
+    # Kaleido requires Google Chrome to be installed.
+    # Either download and install Chrome yourself following Google's instructions for your operating system,
+    # or install it from your terminal by running:
+    os.system("plotly_get_chrome")
