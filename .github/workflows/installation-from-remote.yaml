@@ -37,7 +37,8 @@ jobs:
     - name: Prepare tests
       run: |
         conda activate test-install-conflowgen
-        conda install -c conda-forge pillow>=9.0
+        conda install -c conda-forge 'pillow>=9.0'
+        kaleido_get_chrome -y
 
     - name: Run tests
       run: |
