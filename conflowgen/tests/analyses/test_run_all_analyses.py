@@ -28,5 +28,5 @@ class TestRunAllAnalyses(UnitTestCaseWithMatplotlib):
         with unittest.mock.patch("matplotlib.pyplot.show"):
             with self.assertLogs('conflowgen', level='INFO') as context:
                 print("Before run_all_analyses")
-                run_all_analyses(as_text=False, as_graph=True, static_graphs=True)
+                run_all_analyses(as_text=False, as_graph=True)
                 self.assertEqual(len(context.output), 29)
