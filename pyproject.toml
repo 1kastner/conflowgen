@@ -32,7 +32,7 @@ dependencies = [
     # for creating the visuals
     'matplotlib',  # default plots such as bar charts, pie charts, etc.
     'plotly',  # useful for, e.g., Sankey diagrams
-    'kaleido',  # plotly depends on this package for exporting its figures, we got this as a present
+    'kaleido>=1.0',  # plotly depends on this package for exporting its figures, we got this as a present
 ]
 
 [project.optional-dependencies]
