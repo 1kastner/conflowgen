@@ -37,7 +37,7 @@ jobs:
     - name: Prepare tests
       run: |
         conda activate test-install-conflowgen
-        conda install -c conda-forge 'pillow>=9.0' 'python-kaleido<0.2'
+        conda install -c conda-forge 'pillow>=9.0'
 
     - name: Run tests
       run: |
