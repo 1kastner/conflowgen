@@ -71,7 +71,7 @@ jobs:
         conda update conda
         conda info
         conda activate base
-        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest parameterized 'python-kaleido<0.2'
+        conda create -n test-install-conflowgen -c conda-forge conflowgen pytest parameterized
 
     - name: Run tests
       run: |
