@@ -1,4 +1,4 @@
-__version__ = "3.0.0"
+__version__ = "3.0.1"
 __license__ = "MIT"
 __description__ = """
 A generator for synthetic container flows at maritime container terminals with a focus on yard operations
