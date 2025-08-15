@@ -11,12 +11,12 @@ ECHO Deleting finished
 
 ECHO.
 ECHO Create files that are meant to be distributed
-CALL python setup.py sdist bdist_wheel || PAUSE
+CALL python -m build || PAUSE
 ECHO.
 ECHO Creation finished
 
 ECHO Checking files that are meant to be distributed
-CALL twine check .\dist\*
+CALL python -m twine check .\dist\*
 ECHO.
 ECHO Please check whether the twine check passed in all instances.
 PAUSE
