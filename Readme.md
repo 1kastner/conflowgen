@@ -44,7 +44,7 @@ pip install conflowgen
 In addition, conflowgen is also available on conda-forge.
 
 ```bash
-conda install -c conda-forge conflowgen
+conda install conda-forge::conflowgen
 ```
 
 If you want to download all examples including simulation models, prepared SQLite databases, and Excel tables, it is best to obtain a full copy of this repository.
