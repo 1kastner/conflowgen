@@ -26,7 +26,9 @@ jobs:
 
     - name: Update Ubuntu and install pandoc
       run: |
-        sudo apt-get update && sudo apt-get upgrade && sudo apt-get install pandoc
+        sudo apt-get update && sudo apt-get upgrade
+        sudo apt-get install pandoc texlive texlive-publishers texlive-science texlive-latex-recommended \
+            texlive-fonts-extra latexmk
 
     - uses: actions/checkout@v4
       with:
@@ -49,9 +51,13 @@ jobs:
       run: |
         pip3 install --user -e .[dev]
 
-    - name: Build documentation and check for warnings
+    - name: Build HTML documentation and check for warnings
       run: |
         cd ./docs/ && make html SPHINXOPTS="-W --keep-going"
+
+    - name: Build PDF documentation and check for warnings
+      run: |
+        cd ./docs/ && make latexpdf SPHINXOPTS="-W --keep-going"
 
     - name: Check links
       run: |
