@@ -11,7 +11,7 @@ jobs:
   build-conda-on-windows:
 
     name: ConFlowGen installation via conda on Windows
-    runs-on: windows-2019
+    runs-on: windows-2025
     env:
       MPLBACKEND: Agg
 
@@ -37,7 +37,7 @@ jobs:
     - name: Prepare tests
       run: |
         conda activate test-install-conflowgen
-        conda install -c conda-forge pillow>=9.0
+        conda install -c conda-forge 'pillow>=9.0'
 
     - name: Run tests
       run: |
@@ -84,7 +84,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019]
+        os: [ubuntu-latest, windows-2025]
 
     name: ConFlowGen installation via pip
     runs-on: ${{ matrix.os }}

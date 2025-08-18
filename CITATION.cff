@@ -29,7 +29,7 @@ authors:
     email: shubhangi.gupta@tuhh.de
     affiliation: Hamburg University of Technology (TUHH), Institute of Maritime Logistics
     orcid: 'https://orcid.org/0009-0003-3574-2899'
-version: 3.0.0
+version: 3.0.1
 repository-code: "https://github.com/1kastner/conflowgen"
 keywords:
   - logistics

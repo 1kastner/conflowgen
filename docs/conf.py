@@ -281,7 +281,7 @@ simplepdf_debug = True
 
 if os.environ.get("IS_RTD", False):
     os.system("echo 'We are currently on the Read-the-Docs server (or somebody just set IS_RTD to true)'")
-    os.system("echo 'Fetching sqlite databases'")
+    os.system("echo 'Fetching SQLite databases'")
     database_names = ["demo_continental_gateway", "demo_deham_cta", "demo_poc"]  # List of database names to download
     sqlite_databases_directory = "notebooks/data/prepared_dbs/"
     os.system("echo 'Current directory:'")
@@ -293,4 +293,10 @@ if os.environ.get("IS_RTD", False):
         os.system(f'curl -LJO "{file_url}"')
         os.system(f'echo \'mv "{database_name}.sqlite" "{sqlite_databases_directory}"\'')
         os.system(f'mv "{database_name}.sqlite" "{sqlite_databases_directory}"')
-    os.system("echo 'sqlite databases fetched'")
+    os.system("echo 'SQLite databases fetched'")
+
+    # Kaleido requires Google Chrome to be installed.
+    # Either download and install Chrome yourself following Google's instructions for your operating system,
+    # or install it from your terminal by running:
+    os.system("echo 'Install chrome....'")
+    os.system("plotly_get_chrome -y")
