@@ -25,7 +25,7 @@ jobs:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: true
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Install ConFlowGen
       run: |
@@ -98,7 +98,7 @@ jobs:
 
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.11'
 
     - name: Install ConFlowGen
       run: |
