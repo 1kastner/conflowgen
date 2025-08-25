@@ -128,7 +128,7 @@ The version number is bumped manually by updating the version number at the foll
 - [./conflowgen/metadata.py](https://github.com/1kastner/conflowgen/blob/main/conflowgen/metadata.py):
   Updates the version number for the PyPI package. Afterwards the PyPI package can be uploaded.
 - The conda recipe requires a separate manual version number update in the
-  [recipe](https://github.com/conda-forge/conflowgen-feedstock/blob/main/recipe/meta.yaml).
+  [recipe](https://github.com/conda-forge/conflowgen-feedstock/blob/main/recipe/recipe.yaml).
 - [./CITATION.cff](https://github.com/1kastner/conflowgen/blob/main/CITATION.cff):
   Updates the version number for zenodo.
 - The version number of
