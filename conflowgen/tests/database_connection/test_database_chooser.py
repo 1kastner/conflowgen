@@ -69,7 +69,7 @@ class TestDatabaseChooser(unittest.TestCase):
 
         self.chooser.sqlite_database_connection.choose_database.assert_called_once_with(
             "db.sqlite", create=True, reset=False
-            )
+        )
 
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db)
 
@@ -87,7 +87,7 @@ class TestDatabaseChooser(unittest.TestCase):
         self.chooser._close_and_reset_db.assert_not_called()
         self.chooser.sqlite_database_connection.choose_database.assert_called_once_with(
             "db.sqlite", create=True, reset=False
-            )
+        )
 
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db)
     
