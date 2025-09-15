@@ -194,11 +194,6 @@ While assessing the currently available alternatives, among others we have come 
   The generator can be found at
   :cite:`meisel2011unified-software`.
 
-- :cite:t:`EasyChair:16000`.
-  revised ConFlowGen to be better tailored for profiles of transshipment hubs. By introducing explicit 
-  ramp-up and ramp-down phases and decreasing outbound and inbound containers respectively during them, the desired yard 
-  occupancy is reached faster. This method was applied in case studies of the Salalah, Valencia and Colombo terminals.
-
 Most likely, this list is not exhaustive and there is more software available online to synthetically generate data for
 evaluating new solutions in the field of maritime logistics.
 If you know about a suitable candidate or you have even developed one yourself, please feel free to reach out to
@@ -246,3 +241,8 @@ If you are curious about what else has been achieved with ConFlowGen, these sele
   :cite:`edes2024estimating`.
   The arrival patterns of actual sailing lists are used to estimate seaside throughput variations over several weeks.
   These, in turn, affect the yard throughput and yard utilization.
+
+- :cite:t:`EasyChair:16000`.
+  revised ConFlowGen to be better tailored for profiles of transshipment hubs. By introducing explicit 
+  ramp-up and ramp-down phases and decreasing outbound and inbound containers respectively during them, the desired yard 
+  occupancy is reached faster. This method was applied in case studies of the Salalah, Valencia and Colombo terminals.
