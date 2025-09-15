@@ -8,9 +8,13 @@ class TestDatabaseChooser(unittest.TestCase):
     def setUp(self):
         self.chooser = DatabaseChooser()
     
+    # If there isn't an open db, raise Exception.
+
     def test_close_without_open(self):
         with self.assertRaises(NoCurrentConnectionException):
             self.chooser.close_current_connection()
+
+    # If there is an open db close it.
 
     def test_close_with_open_connection_calls_close(self):
         mock_db = MagicMock()
@@ -18,6 +22,8 @@ class TestDatabaseChooser(unittest.TestCase):
         self.chooser.close_current_connection()
         mock_db.close.assert_called_once()
         self.assertIsNone(self.chooser.peewee_sqlite_db)
+
+    # Loading an existing db with no previous open.
 
     def test_existing_database_connection(self):
         self.chooser.sqlite_database_connection = MagicMock()
@@ -28,6 +34,8 @@ class TestDatabaseChooser(unittest.TestCase):
             "test.sqlite", create=False, reset=False
         )
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db)
+
+    # Loading an exisiting db with one open already, close the previous.
 
     def test_existing_database_connection_close_previous(self):
 
@@ -46,7 +54,7 @@ class TestDatabaseChooser(unittest.TestCase):
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db_2) 
     
     
-    # incase there is already a sqlite_database open
+    # Creating an exisiting db with one open already, close the previous.
 
     def test_create_new_sqlite_database_open(self):
         self.chooser._close_and_reset_db = MagicMock()
@@ -63,7 +71,7 @@ class TestDatabaseChooser(unittest.TestCase):
 
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db)
 
-    #there isn't anything open, just test the second part
+    # Creating an exisiting db without one open already.
 
     def test_create_new_sqlite_database(self):
         self.chooser._close_and_reset_db = MagicMock()
@@ -78,6 +86,8 @@ class TestDatabaseChooser(unittest.TestCase):
         self.chooser.sqlite_database_connection.choose_database.assert_called_once_with("db.sqlite", create=True, reset=False)
 
         self.assertEqual(self.chooser.peewee_sqlite_db, mock_db)
+    
+    # Test listing all db function.
     
     def test_list_all_sqlite_database(self):
         self.chooser.sqlite_database_connection = MagicMock()
