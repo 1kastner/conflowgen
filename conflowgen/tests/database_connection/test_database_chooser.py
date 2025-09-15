@@ -6,6 +6,7 @@ from conflowgen.api.database_chooser import (
     NoCurrentConnectionException,
 )
 
+
 class TestDatabaseChooser(unittest.TestCase):
     def setUp(self):
         self.chooser = DatabaseChooser()
@@ -36,7 +37,7 @@ class TestDatabaseChooser(unittest.TestCase):
 
     def test_existing_database_connection_close_previous(self):
         """
-        Loading an existing db with one open already should 
+        Loading an existing db with one open already should
         close the previous.
         """
         self.chooser.sqlite_database_connection = MagicMock()
@@ -58,7 +59,7 @@ class TestDatabaseChooser(unittest.TestCase):
 
     def test_create_new_sqlite_database_open(self):
         """
-        Creating a new db with one open already should 
+        Creating a new db with one open already should
         close the previous.
         """
         self.chooser._close_and_reset_db = MagicMock()  # pylint: disable=protected-access
