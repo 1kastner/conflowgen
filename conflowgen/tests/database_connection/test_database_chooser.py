@@ -14,7 +14,7 @@ class TestDatabaseChooser(unittest.TestCase):
     def tearDown(self):
         if self.chooser.peewee_sqlite_db is not None:
             self.chooser.close_current_connection()
-    
+
     def test_close_without_open(self):
         """If there isn't an open db, raise Exception."""
         with self.assertRaises(NoCurrentConnectionException):
