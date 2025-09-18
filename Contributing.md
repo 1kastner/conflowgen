@@ -45,9 +45,12 @@ You can also run the checks individually which is explained in the following.
 
 ## Run all tests
 
-Set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
+Before running the tests, you need to have three prepared SQLite databases.
+You can obtain them by running
+`docs/download_prepared_sqlite_databases.ps1`
+in a PowerShell or download them manually as noted in that script.
+Then, you need to set up your IDE to use `pytest` in the `tests` subdirectory (relative to the module root directory).
 If you use an editor without test support, you can run `python -m pytest ./tests` in the module root directory as well.
-Parallel test execution has not been tested and might not work.
 If you prefer to also check the test coverage, you can run
 `pytest --cov="./conflowgen" --cov-report html`
 from the project root directory.
