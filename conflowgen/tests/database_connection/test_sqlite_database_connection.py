@@ -174,7 +174,8 @@ class TestSqliteDatabaseConnection(unittest.TestCase):
     def test_sqlite_databases_directory_is_none(self):
         """Covers line 60"""
         conn = SqliteDatabaseConnection(sqlite_databases_directory=None)
-        assert conn.sqlite_databases_directory.endswith("data\\databases")
+        expected_suffix = os.path.join("data", "databases")
+        assert conn.sqlite_databases_directory.endswith(expected_suffix)
 
     @patch("conflowgen.database_connection.sqlite_database_connection.os.makedirs")
     @patch("conflowgen.database_connection.sqlite_database_connection.os.path.isdir", return_value=False)
