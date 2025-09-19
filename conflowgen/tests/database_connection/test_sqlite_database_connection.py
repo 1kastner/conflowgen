@@ -11,8 +11,8 @@ from conflowgen.database_connection.sqlite_database_connection import (
 
 class TestSqliteDatabaseConnection(unittest.TestCase):
     def setUp(self):
-        self.conn = SqliteDatabaseConnection(sqlite_databases_directory="/fake/path")
-
+            with patch("conflowgen.database_connection.sqlite_database_connection.os.makedirs"):
+                self.conn = SqliteDatabaseConnection(sqlite_databases_directory="/fake/path")
     @patch("conflowgen.database_connection.sqlite_database_connection.SqliteDatabase")
     @patch("conflowgen.database_connection.sqlite_database_connection.os.path.isfile", return_value=False)
     def test_choose_database_creates_new(self, _mock_isfile, mock_sqlite_db):
