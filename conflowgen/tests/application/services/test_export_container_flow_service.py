@@ -117,9 +117,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         """Cleans up after each test."""
         ExportContainerFlowService.debug_once.cache_clear()
 
-    # ------------------------------------------------------------------ #
     # Save helpers
-    # ------------------------------------------------------------------ #
 
     def test_save_as_csv_xls_xlsx(self):
         """Covers lines 59–60, 64–65; CSV / XLS / XLSX save helpers."""
@@ -143,9 +141,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         with self.assertRaises(AssertionError):
             ExportContainerFlowService._save_as_xlsx(df, "wrong.xls")
 
-    # ------------------------------------------------------------------ #
     # Conversion helpers
-    # ------------------------------------------------------------------ #
 
     def test_convert_table_to_pandas_dataframe_exceptions(self):
         """
@@ -213,9 +209,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             any("No content found" in str(c.args[0]) for c in log.info.call_args_list)
         )
 
-    # ------------------------------------------------------------------ #
     # Export behavior
-    # ------------------------------------------------------------------ #
 
     def test_export_creates_folder_and_saves_csv(self):
         """Covers 264 and 267–268."""
@@ -265,9 +259,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             to_csv.assert_called_once()
             self.assertTrue(out.endswith(os.path.join("X", "exists")))
 
-    # ------------------------------------------------------------------ #
     # FK recursion / edge cases
-    # ------------------------------------------------------------------ #
 
     def test_convert_table_to_pandas_dataframe_resolved_column(self):
         """Covers 228: nested column resolution."""
@@ -377,9 +369,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         finally:
             db.close()
 
-    # ------------------------------------------------------------------ #
     # Column drops / renames
-    # ------------------------------------------------------------------ #
 
     def test_branch_keyerror_during_drop(self):
         """Covers 195–197 and 201."""
