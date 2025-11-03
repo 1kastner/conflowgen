@@ -20,20 +20,34 @@ from conflowgen.domain_models.data_types.container_length import ContainerLength
 from conflowgen.domain_models.data_types.mode_of_transport import ModeOfTransport
 from conflowgen.domain_models.data_types.storage_requirement import StorageRequirement
 from conflowgen.domain_models.large_vehicle_schedule import Destination, Schedule
-from conflowgen.domain_models.vehicle import LargeScheduledVehicle, Truck
+from conflowgen.domain_models.vehicle import (
+    Train,
+    Feeder,
+    Barge,
+    DeepSeaVessel,
+    LargeScheduledVehicle,
+    Truck,
+)
+from conflowgen.domain_models.arrival_information import (
+    TruckArrivalInformationForDelivery,
+    TruckArrivalInformationForPickup,
+)
 
 # pylint: disable=protected-access, unused-argument, redundant-unittest-assert
 
 
 class DummyModel:
     """Dummy model that mocks a Peewee ORM model."""
+
     __name__ = "DummyModel"
 
     @classmethod
     def select(cls):
         """Return an object emulating a Peewee select()."""
+
         class _Sel:
             """Fake select result."""
+
             @staticmethod
             def dicts():
                 return []
@@ -44,26 +58,68 @@ class DummyModel:
 class TestExportContainerFlowService(unittest.TestCase):
     """Tests for ExportContainerFlowService."""
 
+    @classmethod
+    def setUpClass(cls):
+        """Sets up a private in-memory database that keeps tests separate."""
+        cls._orig_proxy_db = getattr(database_proxy, "obj", None)
+        cls._all_models = [
+            Schedule,
+            Destination,
+            LargeScheduledVehicle,
+            Truck,
+            Container,
+            TruckArrivalInformationForDelivery,
+            TruckArrivalInformationForPickup,
+            Train,
+            Feeder,
+            Barge,
+            DeepSeaVessel,
+        ]
+        # type: ignore[attr-defined]
+        cls._orig_model_dbs = {m: getattr(m, "_meta").database for m in cls._all_models}
+
+        cls._test_db = SqliteDatabase(":memory:")
+        database_proxy.initialize(cls._test_db)
+        cls._test_db.bind(cls._all_models)
+        cls._test_db.create_tables(cls._all_models)
+        ExportContainerFlowService.debug_once.cache_clear()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Tears down the private in-memory database."""
+        try:
+            cls._test_db.drop_tables(cls._all_models)
+        except (AttributeError, RuntimeError):
+            pass
+        try:
+            cls._test_db.close()
+        except (AttributeError, RuntimeError):
+            pass
+
+        for model, orig_db in cls._orig_model_dbs.items():
+            try:
+                getattr(model, "_meta").set_database(orig_db)  # type: ignore[attr-defined]
+            except (AttributeError, RuntimeError):
+                pass
+
+        if cls._orig_proxy_db is None:
+            database_proxy.initialize(None)
+        else:
+            database_proxy.initialize(cls._orig_proxy_db)
+        ExportContainerFlowService.debug_once.cache_clear()
+
     def setUp(self):
-        """Reset cached state before each test."""
+        """Sets up each test with a fresh ExportContainerFlowService instance."""
         self.svc = ExportContainerFlowService()
         ExportContainerFlowService.debug_once.cache_clear()
 
     def tearDown(self):
-        """Ensure no global state leaks into other tests."""
-        try:
-            if getattr(database_proxy, "obj", None):
-                database_proxy.close()
-        except (AttributeError, RuntimeError):
-            # database_proxy may not be initialized or already closed
-            pass
-        finally:
-            # Reset proxy to a clean state
-            database_proxy.initialize(None)
-
-        # Clear cached state to prevent cross-test contamination
+        """Cleans up after each test."""
         ExportContainerFlowService.debug_once.cache_clear()
 
+    # ------------------------------------------------------------------ #
+    # Save helpers
+    # ------------------------------------------------------------------ #
 
     def test_save_as_csv_xls_xlsx(self):
         """Covers lines 59–60, 64–65; CSV / XLS / XLSX save helpers."""
@@ -87,7 +143,9 @@ class TestExportContainerFlowService(unittest.TestCase):
         with self.assertRaises(AssertionError):
             ExportContainerFlowService._save_as_xlsx(df, "wrong.xls")
 
+    # ------------------------------------------------------------------ #
     # Conversion helpers
+    # ------------------------------------------------------------------ #
 
     def test_convert_table_to_pandas_dataframe_exceptions(self):
         """
@@ -101,13 +159,9 @@ class TestExportContainerFlowService(unittest.TestCase):
         fake_select.dicts.return_value = fake_rows
         fake_select.model = mock.Mock(__name__="FakeModel")
 
-        with mock.patch.object(
-                pd.DataFrame, "drop", return_value=pd.DataFrame(fake_rows)
-        ):
+        with mock.patch.object(pd.DataFrame, "drop", return_value=pd.DataFrame(fake_rows)):
             with self.assertRaises(RuntimeError):
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(
-                    fake_select
-                )
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)
 
         fake_rows = [{"id": 1, "f": np.float64(2.0)}]
         fake_select.dicts.return_value = fake_rows
@@ -132,26 +186,25 @@ class TestExportContainerFlowService(unittest.TestCase):
 
         with mock.patch.object(pd, "DataFrame", return_value=fake_df):
             with self.assertRaises(CastingException):
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(
-                    fake_select
-                )
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)
 
     def test_convert_sql_database_to_pandas_dataframe(self):
-        """
-        Covers lines 234–253.
-        Simulates a nested call where resolved_column is called.
-        """
+        """Covers lines 234–253."""
         non_empty = pd.DataFrame([{"id": 1}]).set_index("id")
         empty = pd.DataFrame([])
 
         def side_effect(model, resolved_column=None):
+            del resolved_column
             return empty if "Feeder" in str(model) else non_empty
 
-        with mock.patch.object(
+        with (
+            mock.patch.object(
                 ExportContainerFlowService,
                 "_convert_table_to_pandas_dataframe",
                 side_effect=side_effect,
-        ), mock.patch.object(ExportContainerFlowService, "logger") as log:
+            ),
+            mock.patch.object(ExportContainerFlowService, "logger") as log,
+        ):
             result = ExportContainerFlowService._convert_sql_database_to_pandas_dataframe()
 
         self.assertIn("containers", result)
@@ -160,7 +213,9 @@ class TestExportContainerFlowService(unittest.TestCase):
             any("No content found" in str(c.args[0]) for c in log.info.call_args_list)
         )
 
+    # ------------------------------------------------------------------ #
     # Export behavior
+    # ------------------------------------------------------------------ #
 
     def test_export_creates_folder_and_saves_csv(self):
         """Covers 264 and 267–268."""
@@ -170,15 +225,17 @@ class TestExportContainerFlowService(unittest.TestCase):
             "trucks": pd.DataFrame([{"id": 2}]).set_index("id"),
         }
 
-        with mock.patch("os.path.isdir", side_effect=[False, False]), \
-                mock.patch("os.makedirs") as makedirs, \
-                mock.patch("os.mkdir") as mkdir, \
-                mock.patch.object(
-                    ExportContainerFlowService,
-                    "_convert_sql_database_to_pandas_dataframe",
-                    return_value=fake_dfs,
-                ), \
-                mock.patch.object(pd.DataFrame, "to_csv") as to_csv:
+        with (
+            mock.patch("os.path.isdir", side_effect=[False, False]),
+            mock.patch("os.makedirs") as makedirs,
+            mock.patch("os.mkdir") as mkdir,
+            mock.patch.object(
+                ExportContainerFlowService,
+                "_convert_sql_database_to_pandas_dataframe",
+                return_value=fake_dfs,
+            ),
+            mock.patch.object(pd.DataFrame, "to_csv") as to_csv,
+        ):
             out = svc.export("run1", None, ExportFileFormat.csv, overwrite=False)
 
         makedirs.assert_called_once_with(EXPORTS_DEFAULT_DIR, exist_ok=True)
@@ -191,24 +248,26 @@ class TestExportContainerFlowService(unittest.TestCase):
         svc = ExportContainerFlowService()
         fake_dfs = {"containers": pd.DataFrame([{"id": 1}]).set_index("id")}
 
-        with mock.patch("os.path.isdir", side_effect=[True, True, True, True]), \
-                mock.patch.object(
-                    ExportContainerFlowService,
-                    "_convert_sql_database_to_pandas_dataframe",
-                    return_value=fake_dfs,
-                ), \
-                mock.patch.object(pd.DataFrame, "to_csv") as to_csv, \
-                mock.patch.object(ExportContainerFlowService, "logger"):
-            with self.assertRaises(
-                ExportOnlyAllowedToNotExistingFolderException
-            ):
+        with (
+            mock.patch("os.path.isdir", side_effect=[True, True, True, True]),
+            mock.patch.object(
+                ExportContainerFlowService,
+                "_convert_sql_database_to_pandas_dataframe",
+                return_value=fake_dfs,
+            ),
+            mock.patch.object(pd.DataFrame, "to_csv") as to_csv,
+            mock.patch.object(ExportContainerFlowService, "logger"),
+        ):
+            with self.assertRaises(ExportOnlyAllowedToNotExistingFolderException):
                 svc.export("exists", "X", ExportFileFormat.csv, overwrite=False)
 
             out = svc.export("exists", "X", ExportFileFormat.csv, overwrite=True)
             to_csv.assert_called_once()
             self.assertTrue(out.endswith(os.path.join("X", "exists")))
 
+    # ------------------------------------------------------------------ #
     # FK recursion / edge cases
+    # ------------------------------------------------------------------ #
 
     def test_convert_table_to_pandas_dataframe_resolved_column(self):
         """Covers 228: nested column resolution."""
@@ -222,33 +281,29 @@ class TestExportContainerFlowService(unittest.TestCase):
         fake_df.set_index.return_value = None
         fake_df.columns = ["id"]
 
-        with mock.patch.object(ExportContainerFlowService, "debug_once") as dbg, \
-                mock.patch.object(
-                    ExportContainerFlowService, "foreign_keys_to_resolve", fk_map
-                ), \
-                mock.patch.object(pd, "DataFrame", return_value=fake_df), \
-                mock.patch(
-                    "conflowgen.application.services.export_container_flow_service.isinstance",
-                    return_value=True,
-                ):
+        with (
+            mock.patch.object(ExportContainerFlowService, "debug_once") as dbg,
+            mock.patch.object(
+                ExportContainerFlowService, "foreign_keys_to_resolve", fk_map
+            ),
+            mock.patch.object(pd, "DataFrame", return_value=fake_df),
+            mock.patch(
+                "conflowgen.application.services.export_container_flow_service.isinstance",
+                return_value=True,
+            ),
+        ):
             ExportContainerFlowService._convert_table_to_pandas_dataframe(
                 fake_select, resolved_column="col_x"
             )
 
-        dbg.assert_called_once_with(
-            "This is a nested call to resolve the column 'col_x'"
-        )
+        dbg.assert_called_once_with("This is a nested call to resolve the column 'col_x'")
 
     def test_foreign_key_paths_recursion(self):
-        """
-        Covers lines 166–180, simulating FK recursion.
-        Light integration test using real table models Parent and Child.
-        """
+        """Covers lines 166–180."""
         db = SqliteDatabase(":memory:")
-        original_fk_map = None  # Fix for pylint E0601
+        original_fk_map = None
 
         class Parent(Model):
-            """Parent model."""
             id = IntegerField(primary_key=True)
             x = IntegerField(null=True)
 
@@ -256,7 +311,6 @@ class TestExportContainerFlowService(unittest.TestCase):
                 database = db
 
         class Child(Model):
-            """Child model with FK reference."""
             id = IntegerField(primary_key=True)
             parent_id = IntegerField(null=True)
 
@@ -287,66 +341,64 @@ class TestExportContainerFlowService(unittest.TestCase):
     def test_none_foreign_key(self):
         """Light weight integration test hitting line 165."""
         db = SqliteDatabase(":memory:")
-        database_proxy.initialize(db)
-        db.bind([Schedule, Destination, LargeScheduledVehicle, Truck, Container])
-        db.create_tables(
-            [Schedule, Destination, LargeScheduledVehicle, Truck, Container]
-        )
-
-        Schedule.create(
-            service_name="t",
-            vehicle_type=ModeOfTransport.feeder,
-            average_vehicle_capacity=10,
-            average_inbound_container_volume=5,
-            vehicle_arrives_at=datetime.date.today(),
-            vehicle_arrives_every_k_days=7,
-        )
-
-        truck = Truck.create(delivers_container=True, picks_up_container=True)
-
-        Container.create(
-            weight=1000,
-            length=ContainerLength.twenty_feet,
-            storage_requirement=StorageRequirement.standard,
-            delivered_by=ModeOfTransport.truck,
-            picked_up_by_initial=ModeOfTransport.truck,
-            picked_up_by=ModeOfTransport.truck,
-            delivered_by_truck=truck,
-            picked_up_by_truck=truck,
-            destination=None,
-        )
-
         try:
+            database_proxy.initialize(db)
+            db.bind([Schedule, Destination, LargeScheduledVehicle, Truck, Container])
+            db.create_tables(
+                [Schedule, Destination, LargeScheduledVehicle, Truck, Container]
+            )
+
+            Schedule.create(
+                service_name="t",
+                vehicle_type=ModeOfTransport.feeder,
+                average_vehicle_capacity=10,
+                average_inbound_container_volume=5,
+                vehicle_arrives_at=datetime.date.today(),
+                vehicle_arrives_every_k_days=7,
+            )
+
+            truck = Truck.create(delivers_container=True, picks_up_container=True)
+
+            Container.create(
+                weight=1000,
+                length=ContainerLength.twenty_feet,
+                storage_requirement=StorageRequirement.standard,
+                delivered_by=ModeOfTransport.truck,
+                picked_up_by_initial=ModeOfTransport.truck,
+                picked_up_by=ModeOfTransport.truck,
+                delivered_by_truck=truck,
+                picked_up_by_truck=truck,
+                destination=None,
+            )
+
             ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)
         except TypeError:
             pass
         finally:
             db.close()
 
+    # ------------------------------------------------------------------ #
     # Column drops / renames
+    # ------------------------------------------------------------------ #
 
     def test_branch_keyerror_during_drop(self):
-        """
-        Covers 195–197 and 201.
-        Forces KeyError during a drop to cover handling.
-        """
+        """Covers 195–197 and 201."""
         db = SqliteDatabase(":memory:")
-        database_proxy.initialize(db)
-        db.bind([Container])
-        db.create_tables([Container])
-
         original_drop = pd.DataFrame.drop
-
-        def raise_keyerror(*_, **__):
-            raise KeyError("forced keyerror for coverage")
-
-        pd.DataFrame.drop = raise_keyerror
         original_columns = ExportContainerFlowService.columns_to_drop.copy()
-        ExportContainerFlowService.columns_to_drop = {
-            Container: ["cached_arrival_time"]
-        }
-
         try:
+            database_proxy.initialize(db)
+            db.bind([Container])
+            db.create_tables([Container])
+
+            def raise_keyerror(*_, **__):
+                raise KeyError("forced keyerror for coverage")
+
+            pd.DataFrame.drop = raise_keyerror
+            ExportContainerFlowService.columns_to_drop = {
+                Container: ["cached_arrival_time"]
+            }
+
             with self.assertRaises(RuntimeError):
                 ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)
         finally:
@@ -358,16 +410,17 @@ class TestExportContainerFlowService(unittest.TestCase):
         """Covers lines 205–209."""
         svc = ExportContainerFlowService
         df_mock = pd.DataFrame([{"sequence_id": 10, "destination_sequence_id": 999}])
-
         rename_map = {DummyModel: {"sequence_id": "destination_sequence_id"}}
         try:
-            with mock.patch.object(svc, "columns_to_rename", rename_map), \
-                    mock.patch(
-                        "conflowgen.application.services.export_container_flow_service.pd.DataFrame",
-                        return_value=df_mock,
-                    ):
-                svc._convert_table_to_pandas_dataframe(DummyModel)
-            self.assertTrue(True)
+            with (
+                mock.patch.object(svc, "columns_to_rename", rename_map),
+                mock.patch(
+                    "conflowgen.application.services.export_container_flow_service.pd.DataFrame",
+                    return_value=df_mock,
+                ),
+            ):
+                out = svc._convert_table_to_pandas_dataframe(DummyModel)
+            self.assertIsInstance(out, pd.DataFrame)
         except TypeError:
             pass
 
@@ -378,17 +431,20 @@ class TestExportContainerFlowService(unittest.TestCase):
         rename_called = {"hit": False}
 
         def rename_spy(*args, **kwargs):
+            del args, kwargs
             rename_called["hit"] = True
             return df_mock
 
         df_mock.rename = rename_spy
         rename_map = {DummyModel: {"sequence_id": "destination_sequence_id"}}
 
-        with mock.patch.object(svc, "columns_to_rename", rename_map), \
-                mock.patch(
-                    "conflowgen.application.services.export_container_flow_service.pd.DataFrame",
-                    return_value=df_mock,
-                ):
+        with (
+            mock.patch.object(svc, "columns_to_rename", rename_map),
+            mock.patch(
+                "conflowgen.application.services.export_container_flow_service.pd.DataFrame",
+                return_value=df_mock,
+            ),
+        ):
             svc._convert_table_to_pandas_dataframe(DummyModel)
 
         self.assertTrue(rename_called["hit"])
