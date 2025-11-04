@@ -87,25 +87,12 @@ class TestExportContainerFlowService(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Tears down the private in-memory database."""
-        try:
-            cls._test_db.drop_tables(cls._all_models)
-        except (AttributeError, RuntimeError):
-            pass
-        try:
-            cls._test_db.close()
-        except (AttributeError, RuntimeError):
-            pass
-
+        cls._test_db.drop_tables(cls._all_models)
+        cls._test_db.close()
         for model, orig_db in cls._orig_model_dbs.items():
-            try:
-                getattr(model, "_meta").set_database(orig_db)  # type: ignore[attr-defined]
-            except (AttributeError, RuntimeError):
-                pass
-
-        if cls._orig_proxy_db is None:
-            database_proxy.initialize(None)
-        else:
-            database_proxy.initialize(cls._orig_proxy_db)
+            getattr(model, "_meta").set_database(orig_db)
+        database_proxy.initialize(None)
+        database_proxy.initialize(cls._orig_proxy_db)
         ExportContainerFlowService.debug_once.cache_clear()
 
     def setUp(self):
