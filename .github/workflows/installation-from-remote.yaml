@@ -25,7 +25,7 @@ jobs:
         auto-update-conda: true
         auto-activate-base: true
         activate-environment: true
-        python-version: '3.11'
+        python-version: "3.12"
 
     - name: Install ConFlowGen
       run: |
@@ -96,9 +96,9 @@ jobs:
     - name: Skip Duplicate Actions
       uses: fkirc/skip-duplicate-actions@v5
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: "3.12"
 
     - name: Install ConFlowGen
       run: |
