@@ -6,8 +6,10 @@ from unittest import mock
 import numpy as np
 import pandas as pd
 from peewee import IntegerField, Model, SqliteDatabase
+import yaml
 
 from conflowgen.application.data_types.export_file_format import ExportFileFormat
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 from conflowgen.application.services.export_container_flow_service import (
     CastingException,
     ExportContainerFlowService,
@@ -74,6 +76,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             Feeder,
             Barge,
             DeepSeaVessel,
+            ContainerFlowGenerationProperties,
         ]
         # type: ignore[attr-defined]
         cls._orig_model_dbs = {m: getattr(m, "_meta").database for m in cls._all_models}
@@ -128,7 +131,36 @@ class TestExportContainerFlowService(unittest.TestCase):
         with self.assertRaises(AssertionError):
             ExportContainerFlowService._save_as_xlsx(df, "wrong.xls")
 
-    # Conversion helpers
+    def test_get_metadata(self):
+        container_metadata = ExportContainerFlowService._get_metadata_of_model(Container)
+        self.assertIn("storage_requirement", container_metadata.keys())
+
+    def test_get_metadata_single(self):
+        cfgp = ContainerFlowGenerationProperties()
+        start_date = datetime.date(2025, 12, 8)
+        cfgp.start_date = start_date
+        cfgp.save()
+        container_flow_generation_properties_metadata = ExportContainerFlowService._get_metadata_of_model(
+            ContainerFlowGenerationProperties, single=True
+        )
+        self.assertIn("start_date", container_flow_generation_properties_metadata.keys())
+        self.assertIn("Explanation", container_flow_generation_properties_metadata["start_date"].keys())
+        self.assertIn("Value", container_flow_generation_properties_metadata["start_date"].keys())
+        self.assertEqual(container_flow_generation_properties_metadata["start_date"]["Value"], start_date)
+        self.assertEqual(
+            container_flow_generation_properties_metadata["start_date"]["Explanation"],
+            "The first day of the generated container flow"
+        )
+
+    def test_save_metadata(self):
+        cfgp = ContainerFlowGenerationProperties()
+        start_date = datetime.date(2025, 12, 8)
+        cfgp.start_date = start_date
+        cfgp.save()
+        with (mock.patch.object(yaml, "dump") as mock_dump_as_yaml,
+              mock.patch("builtins.open") as mock_file):
+            ExportContainerFlowService._save_metadata("my/funny/path/")
+        mock_file.assert_called_once_with("my/funny/path/metadata.yaml", "w")
 
     def test_convert_table_to_pandas_dataframe_exceptions(self):
         """
@@ -200,7 +232,7 @@ class TestExportContainerFlowService(unittest.TestCase):
 
     def test_export_creates_folder_and_saves_csv(self):
         """Covers 264 and 267–268."""
-        svc = ExportContainerFlowService()
+        ecfs = ExportContainerFlowService()
         fake_dfs = {
             "containers": pd.DataFrame([{"id": 1}]).set_index("id"),
             "trucks": pd.DataFrame([{"id": 2}]).set_index("id"),
@@ -216,8 +248,13 @@ class TestExportContainerFlowService(unittest.TestCase):
                 return_value=fake_dfs,
             ),
             mock.patch.object(pd.DataFrame, "to_csv") as to_csv,
+            mock.patch.object(
+                ExportContainerFlowService,
+                "_save_metadata",
+                return_value=None,
+            )
         ):
-            out = svc.export("run1", None, ExportFileFormat.csv, overwrite=False)
+            out = ecfs.export("run1", None, ExportFileFormat.csv, overwrite=False)
 
         makedirs.assert_called_once_with(EXPORTS_DEFAULT_DIR, exist_ok=True)
         mkdir.assert_called_once()
@@ -226,7 +263,7 @@ class TestExportContainerFlowService(unittest.TestCase):
 
     def test_export_existing_folder_overwrite_behavior(self):
         """Covers lines 278 and 280 for overwrite True/False."""
-        svc = ExportContainerFlowService()
+        ecfs = ExportContainerFlowService()
         fake_dfs = {"containers": pd.DataFrame([{"id": 1}]).set_index("id")}
 
         with (
@@ -238,11 +275,16 @@ class TestExportContainerFlowService(unittest.TestCase):
             ),
             mock.patch.object(pd.DataFrame, "to_csv") as to_csv,
             mock.patch.object(ExportContainerFlowService, "logger"),
+            mock.patch.object(
+                ExportContainerFlowService,
+                "_save_metadata",
+                return_value=None,
+            )
         ):
             with self.assertRaises(ExportOnlyAllowedToNotExistingFolderException):
-                svc.export("exists", "X", ExportFileFormat.csv, overwrite=False)
+                ecfs.export("exists", "X", ExportFileFormat.csv, overwrite=False)
 
-            out = svc.export("exists", "X", ExportFileFormat.csv, overwrite=True)
+            out = ecfs.export("exists", "X", ExportFileFormat.csv, overwrite=True)
             to_csv.assert_called_once()
             self.assertTrue(out.endswith(os.path.join("X", "exists")))
 
@@ -318,7 +360,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             db.close()
 
     def test_none_foreign_key(self):
-        """Light weight integration test hitting line 165."""
+        """Lightweight integration test hitting line 165."""
         db = SqliteDatabase(":memory:")
         try:
             database_proxy.initialize(db)
