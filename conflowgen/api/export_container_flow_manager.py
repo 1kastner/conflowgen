@@ -26,6 +26,9 @@ class ExportContainerFlowManager:
     ) -> str:
         """
         This extracts the container movement data from the SQL database to a folder of choice in a tabular data format.
+        In addition, you find a file called `metadata.yaml`. It contains an explanation for each column of each CSV file
+        as well as some general metadata, such as the ConFlowGen version used and the date and time of the scenario
+        generation.
 
         Args:
             folder_name: Name of folder that bundles the tabular data which belongs together
