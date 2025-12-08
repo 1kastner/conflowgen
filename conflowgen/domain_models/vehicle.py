@@ -57,6 +57,8 @@ class LargeScheduledVehicle(BaseModel):
     vehicle_name = CharField(
         null=False,
         default=lambda: "no-name-" + str(uuid.uuid4()),
+        help_text="The name of the vehicle. This might help the user of the data to track each vehicle, so it is "
+                  "preferably unique."
     )
     capacity_in_teu = IntegerField(
         null=False,

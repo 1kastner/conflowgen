@@ -258,27 +258,42 @@ class ExportContainerFlowService:
 
     @classmethod
     def _get_metadata_of_model(
-            cls, model: type[peewee.Model], metadata: Optional[dict] = None, single: bool = False
+            cls, model: type[peewee.Model], metadata: Optional[dict] = None, single: bool = False, resolve: bool = True,
     ) -> Dict:
         if metadata is None:
             metadata = {}
         for field in model._meta.sorted_fields:  # pylint: disable=protected-access
-            if field.help_text:
-                if single:
-                    metadata[field.name] = {
+            if not field.help_text:  # if there is no help text, we have no metadata to add
+                continue
+
+            if model in cls.columns_to_drop.keys():  # if model has columns to drop in the first place...
+                if field.name in cls.columns_to_drop[model]:  # ...and the column is to be dropped...
+                    continue  # ...then don't include it into the metadata (as it has been dropped).
+
+            field_name = field.name
+            if model in cls.columns_to_rename.keys():  # if model has columns to rename in the first place...
+                if field_name in cls.columns_to_rename[model].keys():  # ...and the column name is to be renamed...
+                    field_name = cls.columns_to_rename[model][field.name]  # ...then re-set the field name.
+
+            # if nested
+            if isinstance(field, peewee.ForeignKeyField) and resolve:
+                cls._get_metadata_of_model(field.rel_model, metadata)
+            else:  # actually enter metadata
+                if single:  # if single entry in table, then it can also be spelled out
+                    metadata[field_name] = {
                         "Explanation": field.help_text,
                         "Value": getattr(model.get_or_none(), field.name),
                     }
-                else:
-                    metadata[field.name] = field.help_text
-            if isinstance(field, peewee.ForeignKeyField):
-                cls._get_metadata_of_model(field.rel_model, metadata)
+                else:  # default case: several entries per table
+                    metadata[field_name] = field.help_text
+
         return metadata
 
     @classmethod
     def _get_metadata(cls) -> Dict[str, dict]:
         metadata = {
-            "general": cls._get_metadata_of_model(ContainerFlowGenerationProperties, single=True)
+            "general": cls._get_metadata_of_model(ContainerFlowGenerationProperties, single=True),
+            "container": cls._get_metadata_of_model(Container, resolve=False),
         }
         for vehicle_type_name, large_schedule_vehicle_as_subtype in cls.large_schedule_vehicles_as_subtype.items():
             metadata[vehicle_type_name] = cls._get_metadata_of_model(large_schedule_vehicle_as_subtype)
