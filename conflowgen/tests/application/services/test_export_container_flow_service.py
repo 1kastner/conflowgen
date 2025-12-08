@@ -158,7 +158,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         with (mock.patch.object(yaml, "dump"),
               mock.patch("builtins.open") as mock_file):
             ExportContainerFlowService._save_metadata("my/funny/path/")  # pylint: disable=protected-access
-        mock_file.assert_called_once_with("my/funny/path/metadata.yaml", "w")
+        mock_file.assert_called_once_with("my/funny/path/metadata.yaml", "w", encoding='utf-8')
 
     def test_convert_table_to_pandas_dataframe_exceptions(self):
         """
