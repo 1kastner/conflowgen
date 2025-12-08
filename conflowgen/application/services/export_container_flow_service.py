@@ -262,7 +262,7 @@ class ExportContainerFlowService:
     ) -> Dict:
         if metadata is None:
             metadata = {}
-        for field in model._meta.sorted_fields:
+        for field in model._meta.sorted_fields:  # pylint: disable=protected-access
             if field.help_text:
                 if single:
                     metadata[field.name] = {
