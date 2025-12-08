@@ -328,6 +328,7 @@ class ExportContainerFlowService:
             self.save_as_file_format_mapping[file_format](df, path_to_file)
 
         self._save_metadata(path_to_target_folder)
+        self.logger.debug("Saving file metadata.yaml")
 
         self.logger.info("Export has finished successfully.")
         return path_to_target_folder
@@ -341,4 +342,3 @@ class ExportContainerFlowService:
         with open(path_to_metadata_file, "w") as f:
             metadata = cls._get_metadata()
             yaml.dump(metadata, f)
-        self.logger.debug("Saving file metadata.yaml")
