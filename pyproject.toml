@@ -20,8 +20,9 @@ dependencies = [
 
     # data export
     'numpy',  # used in combination with pandas for column types
-    'pandas >=1',  # CSV/Excel import and export
+    'pandas >=1',  # CSV/Excel export
     'openpyxl',  # optional dependency of pandas that is compulsory for xlsx export
+    'PyYAML',  # export of metadata
 
     # internal data keeping
     'peewee >=3',  # ORM mapper
