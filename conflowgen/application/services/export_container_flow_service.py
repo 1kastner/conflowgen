@@ -339,6 +339,6 @@ class ExportContainerFlowService:
             path_to_target_folder,
             "metadata.yaml"
         )
-        with open(path_to_metadata_file, "w") as f:
+        with open(path_to_metadata_file, "w", encoding="utf-8") as f:
             metadata = cls._get_metadata()
             yaml.dump(metadata, f)
