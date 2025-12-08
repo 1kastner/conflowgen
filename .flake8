@@ -13,7 +13,7 @@ exclude =
     data,
     .github
 
-max-line-length = 120
+max-line-length = 150
 
 per-file-ignores =
     # imported but unused
