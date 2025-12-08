@@ -35,8 +35,6 @@ from conflowgen.domain_models.arrival_information import (
     TruckArrivalInformationForPickup,
 )
 
-# pylint: disable=protected-access, unused-argument, redundant-unittest-assert
-
 
 class DummyModel:
     """Dummy model that mocks a Peewee ORM model."""
@@ -114,25 +112,25 @@ class TestExportContainerFlowService(unittest.TestCase):
         df = mock.Mock()
 
         # CSV
-        ExportContainerFlowService._save_as_csv(df, "file.csv")
+        ExportContainerFlowService._save_as_csv(df, "file.csv")  # pylint: disable=protected-access
         df.to_csv.assert_called_once_with("file.csv")
         with self.assertRaises(AssertionError):
-            ExportContainerFlowService._save_as_csv(df, "bad.txt")
+            ExportContainerFlowService._save_as_csv(df, "bad.txt")  # pylint: disable=protected-access
 
         # XLS
-        ExportContainerFlowService._save_as_xls(df, "file.xls")
+        ExportContainerFlowService._save_as_xls(df, "file.xls")  # pylint: disable=protected-access
         df.to_excel.assert_called_with("file.xls")
         with self.assertRaises(AssertionError):
-            ExportContainerFlowService._save_as_xls(df, "wrong.xlsx")
+            ExportContainerFlowService._save_as_xls(df, "wrong.xlsx")  # pylint: disable=protected-access
 
         # XLSX
-        ExportContainerFlowService._save_as_xlsx(df, "file.xlsx")
+        ExportContainerFlowService._save_as_xlsx(df, "file.xlsx")  # pylint: disable=protected-access
         df.to_excel.assert_called_with("file.xlsx")
         with self.assertRaises(AssertionError):
-            ExportContainerFlowService._save_as_xlsx(df, "wrong.xls")
+            ExportContainerFlowService._save_as_xlsx(df, "wrong.xls")  # pylint: disable=protected-access
 
     def test_get_metadata(self):
-        container_metadata = ExportContainerFlowService._get_metadata_of_model(Container)
+        container_metadata = ExportContainerFlowService._get_metadata_of_model(Container)  # pylint: disable=protected-access
         self.assertIn("storage_requirement", container_metadata.keys())
 
     def test_get_metadata_single(self):
@@ -140,7 +138,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         start_date = datetime.date(2025, 12, 8)
         cfgp.start_date = start_date
         cfgp.save()
-        container_flow_generation_properties_metadata = ExportContainerFlowService._get_metadata_of_model(
+        container_flow_generation_properties_metadata = ExportContainerFlowService._get_metadata_of_model(  # pylint: disable=protected-access
             ContainerFlowGenerationProperties, single=True
         )
         self.assertIn("start_date", container_flow_generation_properties_metadata.keys())
@@ -159,7 +157,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         cfgp.save()
         with (mock.patch.object(yaml, "dump"),
               mock.patch("builtins.open") as mock_file):
-            ExportContainerFlowService._save_metadata("my/funny/path/")
+            ExportContainerFlowService._save_metadata("my/funny/path/")  # pylint: disable=protected-access
         mock_file.assert_called_once_with("my/funny/path/metadata.yaml", "w")
 
     def test_convert_table_to_pandas_dataframe_exceptions(self):
@@ -176,7 +174,7 @@ class TestExportContainerFlowService(unittest.TestCase):
 
         with mock.patch.object(pd.DataFrame, "drop", return_value=pd.DataFrame(fake_rows)):
             with self.assertRaises(RuntimeError):
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)  # pylint: disable=protected-access
 
         fake_rows = [{"id": 1, "f": np.float64(2.0)}]
         fake_select.dicts.return_value = fake_rows
@@ -201,7 +199,7 @@ class TestExportContainerFlowService(unittest.TestCase):
 
         with mock.patch.object(pd, "DataFrame", return_value=fake_df):
             with self.assertRaises(CastingException):
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(fake_select)  # pylint: disable=protected-access
 
     def test_convert_sql_database_to_pandas_dataframe(self):
         """Covers lines 234–253."""
@@ -220,7 +218,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             ),
             mock.patch.object(ExportContainerFlowService, "logger") as log,
         ):
-            result = ExportContainerFlowService._convert_sql_database_to_pandas_dataframe()
+            result = ExportContainerFlowService._convert_sql_database_to_pandas_dataframe()  # pylint: disable=protected-access
 
         self.assertIn("containers", result)
         self.assertIn("trucks", result)
@@ -313,7 +311,7 @@ class TestExportContainerFlowService(unittest.TestCase):
                 return_value=True,
             ),
         ):
-            ExportContainerFlowService._convert_table_to_pandas_dataframe(
+            ExportContainerFlowService._convert_table_to_pandas_dataframe(  # pylint: disable=protected-access
                 fake_select, resolved_column="col_x"
             )
 
@@ -349,7 +347,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             svc.foreign_keys_to_resolve = {Child: {"parent_id": Parent}}
 
             with mock.patch.object(svc, "debug_once") as dbg:
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(Child)
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(Child)  # pylint: disable=protected-access
 
             dbg.assert_called_with(mock.ANY)
         except TypeError:
@@ -392,7 +390,7 @@ class TestExportContainerFlowService(unittest.TestCase):
                 destination=None,
             )
 
-            ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)
+            ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)  # pylint: disable=protected-access
         except TypeError:
             pass
         finally:
@@ -419,7 +417,7 @@ class TestExportContainerFlowService(unittest.TestCase):
             }
 
             with self.assertRaises(RuntimeError):
-                ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)
+                ExportContainerFlowService._convert_table_to_pandas_dataframe(Container)  # pylint: disable=protected-access
         finally:
             pd.DataFrame.drop = original_drop
             ExportContainerFlowService.columns_to_drop = original_columns
@@ -438,7 +436,7 @@ class TestExportContainerFlowService(unittest.TestCase):
                     return_value=df_mock,
                 ),
             ):
-                out = svc._convert_table_to_pandas_dataframe(DummyModel)
+                out = svc._convert_table_to_pandas_dataframe(DummyModel)  # pylint: disable=protected-access
             self.assertIsInstance(out, pd.DataFrame)
         except TypeError:
             pass
@@ -464,6 +462,6 @@ class TestExportContainerFlowService(unittest.TestCase):
                 return_value=df_mock,
             ),
         ):
-            svc._convert_table_to_pandas_dataframe(DummyModel)
+            svc._convert_table_to_pandas_dataframe(DummyModel)  # pylint: disable=protected-access
 
         self.assertTrue(rename_called["hit"])
