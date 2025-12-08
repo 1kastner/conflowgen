@@ -157,7 +157,7 @@ class TestExportContainerFlowService(unittest.TestCase):
         start_date = datetime.date(2025, 12, 8)
         cfgp.start_date = start_date
         cfgp.save()
-        with (mock.patch.object(yaml, "dump") as mock_dump_as_yaml,
+        with (mock.patch.object(yaml, "dump"),
               mock.patch("builtins.open") as mock_file):
             ExportContainerFlowService._save_metadata("my/funny/path/")
         mock_file.assert_called_once_with("my/funny/path/metadata.yaml", "w")

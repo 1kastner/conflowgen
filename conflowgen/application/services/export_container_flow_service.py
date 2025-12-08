@@ -24,7 +24,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 from conflowgen.domain_models.large_vehicle_schedule import Destination
 from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicle, Feeder, Barge, Train, Truck, \
     AbstractLargeScheduledVehicle
-from conflowgen.application.models.container_flow_generation_properties import  ContainerFlowGenerationProperties
+from conflowgen.application.models.container_flow_generation_properties import ContainerFlowGenerationProperties
 
 EXPORTS_DEFAULT_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -328,7 +328,6 @@ class ExportContainerFlowService:
             self.save_as_file_format_mapping[file_format](df, path_to_file)
 
         self._save_metadata(path_to_target_folder)
-        self.logger.debug(f"Saving file metadata.yaml")
 
         self.logger.info("Export has finished successfully.")
         return path_to_target_folder
@@ -342,3 +341,4 @@ class ExportContainerFlowService:
         with open(path_to_metadata_file, "w") as f:
             metadata = cls._get_metadata()
             yaml.dump(metadata, f)
+        self.logger.debug("Saving file metadata.yaml")
