@@ -8,6 +8,8 @@ from typing import Dict, Type, Optional
 
 import numpy as np
 import pandas as pd
+import peewee
+import yaml
 # noinspection PyProtectedMember
 from peewee import ModelSelect
 
@@ -22,6 +24,7 @@ from conflowgen.domain_models.data_types.storage_requirement import StorageRequi
 from conflowgen.domain_models.large_vehicle_schedule import Destination
 from conflowgen.domain_models.vehicle import DeepSeaVessel, LargeScheduledVehicle, Feeder, Barge, Train, Truck, \
     AbstractLargeScheduledVehicle
+from conflowgen.application.models.container_flow_generation_properties import  ContainerFlowGenerationProperties
 
 EXPORTS_DEFAULT_DIR = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
@@ -127,6 +130,13 @@ class ExportContainerFlowService:
                 'large_scheduled_vehicle': "id"
             } for mode_of_transport in ModeOfTransport.get_scheduled_vehicles()
         },
+    }
+
+    large_schedule_vehicles_as_subtype = {
+        "deep_sea_vessels": DeepSeaVessel,
+        "feeders": Feeder,
+        "barges": Barge,
+        "trains": Train,
     }
 
     def __init__(self):
@@ -235,22 +245,44 @@ class ExportContainerFlowService:
             "containers": df_container,
         }
 
-        large_schedule_vehicles_as_subtype = {
-            "deep_sea_vessels": DeepSeaVessel,
-            "feeders": Feeder,
-            "barges": Barge,
-            "trains": Train,
-        }
-        for file_name, large_schedule_vehicle_as_subtype in large_schedule_vehicles_as_subtype.items():
-            cls.logger.debug(f"Gathering data for generating the '{file_name}' table...")
+        for vehicle_type_name, large_schedule_vehicle_as_subtype in cls.large_schedule_vehicles_as_subtype.items():
+            cls.logger.debug(f"Gathering data for generating the '{vehicle_type_name}' table...")
             df = cls._convert_table_to_pandas_dataframe(large_schedule_vehicle_as_subtype)
             if len(df) == 0:
-                cls.logger.info(f"No content found for the {file_name} table, the file will be empty.")
-            result[file_name] = df
+                cls.logger.info(f"No content found for the {vehicle_type_name} table, the file will be empty.")
+            result[vehicle_type_name] = df
 
         df_trucks = cls._convert_table_to_pandas_dataframe(Truck)
         result["trucks"] = df_trucks
         return result
+
+    @classmethod
+    def _get_metadata_of_model(
+            cls, model: type[peewee.Model], metadata: Optional[dict] = None, single: bool = False
+    ) -> Dict:
+        if metadata is None:
+            metadata = {}
+        for field in model._meta.sorted_fields:
+            if field.help_text:
+                if single:
+                    metadata[field.name] = {
+                        "Explanation": field.help_text,
+                        "Value": getattr(model.get_or_none(), field.name),
+                    }
+                else:
+                    metadata[field.name] = field.help_text
+            if isinstance(field, peewee.ForeignKeyField):
+                cls._get_metadata_of_model(field.rel_model, metadata)
+        return metadata
+
+    @classmethod
+    def _get_metadata(cls) -> Dict[str, dict]:
+        metadata = {
+            "general": cls._get_metadata_of_model(ContainerFlowGenerationProperties, single=True)
+        }
+        for vehicle_type_name, large_schedule_vehicle_as_subtype in cls.large_schedule_vehicles_as_subtype.items():
+            metadata[vehicle_type_name] = cls._get_metadata_of_model(large_schedule_vehicle_as_subtype)
+        return metadata
 
     def export(
             self,
@@ -294,5 +326,19 @@ class ExportContainerFlowService:
             self.logger.debug(f"Saving file {full_file_name}")
             # noinspection PyArgumentList
             self.save_as_file_format_mapping[file_format](df, path_to_file)
+
+        self._save_metadata(path_to_target_folder)
+        self.logger.debug(f"Saving file metadata.yaml")
+
         self.logger.info("Export has finished successfully.")
         return path_to_target_folder
+
+    @classmethod
+    def _save_metadata(cls, path_to_target_folder: str):
+        path_to_metadata_file = os.path.join(
+            path_to_target_folder,
+            "metadata.yaml"
+        )
+        with open(path_to_metadata_file, "w") as f:
+            metadata = cls._get_metadata()
+            yaml.dump(metadata, f)
