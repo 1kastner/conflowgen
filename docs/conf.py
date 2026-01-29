@@ -82,6 +82,8 @@ exclude_patterns = [
     '**.ipynb_checkpoints', '**.virtual_documents'  # specific for Jupyter Notebooks
 ]
 
+napoleon_preprocess_types = True  # convert the type definitions in the docstrings as references
+
 add_module_names = False
 
 todo_include_todos = True  # this is currently especially the open tickets at plotly
