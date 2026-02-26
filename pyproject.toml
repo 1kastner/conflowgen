@@ -81,3 +81,6 @@ jupyterlab = [
     "jupyterlab-lsp",  # better autocomplete
     "python-lsp-server[all]",  # better autocomplete
 ]
+
+[project.scripts]
+conflowgen_excel_interface = "conflowgen.tools.excel_interface:command_line_interface"
