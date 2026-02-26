@@ -1,5 +1,5 @@
 """
-The command line tool allows to create an Excel file with all input distributions
+The command line tool allows to create an XLSX file with all input distributions
 which the user can change and then read in again to create synthetic container flows.
 """
 import datetime
@@ -11,11 +11,11 @@ import openpyxl.worksheet
 import openpyxl.workbook
 import openpyxl.styles
 
-from .. import metadata
-from ..api.container_flow_generation_manager import ContainerFlowGenerationManager
-from ..api.database_chooser import DatabaseChooser
-from ..api.container_length_distribution_manager import ContainerLengthDistributionManager
-
+from conflowgen import metadata
+from conflowgen.api.container_flow_generation_manager import ContainerFlowGenerationManager
+from conflowgen.api.database_chooser import DatabaseChooser
+from conflowgen.api.container_length_distribution_manager import ContainerLengthDistributionManager
+from conflowgen.api.export_container_flow_manager import ExportContainerFlowManager
 
 DEFAULT_ROW_OFFSET_OF_TABLE = 4
 
@@ -30,11 +30,11 @@ def _create_sheet(
     return sheet
 
 
-def create_input_excel(file_path: str, overwrite: bool) -> None:
+def create_input_spreadsheet(file_path: str, overwrite: bool) -> None:
     """
-    file_path: The path to the Excel file to create
+    file_path: The path to the XLSX file to create
     """
-    print(f"Create Excel file at {file_path}")
+    print(f"Create XLSX file at {file_path}")
     if os.path.isfile(file_path):
         if not overwrite:
             print(f"The file {file_path} already exists!")
@@ -77,9 +77,9 @@ def create_input_excel(file_path: str, overwrite: bool) -> None:
 
 def create_container_flow(file_path: str, overwrite: bool):
     """
-    file_path: The path to the Excel file to read in
+    file_path: The path to the XLSX file to read in
     """
-    print(f"Read Excel file at {file_path} to create container flows")
+    print(f"Read XLSX file at {file_path} to create container flows")
 
     if not os.path.isfile(file_path):
         print(f"The file {file_path} does not exists!")
@@ -87,9 +87,11 @@ def create_container_flow(file_path: str, overwrite: bool):
 
     workbook = openpyxl.load_workbook(file_path)
 
+    file_path_without_ending = ".".join(file_path.split(".")[:-1])
+
     path_to_sqlite_file = os.path.join(
         os.path.dirname(file_path),
-        file_path.split(".")[0] + ".sqlite"
+        file_path_without_ending + ".sqlite"
     )
     if os.path.isfile(path_to_sqlite_file):
         if not overwrite:
@@ -139,19 +141,29 @@ def create_container_flow(file_path: str, overwrite: bool):
     print(f"Set container length distribution: "
           f"{container_length_distribution_manager.get_container_length_distribution()}")
 
+    print("Generating container flow data...")
     container_flow_generation_manager.generate()
+
+    print("Exporting container flow data to CSV...")
+    path_to_export_folder = os.path.dirname(file_path_without_ending)
+    ExportContainerFlowManager().export(
+        folder_name=file_path_without_ending + "_CSV_Export",
+        path_to_export_folder=path_to_export_folder,
+        overwrite=overwrite,
+    )
+    print("Creating container flow data has finished!")
 
 
 def command_line_interface():
     parser = argparse.ArgumentParser(
-        prog="ConFlowGen Excel Interface",
+        prog="ConFlowGen Spreadsheet Interface",
         description=(
-            "The command line tool allows to create an Excel file with all input distributions "
+            "The command line tool allows to create an XLSX file with all input distributions "
             "which the user can change and then read in again to create synthetic container flows."
         ),
     )
     valid_actions = [
-        "create_input_excel",
+        "create_input_spreadsheet",
         "create_container_flow"
     ]
     parser.add_argument(
@@ -161,11 +173,11 @@ def command_line_interface():
     )
     parser.add_argument(
         "filepath",
-        help="The path to the Excel file",
+        help="The path to the XLSX file",
     )
     parser.add_argument(
         "--overwrite",
-        help="Whether existing Excel files are overwritten",
+        help="Whether existing files shall be overwritten",
         default=False,
         action="store_true",
     )
@@ -174,8 +186,8 @@ def command_line_interface():
         os.curdir,
         args.filepath
     ))
-    if args.action == "create_input_excel":
-        create_input_excel(filepath, args.overwrite)
+    if args.action == "create_input_spreadsheet":
+        create_input_spreadsheet(filepath, args.overwrite)
     elif args.action == "create_container_flow":
         create_container_flow(filepath, args.overwrite)
     else:

@@ -83,4 +83,4 @@ jupyterlab = [
 ]
 
 [project.scripts]
-conflowgen_excel_interface = "conflowgen.tools.excel_interface:command_line_interface"
+conflowgen_spreadsheet_interface = "conflowgen.command_line_interface.spreadsheet_interface:command_line_interface"
