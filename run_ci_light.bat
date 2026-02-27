@@ -84,6 +84,11 @@ pylint conflowgen.tests || (
     EXIT /B
 )
 
+pylint conflowgen.command_line_interface.spreadsheet_interface || (
+    ECHO.While linting the conflowgen spreadsheet interface, pylint failed!
+    EXIT /B
+)
+
 REM build docs
 CALL docs/make clean || (
     ECHO.Cleaning up the last built of the documentation failed!

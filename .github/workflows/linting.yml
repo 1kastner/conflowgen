@@ -41,6 +41,7 @@ jobs:
       run: |
         pylint conflowgen
         pylint conflowgen.tests
+        pylint conflowgen.command_line_interface.spreadsheet_interface
 
     - name: Check code quality with flake8
       run: |
