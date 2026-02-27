@@ -7,7 +7,7 @@ import os
 import argparse
 import typing
 
-import openpyxl.worksheet
+import openpyxl.worksheet.worksheet
 import openpyxl.workbook
 import openpyxl.styles
 
@@ -18,6 +18,7 @@ from conflowgen.api.container_length_distribution_manager import ContainerLength
 from conflowgen.api.export_container_flow_manager import ExportContainerFlowManager
 
 DEFAULT_ROW_OFFSET_OF_TABLE = 4
+
 
 def _create_sheet(
         workbook: openpyxl.workbook.Workbook, title: str, index: typing.Optional[int] = None
@@ -190,8 +191,6 @@ def command_line_interface():
         create_input_spreadsheet(filepath, args.overwrite)
     elif args.action == "create_container_flow":
         create_container_flow(filepath, args.overwrite)
-    else:
-        pass  # argparse should not allow us to get here
 
 
 if __name__ == "__main__":
