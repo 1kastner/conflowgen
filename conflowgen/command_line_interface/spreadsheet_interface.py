@@ -40,8 +40,7 @@ def create_input_spreadsheet(file_path: str, overwrite: bool) -> None:
         if not overwrite:
             print(f"The file {file_path} already exists!")
             return
-        else:
-            print(f"The file {file_path} will be overwritten")
+        print(f"The file {file_path} will be overwritten")
 
     workbook = openpyxl.Workbook()
 
@@ -98,8 +97,7 @@ def create_container_flow(file_path: str, overwrite: bool):
         if not overwrite:
             print(f"The file {path_to_sqlite_file} already exists!")
             return
-        else:
-            print(f"The file {path_to_sqlite_file} will be overwritten")
+        print(f"The file {path_to_sqlite_file} will be overwritten")
 
     DatabaseChooser().create_new_sqlite_database(
         path_to_sqlite_file,
