@@ -7,9 +7,9 @@ version: 2
 
 # Use new Python version
 build:
-  os: ubuntu-20.04
+  os: ubuntu-lts-latest
   tools:
-    python: "3.10"
+    python: latest
 
   jobs:
     post_checkout:
