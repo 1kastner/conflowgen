@@ -50,7 +50,7 @@ dev = [
     'nbformat',  # used to run tests in Jupyter notebooks
 
     # build documentation
-    'sphinx >=6.2',  # build the documentation - restrict version to improve pip version resolution
+    'sphinx >=6.2,<9',  # build the documentation - restrict version to improve pip version resolution
     'sphinx-rtd-theme',  # adding the nice sphinx theme
     'sphinx-toolbox >=3',  # additional dependency of enum_tools - restrict version to improve pip resolution
     'myst-parser',  # for Contributing.md
