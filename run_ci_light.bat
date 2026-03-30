@@ -69,18 +69,27 @@ ruff check || (
     EXIT /B
 )
 
+ECHO.Linting ConFlowGen main library
 pylint conflowgen || (
     ECHO.While linting the conflowgen module, pylint failed!
     EXIT /B
 )
 
+ECHO.Linting ConFlowGen setup.py
 pylint setup.py || (
     ECHO.While linting setup.py, pylint failed!
     EXIT /B
 )
 
+ECHO.Linting ConFlowGen tests
 pylint conflowgen.tests || (
     ECHO.While linting the conflowgen tests, pylint failed!
+    EXIT /B
+)
+
+ECHO.Linting ConFlowGen spreadsheet interface
+pylint conflowgen.command_line_interface.spreadsheet_interface || (
+    ECHO.While linting the conflowgen spreadsheet interface, pylint failed!
     EXIT /B
 )
 

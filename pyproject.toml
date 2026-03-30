@@ -81,3 +81,6 @@ jupyterlab = [
     "jupyterlab-lsp",  # better autocomplete
     "python-lsp-server[all]",  # better autocomplete
 ]
+
+[project.scripts]
+conflowgen_spreadsheet_interface = "conflowgen.command_line_interface.spreadsheet_interface:command_line_interface"
