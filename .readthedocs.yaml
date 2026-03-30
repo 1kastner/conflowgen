@@ -10,7 +10,19 @@ build:
   os: ubuntu-lts-latest
   tools:
     python: latest
-
+  apt_packages:
+    - libnss3
+    - libatk-bridge2.0-0
+    - libcups2
+    - libxcomposite1
+    - libxdamage1
+    - libxfixes3
+    - libxrandr2
+    - libgbm1
+    - libxkbcommon0
+    - libpango-1.0-0
+    - libcairo2
+    - libasound2
   jobs:
     post_checkout:
       - git fetch --unshallow || true
